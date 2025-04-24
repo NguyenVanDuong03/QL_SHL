@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\Helpers\Constant;
 use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\ResetsPasswords;
 
@@ -30,11 +31,11 @@ class ResetPasswordController extends Controller
     {
         $user = auth()->user();
 
-        if ($user->role == 0)
+        if ($user->role == Constant::ROLE_LIST['TEACHER'])
             return route('teacher.index');
-        else if ($user->role == 1)
+        else if ($user->role == Constant::ROLE_LIST['STUDENT_AFFAIRS_DEPARTMENT'])
             return route('student-affairs-department.index');
-        else if ($user->role == 2)
+        else if ($user->role == Constant::ROLE_LIST['CLASS_STAFF'])
             return route('class-staff.index');
 
         return route('student.index');

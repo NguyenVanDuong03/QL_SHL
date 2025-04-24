@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Helpers\Constant;
 use App\Repositories\UserRepository;
 use Illuminate\Support\Arr;
 
@@ -42,11 +43,11 @@ class UserService extends BaseService
 
     public function redirectAuthPath()
     {
-        if (auth()->user()->role == 0) {
+        if (auth()->user()->role == Constant::ROLE_LIST['TEACHER']) {
             return 'teacher.index';
-        } else if (auth()->user()->role == 1) {
+        } else if (auth()->user()->role == Constant::ROLE_LIST['STUDENT_AFFAIRS_DEPARTMENT']) {
             return 'studen-affairs-department.index';
-        } else if (auth()->user()->role == 2) {
+        } else if (auth()->user()->role == Constant::ROLE_LIST['CLASS_STAFF']) {
             return 'class-staff.index';
         }
 
