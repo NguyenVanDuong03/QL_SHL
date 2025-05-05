@@ -1,0 +1,30 @@
+.wave-bg {
+    background-color: #2b82df;
+    background-size: cover;
+    background-position: center;
+    height: 30vh;
+}
+.card {
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+.btn-circle {
+    width: 38px;
+    height: 38px;
+    padding: 0;
+    border-radius: 50%;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#toggleLogo {
+    display: none;
+}
+
+@media (max-width: 768px) {
+    #toggleLogo {
+        display: block;
+    }
+}

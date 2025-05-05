@@ -1,0 +1,81 @@
+body {
+    background-color: #4a90e2;
+    background-image: url("{{ asset('images/wave-bg.png') }}");
+    background-size: cover;
+    background-position: center;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.verify-container {
+    max-width: 450px;
+    margin: 2rem auto;
+}
+
+.verify-card {
+    background-color: white;
+    border-radius: 10px;
+    padding: 2rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.verify-header {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.logo {
+    width: 80px;
+    margin-bottom: 1rem;
+}
+
+.welcome-text {
+    color: white;
+    text-align: center;
+    margin-bottom: 0.5rem;
+}
+
+.sub-text {
+    color: white;
+    text-align: center;
+    font-size: 0.9rem;
+    margin-bottom: 2rem;
+}
+
+.verify-title {
+    font-size: 1.8rem;
+    font-weight: bold;
+    margin-bottom: 1.5rem;
+    text-align: center;
+}
+
+.form-control {
+    padding: 0.8rem 1rem;
+    margin-bottom: 1rem;
+}
+
+.btn-verify {
+    width: 100%;
+    padding: 0.8rem;
+    background-color: #2c3e50;
+    border: none;
+}
+
+.form-check-input {
+    border-color: #4a90e2;
+}
+
+.form-switch .form-check-input:checked {
+    background-color: #4a90e2;
+    border-color: #4a90e2;
+}
+
+.verify-link a {
+    text-decoration: none;
+}
+
+.verify-link a:hover {
+    text-decoration: underline;
+}

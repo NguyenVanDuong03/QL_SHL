@@ -1,0 +1,65 @@
+<div id="sidebarWrapper" class="col-md-3 col-lg-2 sidebar-wrapper">
+    <!-- Logo -->
+    <div class="sidebar-logo">
+        <div>
+            <img src="{{ asset('images/LogoTlu.png') }}" alt="Logo" height="40">
+        </div>
+    </div>
+
+    <!-- Navigation Menu -->
+    <div class="px-3">
+        <ul class="nav flex-column">
+            <li class="nav-item">
+                <a class="nav-link {{ Route::currentRouteName() == 'teacher.index' ? 'active' : '' }}" href="{{ route('teacher.index') }}">
+                    <i class="fas fa-home"></i>
+                    Trang chủ
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#">
+                    <i class="fas fa-bell"></i>
+                    Thông báo
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#">
+                    <i class="fas fa-book"></i>
+                    Sinh hoạt lớp
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link {{ Route::currentRouteName() == 'teacher.class.index' ? 'active' : '' }}" href="{{ route('teacher.class.index') }}">
+                    <i class="fas fa-users"></i>
+                    Lớp học
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#">
+                    <i class="fas fa-chart-bar"></i>
+                    Điểm rèn luyện
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#">
+                    <i class="fas fa-chart-line"></i>
+                    Thống kê
+                </a>
+            </li>
+        </ul>
+    </div>
+
+    <!-- Authentication Links -->
+    <div class="mt-auto px-3 pb-3" style="margin-top: auto;">
+        <ul class="nav flex-column">
+            <li class="nav-item">
+                <form id="logout-form" action="{{ route('logout') }}" method="POST">
+                    @csrf
+                    <button class="nav-link w-100" href="#">
+                        <i class="fas fa-sign-out-alt"></i>
+                        {{ __('Đăng xuất') }}
+                    </button>
+                </form>
+            </li>
+        </ul>
+    </div>
+</div>

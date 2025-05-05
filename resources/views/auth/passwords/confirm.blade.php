@@ -1,49 +1,47 @@
 @extends('layouts.app')
 
+@section('title', 'Xác nhận mật khẩu')
+
+@push('styles')
+    <link rel="stylesheet" href="{{ asset('css/password-comfirm.css') }}">
+@endpush
+
 @section('content')
-<div class="container">
-    <div class="row justify-content-center">
-        <div class="col-md-8">
-            <div class="card">
-                <div class="card-header">{{ __('Confirm Password') }}</div>
+    <div class="container mt-5">
+        <div class="password-comfirm-header">
+            <img src="{{ asset('images/LogoTlu.png') }}" alt="Logo" class="logo">
+            <h1 class="welcome-text">Xác nhận mật khẩu</h1>
+            <p class="sub-text">Vui lòng xác nhận mật khẩu trước khi tiếp tục.</p>
+        </div>
 
-                <div class="card-body">
-                    {{ __('Please confirm your password before continuing.') }}
+        <div class="password-comfirm-container">
+            <div class="password-comfirm-card">
+                <h2 class="password-comfirm-title">Xác nhận mật khẩu</h2>
 
-                    <form method="POST" action="{{ route('password.confirm') }}">
-                        @csrf
+                <form method="POST" action="{{ route('password.confirm') }}">
+                    @csrf
 
-                        <div class="row mb-3">
-                            <label for="password" class="col-md-4 col-form-label text-md-end">{{ __('Password') }}</label>
+                    <div class="mb-3">
+                        <label for="password" class="form-label">Mật khẩu</label>
+                        <input id="password" type="password" class="form-control @error('password') is-invalid @enderror"
+                            name="password" required autocomplete="current-password">
 
-                            <div class="col-md-6">
-                                <input id="password" type="password" class="form-control @error('password') is-invalid @enderror" name="password" required autocomplete="current-password">
+                        @error('password')
+                            <span class="invalid-feedback" role="alert">
+                                <strong>{{ $message }}</strong>
+                            </span>
+                        @enderror
+                    </div>
 
-                                @error('password')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                @enderror
-                            </div>
+                    <button type="submit" class="btn btn-primary btn-password-comfirm">Xác nhận</button>
+
+                    @if (Route::has('password.request'))
+                        <div class="text-center mt-3">
+                            <a href="{{ route('password.request') }}">Quên mật khẩu?</a>
                         </div>
-
-                        <div class="row mb-0">
-                            <div class="col-md-8 offset-md-4">
-                                <button type="submit" class="btn btn-primary">
-                                    {{ __('Confirm Password') }}
-                                </button>
-
-                                @if (Route::has('password.request'))
-                                    <a class="btn btn-link" href="{{ route('password.request') }}">
-                                        {{ __('Forgot Your Password?') }}
-                                    </a>
-                                @endif
-                            </div>
-                        </div>
-                    </form>
-                </div>
+                    @endif
+                </form>
             </div>
         </div>
     </div>
-</div>
 @endsection

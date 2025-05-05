@@ -25,6 +25,9 @@ Route::middleware(['auth'])->group(function () {
         ],
         function () {
             Route::get('/', [TeacherController::class, 'index'])->name('index');
+            Route::get('/class', function () {
+                return view('teacher.class.index');
+            })->name('class.index');
         }
     );
 

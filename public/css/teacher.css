@@ -1,0 +1,232 @@
+body {
+    font-family: "Inter", sans-serif;
+    background-color: #f8f9fa;
+}
+
+/* Sidebar styles */
+.sidebar-wrapper {
+    background-color: #1976d2;
+    min-height: 100vh;
+    color: white;
+    transition: all 0.3s;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.sidebar-logo {
+    display: flex;
+    justify-content: center;
+    padding: 20px 0;
+}
+
+.logo-circle {
+    width: 60px;
+    height: 60px;
+    background-color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.nav-link {
+    color: rgba(255, 255, 255, 0.8);
+    border-radius: 6px;
+    padding: 10px 15px;
+    margin: 5px 0;
+    display: flex;
+    align-items: center;
+    transition: all 0.2s;
+}
+
+.nav-link:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+    color: white;
+}
+
+.nav-link.active {
+    background-color: rgba(255, 255, 255, 0.2);
+    color: white;
+    font-weight: 500;
+}
+
+.nav-link i {
+    margin-right: 10px;
+    width: 20px;
+    text-align: center;
+}
+
+/* Header styles */
+.main-header {
+    background-color: #1976d2;
+    color: white;
+    padding: 15px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* Toggle button */
+#toggleSidebar {
+    display: none;
+}
+
+/* Card styles */
+.stat-card {
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    padding: 15px;
+    height: 100%;
+}
+
+.stat-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.stat-card-title {
+    font-size: 12px;
+    color: #6c757d;
+    font-weight: 500;
+}
+
+.stat-card-icon {
+    color: #1976d2;
+}
+
+.stat-card-value {
+    font-size: 20px;
+    font-weight: 700;
+}
+
+/* Notification styles */
+.notification-card {
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    padding: 20px;
+}
+
+.notification-item {
+    padding-bottom: 15px;
+    margin-bottom: 15px;
+    border-bottom: 1px solid #e9ecef;
+}
+
+.notification-item:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+}
+
+.notification-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 5px;
+}
+
+.notification-title {
+    font-weight: 500;
+}
+
+.notification-date {
+    color: #6c757d;
+    font-size: 14px;
+}
+
+.notification-content {
+    font-size: 14px;
+}
+
+.view-all-btn {
+    background-color: #1976d2;
+    border: none;
+}
+
+.view-all-btn:hover {
+    background-color: #1565c0;
+}
+
+/* Chart styles */
+.chart-card {
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    padding: 20px;
+    height: 100%;
+}
+
+.chart-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 15px;
+}
+
+.chart-title {
+    font-weight: 500;
+}
+
+.chart-subtitle {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 15px;
+}
+
+.chart-label {
+    color: #6c757d;
+    font-size: 14px;
+}
+
+.chart-class {
+    font-weight: 500;
+    font-size: 14px;
+}
+
+.chart-container {
+    height: 200px;
+    display: flex;
+    align-items: flex-end;
+    gap: 10px;
+}
+
+.chart-bar {
+    flex: 1;
+    background-color: #ff9800;
+    border-top-left-radius: 4px;
+    border-top-right-radius: 4px;
+}
+
+.chart-labels {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 10px;
+    font-size: 12px;
+    color: #6c757d;
+}
+
+/* Mobile adjustments */
+@media (max-width: 768px) {
+    .sidebar-wrapper {
+        position: fixed;
+        z-index: 1000;
+        width: 250px;
+        left: -250px;
+        transition: all 0.3s;
+    }
+
+    .sidebar-wrapper.show {
+        left: 0;
+    }
+
+    .main-content {
+        margin-left: 0 !important;
+    }
+
+    #toggleSidebar {
+        display: block !important;
+        background-color: transparent;
+        border: 1px solid rgba(255, 255, 255, 0.5);
+        color: white;
+    }
+}
