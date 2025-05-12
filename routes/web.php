@@ -1,9 +1,9 @@
 <?php
 
 use App\Http\Controllers\ClassStaffController;
+use App\Http\Controllers\LecturerController;
 use App\Http\Controllers\StudentAffairsDepartmentController;
 use App\Http\Controllers\StudentController;
-use App\Http\Controllers\TeacherController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
@@ -24,7 +24,7 @@ Route::middleware(['auth'])->group(function () {
             'middleware' => ['role:0'],
         ],
         function () {
-            Route::get('/', [TeacherController::class, 'index'])->name('index');
+            Route::get('/', [LecturerController::class, 'index'])->name('index');
             Route::get('/class', function () {
                 return view('teacher.class.index');
             })->name('class.index');
@@ -40,6 +40,7 @@ Route::middleware(['auth'])->group(function () {
         ],
         function () {
             Route::get('/', [StudentAffairsDepartmentController::class, 'index'])->name('index');
+            Route::get('/account', [StudentAffairsDepartmentController::class, 'account'])->name('account.index');
         }
     );
 

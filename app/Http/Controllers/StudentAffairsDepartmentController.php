@@ -10,4 +10,8 @@ class StudentAffairsDepartmentController extends Controller
     {
         return view('StudentAffairsDepartment.index');
     }
+
+    public function account() {
+        return view('StudentAffairsDepartment.account.index');
+    }
 }

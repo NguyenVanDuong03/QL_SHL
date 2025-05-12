@@ -46,7 +46,7 @@ class UserService extends BaseService
         if (auth()->user()->role == Constant::ROLE_LIST['TEACHER']) {
             return 'teacher.index';
         } else if (auth()->user()->role == Constant::ROLE_LIST['STUDENT_AFFAIRS_DEPARTMENT']) {
-            return 'studen-affairs-department.index';
+            return 'student-affairs-department.index';
         } else if (auth()->user()->role == Constant::ROLE_LIST['CLASS_STAFF']) {
             return 'class-staff.index';
         }

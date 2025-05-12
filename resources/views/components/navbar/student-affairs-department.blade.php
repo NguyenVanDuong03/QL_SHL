@@ -35,6 +35,12 @@
                 </a>
             </li>
             <li class="nav-item">
+                <a class="nav-link" href="{{ route('student-affairs-department.account.index') }}">
+                    <i class="fas fa-user-plus"></i>
+                    Tài khoản GV & SV
+                </a>
+            </li>
+            <li class="nav-item">
                 <a class="nav-link" href="#">
                     <i class="fas fa-chart-bar"></i>
                     Cảnh báo học vụ
