@@ -11,4 +11,8 @@ class Major extends Model
         'name',
     ];
 
+    public function department()
+    {
+        return $this->belongsTo(Department::class);
+    }
 }

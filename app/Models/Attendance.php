@@ -12,4 +12,14 @@ class Attendance extends Model
         'status',
     ];
 
+    public function student()
+    {
+        return $this->belongsTo(Student::class);
+    }
+
+    public function classSessionRequest()
+    {
+        return $this->belongsTo(ClassSessionRequest::class);
+    }
+
 }

@@ -14,10 +14,12 @@ return new class extends Migration
         Schema::create('study_classes', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('major_id');
+            $table->unsignedBigInteger('cohort_id');
             $table->string('name');
             $table->timestamps();
 
             $table->foreign('major_id')->references('id')->on('majors')->onDelete('cascade');
+            $table->foreign('cohort_id')->references('id')->on('cohorts')->onDelete('cascade');
         });
     }
 

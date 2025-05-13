@@ -14,8 +14,8 @@ return new class extends Migration
         Schema::create('conduct_evaluation_periods', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('semester_id');
-            $table->date('start_date');
-            $table->date('end_date');
+            $table->dateTime('open_date');
+            $table->dateTime('end_date');
             $table->timestamps();
 
             $table->foreign('semester_id')->references('id')->on('semesters')->onDelete('cascade');

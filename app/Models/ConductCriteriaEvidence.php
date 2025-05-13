@@ -12,4 +12,8 @@ class ConductCriteriaEvidence extends Model
         'description',
     ];
 
+    public function studentConduct()
+    {
+        return $this->belongsTo(StudentConductScore::class);
+    }
 }

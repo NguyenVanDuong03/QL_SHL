@@ -14,4 +14,13 @@ class Lecturer extends Model
         'title_id',
         'major_id',
     ];
+
+    public function title()
+    {
+        return $this->belongsTo(Title::class);
+    }
+    public function major()
+    {
+        return $this->belongsTo(Major::class);
+    }
 }

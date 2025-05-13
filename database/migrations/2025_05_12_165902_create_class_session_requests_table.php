@@ -18,7 +18,8 @@ return new class extends Migration
             $table->unsignedBigInteger('class_session_registration_id');
             $table->unsignedBigInteger('room_id')->nullable();
             $table->tinyInteger('type')->comment('0:SHL cố định; 1:SHL linh hoạt');
-            $table->date('proposed_at');
+            $table->tinyInteger('position')->comment('0: Trực tiếp tại trường; 1: Trực tuyến; 2: Dã ngoại');
+            $table->dateTime('proposed_at');
             $table->string('location')->nullable();
             $table->string('meeting_type')->nullable()->comment('0:Google Meet; 1:Zoom; 2:Microsoft Teams')->nullable();
             $table->string('meeting_id')->nullable();

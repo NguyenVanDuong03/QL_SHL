@@ -14,8 +14,8 @@ return new class extends Migration
         Schema::create('class_session_registrations', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('semester_id');
-            $table->date('open_date');
-            $table->date('close_date');
+            $table->dateTime('open_date');
+            $table->dateTime('end_date');
             $table->timestamps();
 
             $table->foreign('semester_id')->references('id')->on('semesters')->onDelete('cascade');

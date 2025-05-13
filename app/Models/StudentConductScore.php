@@ -16,4 +16,16 @@ class StudentConductScore extends Model
         'note',
     ];
 
+    public function semester()
+    {
+        return $this->belongsTo(Semester::class);
+    }
+    public function student()
+    {
+        return $this->belongsTo(Student::class);
+    }
+    public function conductCriteria()
+    {
+        return $this->belongsTo(ConductCriteria::class);
+    }
 }

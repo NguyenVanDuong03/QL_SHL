@@ -23,5 +23,21 @@ class ClassSessionRequest extends Model
         'status',
         'rejection_reason'
     ];
-    
+
+    public function studyClass()
+    {
+        return $this->belongsTo(StudyClass::class);
+    }
+    public function lecturer()
+    {
+        return $this->belongsTo(Lecturer::class);
+    }
+    public function classSessionRegistration()
+    {
+        return $this->belongsTo(ClassSessionRegistration::class);
+    }
+    public function room()
+    {
+        return $this->belongsTo(Room::class);
+    }
 }

@@ -11,7 +11,7 @@
         @foreach ($links as $link)
             @if (!$loop->last)
                 <li class="breadcrumb-item">
-                    <a href="{{ $link['url'] }}" class="text-white text-decoration-none">
+                    <a href="{{ route($link['url']) }}" class="text-white text-decoration-none">
                         {{ $link['label'] }}
                     </a>
                 </li>

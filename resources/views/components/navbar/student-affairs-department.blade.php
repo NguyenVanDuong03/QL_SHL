@@ -17,7 +17,7 @@
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="#">
+                <a class="nav-link {{ Route::currentRouteName() == 'student-affairs-department.class-session.index' ? 'active' : '' }}" href="{{ route('student-affairs-department.class-session.index') }}">
                     <i class="fas fa-bell"></i>
                     Sinh hoạt lớp
                 </a>
@@ -35,7 +35,7 @@
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="{{ route('student-affairs-department.account.index') }}">
+                <a class="nav-link {{ Route::currentRouteName() == 'student-affairs-department.account.index' ? 'active' : '' }}" href="{{ route('student-affairs-department.account.index') }}">
                     <i class="fas fa-user-plus"></i>
                     Tài khoản GV & SV
                 </a>

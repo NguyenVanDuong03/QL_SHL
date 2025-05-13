@@ -13,12 +13,12 @@ return new class extends Migration
     {
         Schema::create('conduct_criteria_evidences', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('student_conduct_id');
+            $table->unsignedBigInteger('student_conduct_score_id');
             $table->binary('image_path');
             $table->string('description');
             $table->timestamps();
 
-            $table->foreign('student_conduct_id')->references('id')->on('student_conduct_scores')->onDelete('cascade');
+            $table->foreign('student_conduct_score_id')->references('id')->on('student_conduct_scores')->onDelete('cascade');
         });
     }
 

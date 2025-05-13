@@ -12,4 +12,8 @@ class ClassSessionRegistration extends Model
         'close_date',
     ];
 
+    public function semester()
+    {
+        return $this->belongsTo(Semester::class);
+    }
 }

@@ -14,4 +14,12 @@ class StudentAffairsDepartmentController extends Controller
     public function account() {
         return view('StudentAffairsDepartment.account.index');
     }
+
+    public function classSession() {
+        return view('StudentAffairsDepartment.classSession.index');
+    }
+
+    public function history() {
+        return view('StudentAffairsDepartment.classSession.history');
+    }
 }

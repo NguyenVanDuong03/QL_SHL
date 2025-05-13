@@ -25,7 +25,7 @@ return new class extends Migration
             $table->float('semester_2_gpa_10')->nullable();
             $table->float('semester_2_gpa_4')->nullable();
             $table->integer('total_credits_all');
-            $table->integer('total_credists_2_recent_semesters');
+            $table->integer('total_credits_2_recent_semesters');
             $table->string('academic_status_latest')->comment('Mức xử lý học vụ kỳ gần nhất');
             $table->string('academic_status_summary')->comment('Mức xử lý học vụ tổng hợp');
             $table->text('note')->nullable()->comment('Ghi chú');

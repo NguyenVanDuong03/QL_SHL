@@ -24,5 +24,9 @@ class AcademicWarning extends Model
         'academic_status_summary',
         'note'
     ];
-    
+
+    public function student()
+    {
+        return $this->belongsTo(Student::class);
+    }
 }

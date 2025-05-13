@@ -12,4 +12,8 @@ class ConductEvaluationPeriod extends Model
         'end_date',
     ];
 
+    public function semester()
+    {
+        return $this->belongsTo(Semester::class);
+    }
 }

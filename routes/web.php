@@ -40,7 +40,20 @@ Route::middleware(['auth'])->group(function () {
         ],
         function () {
             Route::get('/', [StudentAffairsDepartmentController::class, 'index'])->name('index');
+
             Route::get('/account', [StudentAffairsDepartmentController::class, 'account'])->name('account.index');
+
+            // Class session
+            Route::group(
+                [
+                    'prefix' => 'class-session',
+                    'as' => 'class-session.',
+                ],
+                function () {
+                    Route::get('/', [StudentAffairsDepartmentController::class, 'classSession'])->name('index');
+                    Route::get('/history', [StudentAffairsDepartmentController::class, 'history'])->name('history');
+                }
+            );
         }
     );
 

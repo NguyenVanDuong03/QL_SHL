@@ -22,4 +22,12 @@ class ClassSessionReport extends Model
         'value_9'
     ];
 
+    public function classSessionRequest()
+    {
+        return $this->belongsTo(ClassSessionRequest::class);
+    }
+    public function reporter()
+    {
+        return $this->belongsTo(Student::class, 'reporter_id');
+    }
 }
