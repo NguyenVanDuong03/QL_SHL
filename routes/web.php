@@ -52,6 +52,8 @@ Route::middleware(['auth'])->group(function () {
                 function () {
                     Route::get('/', [StudentAffairsDepartmentController::class, 'classSession'])->name('index');
                     Route::get('/history', [StudentAffairsDepartmentController::class, 'history'])->name('history');
+                    Route::get('/create', [StudentAffairsDepartmentController::class, 'create'])->name('create');
+                    Route::get('/getSemester', [StudentAffairsDepartmentController::class, 'getSemester'])->name('getSemester');
                 }
             );
         }
