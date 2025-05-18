@@ -18,12 +18,19 @@ class Student extends Model
     {
         return $this->belongsTo(User::class);
     }
+
     public function cohort()
     {
         return $this->belongsTo(Cohort::class);
     }
+
     public function studyClass()
     {
         return $this->belongsTo(StudyClass::class);
+    }
+    
+    public function academicWarnings()
+    {
+        return $this->hasMany(AcademicWarning::class);
     }
 }

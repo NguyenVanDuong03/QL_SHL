@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Helpers\Constant;
 use App\Repositories\SemesterReponsitory;
+use Carbon\Carbon;
 use Illuminate\Support\Arr;
 
 class SemesterService extends BaseService
@@ -20,17 +21,32 @@ class SemesterService extends BaseService
     protected function buildFilterParams(array $params): array
     {
         $sort = Arr::get($params, 'sort', 'id:desc');
-
-        $ClassSessionRegistration = Arr::get($params, 'type');
-        if ($ClassSessionRegistration === 'ClassSessionRegistration') {
-            $wheres[] = [function ($q) {
-                $q->whereIn('type', [Constant::SEMESTER_TYPE['SEMESTER_1'], Constant::SEMESTER_TYPE['SEMESTER_2']]);
+        $wheres = Arr::get($params, 'wheres', []);
+        $keywords = Arr::get($params, 'search', null);
+        if($keywords) {
+            $wheres[] = [function ($q) use ($keywords) {
+                $q->whereAny([
+                    'name',
+                    'school_year',
+                ], 'like', "%{$keywords}%");
             }];
         }
 
         return [
             'sort' => $sort,
-            'wheres' => $wheres ?? [],
+            'wheres' => $wheres,
         ];
     }
+
+    public function getFourSemester()
+    {
+       $semesters = $this->getRepository()->getFourSemester();
+
+       if ($semesters->isEmpty()) {
+           return [];
+       }
+
+        return $semesters;
+    }
+
 }

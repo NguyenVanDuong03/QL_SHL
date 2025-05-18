@@ -14,8 +14,8 @@ return new class extends Migration
         Schema::create('academic_warnings', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('student_id');
-            $table->date('warning_date');
-            $table->text('reason')->comment('Lý do cảnh cáo');
+            $table->date('warning_date')->nullable()->comment('Ngày cảnh cáo của giáo viên');
+            $table->text('reason')->comment('Lý do cảnh cáo của giáo viên');
             $table->string('semester_1_name');
             $table->integer(('semester_1_credits'));
             $table->float('semester_1_gpa_10');

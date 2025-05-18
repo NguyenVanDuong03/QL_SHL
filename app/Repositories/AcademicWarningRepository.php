@@ -15,4 +15,19 @@ class AcademicWarningRepository extends BaseRepository
         return $this->model;
     }
 
+    public function getStudentWarningByStudyClassId($lecturerId)
+    {
+        $getAllStudentWarning = $this->getModel()
+            ->whereHas('student.studyClass', function ( $query) use ($lecturerId) {
+                $query->where('lecturer_id', $lecturerId);
+            })
+            ->with([
+                'student' => function ($q) {
+                    $q->select('id', 'user_id', 'student_code', 'study_class_id')->with(['user:id,name,email', 'studyClass:id,name']);
+                },
+            ])
+            ->paginate();
+
+            return $getAllStudentWarning;
+    }
 }

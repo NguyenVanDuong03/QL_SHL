@@ -17,25 +17,14 @@ class User extends Authenticatable
      *
      * @var list<string>
      */
-    protected $fillable = [
-        'name',
-        'email',
-        'password',
-        'date_of_birth',
-        'gender',
-        'phone',
-        'role',
-    ];
+    protected $fillable = ['name', 'email', 'password', 'date_of_birth', 'gender', 'phone', 'role'];
 
     /**
      * The attributes that should be hidden for serialization.
      *
      * @var list<string>
      */
-    protected $hidden = [
-        'password',
-        'remember_token',
-    ];
+    protected $hidden = ['password', 'remember_token'];
 
     /**
      * Get the attributes that should be cast.
@@ -49,4 +38,15 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+    public function lecturer()
+    {
+        return $this->hasOne(Lecturer::class);
+    }
+
+    public function student()
+    {
+        return $this->hasOne(Student::class);
+    }
+
 }

@@ -27,7 +27,7 @@ return new class extends Migration
             $table->timestamps();
 
             $table->foreign('class_session_request_id')->references('id')->on('class_session_requests')->onDelete('cascade');
-            $table->foreign('reporter_id')->references('id')->on('users')->onDelete('cascade');
+            $table->foreign('reporter_id')->references('id')->on('students')->onDelete('cascade');
         });
     }
 

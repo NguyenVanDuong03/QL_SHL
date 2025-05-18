@@ -25,9 +25,31 @@ Route::middleware(['auth'])->group(function () {
         ],
         function () {
             Route::get('/', [LecturerController::class, 'index'])->name('index');
-            Route::get('/class', function () {
-                return view('teacher.class.index');
-            })->name('class.index');
+
+            // class session
+            Route::group(
+                [
+                    'prefix' => 'class-session',
+                    'as' => 'class-session.',
+                ],
+                function () {
+                    Route::get('/', [LecturerController::class, 'indexClassSession'])->name('index');
+                    Route::get('/fixed-class-activitie', [LecturerController::class, 'indexFixedClassActivitie'])->name('fixed-class-activitie');
+                    Route::get('/flexible-class-activitie', [LecturerController::class, 'indexFlexibleClassActivitie'])->name('flexible-class-activitie');
+                }
+            );
+
+            // Class
+            Route::group(
+                [
+                    'prefix' => 'class',
+                    'as' => 'class.',
+                ],
+                function () {
+                    Route::get('/', [LecturerController::class, 'indexClass'])->name('index');
+                    Route::get('/{id?}', [LecturerController::class, 'infoStudent'])->name('infoStudent');
+                }
+            );
         }
     );
 
@@ -52,10 +74,26 @@ Route::middleware(['auth'])->group(function () {
                 function () {
                     Route::get('/', [StudentAffairsDepartmentController::class, 'classSession'])->name('index');
                     Route::get('/history', [StudentAffairsDepartmentController::class, 'history'])->name('history');
-                    Route::get('/create', [StudentAffairsDepartmentController::class, 'create'])->name('create');
+                    Route::post('/create-classSession-registration', [StudentAffairsDepartmentController::class, 'createClassSessionRegistration'])->name('createClassSessionRegistration');
+                    Route::put('/edit-classSession-registration/{id?}', [StudentAffairsDepartmentController::class, 'editClassSessionRegistration'])->name('editClassSessionRegistration');
                     Route::get('/getSemester', [StudentAffairsDepartmentController::class, 'getSemester'])->name('getSemester');
                 }
             );
+
+            // Semester
+            Route::group(
+                [
+                    'prefix' => 'semester',
+                    'as' => 'semester.',
+                ],
+                function () {
+                    Route::get('/', [StudentAffairsDepartmentController::class, 'indexSemester'])->name('index');
+                    Route::post('/', [StudentAffairsDepartmentController::class, 'createSemester'])->name('create');
+                    Route::put('/edit-semester/{id?}', [StudentAffairsDepartmentController::class, 'editSemester'])->name('edit');
+                    Route::delete('/{id?}', [StudentAffairsDepartmentController::class, 'deleteSemester'])->name('delete');
+                }
+            );
+
         }
     );
 

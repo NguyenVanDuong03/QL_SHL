@@ -17,6 +17,12 @@
                 </a>
             </li>
             <li class="nav-item">
+                <a class="nav-link {{ Route::currentRouteName() == 'student-affairs-department.semester.index' ? 'active' : '' }}" href="{{ route('student-affairs-department.semester.index') }}">
+                    <i class="fas fa-calendar-minus"></i>
+                    Học kỳ
+                </a>
+            </li>
+            <li class="nav-item">
                 <a class="nav-link {{ Route::currentRouteName() == 'student-affairs-department.class-session.index' ? 'active' : '' }}" href="{{ route('student-affairs-department.class-session.index') }}">
                     <i class="fas fa-bell"></i>
                     Sinh hoạt lớp

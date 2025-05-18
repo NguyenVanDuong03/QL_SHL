@@ -9,7 +9,7 @@ class ClassSessionRegistration extends Model
     protected $fillable = [
         'semester_id',
         'open_date',
-        'close_date',
+        'end_date',
     ];
 
     public function semester()

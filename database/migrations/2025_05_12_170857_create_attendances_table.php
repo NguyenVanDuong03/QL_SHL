@@ -18,7 +18,7 @@ return new class extends Migration
             $table->tinyInteger('status')->default(0)->comment('0:present(có mặt); 1:absent(Vắng mặt); 2:late(Muộn); 3:excused(Vắng mặt có phép)')->default(0);
             $table->timestamps();
 
-            $table->foreign('student_id')->references('id')->on('users')->onDelete('cascade');
+            $table->foreign('student_id')->references('id')->on('students')->onDelete('cascade');
             $table->foreign('class_session_request_id')->references('id')->on('class_session_requests')->onDelete('cascade');
         });
     }

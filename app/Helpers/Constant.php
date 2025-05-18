@@ -4,8 +4,9 @@ namespace App\Helpers;
 
 class Constant
 {
-    const DEFAULT_LIMIT = 5;
-
+    const DEFAULT_LIMIT = 6;
+    const DEFAULT_LIMIT_8 = 8;
+    const DEFAULT_LIMIT_12 = 12;
     const ROLE_LIST = [
         'TEACHER' => 0,
         'STUDENT_AFFAIRS_DEPARTMENT' => 1,
@@ -14,10 +15,10 @@ class Constant
     ];
 
     const SEMESTER_TYPE = [
-        'SEMESTER_1' => 1,
-        'SEMESTER_2' => 2,
-        'SUPPLEMENTARY_SEMESTER' => 3,
-        'SUMMER_SEMESTER' => 4,
+        'SEMESTER_1' => 'Học kỳ 1',
+        'SEMESTER_2' => 'Học kỳ 2',
+        'SUPPLEMENTARY_SEMESTER' => 'Học kỳ phụ',
+        'SUMMER_SEMESTER' => 'Học kỳ hè',
     ];
 
     const STUDENT_POSITION = [
@@ -30,6 +31,12 @@ class Constant
     const CLASS_SESSION_TYPE = [
         'FIXED' => 0,
         'FLEXIBLE' => 1,
+    ];
+
+    const CLASS_SESSION_POSITION = [
+        'OFFLINE' => 0,
+        'ONLINE' => 1,
+        'OTHER' => 2,
     ];
 
     const CLASS_SESSION_STATUS = [

@@ -22,7 +22,7 @@
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="#">
+                <a class="nav-link {{ Route::currentRouteName() == 'teacher.class-session.index' ? 'active' : '' }}" href="{{ route('teacher.class-session.index') }}">
                     <i class="fas fa-book"></i>
                     Sinh hoạt lớp
                 </a>

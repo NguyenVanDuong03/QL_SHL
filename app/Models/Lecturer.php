@@ -7,20 +7,30 @@ use Illuminate\Database\Eloquent\Model;
 class Lecturer extends Model
 {
     protected $fillable = [
-        'name',
-        'email',
-        'phone',
-        'address',
+        'user_id',
         'title_id',
-        'major_id',
+        'faculty_id',
+        'address',
+        'position',
     ];
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+
+    public function faculty()
+    {
+        return $this->belongsTo(Faculty::class);
+    }
 
     public function title()
     {
         return $this->belongsTo(Title::class);
     }
-    public function major()
+
+    public function studyClasses()
     {
-        return $this->belongsTo(Major::class);
+        return $this->hasMany(StudyClass::class);
     }
 }
