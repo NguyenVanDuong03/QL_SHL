@@ -14,13 +14,13 @@ return new class extends Migration
         Schema::create('lecturers', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('user_id');
-            $table->unsignedBigInteger('title_id');
             $table->unsignedBigInteger('faculty_id');
+            $table->string('title');
             $table->string('position')->comment('Giảng viên; Phó trưởng bộ môn; Trưởng bộ môn; Phó trưởng khoa; Trưởng khoa');
+            $table->softDeletes();
             $table->timestamps();
 
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
-            $table->foreign('title_id')->references('id')->on('titles')->onDelete('cascade');
             $table->foreign('faculty_id')->references('id')->on('faculties')->onDelete('cascade');
         });
     }

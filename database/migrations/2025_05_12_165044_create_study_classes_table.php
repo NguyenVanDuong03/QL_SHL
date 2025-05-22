@@ -17,6 +17,7 @@ return new class extends Migration
             $table->unsignedBigInteger('cohort_id');
             $table->unsignedBigInteger('lecturer_id');
             $table->string('name');
+            $table->softDeletes();
             $table->timestamps();
 
             $table->foreign('major_id')->references('id')->on('majors')->onDelete('cascade');

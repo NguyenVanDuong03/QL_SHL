@@ -16,6 +16,7 @@ return new class extends Migration
             $table->unsignedBigInteger('semester_id');
             $table->dateTime('open_date');
             $table->dateTime('end_date');
+            $table->softDeletes();
             $table->timestamps();
 
             $table->foreign('semester_id')->references('id')->on('semesters')->onDelete('cascade');

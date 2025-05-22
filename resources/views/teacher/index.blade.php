@@ -15,12 +15,12 @@
             <div class="col-md-6 col-lg-3">
                 <div class="stat-card">
                     <div class="stat-card-header">
-                        <div class="stat-card-title">LỚP CHỦ NHIỆM KỲ 2_2024_2025</div>
+                        <div class="stat-card-title">TỔNG SỐ LỚP CHỦ NHIỆM</div>
                         <div class="stat-card-icon">
                             <i class="fas fa-book"></i>
                         </div>
                     </div>
-                    <div class="stat-card-value">100 lớp</div>
+                    <div class="stat-card-value">{{ $data['totalClasses'] }} lớp</div>
                 </div>
             </div>
 
@@ -28,12 +28,12 @@
             <div class="col-md-6 col-lg-3">
                 <div class="stat-card">
                     <div class="stat-card-header">
-                        <div class="stat-card-title">SINH VIÊN ĐĂNG BÁO HỌC VỤ KỲ 2_2024_2025</div>
+                        <div class="stat-card-title">SINH VIÊN ĐĂNG BÁO HỌC VỤ</div>
                         <div class="stat-card-icon">
                             <i class="fas fa-users"></i>
                         </div>
                     </div>
-                    <div class="stat-card-value">100 sinh viên</div>
+                    <div class="stat-card-value">{{ $data['totalStudentWarning'] }} sinh viên</div>
                 </div>
             </div>
 

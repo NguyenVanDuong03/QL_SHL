@@ -9,6 +9,16 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
 
 Route::get('/', function () {
+    if (Auth::check() && Auth::user()->role == 0) {
+        return redirect()->route('student-affairs-department.index');
+    } else if (Auth::check() && Auth::user()->role == 1) {
+        return redirect()->route('teacher.index');
+    } else if (Auth::check() && Auth::user()->role == 2) {
+        return redirect()->route('class-staff.index');
+    } else if (Auth::check() && Auth::user()->role == 3) {
+        return redirect()->route('student.index');
+    }
+
     return view('welcome');
 });
 
@@ -63,8 +73,6 @@ Route::middleware(['auth'])->group(function () {
         function () {
             Route::get('/', [StudentAffairsDepartmentController::class, 'index'])->name('index');
 
-            Route::get('/account', [StudentAffairsDepartmentController::class, 'account'])->name('account.index');
-
             // Class session
             Route::group(
                 [
@@ -91,6 +99,20 @@ Route::middleware(['auth'])->group(function () {
                     Route::post('/', [StudentAffairsDepartmentController::class, 'createSemester'])->name('create');
                     Route::put('/edit-semester/{id?}', [StudentAffairsDepartmentController::class, 'editSemester'])->name('edit');
                     Route::delete('/{id?}', [StudentAffairsDepartmentController::class, 'deleteSemester'])->name('delete');
+                }
+            );
+
+            // Account
+            Route::group(
+                [
+                    'prefix' => 'account',
+                    'as' => 'account.',
+                ],
+                function () {
+                    Route::get('/', [StudentAffairsDepartmentController::class, 'account'])->name('index');
+                    Route::get('/student', [StudentAffairsDepartmentController::class, 'accountStudent'])->name('student');
+                    Route::post('/lecturer', [StudentAffairsDepartmentController::class, 'lecturerImportByExcel'])->name('importLecturer');
+                    Route::post('/student', [StudentAffairsDepartmentController::class, 'studentImportByExcel'])->name('importStudent');
                 }
             );
 

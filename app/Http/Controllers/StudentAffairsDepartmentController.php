@@ -4,28 +4,30 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\ClassSessionRegistrationRequest;
 use App\Http\Requests\SemesterRequest;
+use App\Imports\LecturerImportByExcel;
+use App\Imports\StudentImportByExcel;
 use App\Services\ClassSessionRegistrationService;
+use App\Services\LecturerService;
 use App\Services\SemesterService;
+use App\Services\StudentService;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Maatwebsite\Excel\Facades\Excel;
 
 class StudentAffairsDepartmentController extends Controller
 {
     public function __construct(
         protected SemesterService $semesterService,
         protected ClassSessionRegistrationService $classSessionRegistrationService,
-        )
-        {
-        }
+        protected StudentService $studentService,
+        protected LecturerService $lecturerService,
+    )
+    {
+    }
 
     public function index()
     {
         return view('StudentAffairsDepartment.index');
-    }
-
-    public function account()
-    {
-        return view('StudentAffairsDepartment.account.index');
     }
 
     public function classSession(Request $request)
@@ -108,5 +110,63 @@ class StudentAffairsDepartmentController extends Controller
         $this->semesterService->delete($id);
 
         return redirect()->route('student-affairs-department.semester.index')->with('success', 'Xóa thành công');
+    }
+
+    public function account(Request $request)
+    {
+        $params = $request->all();
+        $params['relates'] = ['user', 'faculty'];
+        // $students = $this->studentService->paginate($params)->toArray();
+        $lecturers = $this->lecturerService->paginate($params)->toArray();
+        // $data = [
+        //     'students' => $students ?? [],
+        //     'lecturers' => $lecturers ?? [],
+        // ];
+        // dd($data['lecturers']);
+
+        return view('StudentAffairsDepartment.account.index', compact('lecturers'));
+    }
+
+    public function accountStudent(Request $request)
+    {
+        $params = $request->all();
+        $params['relates'] = ['cohort', 'user', 'studyClass'];
+        $students = $this->studentService->paginate($params)->toArray();
+        // $data = [
+        //     'students' => $students ?? [],
+        // ];
+        // dd($data['students']);
+
+        return view('StudentAffairsDepartment.account.student', compact('students'));
+    }
+
+    public function lecturerImportByExcel(Request $request)
+    {
+        $file = $request->file('teacherExcelFile');
+        if (!$file) {
+            return redirect()->back()->with('error', 'Không có file được gửi lên');
+        }
+
+        try {
+            Excel::import(new LecturerImportByExcel(), $file);
+            return redirect()->back()->with('success', 'Import thành công');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Import thất bại, vui lòng kiểm tra lại file excel.');
+        }
+    }
+
+    public function studentImportByExcel(Request $request)
+    {
+        $file = $request->file('studentExcelFile');
+        if (!$file) {
+            return redirect()->back()->with('error', 'Không có file được gửi lên');
+        }
+
+        try {
+            Excel::import(new StudentImportByExcel(), $file);
+            return redirect()->back()->with('success', 'Import thành công');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Import thất bại, vui lòng kiểm tra lại file excel.');
+        }
     }
 }

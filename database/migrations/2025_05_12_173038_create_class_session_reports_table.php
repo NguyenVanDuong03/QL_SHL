@@ -24,6 +24,7 @@ return new class extends Migration
             $table->text('value_7')->comment('Các hoạt động khác');
             $table->text('value_8')->comment('Đề xuất, kiến nghị với Khoa, Nhà trường');
             $table->binary('value_9')->comment('Minh chứng, hình ảnh buổi sinh hoạt lớp');
+            $table->softDeletes();
             $table->timestamps();
 
             $table->foreign('class_session_request_id')->references('id')->on('class_session_requests')->onDelete('cascade');

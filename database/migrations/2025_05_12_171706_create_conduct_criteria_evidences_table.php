@@ -16,6 +16,7 @@ return new class extends Migration
             $table->unsignedBigInteger('student_conduct_score_id');
             $table->binary('image_path');
             $table->string('description');
+            $table->softDeletes();
             $table->timestamps();
 
             $table->foreign('student_conduct_score_id')->references('id')->on('student_conduct_scores')->onDelete('cascade');

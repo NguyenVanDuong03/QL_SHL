@@ -3,10 +3,11 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class ClassSessionReport extends Model
 {
-    protected $table = 'class_session_reports';
+    use SoftDeletes;
 
     protected $fillable = [
         'class_session_request_id',

@@ -29,6 +29,7 @@ return new class extends Migration
             $table->string('academic_status_latest')->comment('Mức xử lý học vụ kỳ gần nhất');
             $table->string('academic_status_summary')->comment('Mức xử lý học vụ tổng hợp');
             $table->text('note')->nullable()->comment('Ghi chú');
+            $table->softDeletes();
             $table->timestamps();
 
             $table->foreign('student_id')->references('id')->on('students')->onDelete('cascade');

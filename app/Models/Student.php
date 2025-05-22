@@ -3,9 +3,11 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Student extends Model
 {
+    use SoftDeletes;
     protected $fillable = [
         'user_id',
         'cohort_id',
@@ -28,7 +30,7 @@ class Student extends Model
     {
         return $this->belongsTo(StudyClass::class);
     }
-    
+
     public function academicWarnings()
     {
         return $this->hasMany(AcademicWarning::class);

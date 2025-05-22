@@ -22,7 +22,7 @@
                 </div>
                 <div>
                     <div class="input-group mb-3">
-                        <input type="text" class="form-control" placeholder="Tìm kiếm học kỳ"
+                        <input type="text" class="form-control" placeholder="Tìm kiếm Lớp học"
                             aria-label="Recipient's username" aria-describedby="basic-addon2">
                         <button class="input-group-text" id="basic-addon2"><i class="fas fa-magnifying-glass"></i></button>
                     </div>
@@ -30,54 +30,50 @@
             </div>
 
             <div class="row g-4">
-                <div class="col-md-6 col-lg-4">
-                    <div class="card shadow-sm">
-                        <div class="card-body position-relative">
-                            <h5 class="card-title">Học kỳ: 1_2024_2025</h5>
-                            <div class="mt-3">
-                                <p class="mb-1">Thời gian bắt đầu: 20:00 20/04/2025</p>
-                                <p class="mb-1">Thời gian kết thúc: 20:00 15/04/2025</p>
+                    @if (isset($data['data']) && $data['total'] > 0)
+                        @foreach ($data['data'] as $class)
+                            <div class="col-md-6 col-lg-4">
+                                <div class="card shadow-sm">
+                                    <div class="card-body position-relative">
+                                        <h5 class="card-title">{{ $class['name'] }}</h5>
+                                        <div class="mt-3">
+                                            <p class="mb-1">Thời gian:
+                                                {{ \Carbon\Carbon::parse($class['proposed_at'])->format('H:i d/m/Y') }}</p>
+                                            <p class="mb-1">Hình thức:
+                                                @if ($class['position'] == 0)
+                                                    Trực tiếp tại trường
+                                                @elseif ($class['position'] == 1)
+                                                    Trực tuyến
+                                                @elseif ($class['position'] == 2)
+                                                    Dã ngoại
+                                                @endif
+                                            </p>
+                                        </div>
+                                        <button class="btn btn-primary position-absolute"
+                                            style="top: 10px; right: 10px; border-radius: 5px;" data-bs-toggle="modal"
+                                            data-bs-target="#onlineModal" data-id="#">
+                                            Xem chi tiết
+                                        </button>
+                                    </div>
+                                </div>
                             </div>
-                            <button class="btn btn-primary position-absolute"
-                                style="top: 10px; right: 10px; border-radius: 5px;">
-                                Xem chi tiết
-                            </button>
-                        </div>
-                    </div>
-                </div>
-                {{--  --}}
-                <div class="col-md-6 col-lg-4">
-                    <div class="card shadow-sm">
-                        <div class="card-body position-relative">
-                            <h5 class="card-title">64KTPM1</h5>
-                            <div class="mt-3">
-                                <p class="mb-1">Thời gian: 20:00 20/04/2025</p>
-                                <p class="mb-1">Hình thức: Trực tiếp tại trường</p>
+                        @endforeach
+
+                        <div class="col-md-12">
+                            <div class="d-flex justify-content-center mt-4">
+                                @include('components.pagination.pagination', [
+                                    'paginate' => $data,
+                                ])
                             </div>
-                            <button class="btn btn-primary position-absolute"
-                                style="top: 10px; right: 10px; border-radius: 5px;">
-                                Xem chi tiết
-                            </button>
                         </div>
-                    </div>
-                </div>
-                {{--  --}}
-                <div class="col-md-6 col-lg-4">
-                    <div class="card shadow-sm">
-                        <div class="card-body position-relative">
-                            <h5 class="card-title">64KTPM2</h5>
-                            <div class="mt-3">
-                                <p class="mb-1">Thời gian: 20:00 20/04/2025</p>
-                                <p class="mb-1">Hình thức: Dã</p>
+                    @else
+                        <div class="col-md-12">
+                            <div class="text-center alert alert-warning" role="alert">
+                                Chưa có lớp nào đăng ký.
                             </div>
-                            <button class="btn btn-primary position-absolute"
-                                style="top: 10px; right: 10px; border-radius: 5px;">
-                                Xem chi tiết
-                            </button>
                         </div>
-                    </div>
+                    @endif
                 </div>
-            </div>
         </div>
     </div>
 @endsection

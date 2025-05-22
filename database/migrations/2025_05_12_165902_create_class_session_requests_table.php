@@ -29,6 +29,7 @@ return new class extends Migration
             $table->text('content');
             $table->tinyInteger('status')->default(0)->comment('0:pending; 1:approved; 2:rejected');
             $table->string('rejection_reason')->nullable();
+            $table->softDeletes();
             $table->timestamps();
 
             $table->foreign('study_class_id')->references('id')->on('study_classes')->onDelete('cascade');

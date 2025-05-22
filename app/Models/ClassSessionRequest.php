@@ -3,9 +3,11 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class ClassSessionRequest extends Model
 {
+    use SoftDeletes;
     protected $fillable = [
         'study_class_id',
         'lecturer_id',

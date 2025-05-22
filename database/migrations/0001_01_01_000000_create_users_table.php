@@ -18,10 +18,11 @@ return new class extends Migration
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->date('date_of_birth')->nullable();
-            $table->tinyInteger('gender')->nullable();
+            $table->string('gender')->nullable();
             $table->string('phone')->nullable();
             $table->tinyInteger('role')->default(0);
             $table->rememberToken();
+            $table->softDeletes();
             $table->timestamps();
         });
 

@@ -3,15 +3,15 @@
 namespace App\Services;
 
 use App\Helpers\Constant;
-use App\Repositories\StudentRepository;
+use App\Repositories\LecturerRepository;
 use Illuminate\Support\Arr;
 
-class StudentService extends BaseService
+class LecturerService extends BaseService
 {
-    protected function getRepository(): StudentRepository
+    protected function getRepository(): LecturerRepository
     {
         if (empty($this->repository)) {
-            $this->repository = app()->make(StudentRepository::class);
+            $this->repository = app()->make(LecturerRepository::class);
         }
 
         return $this->repository;
@@ -22,9 +22,9 @@ class StudentService extends BaseService
         $sort = Arr::get($params, 'sort', 'id:desc');
         $wheres = Arr::get($params, 'wheres', []);
         $relates = array_intersect(
-        Arr::get($params, 'relates', []),
-        ['user', 'studyClass', 'cohort']
-    );
+    Arr::get($params, 'relates', []),
+    ['user', 'faculty']
+);
 
         return [
             'sort' => $sort,
@@ -33,9 +33,6 @@ class StudentService extends BaseService
         ];
     }
 
-    public function getStudentsByClassId($classId)
-    {
-        return $this->getRepository()->getStudentListByClassId($classId);
-    }
+
 
 }

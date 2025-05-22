@@ -20,6 +20,7 @@ return new class extends Migration
             $table->float('class_score')->comment('Điểm giảng viên đánh giá');
             $table->float('final_score')->comment('Điểm CTSV đánh giá');
             $table->text('note')->nullable();
+            $table->softDeletes();
             $table->timestamps();
 
             $table->foreign('semester_id')->references('id')->on('semesters')->onDelete('cascade');

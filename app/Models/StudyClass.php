@@ -3,10 +3,17 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class StudyClass extends Model
 {
-    protected $fillable = ['major_id', 'cohort_id', 'lecturer_id', 'name'];
+    use SoftDeletes;
+    protected $fillable = [
+        'major_id',
+        'cohort_id',
+        'lecturer_id',
+        'name'
+    ];
 
     public function major()
     {
