@@ -116,6 +116,21 @@ Route::middleware(['auth'])->group(function () {
                 }
             );
 
+
+            // Room
+            Route::group(
+                [
+                    'prefix' => 'room',
+                    'as' => 'room.',
+                ],
+                function () {
+                    Route::get('/', [StudentAffairsDepartmentController::class, 'indexRoom'])->name('index');
+                    Route::post('/', [StudentAffairsDepartmentController::class, 'createRoom'])->name('create');
+                    Route::put('/edit-room/{id?}', [StudentAffairsDepartmentController::class, 'editRoom'])->name('edit');
+                    Route::delete('/{id?}', [StudentAffairsDepartmentController::class, 'deleteRoom'])->name('delete');
+                }
+            );
+
         }
     );
 

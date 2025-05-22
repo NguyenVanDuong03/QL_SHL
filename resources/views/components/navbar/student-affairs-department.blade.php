@@ -47,6 +47,12 @@
                 </a>
             </li>
             <li class="nav-item">
+                <a class="nav-link {{ Route::currentRouteName() == 'student-affairs-department.room.index' ? 'active' : '' }}" href="{{ route('student-affairs-department.room.index') }}">
+                    <i class="fas fa-user-graduate"></i>
+                    Phòng học
+                </a>
+            </li>
+            <li class="nav-item">
                 <a class="nav-link" href="#">
                     <i class="fas fa-chart-bar"></i>
                     Cảnh báo học vụ

@@ -10,6 +10,7 @@ use App\Services\ClassSessionRegistrationService;
 use App\Services\LecturerService;
 use App\Services\SemesterService;
 use App\Services\StudentService;
+use App\Services\RoomService;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Maatwebsite\Excel\Facades\Excel;
@@ -21,6 +22,7 @@ class StudentAffairsDepartmentController extends Controller
         protected ClassSessionRegistrationService $classSessionRegistrationService,
         protected StudentService $studentService,
         protected LecturerService $lecturerService,
+        protected RoomService $roomService,
     )
     {
     }
@@ -168,5 +170,13 @@ class StudentAffairsDepartmentController extends Controller
         } catch (\Exception $e) {
             return redirect()->back()->with('error', 'Import thất bại, vui lòng kiểm tra lại file excel.');
         }
+    }
+
+    public function indexRoom()
+    {
+        $rooms = $this->roomService->paginate()->toArray();
+//        dd($rooms);
+
+        return view('StudentAffairsDepartment.room.index', compact('rooms'));
     }
 }

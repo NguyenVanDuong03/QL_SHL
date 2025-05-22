@@ -56,6 +56,11 @@
                             </tr>
                         </thead>
                         <tbody>
+                        @if(empty($data['$semesters']['data']))
+                            <tr>
+                                <td colspan="6" class="text-center">Không có học kỳ nào.</td>
+                            </tr>
+                        @else
                             @foreach ($data['semesters']['data'] as $semester)
                                 <tr>
                                     <td>{{ $loop->iteration }}</td>
@@ -79,6 +84,7 @@
                                     </td>
                                 </tr>
                             @endforeach
+                        @endif
                         </tbody>
                     </table>
                 </div>
@@ -152,6 +158,7 @@
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
                             <button type="submit" class="btn btn-primary" id="createSemesterBtn">Lưu</button>
                         </div>
+                    </div>
                 </form>
             </div>
         </div>
