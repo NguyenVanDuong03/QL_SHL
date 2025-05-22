@@ -129,9 +129,13 @@
                                 <div class="mb-3">
                                     <label for="hocKy" class="form-label">Học kỳ</label>
                                     <select class="form-select" id="hocKy" name="hoc_ky" required>
-                                        @foreach ($semesters as $semester)
-                                            <option value="{{ $semester->id }}">{{ $semester->name }} - {{ $semester->school_year }}</option>
-                                        @endforeach
+                                        @if(empty($semesters))
+                                            <option value="" disabled>Chưa có học kỳ nào</option>
+                                        @else
+                                            @foreach ($semesters as $semester)
+                                                <option value="{{ $semester->id }}">{{ $semester->name }} - {{ $semester->school_year }}</option>
+                                            @endforeach
+                                        @endif
                                     </select>
                                 </div>
 

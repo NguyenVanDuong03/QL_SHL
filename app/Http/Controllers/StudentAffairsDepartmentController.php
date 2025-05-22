@@ -6,6 +6,7 @@ use App\Http\Requests\ClassSessionRegistrationRequest;
 use App\Http\Requests\SemesterRequest;
 use App\Services\ClassSessionRegistrationService;
 use App\Services\SemesterService;
+use App\Services\RoomService;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 
@@ -14,6 +15,7 @@ class StudentAffairsDepartmentController extends Controller
     public function __construct(
         protected SemesterService $semesterService,
         protected ClassSessionRegistrationService $classSessionRegistrationService,
+        protected RoomService $roomService,
         )
         {
         }
@@ -108,5 +110,13 @@ class StudentAffairsDepartmentController extends Controller
         $this->semesterService->delete($id);
 
         return redirect()->route('student-affairs-department.semester.index')->with('success', 'Xóa thành công');
+    }
+
+    public function indexRoom()
+    {
+        $rooms = $this->roomService->paginate()->toArray();
+//        dd($rooms);
+
+        return view('StudentAffairsDepartment.room.index', compact('rooms'));
     }
 }
