@@ -24,7 +24,7 @@ class StudentService extends BaseService
         $relates = array_intersect(
         Arr::get($params, 'relates', []),
         ['user', 'studyClass', 'cohort']
-    );
+        );
 
         return [
             'sort' => $sort,

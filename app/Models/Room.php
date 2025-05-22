@@ -10,6 +10,12 @@ class Room extends Model
     use SoftDeletes;
     protected $fillable = [
         'name',
+        'status'
     ];
+
+    public function classSessionRequests()
+    {
+        return $this->hasOne(ClassSessionRequest::class);
+    }
 
 }

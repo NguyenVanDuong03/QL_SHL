@@ -14,25 +14,19 @@ return new class extends Migration
         Schema::create('academic_warnings', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('student_id');
+            $table->unsignedBigInteger('semester_id');
             $table->date('warning_date')->nullable()->comment('Ngày cảnh cáo của giáo viên');
-            $table->text('reason')->comment('Lý do cảnh cáo của giáo viên');
-            $table->string('semester_1_name');
-            $table->integer(('semester_1_credits'));
-            $table->float('semester_1_gpa_10');
-            $table->float('semester_1_gpa_4');
-            $table->string('semester_2_name')->nullable();
-            $table->integer('semester_2_credits')->nullable();
-            $table->float('semester_2_gpa_10')->nullable();
-            $table->float('semester_2_gpa_4')->nullable();
-            $table->integer('total_credits_all');
-            $table->integer('total_credits_2_recent_semesters');
-            $table->string('academic_status_latest')->comment('Mức xử lý học vụ kỳ gần nhất');
-            $table->string('academic_status_summary')->comment('Mức xử lý học vụ tổng hợp');
+            $table->text('reason')->nullable()->comment('Lý do cảnh cáo của giáo viên');
+            $table->string('credits');
+            $table->integer(('gpa_10'));
+            $table->float('gpa_4');
+            $table->string('academic_status')->comment('Mức xử lý học vụ');
             $table->text('note')->nullable()->comment('Ghi chú');
             $table->softDeletes();
             $table->timestamps();
 
             $table->foreign('student_id')->references('id')->on('students')->onDelete('cascade');
+            $table->foreign('semester_id')->references('id')->on('semesters')->onDelete('cascade');
         });
     }
 

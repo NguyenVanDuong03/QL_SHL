@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('study_class_id');
             $table->unsignedBigInteger('lecturer_id');
-            $table->unsignedBigInteger('class_session_registration_id');
+            $table->unsignedBigInteger('class_session_registration_id')->nullable();
             $table->unsignedBigInteger('room_id')->nullable();
             $table->tinyInteger('type')->comment('0:SHL cố định; 1:SHL linh hoạt');
             $table->tinyInteger('position')->comment('0: Trực tiếp tại trường; 1: Trực tuyến; 2: Dã ngoại');

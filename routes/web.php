@@ -126,7 +126,7 @@ Route::middleware(['auth'])->group(function () {
                 function () {
                     Route::get('/', [StudentAffairsDepartmentController::class, 'indexRoom'])->name('index');
                     Route::post('/', [StudentAffairsDepartmentController::class, 'createRoom'])->name('create');
-                    Route::put('/edit-room/{id?}', [StudentAffairsDepartmentController::class, 'editRoom'])->name('edit');
+                    Route::put('/{id?}', [StudentAffairsDepartmentController::class, 'editRoom'])->name('edit');
                     Route::delete('/{id?}', [StudentAffairsDepartmentController::class, 'deleteRoom'])->name('delete');
                 }
             );

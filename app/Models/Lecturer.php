@@ -30,4 +30,9 @@ class Lecturer extends Model
     {
         return $this->hasMany(StudyClass::class);
     }
+
+    public function classSessionRequests()
+    {
+        return $this->hasMany(ClassSessionRequest::class);
+    }
 }

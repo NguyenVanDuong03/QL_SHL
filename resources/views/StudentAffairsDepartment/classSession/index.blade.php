@@ -90,19 +90,21 @@
                     @endif
                 </div>
             @else
-                <div class="col-md-12">
+            <div class="d-flex justify-content-end align-items-center h-100">
+                <div class="">
+                    <button class="btn btn-primary btn-create-class-session"
+                        data-bs-toggle="modal"
+                        data-bs-target="#confirmCreateModal" data-id="#">
+                        Tạo lịch sinh hoạt lớp cố định
+                    </button>
+                </div>
+            </div>
+                <div class="mt-5">
                     <div class="text-center alert alert-warning" role="alert">
                         Chưa có lịch sinh hoạt lớp.
                     </div>
                 </div>
 
-                <div class="d-flex justify-content-center align-items-center h-100 mt-5">
-                    <button class="btn btn-primary btn-create-class-session"
-                        style="top: 10px; right: 10px; border-radius: 5px;" data-bs-toggle="modal"
-                        data-bs-target="#confirmCreateModal" data-id="#">
-                        Tạo lịch sinh hoạt lớp
-                    </button>
-                </div>
             @endif
 
             <!-- Modal Tạo mới -->

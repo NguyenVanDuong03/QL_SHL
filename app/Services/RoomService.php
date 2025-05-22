@@ -19,7 +19,20 @@ class RoomService extends BaseService
 
     protected function buildFilterParams(array $params): array
     {
-        return $params;
-    }
+        $wheres = Arr::get($params, 'wheres', []);
+        $sort = Arr::get($params, 'sort', 'id:desc');
+        $keywords = Arr::get($params, 'search', null);
+        if ($keywords) {
+            $wheres[] = [
+                'field' => 'name',
+                'operator' => 'like',
+                'value' => '%' . $keywords . '%',
+            ];
+        }
 
+        return [
+            'sort' => $sort,
+            'wheres' => $wheres,
+        ];
+    }
 }

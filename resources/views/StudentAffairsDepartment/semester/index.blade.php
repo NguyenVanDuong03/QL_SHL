@@ -56,7 +56,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                        @if(empty($data['$semesters']['data']))
+                        @if(!empty($data['$semesters']['data']))
                             <tr>
                                 <td colspan="6" class="text-center">Không có học kỳ nào.</td>
                             </tr>
@@ -380,9 +380,10 @@
 
                 $('#editSemesterForm').submit();
             });
-
+            
             $('.btn-search-semester').on('click', function() {
                 const searchValue = $('#search-semester').val().toLowerCase();
+                // console.log(searchValue);
                 $.ajax({
                     url: '{{ route('student-affairs-department.semester.index') }}',
                     method: 'GET',

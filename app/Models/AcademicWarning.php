@@ -10,25 +10,23 @@ class AcademicWarning extends Model
     use SoftDeletes;
     protected $fillable = [
         'student_id',
+        'semester_id',
         'warning_date',
         'reason',
-        'semester_1_name',
-        'semester_1_credits',
-        'semester_1_gpa_10',
-        'semester_1_gpa_4',
-        'semester_2_name',
-        'semester_2_credits',
-        'semester_2_gpa_10',
-        'semester_2_gpa_4',
-        'total_credits_all',
-        'total_credists_2_recent_semesters',
-        'academic_status_latest',
-        'academic_status_summary',
+        'credits',
+        'gpa_10',
+        'gpa_4',
+        'academic_status',
         'note'
     ];
 
     public function student()
     {
         return $this->belongsTo(Student::class);
+    }
+
+    public function semester()
+    {
+        return $this->belongsTo(Semester::class);
     }
 }

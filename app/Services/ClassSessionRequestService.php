@@ -19,7 +19,27 @@ class ClassSessionRequestService extends BaseService
 
     protected function buildFilterParams(array $params): array
     {
-        return $params;
+        $sort = Arr::get($params, 'sort', 'id:desc');
+        $wheres = Arr::get($params, 'wheres', []);
+        $relates = array_intersect(
+        Arr::get($params, 'relates', []),
+        ['lecturer', 'studyClass', 'room']
+        );
+        $flexibleClassActivities = Arr::get($params, 'flexibleClassActivities', null);
+        // dd($flexibleClassActivities);
+        if ($flexibleClassActivities) {
+            $wheres[] = [ function ($q)  {
+                $q->where('type', Constant::CLASS_SESSION_TYPE['FLEXIBLE'])
+                    ->where('status', Constant::CLASS_SESSION_STATUS['ACTIVE']);
+            }
+            ];
+        }
+
+        return [
+            'sort' => $sort,
+            'wheres' => $wheres,
+            'relates' => $relates
+        ];
     }
 
     public function countFlexibleClassSessionRequest()

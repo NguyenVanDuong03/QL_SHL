@@ -7,6 +7,7 @@ use App\Http\Requests\SemesterRequest;
 use App\Imports\LecturerImportByExcel;
 use App\Imports\StudentImportByExcel;
 use App\Services\ClassSessionRegistrationService;
+use App\Services\ClassSessionRequestService;
 use App\Services\LecturerService;
 use App\Services\SemesterService;
 use App\Services\StudentService;
@@ -20,6 +21,7 @@ class StudentAffairsDepartmentController extends Controller
     public function __construct(
         protected SemesterService $semesterService,
         protected ClassSessionRegistrationService $classSessionRegistrationService,
+        protected ClassSessionRequestService $classSessionRequestService,
         protected StudentService $studentService,
         protected LecturerService $lecturerService,
         protected RoomService $roomService,
@@ -37,6 +39,11 @@ class StudentAffairsDepartmentController extends Controller
         $params = $request->all();
         $semesters = $this->semesterService->getFourSemester();
         $checkClassSessionRegistration = $this->classSessionRegistrationService->checkClassSessionRegistration();
+        $flexibleClassActivities = $this->classSessionRequestService->paginate([
+            'flexibleClassActivities' => true,
+            'relates' => ['lecturer', 'studyClass', 'room']
+        ])->toArray();
+        // dd($flexibleClassActivities);
         $data = [
             'semesters' => $semesters,
             'checkClassSessionRegistration' => $checkClassSessionRegistration,
@@ -172,11 +179,46 @@ class StudentAffairsDepartmentController extends Controller
         }
     }
 
-    public function indexRoom()
+    public function indexRoom(Request $request)
     {
-        $rooms = $this->roomService->paginate()->toArray();
-//        dd($rooms);
+        $params = $request->all();
+        $rooms = $this->roomService->paginate($params)->toArray();
+        if ($request->ajax()) {
+            return response()->json([
+                'data' => $rooms['data'] ?? [],
+                'current_page' => $rooms['current_page'] ?? 1,
+                'last_page' => $rooms['last_page'] ?? 1,
+            ]);
+        }
 
         return view('StudentAffairsDepartment.room.index', compact('rooms'));
+    }
+
+    public function createRoom(Request $request)
+    {
+        $params = $request->all();
+        // dd($params);
+        $this->roomService->create($params);
+
+        return redirect()->route('student-affairs-department.room.index')->with('success', 'Thêm mới thành công');
+    }
+
+    public function editRoom(Request $request, $id)
+    {
+        $params = $request->all();
+        // dd($params['status'], $id);
+        $update = $this->roomService->update($id, $params);
+        if (!$update) {
+            return redirect()->back()->with('error', 'Cập nhật thất bại');
+        }
+
+        return redirect()->route('student-affairs-department.room.index')->with('success', 'Cập nhật thành công');
+    }
+
+    public function deleteRoom($id)
+    {
+        $this->roomService->delete($id);
+
+        return redirect()->route('student-affairs-department.room.index')->with('success', 'Xóa thành công');
     }
 }
