@@ -111,7 +111,12 @@ Route::middleware(['auth'])->group(function () {
                 function () {
                     Route::get('/', [StudentAffairsDepartmentController::class, 'account'])->name('index');
                     Route::get('/student', [StudentAffairsDepartmentController::class, 'accountStudent'])->name('student');
+                    // crud lecturer
                     Route::post('/lecturer', [StudentAffairsDepartmentController::class, 'lecturerImportByExcel'])->name('importLecturer');
+                    Route::put('/lecturer/{id?}', [StudentAffairsDepartmentController::class, 'editAccount'])->name('editLecturer');
+                    Route::delete('/lecturer/{id?}', [StudentAffairsDepartmentController::class, 'deleteAccount'])->name('deleteLecturer');
+
+                    // crud student
                     Route::post('/student', [StudentAffairsDepartmentController::class, 'studentImportByExcel'])->name('importStudent');
                 }
             );

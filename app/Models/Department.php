@@ -12,4 +12,9 @@ class Department extends Model
         'name',
     ];
 
+    public function faculties()
+    {
+        return $this->hasMany(Faculty::class);
+    }
+
 }

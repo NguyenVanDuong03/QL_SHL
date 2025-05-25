@@ -68,15 +68,16 @@
         </div>
 
         <!-- Pagination -->
-        <div class="d-flex justify-content-end">
+        {{-- <div class="d-flex justify-content-end">
             @include('components.pagination.pagination', [
                 'paginate' => $data['students'],
             ])
-        </div>
+        </div> --}}
+        <x-pagination.pagination :paginate="$data['students']" />
     </div>
 
     <!-- Note Class Modal -->
-    <div class="modal fade" id="noteModal" tabindex="-1" aria-labelledby="noteModalLabel" aria-hidden="true">
+    <div class="modal fade" id="noteModal" tabindex="-1" aria-labelledby="noteModalLabel" >
         <div class="modal-dialog modal-lg"> <!-- Made the modal larger -->
             <div class="modal-content">
                 <div class="modal-header">
@@ -152,7 +153,7 @@
     </div>
 
     <!-- Class Modal -->
-    <div class="modal fade" id="ClassModal" tabindex="-1" aria-labelledby="ClassModalLabel" aria-hidden="true">
+    <div class="modal fade" id="ClassModal" tabindex="-1" aria-labelledby="ClassModalLabel" >
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">

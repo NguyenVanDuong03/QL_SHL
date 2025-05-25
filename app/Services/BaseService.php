@@ -135,4 +135,19 @@ abstract class BaseService
     {
         return $this->getRepository()->updateOrCreate($values, $attributes);
     }
+
+    public function targetPage($current_page)
+    {
+        $total = $this->getRepository()->paginate()->total();
+        $per_page = $this->getRepository()->paginate()->perPage();
+        $last_page = (int) ceil($total / $per_page);
+
+        $targetPage = $current_page > $last_page ? $last_page : $current_page;
+        $targetPage = $targetPage < 1 ? 1 : $targetPage;
+        $page = [
+            'page' => $targetPage,
+        ];
+
+        return $page;
+    }
 }

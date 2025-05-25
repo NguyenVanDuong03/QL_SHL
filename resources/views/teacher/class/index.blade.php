@@ -39,15 +39,16 @@
         </div>
 
         <!-- Pagination -->
-        <div class="d-flex justify-content-end">
+        {{-- <div class="d-flex justify-content-end">
             @include('components.pagination.pagination', [
                 'paginate' => $data['classes'],
             ])
-        </div>
+        </div> --}}
+        <x-pagination.pagination :paginate="$data['classes']" />
     </div>
 
     {{-- <!-- Add Class Modal -->
-<div class="modal fade" id="addClassModal" tabindex="-1" aria-labelledby="addClassModalLabel" aria-hidden="true">
+<div class="modal fade" id="addClassModal" tabindex="-1" aria-labelledby="addClassModalLabel" >
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">

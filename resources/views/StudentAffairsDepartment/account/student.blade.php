@@ -64,7 +64,7 @@
                                     </tr>
                                 </thead>
                                 <tbody id="studentTableBody">
-                                    @foreach ($students['data'] as $student)
+                                    @foreach ($data['students']['data'] as $student)
                                         <tr>
                                             <td>{{ $loop->iteration }}</td>
                                             <td>{{ $student['student_code'] }}</td>
@@ -87,10 +87,7 @@
                         </div>
                     </div>
                     <div class="card-footer bg-light">
-                        <div class="d-flex justify-content-between align-items-center">
-                            <span>Hiển thị {{ $students['from'] }}-{{ $students['to'] }} của {{ $students['total'] }} mục</span>
-                            <x-pagination.pagination :paginate="$students" />
-                        </div>
+                        <x-pagination.pagination :paginate="$data['students']" />
                     </div>
                 </div>
             </div>

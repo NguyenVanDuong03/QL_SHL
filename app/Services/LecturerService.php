@@ -21,18 +21,21 @@ class LecturerService extends BaseService
     {
         $sort = Arr::get($params, 'sort', 'id:desc');
         $wheres = Arr::get($params, 'wheres', []);
-        $relates = array_intersect(
-    Arr::get($params, 'relates', []),
-    ['user', 'faculty']
-);
+        $relates = array_intersect(Arr::get($params, 'relates', []), ['user', 'faculty', 'faculty.department']);
+        $relates[] = 'faculty.department';
+        // $keyword = Arr::get($params, 'search', '');
+        // if ($keyword) {
+        //     $wheres[] = function ($query) use ($keyword) {
+        //         $query->whereHas('user', function ($q) use ($keyword) {
+        //             $q->where('name', 'like', "%{$keyword}%")->orWhere('email', 'like', "%{$keyword}%");
+        //         });
+        //     };
+        // }
 
         return [
             'sort' => $sort,
             'wheres' => $wheres,
-            'relates' => $relates
+            'relates' => array_unique($relates),
         ];
     }
-
-
-
 }

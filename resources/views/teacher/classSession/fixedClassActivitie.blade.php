@@ -115,7 +115,7 @@
 
             <!-- Modal Tạo mới -->
             {{-- <div class="modal fade" id="confirmCreateModal" tabindex="-1" aria-labelledby="confirmCreateModalLabel"
-                aria-hidden="true">
+                >
                 <div class="modal-dialog">
                     <div class="modal-content">
                         <div class="modal-body p-4">
@@ -168,7 +168,7 @@
 
             <!-- Modal Sửa -->
             {{-- <div class="modal fade" id="confirmEditModal" tabindex="-1" aria-labelledby="confirmEditModalLabel"
-                aria-hidden="true">
+                >
                 <div class="modal-dialog">
                     <div class="modal-content">
                         <div class="modal-body p-4">
@@ -223,7 +223,7 @@
             </div> --}}
 
             {{-- Modal Hình thức offline --}}
-            <div class="modal fade" id="offlineModal" tabindex="-1" aria-labelledby="offlineModalLabel" aria-hidden="true">
+            <div class="modal fade" id="offlineModal" tabindex="-1" aria-labelledby="offlineModalLabel" >
                 <div class="modal-dialog">
                     <div class="modal-content">
                         <div class="modal-body p-4">
@@ -264,7 +264,7 @@
             </div>
 
             {{-- Modal Hình thức online --}}
-            <div class="modal fade" id="onlineModal" tabindex="-1" aria-labelledby="onlineModalLabel" aria-hidden="true">
+            <div class="modal fade" id="onlineModal" tabindex="-1" aria-labelledby="onlineModalLabel" >
                 <div class="modal-dialog">
                     <div class="modal-content">
                         <div class="modal-body p-4">
@@ -297,7 +297,7 @@
 
             {{-- Modal Hình thức dã ngoại --}}
             <div class="modal fade" id="picnicModal" tabindex="-1" aria-labelledby="picnicModalLabel"
-                aria-hidden="true">
+                >
                 <div class="modal-dialog">
                     <div class="modal-content">
                         <div class="modal-body p-4">

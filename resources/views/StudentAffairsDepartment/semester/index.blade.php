@@ -56,51 +56,49 @@
                             </tr>
                         </thead>
                         <tbody>
-                        @if(!empty($data['$semesters']['data']))
-                            <tr>
-                                <td colspan="6" class="text-center">Không có học kỳ nào.</td>
-                            </tr>
-                        @else
-                            @foreach ($data['semesters']['data'] as $semester)
+                            @if (!empty($data['$semesters']['data']))
                                 <tr>
-                                    <td>{{ $loop->iteration }}</td>
-                                    <td>{{ $semester['name'] }}</td>
-                                    <td>{{ $semester['school_year'] }}</td>
-                                    <td>{{ $semester['start_date'] }}</td>
-                                    <td>{{ $semester['end_date'] }}</td>
-                                    <td>
-                                        <button class="btn btn-sm btn-warning editSemesterBtn"
-                                            data-id="{{ $semester['id'] }}" data-name="{{ $semester['name'] }}"
-                                            data-school_year="{{ $semester['school_year'] }}"
-                                            data-start_date="{{ $semester['start_date'] }}"
-                                            data-end_date="{{ $semester['end_date'] }}" data-bs-toggle="modal"
-                                            data-bs-target="#editSemesterModal">
-                                            <i class="fas fa-edit"></i>
-                                        </button>
-                                        <button class="btn btn-sm btn-danger deleteSemster" data-bs-toggle="modal"
-                                            data-bs-target="#deleteSemesterModal" data-id={{ $semester['id'] }}>
-                                            <i class="fas fa-trash"></i>
-                                        </button>
-                                    </td>
+                                    <td colspan="6" class="text-center">Không có học kỳ nào.</td>
                                 </tr>
-                            @endforeach
-                        @endif
+                            @else
+                                @foreach ($data['semesters']['data'] as $semester)
+                                    <tr>
+                                        <td>{{ $loop->iteration }}</td>
+                                        <td>{{ $semester['name'] }}</td>
+                                        <td>{{ $semester['school_year'] }}</td>
+                                        <td>{{ $semester['start_date'] }}</td>
+                                        <td>{{ $semester['end_date'] }}</td>
+                                        <td>
+                                            <button class="btn btn-sm btn-warning editSemesterBtn"
+                                                data-id="{{ $semester['id'] }}" data-name="{{ $semester['name'] }}"
+                                                data-school_year="{{ $semester['school_year'] }}"
+                                                data-start_date="{{ $semester['start_date'] }}"
+                                                data-end_date="{{ $semester['end_date'] }}"
+                                                data-current-page="{{ $data['semesters']['current_page'] }}"
+                                                data-bs-toggle="modal" data-bs-target="#editSemesterModal">
+                                                <i class="fas fa-edit"></i>
+                                            </button>
+                                            <button class="btn btn-sm btn-danger deleteSemster" data-bs-toggle="modal"
+                                                data-bs-target="#deleteSemesterModal"
+                                                data-current-page="{{ $data['semesters']['current_page'] }}"
+                                                data-id={{ $semester['id'] }}>
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                @endforeach
+                            @endif
                         </tbody>
                     </table>
                 </div>
-
-                <div class="d-flex justify-content-between align-items-center mt-3">
-                    <div>Hiển thị {{ $data['semesters']['from'] }} đến {{ $data['semesters']['to'] }} của
-                        {{ $data['semesters']['total'] }} mục</div>
-                    <x-pagination.pagination :paginate="$data['semesters']" />
-                </div>
+                <x-pagination.pagination :paginate="$data['semesters']" />
             </div>
         </div>
     </div>
 
     <!-- Add Semester Modal -->
     <div class="modal fade auto-reset-modal" id="addSemesterModal" tabindex="-1" aria-labelledby="addSemesterModalLabel"
-        aria-hidden="true">
+        >
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
@@ -167,7 +165,7 @@
 
     <!-- Edit Semester Modal -->
     <div class="modal fade auto-reset-modal" id="editSemesterModal" tabindex="-1"
-        aria-labelledby="editSemesterModalLabel" aria-hidden="true">
+        aria-labelledby="editSemesterModalLabel" >
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
@@ -178,6 +176,7 @@
                     @csrf
                     @method('PUT')
                     <div class="modal-body">
+                        <input type="hidden" class="current_page" name="current_page" value="">
                         <div class="mb-3">
                             <label for="editSemesterName2" class="form-label">Tên học kỳ</label>
                             <select class="form-select" id="editSemesterName2" name="name">
@@ -228,7 +227,7 @@
 
     <!-- Delete Semester Modal -->
     <div class="modal fade" id="deleteSemesterModal" tabindex="-1" aria-labelledby="deleteSemesterModalLabel"
-        aria-hidden="true">
+        >
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
@@ -243,6 +242,7 @@
                 <form method="POST" id="deleteSemesterForm">
                     @csrf
                     @method('DELETE')
+                    <input type="hidden" class="current_page" name="current_page" value="">
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
                         <button type="submit" class="btn btn-danger btnSemesterDelete">Xóa</button>
@@ -324,6 +324,7 @@
                 const schoolYear = $(this).data('school_year');
                 const startDate = $(this).data('start_date');
                 const endDate = $(this).data('end_date');
+                const currentPage = $(this).data('current-page');
 
                 // Cập nhật action của form
                 $('#editSemesterForm').attr('action',
@@ -334,6 +335,7 @@
                 $('#editSemesterSchoolYear2').val(schoolYear);
                 $('#editStartDate2').val(startDate);
                 $('#editEndDate2').val(endDate);
+                $('.current_page').val(currentPage);
             });
 
             $('.editSemesterBtnSubmit').on('click', function(e) {
@@ -380,10 +382,61 @@
 
                 $('#editSemesterForm').submit();
             });
-            
-            $('.btn-search-semester').on('click', function() {
+
+            //     $('.btn-search-semester').on('click', function() {
+            //         const searchValue = $('#search-semester').val().toLowerCase();
+            //         // console.log(searchValue);
+            //         $.ajax({
+            //             url: '{{ route('student-affairs-department.semester.index') }}',
+            //             method: 'GET',
+            //             data: {
+            //                 search: searchValue
+            //             },
+            //             success: function(response) {
+            //                 const semesters = response.data; // mảng data nhận được
+            //                 const tbody = $('tbody');
+            //                 tbody.empty(); // xóa nội dung cũ
+
+            //                 if (semesters.length === 0) {
+            //                     tbody.append(
+            //                         `<tr><td colspan="6" class="text-center">Không tìm thấy học kỳ nào.</td></tr>`
+            //                     );
+            //                     return;
+            //                 }
+
+            //                 semesters.forEach((semester, index) => {
+            //                     tbody.append(`
+        //     <tr>
+        //         <td>${index + 1}</td>
+        //         <td>${semester.name}</td>
+        //         <td>${semester.school_year}</td>
+        //         <td>${semester.start_date}</td>
+        //         <td>${semester.end_date}</td>
+        //         <td>
+        //             <button class="btn btn-sm btn-warning editSemesterBtn"
+        //                 data-id="${semester.id}" data-name="${semester.name}"
+        //                 data-school_year="${semester.school_year}"
+        //                 data-start_date="${semester.start_date}"
+        //                 data-end_date="${semester.end_date}" data-bs-toggle="modal"
+        //                 data-bs-target="#editSemesterModal">
+        //                 <i class="fas fa-edit"></i>
+        //             </button>
+        //             <button class="btn btn-sm btn-danger" data-bs-toggle="modal"
+        //                 data-bs-target="#deleteSemesterModal">
+        //                 <i class="fas fa-trash"></i>
+        //             </button>
+        //         </td>
+        //     </tr>
+        // `);
+            //                 });
+            //             }
+
+            //         });
+            //     });
+
+            function searchSemester() {
                 const searchValue = $('#search-semester').val().toLowerCase();
-                // console.log(searchValue);
+
                 $.ajax({
                     url: '{{ route('student-affairs-department.semester.index') }}',
                     method: 'GET',
@@ -430,11 +483,24 @@
                     }
 
                 });
+            }
+
+            $('#search-semester').on('keydown', function(e) {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    searchSemester();
+                }
+            });
+
+            $('.btn-search-semester').on('click', function() {
+                searchSemester();
             });
 
             $('.deleteSemster').on('click', function(e) {
                 e.preventDefault();
                 const semesterId = $(this).data('id');
+                const currentPage = $(this).data('current-page');
+                $('.current_page').val(currentPage);
                 $('#deleteSemesterForm').attr('action',
                     `/student-affairs-department/semester/${semesterId}`);
             });

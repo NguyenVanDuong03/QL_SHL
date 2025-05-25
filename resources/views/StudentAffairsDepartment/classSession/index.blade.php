@@ -109,7 +109,7 @@
 
             <!-- Modal Tạo mới -->
             <div class="modal fade auto-reset-modal" id="confirmCreateModal" tabindex="-1"
-                aria-labelledby="confirmCreateModalLabel" aria-hidden="true">
+                aria-labelledby="confirmCreateModalLabel" >
                 <div class="modal-dialog">
                     <div class="modal-content">
                         <div class="modal-body p-4">
@@ -178,7 +178,7 @@
             <!-- Modal Sửa -->
             @if (isset($data['classSessionRegistration']) && $data['classSessionRegistration'])
                 <div class="modal fade auto-reset-modal" id="confirmEditModal" tabindex="-1"
-                    aria-labelledby="confirmEditModalLabel" aria-hidden="true">
+                    aria-labelledby="confirmEditModalLabel" >
                     <div class="modal-dialog">
                         <div class="modal-content">
                             <div class="modal-body p-4">
@@ -247,7 +247,7 @@
 
             {{-- Modal Hình thức offline --}}
             <div class="modal fade auto-reset-modal" id="offlineModal" tabindex="-1"
-                aria-labelledby="offlineModalLabel" aria-hidden="true">
+                aria-labelledby="offlineModalLabel" >
                 <div class="modal-dialog">
                     <div class="modal-content">
                         <div class="modal-body p-4">
@@ -290,7 +290,7 @@
 
             {{-- Modal Hình thức online --}}
             <div class="modal fade auto-reset-modal" id="onlineModal" tabindex="-1" aria-labelledby="onlineModalLabel"
-                aria-hidden="true">
+                >
                 <div class="modal-dialog">
                     <div class="modal-content">
                         <div class="modal-body p-4">
@@ -323,8 +323,7 @@
             </div>
 
             {{-- Modal Hình thức dã ngoại --}}
-            <div class="modal fade auto-reset-modal" id="picnicModal" tabindex="-1" aria-labelledby="picnicModalLabel"
-                aria-hidden="true">
+            <div class="modal fade auto-reset-modal" id="picnicModal" tabindex="-1" aria-labelledby="picnicModalLabel">
                 <div class="modal-dialog">
                     <div class="modal-content">
                         <div class="modal-body p-4">

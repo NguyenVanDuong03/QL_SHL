@@ -8,10 +8,13 @@ use App\Imports\LecturerImportByExcel;
 use App\Imports\StudentImportByExcel;
 use App\Services\ClassSessionRegistrationService;
 use App\Services\ClassSessionRequestService;
+use App\Services\DepartmentService;
+use App\Services\FacultyService;
 use App\Services\LecturerService;
 use App\Services\SemesterService;
 use App\Services\StudentService;
 use App\Services\RoomService;
+use App\Services\UserService;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Maatwebsite\Excel\Facades\Excel;
@@ -25,6 +28,9 @@ class StudentAffairsDepartmentController extends Controller
         protected StudentService $studentService,
         protected LecturerService $lecturerService,
         protected RoomService $roomService,
+        protected DepartmentService $titleService,
+        protected FacultyService $facultyService,
+        protected UserService $userService
     )
     {
     }
@@ -86,8 +92,6 @@ class StudentAffairsDepartmentController extends Controller
         if ($request->ajax()) {
             return response()->json([
                 'data' => $semesters['data'] ?? [],
-                'current_page' => $semesters['current_page'] ?? 1,
-                'last_page' => $semesters['last_page'] ?? 1,
             ]);
         }
         $data = [
@@ -109,31 +113,74 @@ class StudentAffairsDepartmentController extends Controller
     {
         $params = $request->all();
         $this->semesterService->update($id, $params);
+        $params['current_page'] ?? 1;
+        $targetPage = $this->semesterService->targetPage($params['current_page']);
 
-        return redirect()->route('student-affairs-department.semester.index')->with('success', 'Cập nhật thành công');
+        return redirect()->route('student-affairs-department.semester.index', $targetPage)->with('success', 'Cập nhật thành công');
     }
 
-    public function deleteSemester($id)
+    public function deleteSemester(Request $request, $id)
     {
-        // dd($id);
+        $params = $request->all();
         $this->semesterService->delete($id);
+        $params['current_page'] ?? 1;
+        $targetPage = $this->semesterService->targetPage($params['current_page']);
+        // dd($targetPage);
 
-        return redirect()->route('student-affairs-department.semester.index')->with('success', 'Xóa thành công');
+        return redirect()->route('student-affairs-department.semester.index', $targetPage)->with('success', 'Xóa thành công');
     }
 
     public function account(Request $request)
     {
         $params = $request->all();
         $params['relates'] = ['user', 'faculty'];
-        // $students = $this->studentService->paginate($params)->toArray();
         $lecturers = $this->lecturerService->paginate($params)->toArray();
-        // $data = [
-        //     'students' => $students ?? [],
-        //     'lecturers' => $lecturers ?? [],
-        // ];
-        // dd($data['lecturers']);
+        $faculties = $this->facultyService->get()->toArray();
+        $departments = $this->titleService->get();
+        // if ($request->ajax()) {
+        //     return response()->json([
+        //         'lecturers' => $lecturers['data'] ?? [],
+        //         'faculties' => $faculties,
+        //         'departments' => $departments,
+        //         'current_page' => $lecturers['current_page'] ?? 1,
+        //     ]);
+        // }
+        $data = [
+            'lecturers' => $lecturers ?? [],
+            'faculties' => $faculties ?? [],
+            'departments' => $departments ?? [],
+        ];
+        // dd($data['lecturers']['data'][0]['user_id']);
 
-        return view('StudentAffairsDepartment.account.index', compact('lecturers'));
+        return view('StudentAffairsDepartment.account.index', compact('data'));
+    }
+
+    public function editAccount(Request $request, $id)
+    {
+        $params = $request->all();
+        $params['current_page'] ?? 1;
+        $updateLecturer = $this->lecturerService->update($id, $params);
+        $updateuser = $this->userService->update($params['user_id'], $params);
+        if (!$updateLecturer || !$updateuser) {
+            return redirect()->back()->with('error', 'Cập nhật thất bại');
+        }
+        $targetPage = $this->lecturerService->targetPage($params['current_page']);
+
+        return redirect()->route('student-affairs-department.account.index', $targetPage)->with('success', 'Cập nhật thành công');
+    }
+
+    public function deleteAccount(Request $request, $id)
+    {
+        $params = $request->all();
+        $params['current_page'] ?? 1;
+        $deleteLecturer = $this->lecturerService->delete($id);
+        $deleteUser = $this->userService->delete($params['user_id']);
+        if (!$deleteLecturer || !$deleteUser) {
+            return redirect()->back()->with('error', 'Xóa thất bại');
+        }
+        $targetPage = $this->lecturerService->targetPage($params['current_page']);
+
+        return redirect()->route('student-affairs-department.account.index', $targetPage)->with('success', 'Xóa thành công');
     }
 
     public function accountStudent(Request $request)
@@ -141,12 +188,12 @@ class StudentAffairsDepartmentController extends Controller
         $params = $request->all();
         $params['relates'] = ['cohort', 'user', 'studyClass'];
         $students = $this->studentService->paginate($params)->toArray();
-        // $data = [
-        //     'students' => $students ?? [],
-        // ];
+        $data = [
+            'students' => $students ?? [],
+        ];
         // dd($data['students']);
 
-        return view('StudentAffairsDepartment.account.student', compact('students'));
+        return view('StudentAffairsDepartment.account.student', compact('data'));
     }
 
     public function lecturerImportByExcel(Request $request)
@@ -186,8 +233,6 @@ class StudentAffairsDepartmentController extends Controller
         if ($request->ajax()) {
             return response()->json([
                 'data' => $rooms['data'] ?? [],
-                'current_page' => $rooms['current_page'] ?? 1,
-                'last_page' => $rooms['last_page'] ?? 1,
             ]);
         }
 
@@ -206,19 +251,23 @@ class StudentAffairsDepartmentController extends Controller
     public function editRoom(Request $request, $id)
     {
         $params = $request->all();
-        // dd($params['status'], $id);
+        $params['current_page'] ?? 1;
         $update = $this->roomService->update($id, $params);
         if (!$update) {
             return redirect()->back()->with('error', 'Cập nhật thất bại');
         }
+        $tagetpage = $this->roomService->targetPage($params['current_page']);
 
-        return redirect()->route('student-affairs-department.room.index')->with('success', 'Cập nhật thành công');
+        return redirect()->route('student-affairs-department.room.index', $tagetpage)->with('success', 'Cập nhật thành công');
     }
 
-    public function deleteRoom($id)
+    public function deleteRoom(Request $request, $id)
     {
+        $params = $request->all();
+        $params['current_page'] ?? 1;
         $this->roomService->delete($id);
+        $targetPage = $this->roomService->targetPage($params['current_page']);
 
-        return redirect()->route('student-affairs-department.room.index')->with('success', 'Xóa thành công');
+        return redirect()->route('student-affairs-department.room.index', $targetPage)->with('success', 'Xóa thành công');
     }
 }

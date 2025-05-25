@@ -1,6 +1,6 @@
 <?php
 
-namespace App\View\Components;
+namespace App\View\Components\Pagination;
 
 use Closure;
 use Illuminate\Contracts\View\View;
