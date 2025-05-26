@@ -118,6 +118,8 @@ Route::middleware(['auth'])->group(function () {
 
                     // crud student
                     Route::post('/student', [StudentAffairsDepartmentController::class, 'studentImportByExcel'])->name('importStudent');
+                    Route::put('/student/{id?}', [StudentAffairsDepartmentController::class, 'editAccountStudent'])->name('editStudent');
+                    Route::delete('/student/{id?}', [StudentAffairsDepartmentController::class, 'deleteAccountStudent'])->name('deleteStudent');
                 }
             );
 
@@ -133,6 +135,20 @@ Route::middleware(['auth'])->group(function () {
                     Route::post('/', [StudentAffairsDepartmentController::class, 'createRoom'])->name('create');
                     Route::put('/{id?}', [StudentAffairsDepartmentController::class, 'editRoom'])->name('edit');
                     Route::delete('/{id?}', [StudentAffairsDepartmentController::class, 'deleteRoom'])->name('delete');
+                }
+            );
+
+            // Class
+            Route::group(
+                [
+                    'prefix' => 'class',
+                    'as' => 'class.',
+                ],
+                function () {
+                    Route::get('/', [StudentAffairsDepartmentController::class, 'indexClass'])->name('index');
+                    Route::post('/', [StudentAffairsDepartmentController::class, 'createClass'])->name('create');
+                    Route::put('/{id?}', [StudentAffairsDepartmentController::class, 'editClass'])->name('edit');
+                    Route::delete('/{id?}', [StudentAffairsDepartmentController::class, 'deleteClass'])->name('delete');
                 }
             );
 

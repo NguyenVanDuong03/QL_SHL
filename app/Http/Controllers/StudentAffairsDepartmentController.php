@@ -6,14 +6,17 @@ use App\Http\Requests\ClassSessionRegistrationRequest;
 use App\Http\Requests\SemesterRequest;
 use App\Imports\LecturerImportByExcel;
 use App\Imports\StudentImportByExcel;
+use App\Models\StudyClass;
 use App\Services\ClassSessionRegistrationService;
 use App\Services\ClassSessionRequestService;
+use App\Services\CohortService;
 use App\Services\DepartmentService;
 use App\Services\FacultyService;
 use App\Services\LecturerService;
 use App\Services\SemesterService;
 use App\Services\StudentService;
 use App\Services\RoomService;
+use App\Services\StudyClassService;
 use App\Services\UserService;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -30,7 +33,9 @@ class StudentAffairsDepartmentController extends Controller
         protected RoomService $roomService,
         protected DepartmentService $titleService,
         protected FacultyService $facultyService,
-        protected UserService $userService
+        protected UserService $userService,
+        protected CohortService $cohortService,
+        protected StudyClassService $studyClassService,
     )
     {
     }
@@ -165,6 +170,7 @@ class StudentAffairsDepartmentController extends Controller
             return redirect()->back()->with('error', 'Cập nhật thất bại');
         }
         $targetPage = $this->lecturerService->targetPage($params['current_page']);
+        // dd($params);
 
         return redirect()->route('student-affairs-department.account.index', $targetPage)->with('success', 'Cập nhật thành công');
     }
@@ -188,14 +194,44 @@ class StudentAffairsDepartmentController extends Controller
         $params = $request->all();
         $params['relates'] = ['cohort', 'user', 'studyClass'];
         $students = $this->studentService->paginate($params)->toArray();
-        $faculties = $this->facultyService->get()->toArray();
-        $departments = $this->titleService->get();
+        $cohorts = $this->cohortService->get();
+        $studyClasses = $this->studyClassService->get();
         $data = [
             'students' => $students ?? [],
+            'cohorts' => $cohorts ?? [],
+            'studyClasses' => $studyClasses ?? [],
         ];
-//         dd($data['students']);
+        // dd($data['students']);
 
         return view('StudentAffairsDepartment.account.student', compact('data'));
+    }
+
+    public function editAccountStudent(Request $request, $id)
+    {
+        $params = $request->all();
+        $params['current_page'] ?? 1;
+        $updateStudent = $this->studentService->update($id, $params);
+        $updateUser = $this->userService->update($params['user_id'], $params);
+        if (!$updateStudent || !$updateUser) {
+            return redirect()->back()->with('error', 'Cập nhật thất bại');
+        }
+        $targetPage = $this->studentService->targetPage($params['current_page']);
+
+        return redirect()->route('student-affairs-department.account.student', $targetPage)->with('success', 'Cập nhật thành công');
+    }
+
+    public function deleteAccountStudent(Request $request, $id)
+    {
+        $params = $request->all();
+        $params['current_page'] ?? 1;
+        $deleteStudent = $this->studentService->delete($id);
+        $deleteUser = $this->userService->delete($params['user_id']);
+        if (!$deleteStudent || !$deleteUser) {
+            return redirect()->back()->with('error', 'Xóa thất bại');
+        }
+        $targetPage = $this->studentService->targetPage($params['current_page']);
+
+        return redirect()->route('student-affairs-department.account.student', $targetPage)->with('success', 'Xóa thành công');
     }
 
     public function lecturerImportByExcel(Request $request)
@@ -271,5 +307,21 @@ class StudentAffairsDepartmentController extends Controller
         $targetPage = $this->roomService->targetPage($params['current_page']);
 
         return redirect()->route('student-affairs-department.room.index', $targetPage)->with('success', 'Xóa thành công');
+    }
+
+    public function indexClass(Request $request)
+    {
+        $params = $request->all();
+        $studyClasses = $this->studyClassService->paginate($params)->toArray();
+        if ($request->ajax()) {
+            return response()->json([
+                'data' => $studyClasses['data'] ?? [],
+            ]);
+        }
+        $data = [
+            'studyClasses' => $studyClasses,
+        ];
+
+        return view('StudentAffairsDepartment.class.index', compact('data'));
     }
 }

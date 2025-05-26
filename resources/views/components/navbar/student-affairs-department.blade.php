@@ -35,7 +35,7 @@
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="#">
+                <a class="nav-link {{ Route::currentRouteName() == 'student-affairs-department.class.index' ? 'active' : '' }}" href="{{ route('student-affairs-department.class.index') }}">
                     <i class="fas fa-users"></i>
                     Lớp học
                 </a>

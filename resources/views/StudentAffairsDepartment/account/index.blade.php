@@ -111,6 +111,7 @@
                                                         data-bs-target="#editModal" data-bs-toggle="modal">
                                                         <i class="fas fa-edit"></i>
                                                     </button>
+
                                                     <button class="btn btn-sm btn-danger" title="Xóa"
                                                         data-id="{{ $lecturer['id'] }}"
                                                         data-user-id="{{ $lecturer['user_id'] }}"
@@ -210,28 +211,44 @@
                                 <label for="editLecturerName" class="form-label">Họ và tên</label>
                                 <input type="text" class="form-control" id="editLecturerName" name="name"
                                     required>
+                                <div class="text-danger text-danger-error"></div>
+                                @error('name')
+                                    <div class="text-danger text-danger-error">{{ $message }}</div>
+                                @enderror
                             </div>
                             <div class="col-12 col-md-6">
                                 <label for="editLecturerEmail" class="form-label">Email</label>
                                 <input type="email" class="form-control" id="editLecturerEmail" name="email"
                                     required>
+                                <div class="text-danger text-danger-error"></div>
+                                @error('email')
+                                    <div class="text-danger text-danger-error">{{ $message }}</div>
+                                @enderror
                             </div>
 
                             <div class="col-12 col-md-6">
                                 <label for="editLecturerBirth" class="form-label">Ngày sinh</label>
                                 <input type="date" class="form-control" id="editLecturerBirth" name="date_of_birth"
                                     required>
+                                <div class="text-danger text-danger-error"></div>
+                                @error('date_of_birth')
+                                    <div class="text-danger text-danger-error">{{ $message }}</div>
+                                @enderror
                             </div>
                             <div class="col-12 col-md-6">
                                 <label for="editLecturerPhone" class="form-label">Số điện thoại</label>
                                 <input type="number" class="form-control" id="editLecturerPhone" name="phone"
                                     required>
+                                <div class="text-danger text-danger-error"></div>
+                                @error('phone')
+                                    <div class="text-danger text-danger-error">{{ $message }}</div>
+                                @enderror
                             </div>
 
                             <div class="col-12 col-md-6">
                                 <label for="editLecturerGender" class="form-label">Giới tính</label>
                                 <select class="form-select" id="editLecturerGender" name="gender" required>
-                                    <option disabled>-- Chọn giới tính --</option>
+                                    <option value="" disabled>-- Chọn giới tính --</option>
                                     <option value="Nam">Nam</option>
                                     <option value="Nữ">Nữ</option>
                                 </select>
@@ -239,7 +256,7 @@
                             <div class="col-12 col-md-6">
                                 <label for="editLecturerTitle" class="form-label">Trình độ</label>
                                 <select class="form-select" id="editLecturerTitle" name="title" required>
-                                    <option disabled>-- Chọn trình độ --</option>
+                                    <option  value="" disabled>-- Chọn trình độ --</option>
                                     <option value="Giáo sư">Giáo sư</option>
                                     <option value="Phó Giáo sư">Phó Giáo sư</option>
                                     <option value="Tiến sĩ">Tiến sĩ</option>
@@ -251,29 +268,31 @@
 
                             <div class="col-12 col-md-6">
                                 <label for="editLecturerDepartment" class="form-label">Khoa</label>
-                                <select class="form-select" id="editLecturerDepartment" required>
-                                    <option disabled>-- Chọn khoa --</option>
+                                <select class="form-select" id="editLecturerDepartment" name="department_id" required>
+                                    <option value="" disabled>-- Chọn khoa --</option>
                                     @foreach ($data['departments'] as $department)
-                                        <option value="{{ $department['id'] }}"
-                                            {{ $department['id'] == $department->id ? 'selected' : '' }}>
-                                            {{ $department['name'] }}</option>
+                                        <option value="{{ $department['id'] }}">{{ $department['name'] }}</option>
                                     @endforeach
                                 </select>
+
                             </div>
 
                             <div class="col-12 col-md-6">
                                 <label for="editLecturerFaculty" class="form-label">Bộ môn</label>
                                 <select class="form-select" id="editLecturerFaculty" name="faculty_id"
                                     data-selected="{{ $lecturer['faculty_id'] ?? '' }}" required>
-                                    <option disabled>-- Chọn bộ môn --</option>
+                                    <option value="" disabled>-- Chọn bộ môn --</option>
                                 </select>
-
+                                <div class="text-danger text-danger-error"></div>
+                                @error('faculty_id')
+                                    <div class="text-danger text-danger-error">{{ $message }}</div>
+                                @enderror
                             </div>
 
                             <div class="col-12 col-md-6">
                                 <label for="editLecturerPosition" class="form-label">Chức vụ</label>
                                 <select class="form-select" id="editLecturerPosition" name="position" required>
-                                    <option disabled>-- Chọn chức vụ --</option>
+                                    <option value="" disabled>-- Chọn chức vụ --</option>
                                     <option value="Trưởng khoa">Trưởng khoa</option>
                                     <option value="Phó trưởng khoa">Phó trưởng khoa</option>
                                     <option value="Trưởng bộ môn">Trưởng bộ môn</option>
@@ -353,17 +372,17 @@
                 const facultySelect = $('#editLecturerFaculty');
 
                 facultySelect.empty();
-                facultySelect.append('<option disabled>-- Chọn bộ môn --</option>');
+                facultySelect.append('<option disabled selected>-- Chọn bộ môn --</option>');
 
                 faculties.forEach(function(faculty) {
                     if (faculty.department_id == departmentId) {
                         const selected = faculty.id == selectedFacultyId ? 'selected' : '';
                         facultySelect.append(
-                            `<option value="${faculty.id}" ${selected}>${faculty.name}</option>`);
+                            `<option value="${faculty.id}" ${selected}>${faculty.name}</option>`
+                        );
                     }
                 });
 
-                // Nếu có dữ liệu, bỏ disable
                 facultySelect.prop('disabled', facultySelect.find('option').length <= 1);
             }
 
@@ -385,9 +404,8 @@
                 const position = button.data('position');
                 const currentPage = button.data('current-page');
 
-                $('#editFrom').attr('action', `/student-affairs-department/account/lecturer/${id}`);
-
                 // Gán vào form
+                $('#editFrom').attr('action', `/student-affairs-department/account/lecturer/${id}`);
                 modal.find('#edituserId').val(userId);
                 modal.find('#editLecturerName').val(name);
                 modal.find('#editLecturerEmail').val(email);
@@ -397,11 +415,8 @@
                 modal.find('#editLecturerPosition').val(position);
                 modal.find('#current_page').val(currentPage);
 
-                const genderSelect = modal.find('#editLecturerGender');
-                genderSelect.val(gender);
-
-                const departmentSelect = modal.find('#editLecturerDepartment');
-                departmentSelect.val(departmentId);
+                modal.find('#editLecturerGender').val(gender);
+                modal.find('#editLecturerDepartment').val(departmentId);
 
                 updateFacultySelect(departmentId, facultyId);
             });
@@ -411,12 +426,6 @@
                 updateFacultySelect(departmentId);
             });
 
-            $('#editLecturerModal').on('show.bs.modal', function(event) {
-                const departmentId = $('#editLecturerDepartment').val();
-                const selectedFacultyId = $('#editLecturerFaculty').data('selected');
-
-                updateFacultySelect(departmentId, selectedFacultyId);
-            });
 
             $('#deleteModal').on('show.bs.modal', function(event) {
                 const button = $(event.relatedTarget);
@@ -429,6 +438,57 @@
                 $('#deleteUserId').val(userId);
                 $('#deleteCurrentPage').val(currentPage);
             });
+
+            function check(id, regex, message) {
+                const input = $(id);
+                const errorBox = input.next('.text-danger-error');
+
+                if (input.val().trim() === '') {
+                    errorBox.text('Yêu cầu nhập đầy đủ thông tin!').show();
+                    input.addClass('is-invalid');
+                    return false;
+                } else if (regex != '0' && !regex.test(input.val())) {
+                    errorBox.text(message).show();
+                    input.addClass('is-invalid');
+                    return false;
+                }
+
+                errorBox.text('').hide();
+                input.removeClass('is-invalid');
+                return true;
+            }
+
+            $('.btn-lecturer-edit').on('click', function(e) {
+                const userId = $('#edituserId').val();
+                const name = $('#editLecturerName').val().trim();
+                const email = $('#editLecturerEmail').val().trim();
+                const birth = $('#editLecturerBirth').val();
+                const phone = $('#editLecturerPhone').val().trim();
+                const gender = $('#editLecturerGender').val();
+                const facultyId = $('#editLecturerFaculty').val();
+                const departmentId = $('#editLecturerDepartment').val();
+                const title = $('#editLecturerTitle').val();
+                const position = $('#editLecturerPosition').val();
+
+                const checkName = check('#editLecturerName', 0, 'Tên không hợp lệ!');
+                const checkEmail = check('#editLecturerEmail',
+                    /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/, 'Email không hợp lệ!');
+                const checkBirth = check('#editLecturerBirth', 0, 'Ngày sinh không hợp lệ!');
+                const checkPhone = check('#editLecturerPhone', /^[0-9]{10,11}$/,
+                    'Số điện thoại không hợp lệ!');
+                const checkGender = check('#editLecturerGender', 0, 'Vui lòng chọn giới tính!');
+                const checkFaculty = check('#editLecturerFaculty', 0, 'Vui lòng chọn bộ môn!');
+                const checkDepartment = check('#editLecturerDepartment', 0, 'Vui lòng chọn khoa!');
+                const checkTitle = check('#editLecturerTitle', 0, 'Vui lòng chọn trình độ!');
+                const checkPosition = check('#editLecturerPosition', 0, 'Vui lòng chọn chức vụ!');
+
+                if (!checkName || !checkEmail || !checkBirth || !checkPhone || !checkGender || !
+                    checkFaculty || !checkDepartment || !checkTitle || !checkPosition) {
+                    e.preventDefault();
+                    return;
+                }
+
+            })
 
             // $('#teacherSearch').on('input', function() {
             //     const searchTerm = $(this).val().toLowerCase();
@@ -470,54 +530,54 @@
             //                     });
 
             //                     tbody.append(`
-            //         <tr>
-            //             <td>${index + 1}</td>
-            //             <td>${user.name}</td>
-            //             <td class="d-none d-md-table-cell">${formattedBirth}</td>
-            //             <td class="d-none d-md-table-cell">${user.gender}</td>
-            //             <td>${user.email}</td>
-            //             <td>
-            //                 <button class="btn btn-sm btn-info btn-show-lecturer"
-            //                     title="Xem chi tiết"
-            //                     data-email="${user.email}"
-            //                     data-name="${user.name}"
-            //                     data-birth="${formattedBirth}"
-            //                     data-phone="${user.phone}"
-            //                     data-gender="${user.gender}"
-            //                     data-faculty="${faculty?.name || ''}"
-            //                     data-department="${department?.name || ''}"
-            //                     data-title="${lecturer.title || ''}"
-            //                     data-position="${lecturer.position || ''}"
-            //                     data-bs-target="#showModal" data-bs-toggle="modal">
-            //                     <i class="fas fa-eye"></i>
-            //                 </button>
-            //                 <button class="btn btn-sm btn-warning"
-            //                     title="Chỉnh sửa"
-            //                     data-id="${lecturer.id}"
-            //                     data-user-id="${lecturer.user_id}"
-            //                     data-email="${user.email}"
-            //                     data-name="${user.name}"
-            //                     data-birth="${user.date_of_birth}"
-            //                     data-phone="${user.phone}"
-            //                     data-gender="${user.gender}"
-            //                     data-faculty="${faculty?.id || ''}"
-            //                     data-department="${department?.id || ''}"
-            //                     data-title="${lecturer.title || ''}"
-            //                     data-position="${lecturer.position || ''}"
-            //                     data-current-page="${currentPage}"
-            //                     data-bs-target="#editModal" data-bs-toggle="modal">
-            //                     <i class="fas fa-edit"></i>
-            //                 </button>
-            //                 <button class="btn btn-sm btn-danger"
-            //                     title="Xóa"
-            //                     data-id="${lecturer.id}"
-            //                     data-user-id="${lecturer.user_id}"
-            //                     data-bs-toggle="modal" data-bs-target="#deleteModal">
-            //                     <i class="fas fa-trash"></i>
-            //                 </button>
-            //             </td>
-            //         </tr>
-            //     `);
+        //         <tr>
+        //             <td>${index + 1}</td>
+        //             <td>${user.name}</td>
+        //             <td class="d-none d-md-table-cell">${formattedBirth}</td>
+        //             <td class="d-none d-md-table-cell">${user.gender}</td>
+        //             <td>${user.email}</td>
+        //             <td>
+        //                 <button class="btn btn-sm btn-info btn-show-lecturer"
+        //                     title="Xem chi tiết"
+        //                     data-email="${user.email}"
+        //                     data-name="${user.name}"
+        //                     data-birth="${formattedBirth}"
+        //                     data-phone="${user.phone}"
+        //                     data-gender="${user.gender}"
+        //                     data-faculty="${faculty?.name || ''}"
+        //                     data-department="${department?.name || ''}"
+        //                     data-title="${lecturer.title || ''}"
+        //                     data-position="${lecturer.position || ''}"
+        //                     data-bs-target="#showModal" data-bs-toggle="modal">
+        //                     <i class="fas fa-eye"></i>
+        //                 </button>
+        //                 <button class="btn btn-sm btn-warning"
+        //                     title="Chỉnh sửa"
+        //                     data-id="${lecturer.id}"
+        //                     data-user-id="${lecturer.user_id}"
+        //                     data-email="${user.email}"
+        //                     data-name="${user.name}"
+        //                     data-birth="${user.date_of_birth}"
+        //                     data-phone="${user.phone}"
+        //                     data-gender="${user.gender}"
+        //                     data-faculty="${faculty?.id || ''}"
+        //                     data-department="${department?.id || ''}"
+        //                     data-title="${lecturer.title || ''}"
+        //                     data-position="${lecturer.position || ''}"
+        //                     data-current-page="${currentPage}"
+        //                     data-bs-target="#editModal" data-bs-toggle="modal">
+        //                     <i class="fas fa-edit"></i>
+        //                 </button>
+        //                 <button class="btn btn-sm btn-danger"
+        //                     title="Xóa"
+        //                     data-id="${lecturer.id}"
+        //                     data-user-id="${lecturer.user_id}"
+        //                     data-bs-toggle="modal" data-bs-target="#deleteModal">
+        //                     <i class="fas fa-trash"></i>
+        //                 </button>
+        //             </td>
+        //         </tr>
+        //     `);
             //                 });
             //             }
             //         },

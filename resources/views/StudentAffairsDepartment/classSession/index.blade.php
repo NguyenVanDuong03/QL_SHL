@@ -90,7 +90,7 @@
                     @endif
                 </div>
             @else
-            <div class="d-flex justify-content-end align-items-center h-100">
+            <div class="d-flex justify-content-center align-items-center h-100">
                 <div class="">
                     <button class="btn btn-primary btn-create-class-session"
                         data-bs-toggle="modal"
