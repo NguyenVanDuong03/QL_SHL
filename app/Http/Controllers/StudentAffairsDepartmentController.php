@@ -188,10 +188,12 @@ class StudentAffairsDepartmentController extends Controller
         $params = $request->all();
         $params['relates'] = ['cohort', 'user', 'studyClass'];
         $students = $this->studentService->paginate($params)->toArray();
+        $faculties = $this->facultyService->get()->toArray();
+        $departments = $this->titleService->get();
         $data = [
             'students' => $students ?? [],
         ];
-        // dd($data['students']);
+//         dd($data['students']);
 
         return view('StudentAffairsDepartment.account.student', compact('data'));
     }

@@ -160,7 +160,7 @@
                         </div>
                         <div class="col-md-6">
                             <strong>Giới tính:</strong>
-                            <span class="lecturer-genger"></span>
+                            <span class="lecturer-gender"></span>
                         </div>
                         <div class="col-md-6">
                             <strong>Số điện thoại:</strong>
@@ -340,7 +340,7 @@
                 $('.lecturer-name').text(lecturerData.name ?? "---");
                 $('.lecturer-email').text(lecturerData.email ?? "---");
                 $('.lecturer-birth').text(lecturerData.birth ?? "---");
-                $('.lecturer-genger').text(lecturerData.gender ?? "---");
+                $('.lecturer-gender').text(lecturerData.gender ?? "---");
                 $('.lecturer-phone').text(lecturerData.phone ?? "---");
                 $('.lecturer-faculty').text(lecturerData.faculty ?? "---");
                 $('.lecturer-deparment').text(lecturerData.department ?? "---");
