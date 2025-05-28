@@ -21,8 +21,8 @@ class LecturerService extends BaseService
     {
         $sort = Arr::get($params, 'sort', 'id:desc');
         $wheres = Arr::get($params, 'wheres', []);
-        $relates = array_intersect(Arr::get($params, 'relates', []), ['user', 'faculty', 'faculty.department']);
-        $relates[] = 'faculty.department';
+        $relates = Arr::get($params, 'relates', []);
+        $relates = ['user', 'faculty', 'faculty.department'];
         // $keyword = Arr::get($params, 'search', '');
         // if ($keyword) {
         //     $wheres[] = function ($query) use ($keyword) {

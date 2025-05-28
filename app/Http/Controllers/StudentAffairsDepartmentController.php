@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\Constant;
 use App\Http\Requests\ClassSessionRegistrationRequest;
 use App\Http\Requests\SemesterRequest;
 use App\Imports\LecturerImportByExcel;
@@ -10,6 +11,7 @@ use App\Models\StudyClass;
 use App\Services\ClassSessionRegistrationService;
 use App\Services\ClassSessionRequestService;
 use App\Services\CohortService;
+use App\Services\ConductEvaluationPeriodService;
 use App\Services\DepartmentService;
 use App\Services\FacultyService;
 use App\Services\LecturerService;
@@ -36,6 +38,7 @@ class StudentAffairsDepartmentController extends Controller
         protected UserService $userService,
         protected CohortService $cohortService,
         protected StudyClassService $studyClassService,
+        protected ConductEvaluationPeriodService $conductEvaluationPeriodService,
     )
     {
     }
@@ -155,7 +158,7 @@ class StudentAffairsDepartmentController extends Controller
             'faculties' => $faculties ?? [],
             'departments' => $departments ?? [],
         ];
-        // dd($data['lecturers']['data'][0]['user_id']);
+        // dd($data['lecturers']['data']);
 
         return view('StudentAffairsDepartment.account.index', compact('data'));
     }
@@ -323,5 +326,41 @@ class StudentAffairsDepartmentController extends Controller
         ];
 
         return view('StudentAffairsDepartment.class.index', compact('data'));
+    }
+
+    public function indexConductScore(Request $request)
+    {
+        $params = $request->all();
+        $params['limit'] = Constant::DEFAULT_LIMIT_12;
+        $ConductEvaluationPeriods = $this->conductEvaluationPeriodService->paginate($params)->toArray();
+        $semesters = $this->semesterService->getFourSemester();
+        // if ($request->ajax()) {
+        //     return response()->json([
+        //         'data' => $ConductEvaluationPeriods['data'] ?? [],
+        //     ]);
+        // }
+        $data = [
+            'ConductEvaluationPeriods' => $ConductEvaluationPeriods,
+            'semesters' => $semesters,
+        ];
+        // dd($data['ConductEvaluationPeriods']);
+
+        return view('StudentAffairsDepartment.conductScore.index', compact('data'));
+    }
+
+    public function createConductScore(Request $request)
+    {
+        $params = $request->all();
+        // dd($params);
+        $this->conductEvaluationPeriodService->create($params);
+
+        return redirect()->route('student-affairs-department.conduct-score.index')->with('success', 'Thêm mới thành công');
+    }
+
+    public function infoConductScore(Request $request, $id)
+    {
+        $params = $request->all();
+
+        return view('StudentAffairsDepartment.conductScore.list', compact('data'));
     }
 }

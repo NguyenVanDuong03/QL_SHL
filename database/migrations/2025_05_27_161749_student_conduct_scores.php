@@ -13,7 +13,8 @@ return new class extends Migration
     {
         Schema::create('student_conduct_scores', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('semester_id');
+            $table->unsignedBigInteger('conduct_evaluation_period_id')->comment('Mã kỳ đánh giá hạnh kiểm');
+            // $table->unsignedBigInteger('semester_id');
             $table->unsignedBigInteger('student_id');
             $table->unsignedBigInteger('conduct_criteria_id');
             $table->float('self_score')->comment('Điểm tự đánh giá');
@@ -23,7 +24,8 @@ return new class extends Migration
             $table->softDeletes();
             $table->timestamps();
 
-            $table->foreign('semester_id')->references('id')->on('semesters')->onDelete('cascade');
+            $table->foreign('conduct_evaluation_period_id')->references('id')->on('conduct_evaluation_periods')->onDelete('cascade');
+            // $table->foreign('semester_id')->references('id')->on('semesters')->onDelete('cascade');
             $table->foreign('student_id')->references('id')->on('students')->onDelete('cascade');
             $table->foreign('conduct_criteria_id')->references('id')->on('conduct_criterias')->onDelete('cascade');
         });

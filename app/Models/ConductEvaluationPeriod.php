@@ -10,7 +10,7 @@ class ConductEvaluationPeriod extends Model
     use SoftDeletes;
     protected $fillable = [
         'semester_id',
-        'start_date',
+        'open_date',
         'end_date',
     ];
 

@@ -1,5 +1,5 @@
 @if ($paginate['last_page'] > 1)
-    <div class="d-flex justify-content-between align-items-center mt-3">
+    <div class="d-flex justify-content-end justify-content-md-between align-items-center mt-3">
         <div class="d-none d-md-block">
             <span>
                 {{ $paginate['total'] ?? 0 }} kết quả – Trang {{ $paginate['current_page'] ?? 1 }} /

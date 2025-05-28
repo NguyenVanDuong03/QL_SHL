@@ -152,6 +152,21 @@ Route::middleware(['auth'])->group(function () {
                 }
             );
 
+            // Conduct Score
+            Route::group(
+                [
+                    'prefix' => 'conduct-score',
+                    'as' => 'conduct-score.',
+                ],
+                function () {
+                    Route::get('/', [StudentAffairsDepartmentController::class, 'indexConductScore'])->name('index');
+                    Route::post('/', [StudentAffairsDepartmentController::class, 'createConductScore'])->name('create');
+                    Route::get('/{id?}', [StudentAffairsDepartmentController::class, 'infoConductScore'])->name('infoConductScore');
+                    // Route::put('/{id?}', [StudentAffairsDepartmentController::class, 'editConductScore'])->name('edit');
+                    // Route::delete('/{id?}', [StudentAffairsDepartmentController::class, 'deleteConductScore'])->name('delete');
+                }
+            );
+
         }
     );
 

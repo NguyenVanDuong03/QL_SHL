@@ -9,7 +9,7 @@ class StudentConductScore extends Model
 {
     use SoftDeletes;
     protected $fillable = [
-        'semester_id',
+        'conduct_evaluation_period_id',
         'student_id',
         'conduct_criteria_id',
         'self_score',
@@ -18,10 +18,6 @@ class StudentConductScore extends Model
         'note',
     ];
 
-    public function semester()
-    {
-        return $this->belongsTo(Semester::class);
-    }
     public function student()
     {
         return $this->belongsTo(Student::class);

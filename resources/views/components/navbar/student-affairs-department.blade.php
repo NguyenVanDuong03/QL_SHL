@@ -29,7 +29,7 @@
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="#">
+                <a class="nav-link {{ Route::currentRouteName() == 'student-affairs-department.conduct-score.index' ? 'active' : '' }}" href="{{ route('student-affairs-department.conduct-score.index') }}">
                     <i class="fas fa-book"></i>
                     Điểm rèn luyện
                 </a>
