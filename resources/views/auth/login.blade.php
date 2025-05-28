@@ -9,7 +9,10 @@
 @section('content')
     <div class="container mt-5">
         <div class="login-header">
-            <img src="{{ asset('images/LogoTlu.png') }}" alt="Logo" class="logo">
+            <a href="{{ url('/') }}" class="logo-link">
+                <img src="{{ asset('images/LogoTlu.png') }}" alt="Logo" class="logo">
+            </a>
+
             <h1 class="welcome-text">Chào mừng!</h1>
             <p class="sub-text">Chào mừng bạn đến với Hệ thống quản lý<br>Sinh hoạt lớp trường Đại học Thủy lợi.</p>
         </div>
