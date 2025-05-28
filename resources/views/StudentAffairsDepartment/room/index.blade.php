@@ -24,12 +24,12 @@
             <div class="card-header py-3 d-flex flex-wrap justify-content-between align-items-center">
                 <h6 class="m-0 font-weight-bold text-primary mb-2">Danh sách phòng học</h6>
                 <div class="d-flex flex-wrap gap-2">
-                    <div class="input-group" style="width: 250px;">
-                        <input type="text" class="form-control" placeholder="Tìm kiếm..." id="searchInput">
-                        <button class="btn btn-outline-secondary btn-search-room" type="button">
+                    <form method="GET" action="{{ route('student-affairs-department.room.index') }}" class="input-group" style="width: 250px;">
+                        <input type="text" class="form-control" name="search" placeholder="Tìm kiếm..." id="searchInput"  value="{{ request('search') }}">
+                        <button class="btn btn-outline-secondary btn-search-room" type="submit">
                             <i class="fas fa-search"></i>
                         </button>
-                    </div>
+                    </form>
                 </div>
             </div>
             <div class="card-body">
@@ -64,13 +64,15 @@
                                                     data-id="{{ $room['id'] }}" data-name="{{ $room['name'] }}"
                                                     data-status="{{ $room['status'] }}"
                                                     data-current-page={{ $rooms['current_page'] }}
+                                                    data-search="{{ request('search') }}"
                                                     data-bs-target="#editRoomModal" data-bs-toggle="modal"
                                                     title="Chỉnh sửa">
                                                     <i class="fas fa-edit"></i>
                                                 </button>
                                                 <button type="button" class="btn btn-sm btn-danger delete-room-btn"
                                                     data-bs-target="#deleteRoomModal" data-id="{{ $room['id'] }}"
-                                                    data-current-page={{ $rooms['current_page'] }} data-bs-toggle="modal"
+                                                    data-current-page={{ $rooms['current_page'] }} data-search="{{ request('search') }}"
+                                                    data-bs-toggle="modal"
                                                     title="Xóa">
                                                     <i class="fas fa-trash"></i>
                                                 </button>
@@ -140,6 +142,7 @@
                         @csrf
                         @method('PUT')
                         <input type="hidden" class="current_page" name="current_page">
+                        <input type="hidden" name="search" class="search_keyword">
                         <div class="mb-3">
                             <label for="edit_room_name" class="form-label">Tên phòng</label>
                             <input type="text" class="form-control" id="edit_room_name" name="name" required>
@@ -173,6 +176,7 @@
                 @csrf
                 @method('DELETE')
                 <input type="hidden" class="current_page" name="current_page">
+                <input type="hidden" name="search" class="search_keyword">
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title" id="deleteRoomModalLabel">Xác nhận xóa phòng học</h5>
@@ -249,12 +253,13 @@
                 let name = $(this).data('name');
                 let status = $(this).data('status');
                 let currentPage = $(this).data('current-page');
-
+                let searchKeyword = $(this).data('search');
 
                 $('#editRoomForm').attr('action', `/student-affairs-department/room/${id}`);
 
                 $('#edit_room_name').val(name);
                 $('.current_page').val(currentPage);
+                $('.search_keyword').val(searchKeyword);
                 if (status == 0) {
                     $('#edit_room_status').val(0);
                 } else {
@@ -266,72 +271,12 @@
                 e.preventDefault();
                 let currentPage = $(this).data('current-page');
                 let id = $(this).data('id');
+                let searchKeyword = $(this).data('search');
 
                 $('.current_page').val(currentPage);
+                $('.search_keyword').val(searchKeyword);
                 $('#deleteRoomForm').attr('action', `/student-affairs-department/room/${id}`);
             });
-
-            function searchRooms() {
-                let searchValue = $('#searchInput').val().toLowerCase();
-
-                $.ajax({
-                    url: '{{ route('student-affairs-department.room.index') }}',
-                    type: 'GET',
-                    data: {
-                        search: searchValue
-                    },
-                    success: function(response) {
-                        const rooms = response.data;
-                        const tbody = $('tbody');
-                        tbody.empty();
-
-                        if (rooms.length === 0) {
-                            tbody.append(
-                                '<tr><td colspan="4" class="text-center">Không có dữ liệu</td></tr>'
-                            );
-                        } else {
-                            rooms.forEach((room, index) => {
-                                tbody.append(`
-                        <tr data-id="${room.id}" data-name="${room.name}" data-status="${room.status}">
-                            <td>${index + 1}</td>
-                            <td>${room.name}</td>
-                            <td>
-                                <span class="badge ${room.status == 0 ? 'bg-success' : 'bg-warning'}">${room.status == 0 ? 'Trống' : 'Đang sử dụng'}</span>
-                            </td>
-                            <td>
-                                <div class="btn-group gap-3">
-                                    <button type="button" class="btn btn-sm btn-warning edit-room-btn" data-id="${room.id}" data-name="${room.name}" data-status="${room.status}" data-bs-target="#editRoomModal" data-bs-toggle="modal" title="Chỉnh sửa">
-                                        <i class="fas fa-edit"></i>
-                                    </button>
-                                    <button type="button" class="btn btn-sm btn-danger delete-room-btn" data-bs-target="#deleteRoomModal" data-id="${room.id}" data-bs-toggle="modal" title="Xóa">
-                                        <i class="fas fa-trash"></i>
-                                    </button>
-                                </div>
-                            </td>
-                        </tr>
-                    `);
-                            });
-                        }
-                    },
-                    error: function(xhr, status, error) {
-                        console.error('Error:', error);
-                    }
-                });
-            }
-
-            // Gọi khi nhấn nút
-            $('.btn-search-room').on('click', function() {
-                searchRooms();
-            });
-
-            // Gọi khi nhấn Enter
-            $('#searchInput').on('keydown', function(e) {
-                if (e.key === 'Enter') {
-                    e.preventDefault(); // tránh reload trang
-                    searchRooms();
-                }
-            });
-
 
         });
     </script>

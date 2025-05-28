@@ -23,7 +23,7 @@ abstract class BaseService
     private function setRepository()
     {
         $repository = $this->getRepository();
-        if (! ($repository instanceof BaseRepository)) {
+        if (!($repository instanceof BaseRepository)) {
             throw new \Exception('Repository not found');
         }
         $this->repository = $repository;
@@ -54,7 +54,7 @@ abstract class BaseService
     }
     public function paginate(array $params = [], $limit = Constant::DEFAULT_LIMIT): LengthAwarePaginator
     {
-        if (! empty($params['limit'])) {
+        if (!empty($params['limit'])) {
             $limit = $params['limit'];
         }
 
@@ -84,7 +84,7 @@ abstract class BaseService
 
     protected function hashPassword($params)
     {
-        if (! empty($value = Arr::get($params, 'password'))) {
+        if (!empty(($value = Arr::get($params, 'password')))) {
             if ($salt = Arr::get($params, 'password_salt')) {
                 $params['password'] = Hash::make($value, ['salt' => $salt]);
             } else {
@@ -136,18 +136,25 @@ abstract class BaseService
         return $this->getRepository()->updateOrCreate($values, $attributes);
     }
 
-    public function targetPage($current_page)
+    public function targetPage(array $params)
     {
+        $current_page = isset($params['current_page']) ? (int) $params['current_page'] : 1;
+
         $total = $this->getRepository()->paginate()->total();
         $per_page = $this->getRepository()->paginate()->perPage();
         $last_page = (int) ceil($total / $per_page);
 
         $targetPage = $current_page > $last_page ? $last_page : $current_page;
         $targetPage = $targetPage < 1 ? 1 : $targetPage;
-        $page = [
+
+        $result = [
             'page' => $targetPage,
         ];
 
-        return $page;
+        if (!empty($params['search'])) {
+            $result['search'] = $params['search'];
+        }
+
+        return $result;
     }
 }

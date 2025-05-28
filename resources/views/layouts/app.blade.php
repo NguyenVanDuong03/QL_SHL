@@ -40,6 +40,31 @@
             z-index: 9999;
             color: #333;
         }
+
+        footer {
+            background-color: #f8f9fa;
+            padding: 20px 0;
+            text-align: center;
+        }
+
+        footer p {
+            margin: 0;
+            font-size: 14px;
+        }
+
+        footer a {
+            color: #007bff;
+            text-decoration: none;
+        }
+
+        footer a:hover {
+            text-decoration: underline;
+        }
+
+        footer .list-inline {
+            padding: 0;
+            list-style: none;
+        }
     </style>
 
     @vite(['resources/sass/app.scss', 'resources/js/app.js'])
@@ -50,74 +75,73 @@
 
 <body>
 
-<!-- Loading Overlay -->
-<div id="global-loading" style="display: none;">
-    <div class="loading-backdrop"></div>
-    <div class="loading-spinner">
-        <i class="fas fa-spinner fa-spin fa-3x"></i>
+    <!-- Loading Overlay -->
+    <div id="global-loading" style="display: none;">
+        <div class="loading-backdrop"></div>
+        <div class="loading-spinner">
+            <i class="fas fa-spinner fa-spin fa-3x"></i>
+        </div>
     </div>
-</div>
 
-<div id="app">
-    @yield('content')
-</div>
+    <div id="app">
+        @yield('content')
+    </div>
 
-<!-- Scripts -->
-<script src="{{ asset('jquery-3.7.1.min.js') }}"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/nprogress/0.2.0/nprogress.min.js"></script>
+    <!-- Scripts -->
+    <script src="{{ asset('jquery-3.7.1.min.js') }}"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/nprogress/0.2.0/nprogress.min.js"></script>
 
-@if (session('success'))
+    @if (session('success'))
+        <script>
+            toastr.success("{{ session('success') }}");
+        </script>
+    @endif
+
+    @if (session('error'))
+        <script>
+            toastr.error("{{ session('error') }}");
+        </script>
+    @endif
+
+    <!-- JS Loading Logic -->
     <script>
-        toastr.success("{{ session('success') }}");
-    </script>
-@endif
-
-@if (session('error'))
-    <script>
-        toastr.error("{{ session('error') }}");
-    </script>
-@endif
-
-<!-- JS Loading Logic -->
-<script>
-    function showGlobalLoading() {
-        $('#global-loading').show();
-        NProgress.start();
-    }
-
-    function hideGlobalLoading() {
-        $('#global-loading').hide();
-        NProgress.done();
-    }
-
-    $(document).on('click', 'a', function (e) {
-        const href = $(this).attr('href');
-        if (href && !href.startsWith('#') && !$(this).attr('target') && !href.startsWith('javascript:')) {
-            showGlobalLoading();
+        function showGlobalLoading() {
+            $('#global-loading').show();
+            NProgress.start();
         }
-    });
 
-    $(document).on('submit', 'form', function () {
-        showGlobalLoading();
-    });
+        function hideGlobalLoading() {
+            $('#global-loading').hide();
+            NProgress.done();
+        }
 
-    $(document).ajaxStart(function () {
-        showGlobalLoading();
-    });
+        $(document).on('click', 'a', function(e) {
+            const href = $(this).attr('href');
+            if (href && !href.startsWith('#') && !$(this).attr('target') && !href.startsWith('javascript:')) {
+                showGlobalLoading();
+            }
+        });
 
-    $(document).ajaxStop(function () {
-        hideGlobalLoading();
-    });
+        $(document).on('submit', 'form', function() {
+            showGlobalLoading();
+        });
 
-    $(window).on('load', function () {
-        hideGlobalLoading();
-    });
-</script>
+        $(document).ajaxStart(function() {
+            showGlobalLoading();
+        });
 
-<!-- Extra JS -->
-@stack('scripts')
+        $(document).ajaxStop(function() {
+            hideGlobalLoading();
+        });
+
+        $(window).on('load', function() {
+            hideGlobalLoading();
+        });
+    </script>
+
+    <!-- Extra JS -->
+    @stack('scripts')
 </body>
 
 </html>
-

@@ -23,13 +23,11 @@ class LecturerService extends BaseService
         $wheres = Arr::get($params, 'wheres', []);
         $relates = Arr::get($params, 'relates', []);
         $relates = ['user', 'faculty', 'faculty.department'];
-        // $keyword = Arr::get($params, 'search', '');
+        $keyword = Arr::get($params, 'search', null);
         // if ($keyword) {
-        //     $wheres[] = function ($query) use ($keyword) {
-        //         $query->whereHas('user', function ($q) use ($keyword) {
-        //             $q->where('name', 'like', "%{$keyword}%")->orWhere('email', 'like', "%{$keyword}%");
-        //         });
-        //     };
+        //     $wheres[] = fn($query) => $query->whereHas('user', function ($q) use ($keyword) {
+        //         $q->where('name', 'like', "%{$keyword}%")->orWhere('email', 'like', "%{$keyword}%");
+        //     });
         // }
 
         return [

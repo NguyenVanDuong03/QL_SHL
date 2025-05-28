@@ -14,12 +14,13 @@
                 <div class="d-flex justify-content-end justify-content-md-between align-items-center">
                     <h2 class="flex-grow-1 mb-0 d-none d-md-block">Danh sách điểm rèn luyện</h2>
                     <div class="d-flex gap-2">
-                        <div class="position-relative">
-                            <input type="text" class="form-control" placeholder="Tìm kiếm"
+                        <form class="position-relative">
+                            <input type="text" class="form-control" placeholder="Tìm kiếm" name="search"
+                                value="{{ request()->get('search') }}"
                                 style="width: 250px; padding-right: 40px;">
                             <i class="fas fa-search position-absolute"
                                 style="right: 12px; top: 50%; transform: translateY(-50%); color: #6c757d;"></i>
-                        </div>
+                        </form>
                         <button class="btn btn-primary px-3" data-bs-target="#confirmCreateModal" data-bs-toggle="modal">Tạo
                             mới</button>
                     </div>
@@ -29,7 +30,7 @@
         </div>
 
         <!-- Cards Grid -->
-        <div class="row g-4 mt-5">
+        <div class="row g-4 mt-2">
             <!-- Card 1 -->
             @foreach ($data['ConductEvaluationPeriods']['data'] as $conductEvaluationPeriod)
                 <div class="col-lg-3 col-md-6">
@@ -38,7 +39,8 @@
                             <div class="d-flex justify-content-between align-items-start mb-3">
                                 <h6 class="card-title fw-bold text-dark mb-0">
                                     {{ $conductEvaluationPeriod['semester']['name'] }} -
-                                    {{ $conductEvaluationPeriod['semester']['school_year'] }}</h6>
+                                    {{ $conductEvaluationPeriod['semester']['school_year'] }}
+                                </h6>
                                 <a class="btn btn-primary btn-sm rounded-circle p-2" href="{{ route('student-affairs-department.conduct-score.infoConductScore', $conductEvaluationPeriod['id']) }}"
                                     style="width: 35px; height: 35px;">
                                     <i class="fas fa-plus"></i>

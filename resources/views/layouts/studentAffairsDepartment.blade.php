@@ -5,9 +5,9 @@
 @endpush
 
 @section('content')
-<div class="container-fluid p-0">
-    <div class="row g-0">
-            <x-navbar.student-affairs-department/>
+    <div class="container-fluid p-0">
+        <div class="row g-0">
+            <x-navbar.student-affairs-department />
 
             <main class="col-md-9 col-lg-10 ms-sm-auto px-0 main-content">
                 <!-- Toggle Button and Header -->
@@ -23,7 +23,7 @@
 
                 @yield('main')
 
-                <x-footer.footer/>
+                <x-footer.footer />
             </main>
         </div>
     </div>

@@ -21,13 +21,13 @@
             <div class="card-header py-3 d-flex justify-content-between align-items-center">
                 <h6 class="m-0 font-weight-bold text-primary">Danh sách học kỳ</h6>
                 <div class="d-flex">
-                    <div class="input-group" style="width: 300px;">
-                        <input type="text" class="form-control" id="search-semester" placeholder="Tìm kiếm học kỳ..."
-                            aria-label="Search">
-                        <button class="btn btn-outline-secondary btn-search-semester" type="button">
+                    <form method="GET" action="{{ route('student-affairs-department.semester.index') }}" class="input-group" style="width: 300px;">
+                        <input type="text" class="form-control" name="search" id="search-semester" placeholder="Tìm kiếm học kỳ..." value="{{ request('search') }}"
+                            >
+                        <button class="btn btn-outline-secondary btn-search-semester" type="submit">
                             <i class="fas fa-search"></i>
                         </button>
-                    </div>
+                    </form>
                     {{-- <div class="dropdown ms-2">
                         <button class="btn btn-outline-secondary dropdown-toggle" type="button" id="filterDropdown"
                             data-bs-toggle="dropdown" aria-expanded="false">
@@ -75,12 +75,14 @@
                                                 data-start_date="{{ $semester['start_date'] }}"
                                                 data-end_date="{{ $semester['end_date'] }}"
                                                 data-current-page="{{ $data['semesters']['current_page'] }}"
+                                                data-search="{{ request('search') }}"
                                                 data-bs-toggle="modal" data-bs-target="#editSemesterModal">
                                                 <i class="fas fa-edit"></i>
                                             </button>
                                             <button class="btn btn-sm btn-danger deleteSemster" data-bs-toggle="modal"
                                                 data-bs-target="#deleteSemesterModal"
                                                 data-current-page="{{ $data['semesters']['current_page'] }}"
+                                                data-search="{{ request('search') }}"
                                                 data-id={{ $semester['id'] }}>
                                                 <i class="fas fa-trash"></i>
                                             </button>
@@ -97,8 +99,7 @@
     </div>
 
     <!-- Add Semester Modal -->
-    <div class="modal fade auto-reset-modal" id="addSemesterModal" tabindex="-1" aria-labelledby="addSemesterModalLabel"
-        >
+    <div class="modal fade auto-reset-modal" id="addSemesterModal" tabindex="-1" aria-labelledby="addSemesterModalLabel">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
@@ -161,11 +162,10 @@
             </div>
         </div>
     </div>
-    </div>
 
     <!-- Edit Semester Modal -->
     <div class="modal fade auto-reset-modal" id="editSemesterModal" tabindex="-1"
-        aria-labelledby="editSemesterModalLabel" >
+        aria-labelledby="editSemesterModalLabel">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
@@ -177,6 +177,7 @@
                     @method('PUT')
                     <div class="modal-body">
                         <input type="hidden" class="current_page" name="current_page" value="">
+                        <input type="hidden" name="search" class="search_keyword">
                         <div class="mb-3">
                             <label for="editSemesterName2" class="form-label">Tên học kỳ</label>
                             <select class="form-select" id="editSemesterName2" name="name">
@@ -226,8 +227,7 @@
     </div>
 
     <!-- Delete Semester Modal -->
-    <div class="modal fade" id="deleteSemesterModal" tabindex="-1" aria-labelledby="deleteSemesterModalLabel"
-        >
+    <div class="modal fade" id="deleteSemesterModal" tabindex="-1" aria-labelledby="deleteSemesterModalLabel">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
@@ -243,6 +243,7 @@
                     @csrf
                     @method('DELETE')
                     <input type="hidden" class="current_page" name="current_page" value="">
+                    <input type="hidden" name="search" class="search_keyword" value="">
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
                         <button type="submit" class="btn btn-danger btnSemesterDelete">Xóa</button>
@@ -325,6 +326,7 @@
                 const startDate = $(this).data('start_date');
                 const endDate = $(this).data('end_date');
                 const currentPage = $(this).data('current-page');
+                const search = $(this).data('search');
 
                 // Cập nhật action của form
                 $('#editSemesterForm').attr('action',
@@ -336,6 +338,7 @@
                 $('#editStartDate2').val(startDate);
                 $('#editEndDate2').val(endDate);
                 $('.current_page').val(currentPage);
+                $('.search_keyword').val(search);
             });
 
             $('.editSemesterBtnSubmit').on('click', function(e) {
@@ -377,130 +380,17 @@
                     return
                 }
 
-                // $('#editSemesterForm').attr('action',
-                //     `/student-affairs-department/semester/edit-semester/${id}`);
-
                 $('#editSemesterForm').submit();
-            });
-
-            //     $('.btn-search-semester').on('click', function() {
-            //         const searchValue = $('#search-semester').val().toLowerCase();
-            //         // console.log(searchValue);
-            //         $.ajax({
-            //             url: '{{ route('student-affairs-department.semester.index') }}',
-            //             method: 'GET',
-            //             data: {
-            //                 search: searchValue
-            //             },
-            //             success: function(response) {
-            //                 const semesters = response.data; // mảng data nhận được
-            //                 const tbody = $('tbody');
-            //                 tbody.empty(); // xóa nội dung cũ
-
-            //                 if (semesters.length === 0) {
-            //                     tbody.append(
-            //                         `<tr><td colspan="6" class="text-center">Không tìm thấy học kỳ nào.</td></tr>`
-            //                     );
-            //                     return;
-            //                 }
-
-            //                 semesters.forEach((semester, index) => {
-            //                     tbody.append(`
-        //     <tr>
-        //         <td>${index + 1}</td>
-        //         <td>${semester.name}</td>
-        //         <td>${semester.school_year}</td>
-        //         <td>${semester.start_date}</td>
-        //         <td>${semester.end_date}</td>
-        //         <td>
-        //             <button class="btn btn-sm btn-warning editSemesterBtn"
-        //                 data-id="${semester.id}" data-name="${semester.name}"
-        //                 data-school_year="${semester.school_year}"
-        //                 data-start_date="${semester.start_date}"
-        //                 data-end_date="${semester.end_date}" data-bs-toggle="modal"
-        //                 data-bs-target="#editSemesterModal">
-        //                 <i class="fas fa-edit"></i>
-        //             </button>
-        //             <button class="btn btn-sm btn-danger" data-bs-toggle="modal"
-        //                 data-bs-target="#deleteSemesterModal">
-        //                 <i class="fas fa-trash"></i>
-        //             </button>
-        //         </td>
-        //     </tr>
-        // `);
-            //                 });
-            //             }
-
-            //         });
-            //     });
-
-            function searchSemester() {
-                const searchValue = $('#search-semester').val().toLowerCase();
-
-                $.ajax({
-                    url: '{{ route('student-affairs-department.semester.index') }}',
-                    method: 'GET',
-                    data: {
-                        search: searchValue
-                    },
-                    success: function(response) {
-                        const semesters = response.data; // mảng data nhận được
-                        const tbody = $('tbody');
-                        tbody.empty(); // xóa nội dung cũ
-
-                        if (semesters.length === 0) {
-                            tbody.append(
-                                `<tr><td colspan="6" class="text-center">Không tìm thấy học kỳ nào.</td></tr>`
-                            );
-                            return;
-                        }
-
-                        semesters.forEach((semester, index) => {
-                            tbody.append(`
-            <tr>
-                <td>${index + 1}</td>
-                <td>${semester.name}</td>
-                <td>${semester.school_year}</td>
-                <td>${semester.start_date}</td>
-                <td>${semester.end_date}</td>
-                <td>
-                    <button class="btn btn-sm btn-warning editSemesterBtn"
-                        data-id="${semester.id}" data-name="${semester.name}"
-                        data-school_year="${semester.school_year}"
-                        data-start_date="${semester.start_date}"
-                        data-end_date="${semester.end_date}" data-bs-toggle="modal"
-                        data-bs-target="#editSemesterModal">
-                        <i class="fas fa-edit"></i>
-                    </button>
-                    <button class="btn btn-sm btn-danger" data-bs-toggle="modal"
-                        data-bs-target="#deleteSemesterModal">
-                        <i class="fas fa-trash"></i>
-                    </button>
-                </td>
-            </tr>
-        `);
-                        });
-                    }
-
-                });
-            }
-
-            $('#search-semester').on('keydown', function(e) {
-                if (e.key === 'Enter') {
-                    e.preventDefault();
-                    searchSemester();
-                }
-            });
-
-            $('.btn-search-semester').on('click', function() {
-                searchSemester();
             });
 
             $('.deleteSemster').on('click', function(e) {
                 e.preventDefault();
                 const semesterId = $(this).data('id');
                 const currentPage = $(this).data('current-page');
+                const search = $(this).data('search');
+
                 $('.current_page').val(currentPage);
+                $('.search_keyword').val(search);
                 $('#deleteSemesterForm').attr('action',
                     `/student-affairs-department/semester/${semesterId}`);
             });

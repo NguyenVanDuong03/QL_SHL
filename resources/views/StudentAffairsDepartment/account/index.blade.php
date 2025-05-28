@@ -32,13 +32,13 @@
                         <div class="d-flex justify-content-between align-items-center">
                             <span class="text-primary fw-bold d-none d-md-block">Tài khoản giáo viên</span>
                             <div class="d-flex align-items-end">
-                                <div class="input-group me-2" style="width: 250px;">
-                                    <input type="text" class="form-control" placeholder="Tìm kiếm giáo viên..."
+                                <form method="GET" action="{{ route('student-affairs-department.account.index') }}" class="input-group me-2" style="width: 250px;">
+                                    <input type="text" class="form-control" placeholder="Tìm kiếm giáo viên..." name="search" value="{{ request('search') }}"
                                         id="teacherSearch">
-                                    <button class="btn btn-outline-secondary btn-search-lecturer" type="button">
+                                    <button class="btn btn-outline-secondary btn-search-lecturer" type="submit">
                                         <i class="fas fa-search"></i>
                                     </button>
-                                </div>
+                                </form>
                                 <form method="POST"
                                     action="{{ route('student-affairs-department.account.importLecturer') }}"
                                     enctype="multipart/form-data" class="d-inline">
@@ -92,6 +92,8 @@
                                                         data-department="{{ $lecturer['faculty']['department']['name'] }}"
                                                         data-title="{{ $lecturer['title'] }}"
                                                         data-position="{{ $lecturer['position'] }}"
+                                                        data-current-page="{{ $data['lecturers']['current_page'] }}"
+                                                        data-search="{{ request('search') }}"
                                                         data-bs-target="#showModal" data-bs-toggle="modal">
                                                         <i class="fas fa-eye"></i>
                                                     </button>
@@ -108,6 +110,7 @@
                                                         data-title="{{ $lecturer['title'] }}"
                                                         data-position="{{ $lecturer['position'] }}"
                                                         data-current-page="{{ $data['lecturers']['current_page'] }}"
+                                                        data-search="{{ request('search') }}"
                                                         data-bs-target="#editModal" data-bs-toggle="modal">
                                                         <i class="fas fa-edit"></i>
                                                     </button>
@@ -204,8 +207,9 @@
                     @csrf
                     @method('PUT')
                     <div class="modal-body">
-                        <input type="hidden" name="user_id" id="edituserId">
-                        <input type="hidden" name="current_page" id="current_page">
+                        <input type="hidden" name="user_id" class="edituserId">
+                        <input type="hidden" name="current_page">
+                        <input type="hidden" name="search" class="search_keyword">
                         <div class="row g-3">
                             <div class="col-12 col-md-6">
                                 <label for="editLecturerName" class="form-label">Họ và tên</label>
@@ -323,11 +327,12 @@
                 <form method="POST" id="deleteForm">
                     @csrf
                     @method('DELETE')
-                    <input type="hidden" name="current_page" id="deleteCurrentPage">
+                    <input type="hiddent" name="user_id" class="edituserId">
+                    <input type="hidden" name="current_page" class="current_page">
+                    <input type="hidden" name="search" class="search_keyword">
                     <div class="modal-body">
                         <p>Bạn có chắc chắn muốn xóa tài khoản giáo viên này không?</p>
                         <input type="hidden" name="id" id="deleteLecturerId">
-                        <input type="hidden" name="user_id" id="deleteUserId">
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
@@ -355,7 +360,7 @@
             });
 
             $('.btn-show-lecturer').on('click', function() {
-                const lecturerData = $(this).data();
+                let lecturerData = $(this).data();
                 $('.lecturer-name').text(lecturerData.name ?? "---");
                 $('.lecturer-email').text(lecturerData.email ?? "---");
                 $('.lecturer-birth').text(lecturerData.birth ?? "---");
@@ -391,32 +396,34 @@
                 const modal = $(this);
 
                 // Lấy dữ liệu từ button
-                const id = button.data('id');
-                const userId = button.data('user-id');
-                const name = button.data('name');
-                const email = button.data('email');
-                const birth = button.data('birth');
-                const phone = button.data('phone');
-                const gender = button.data('gender');
-                const departmentId = button.data('department');
-                const facultyId = button.data('faculty');
-                const title = button.data('title');
-                const position = button.data('position');
-                const currentPage = button.data('current-page');
+                let id = button.data('id');
+                let userId = button.data('user-id');
+                let name = button.data('name');
+                let email = button.data('email');
+                let birth = button.data('birth');
+                let phone = button.data('phone');
+                let gender = button.data('gender');
+                let departmentId = button.data('department');
+                let facultyId = button.data('faculty');
+                let title = button.data('title');
+                let position = button.data('position');
+                let currentPage = button.data('current-page');
+                let searchKeyword = button.data('search');
 
                 // Gán vào form
                 $('#editFrom').attr('action', `/student-affairs-department/account/lecturer/${id}`);
-                modal.find('#edituserId').val(userId);
-                modal.find('#editLecturerName').val(name);
-                modal.find('#editLecturerEmail').val(email);
-                modal.find('#editLecturerBirth').val(birth);
-                modal.find('#editLecturerPhone').val(phone);
-                modal.find('#editLecturerTitle').val(title);
-                modal.find('#editLecturerPosition').val(position);
-                modal.find('#current_page').val(currentPage);
+                $('.edituserId').val(userId);
+                $('#editLecturerName').val(name);
+                $('#editLecturerEmail').val(email);
+                $('#editLecturerBirth').val(birth);
+                $('#editLecturerPhone').val(phone);
+                $('#editLecturerTitle').val(title);
+                $('#editLecturerPosition').val(position);
+                $('.current_page').val(currentPage);
+                $('.search_keyword').val(searchKeyword);
 
-                modal.find('#editLecturerGender').val(gender);
-                modal.find('#editLecturerDepartment').val(departmentId);
+                $('#editLecturerGender').val(gender);
+                $('#editLecturerDepartment').val(departmentId);
 
                 updateFacultySelect(departmentId, facultyId);
             });
@@ -424,19 +431,6 @@
             $('#editLecturerDepartment').on('change', function() {
                 const departmentId = $(this).val();
                 updateFacultySelect(departmentId);
-            });
-
-
-            $('#deleteModal').on('show.bs.modal', function(event) {
-                const button = $(event.relatedTarget);
-                const id = button.data('id');
-                const userId = button.data('user-id');
-                const currentPage = button.data('current-page');
-
-                $('#deleteForm').attr('action', `/student-affairs-department/account/lecturer/${id}`);
-                $('#deleteLecturerId').val(id);
-                $('#deleteUserId').val(userId);
-                $('#deleteCurrentPage').val(currentPage);
             });
 
             function check(id, regex, message) {
@@ -459,28 +453,28 @@
             }
 
             $('.btn-lecturer-edit').on('click', function(e) {
-                const userId = $('#edituserId').val();
-                const name = $('#editLecturerName').val().trim();
-                const email = $('#editLecturerEmail').val().trim();
-                const birth = $('#editLecturerBirth').val();
-                const phone = $('#editLecturerPhone').val().trim();
-                const gender = $('#editLecturerGender').val();
-                const facultyId = $('#editLecturerFaculty').val();
-                const departmentId = $('#editLecturerDepartment').val();
-                const title = $('#editLecturerTitle').val();
-                const position = $('#editLecturerPosition').val();
+                let userId = $('.edituserId').val();
+                let name = $('#editLecturerName').val().trim();
+                let email = $('#editLecturerEmail').val().trim();
+                let birth = $('#editLecturerBirth').val();
+                let phone = $('#editLecturerPhone').val().trim();
+                let gender = $('#editLecturerGender').val();
+                let facultyId = $('#editLecturerFaculty').val();
+                let departmentId = $('#editLecturerDepartment').val();
+                let title = $('#editLecturerTitle').val();
+                let position = $('#editLecturerPosition').val();
 
-                const checkName = check('#editLecturerName', 0, 'Tên không hợp lệ!');
-                const checkEmail = check('#editLecturerEmail',
+                let checkName = check('#editLecturerName', 0, 'Tên không hợp lệ!');
+                let checkEmail = check('#editLecturerEmail',
                     /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/, 'Email không hợp lệ!');
-                const checkBirth = check('#editLecturerBirth', 0, 'Ngày sinh không hợp lệ!');
-                const checkPhone = check('#editLecturerPhone', /^[0-9]{10,11}$/,
+                let checkBirth = check('#editLecturerBirth', 0, 'Ngày sinh không hợp lệ!');
+                let checkPhone = check('#editLecturerPhone', /^[0-9]{10,11}$/,
                     'Số điện thoại không hợp lệ!');
-                const checkGender = check('#editLecturerGender', 0, 'Vui lòng chọn giới tính!');
-                const checkFaculty = check('#editLecturerFaculty', 0, 'Vui lòng chọn bộ môn!');
-                const checkDepartment = check('#editLecturerDepartment', 0, 'Vui lòng chọn khoa!');
-                const checkTitle = check('#editLecturerTitle', 0, 'Vui lòng chọn trình độ!');
-                const checkPosition = check('#editLecturerPosition', 0, 'Vui lòng chọn chức vụ!');
+                let checkGender = check('#editLecturerGender', 0, 'Vui lòng chọn giới tính!');
+                let checkFaculty = check('#editLecturerFaculty', 0, 'Vui lòng chọn bộ môn!');
+                let checkDepartment = check('#editLecturerDepartment', 0, 'Vui lòng chọn khoa!');
+                let checkTitle = check('#editLecturerTitle', 0, 'Vui lòng chọn trình độ!');
+                let checkPosition = check('#editLecturerPosition', 0, 'Vui lòng chọn chức vụ!');
 
                 if (!checkName || !checkEmail || !checkBirth || !checkPhone || !checkGender || !
                     checkFaculty || !checkDepartment || !checkTitle || !checkPosition) {
@@ -490,114 +484,19 @@
 
             })
 
-            // $('#teacherSearch').on('input', function() {
-            //     const searchTerm = $(this).val().toLowerCase();
-            //     $('#teacherTableBody tr').each(function() {
-            //         const name = $(this).find('td:nth-child(2)').text().toLowerCase();
-            //         $(this).toggle(name.includes(searchTerm));
-            //     });
-            // });
+            $('#deleteModal').on('show.bs.modal', function(event) {
+                let button = $(event.relatedTarget);
+                let id = button.data('id');
+                let userId = button.data('user-id');
+                let currentPage = button.data('current-page');
+                let searchKeyword = button.data('search');
 
-            // function searchTeachers() {
-            //     let searchTerm = $('#teacherSearch').val().toLowerCase();
-
-            //     $.ajax({
-            //         url: '{{ route('student-affairs-department.account.index') }}',
-            //         type: 'GET',
-            //         data: {
-            //             search: searchTerm
-            //         },
-            //         success: function(response) {
-            //             const lecturers = response.lecturers;
-            //             const currentPage = response.current_page || 1;
-            //             const tbody = $('#teacherTableBody');
-            //             tbody.empty();
-
-            //             if (lecturers.length === 0) {
-            //                 tbody.append(
-            //                     '<tr><td colspan="6" class="text-center">Không có dữ liệu</td></tr>'
-            //                     );
-            //             } else {
-            //                 lecturers.forEach((lecturer, index) => {
-            //                     const user = lecturer.user;
-            //                     const faculty = lecturer.faculty;
-            //                     const department = faculty?.department || {};
-            //                     const birthDate = new Date(user.date_of_birth);
-            //                     const formattedBirth = birthDate.toLocaleDateString('vi-VN', {
-            //                         day: '2-digit',
-            //                         month: '2-digit',
-            //                         year: 'numeric'
-            //                     });
-
-            //                     tbody.append(`
-        //         <tr>
-        //             <td>${index + 1}</td>
-        //             <td>${user.name}</td>
-        //             <td class="d-none d-md-table-cell">${formattedBirth}</td>
-        //             <td class="d-none d-md-table-cell">${user.gender}</td>
-        //             <td>${user.email}</td>
-        //             <td>
-        //                 <button class="btn btn-sm btn-info btn-show-lecturer"
-        //                     title="Xem chi tiết"
-        //                     data-email="${user.email}"
-        //                     data-name="${user.name}"
-        //                     data-birth="${formattedBirth}"
-        //                     data-phone="${user.phone}"
-        //                     data-gender="${user.gender}"
-        //                     data-faculty="${faculty?.name || ''}"
-        //                     data-department="${department?.name || ''}"
-        //                     data-title="${lecturer.title || ''}"
-        //                     data-position="${lecturer.position || ''}"
-        //                     data-bs-target="#showModal" data-bs-toggle="modal">
-        //                     <i class="fas fa-eye"></i>
-        //                 </button>
-        //                 <button class="btn btn-sm btn-warning"
-        //                     title="Chỉnh sửa"
-        //                     data-id="${lecturer.id}"
-        //                     data-user-id="${lecturer.user_id}"
-        //                     data-email="${user.email}"
-        //                     data-name="${user.name}"
-        //                     data-birth="${user.date_of_birth}"
-        //                     data-phone="${user.phone}"
-        //                     data-gender="${user.gender}"
-        //                     data-faculty="${faculty?.id || ''}"
-        //                     data-department="${department?.id || ''}"
-        //                     data-title="${lecturer.title || ''}"
-        //                     data-position="${lecturer.position || ''}"
-        //                     data-current-page="${currentPage}"
-        //                     data-bs-target="#editModal" data-bs-toggle="modal">
-        //                     <i class="fas fa-edit"></i>
-        //                 </button>
-        //                 <button class="btn btn-sm btn-danger"
-        //                     title="Xóa"
-        //                     data-id="${lecturer.id}"
-        //                     data-user-id="${lecturer.user_id}"
-        //                     data-bs-toggle="modal" data-bs-target="#deleteModal">
-        //                     <i class="fas fa-trash"></i>
-        //                 </button>
-        //             </td>
-        //         </tr>
-        //     `);
-            //                 });
-            //             }
-            //         },
-            //         error: function(xhr) {
-            //             console.error('Lỗi khi tìm kiếm giảng viên:', xhr);
-            //         }
-            //     });
-
-            // }
-
-            // $('.btn-search-lecturer').on('click', function() {
-            //     searchTeachers();
-            // });
-
-            // $('#teacherSearch').on('keydown', function(e) {
-            //     if (e.key === 'Enter') {
-            //         e.preventDefault();
-            //         searchTeachers();
-            //     }
-            // });
+                $('#deleteForm').attr('action', `/student-affairs-department/account/lecturer/${id}`);
+                $('#deleteLecturerId').val(id);
+                $('#deleteUserId').val(userId);
+                $('#deleteCurrentPage').val(currentPage);
+                $('.search_keyword').val(searchKeyword);
+            });
 
         });
     </script>
