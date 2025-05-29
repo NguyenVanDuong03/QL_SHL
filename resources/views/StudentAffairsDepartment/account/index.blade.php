@@ -327,7 +327,7 @@
                 <form method="POST" id="deleteForm">
                     @csrf
                     @method('DELETE')
-                    <input type="hiddent" name="user_id" class="edituserId">
+                    <input type="hidden" name="user_id" class="edituserId">
                     <input type="hidden" name="current_page" class="current_page">
                     <input type="hidden" name="search" class="search_keyword">
                     <div class="modal-body">
@@ -433,25 +433,6 @@
                 updateFacultySelect(departmentId);
             });
 
-            function check(id, regex, message) {
-                const input = $(id);
-                const errorBox = input.next('.text-danger-error');
-
-                if (input.val().trim() === '') {
-                    errorBox.text('Yêu cầu nhập đầy đủ thông tin!').show();
-                    input.addClass('is-invalid');
-                    return false;
-                } else if (regex != '0' && !regex.test(input.val())) {
-                    errorBox.text(message).show();
-                    input.addClass('is-invalid');
-                    return false;
-                }
-
-                errorBox.text('').hide();
-                input.removeClass('is-invalid');
-                return true;
-            }
-
             $('.btn-lecturer-edit').on('click', function(e) {
                 let userId = $('.edituserId').val();
                 let name = $('#editLecturerName').val().trim();
@@ -464,17 +445,17 @@
                 let title = $('#editLecturerTitle').val();
                 let position = $('#editLecturerPosition').val();
 
-                let checkName = check('#editLecturerName', 0, 'Tên không hợp lệ!');
-                let checkEmail = check('#editLecturerEmail',
+                let checkName = checkValidate('#editLecturerName', 0, 'Tên không hợp lệ!');
+                let checkEmail = checkValidate('#editLecturerEmail',
                     /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/, 'Email không hợp lệ!');
-                let checkBirth = check('#editLecturerBirth', 0, 'Ngày sinh không hợp lệ!');
-                let checkPhone = check('#editLecturerPhone', /^[0-9]{10,11}$/,
+                let checkBirth = checkValidate('#editLecturerBirth', 0, 'Ngày sinh không hợp lệ!');
+                let checkPhone = checkValidate('#editLecturerPhone', /^[0-9]{10,11}$/,
                     'Số điện thoại không hợp lệ!');
-                let checkGender = check('#editLecturerGender', 0, 'Vui lòng chọn giới tính!');
-                let checkFaculty = check('#editLecturerFaculty', 0, 'Vui lòng chọn bộ môn!');
-                let checkDepartment = check('#editLecturerDepartment', 0, 'Vui lòng chọn khoa!');
-                let checkTitle = check('#editLecturerTitle', 0, 'Vui lòng chọn trình độ!');
-                let checkPosition = check('#editLecturerPosition', 0, 'Vui lòng chọn chức vụ!');
+                let checkGender = checkValidate('#editLecturerGender', 0, 'Vui lòng chọn giới tính!');
+                let checkFaculty = checkValidate('#editLecturerFaculty', 0, 'Vui lòng chọn bộ môn!');
+                let checkDepartment = checkValidate('#editLecturerDepartment', 0, 'Vui lòng chọn khoa!');
+                let checkTitle = checkValidate('#editLecturerTitle', 0, 'Vui lòng chọn trình độ!');
+                let checkPosition = checkValidate('#editLecturerPosition', 0, 'Vui lòng chọn chức vụ!');
 
                 if (!checkName || !checkEmail || !checkBirth || !checkPhone || !checkGender || !
                     checkFaculty || !checkDepartment || !checkTitle || !checkPosition) {

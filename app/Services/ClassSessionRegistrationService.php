@@ -51,9 +51,9 @@ class ClassSessionRegistrationService extends BaseService
         return $this->getRepository()->getListCSR();
     }
 
-    public function getListCSRHistory()
+    public function getListCSRHistory($class_session_registration_id)
     {
-        return $this->getRepository()->getListCSRHistory();
+        return $this->getRepository()->getListCSRHistory($class_session_registration_id);
     }
 
 }

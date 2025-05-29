@@ -37,7 +37,7 @@
                         </div>
                         <div class="d-flex justify-content-end">
                             <a class="btn btn-primary"
-                                href="{{ route('student-affairs-department.class-session.history') }}">
+                                href="{{ route('student-affairs-department.class-session.history', $data['classSessionRegistration']->id ) }}">
                                 Lịch sử
                             </a>
                         </div>
