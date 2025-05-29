@@ -140,6 +140,27 @@
         });
     </script>
 
+    <script>
+        function checkValidate(id, regex, message) {
+            const input = $(id);
+            const errorBox = input.next('.text-danger-error');
+
+            if (input.val().trim() === '') {
+                errorBox.text('Yêu cầu nhập đầy đủ thông tin!').show();
+                input.addClass('is-invalid');
+                return false;
+            } else if (regex != '0' && !regex.test(input.val())) {
+                errorBox.text(message).show();
+                input.addClass('is-invalid');
+                return false;
+            }
+
+            errorBox.text('').hide();
+            input.removeClass('is-invalid');
+            return true;
+        }
+    </script>
+
     <!-- Extra JS -->
     @stack('scripts')
 </body>

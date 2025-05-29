@@ -57,7 +57,6 @@ class StudentAffairsDepartmentController extends Controller
             'flexibleClassActivities' => true,
             'relates' => ['lecturer', 'studyClass', 'room']
         ])->toArray();
-        // dd($flexibleClassActivities);
         $data = [
             'semesters' => $semesters,
             'checkClassSessionRegistration' => $checkClassSessionRegistration,
@@ -66,13 +65,15 @@ class StudentAffairsDepartmentController extends Controller
             $data['classSessionRegistration'] = $this->classSessionRegistrationService->getCSRSemesterInfo();
             $data['ListCSRs'] = $this->classSessionRegistrationService->getListCSR();
         }
+//        dd($data['classSessionRegistration']);
 
         return view('StudentAffairsDepartment.classSession.index', compact('data'));
     }
 
-    public function history()
+    public function history($class_session_registration_id)
     {
-        $data = $this->classSessionRegistrationService->getListCSRHistory()->toArray();
+        $data = $this->classSessionRegistrationService->getListCSRHistory($class_session_registration_id)->toArray();
+//        dd($semesterId);
 
         return view('StudentAffairsDepartment.classSession.history', compact('data'));
     }
@@ -346,6 +347,6 @@ class StudentAffairsDepartmentController extends Controller
     {
         $params = $request->all();
 
-        return view('StudentAffairsDepartment.conductScore.list', compact('data'));
+        return view('StudentAffairsDepartment.conductScore.list');
     }
 }

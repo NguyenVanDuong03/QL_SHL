@@ -262,7 +262,7 @@
 
                             <div class="col-12 col-md-6">
                                 <label for="editClass" class="form-label">Lớp</label>
-                                <select value="" class="form-select" id="editClass" name="study_class_id"
+                                <select class="form-select" id="editClass" name="study_class_id"
                                     data-selected="{{ $student['study_class_id'] ?? '' }}" required>
                                     <option disabled>-- Chọn lớp --</option>
                                 </select>
@@ -418,37 +418,18 @@
                 updateStudyClassSelect(selectedCohortId, selectedClassId);
             });
 
-            function check(id, regex, message) {
-                const input = $(id);
-                const errorBox = input.next('.text-danger-error');
-
-                if (input.val().trim() === '') {
-                    errorBox.text('Yêu cầu nhập đầy đủ thông tin!').show();
-                    input.addClass('is-invalid');
-                    return false;
-                } else if (regex != '0' && !regex.test(input.val())) {
-                    errorBox.text(message).show();
-                    input.addClass('is-invalid');
-                    return false;
-                }
-
-                errorBox.text('').hide();
-                input.removeClass('is-invalid');
-                return true;
-            }
-
             $('.btn-edit').on('click', function(event) {
                 event.preventDefault();
 
-                const nameValid = check('#editName', /.+/, 'Yêu cầu nhập họ và tên!');
-                const emailValid = check('#editEmail', /^[^\s@]+@[^\s@]+\.[^\s@]+$/, 'Email không hợp lệ!');
-                const birthValid = check('#editBirth', /.+/, 'Yêu cầu nhập ngày sinh!');
-                const phoneValid = check('#editPhone', /^\d{10,11}$/,
+                const nameValid = checkValidate('#editName', /.+/, 'Yêu cầu nhập họ và tên!');
+                const emailValid = checkValidate('#editEmail', /^[^\s@]+@[^\s@]+\.[^\s@]+$/, 'Email không hợp lệ!');
+                const birthValid = checkValidate('#editBirth', /.+/, 'Yêu cầu nhập ngày sinh!');
+                const phoneValid = checkValidate('#editPhone', /^\d{10,11}$/,
                     'Số điện thoại phải từ 10 đến 11 chữ số!');
-                const genderValid = check('#editGender', /.+/, 'Yêu cầu chọn giới tính!');
-                const cohortValid = check('#editCohort', /.+/, 'Yêu cầu chọn niên khóa!');
-                const classValid = check('#editClass', /.+/, 'Yêu cầu chọn lớp!');
-                const positionValid = check('#editPosition', /.+/, 'Yêu cầu chọn vai trò!');
+                const genderValid = checkValidate('#editGender', /.+/, 'Yêu cầu chọn giới tính!');
+                const cohortValid = checkValidate('#editCohort', /.+/, 'Yêu cầu chọn niên khóa!');
+                const classValid = checkValidate('#editClass', /.+/, 'Yêu cầu chọn lớp!');
+                const positionValid = checkValidate('#editPosition', /.+/, 'Yêu cầu chọn vai trò!');
 
                 if (nameValid && emailValid && birthValid && phoneValid && genderValid && cohortValid &&
                     classValid && positionValid) {
