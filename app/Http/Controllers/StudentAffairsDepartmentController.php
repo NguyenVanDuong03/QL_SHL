@@ -51,23 +51,35 @@ class StudentAffairsDepartmentController extends Controller
     public function classSession(Request $request)
     {
         $params = $request->all();
+        $params['isEmptyRoom'] = true;
         $semesters = $this->semesterService->getFourSemester();
         $checkClassSessionRegistration = $this->classSessionRegistrationService->checkClassSessionRegistration();
-        $flexibleClassActivities = $this->classSessionRequestService->paginate([
-            'flexibleClassActivities' => true,
-            'relates' => ['lecturer', 'studyClass', 'room']
-        ])->toArray();
+        $rooms = $this->roomService->get($params);
+//        $flexibleClassActivities = $this->classSessionRequestService->paginate([
+//            'flexibleClassActivities' => true,
+//            'relates' => ['lecturer', 'studyClass', 'room']
+//        ])->toArray();
         $data = [
             'semesters' => $semesters,
             'checkClassSessionRegistration' => $checkClassSessionRegistration,
         ];
         if ($checkClassSessionRegistration) {
             $data['classSessionRegistration'] = $this->classSessionRegistrationService->getCSRSemesterInfo();
-            $data['ListCSRs'] = $this->classSessionRegistrationService->getListCSR();
+            $data['ListCSRs'] = $this->classSessionRegistrationService->getListCSR()->toArray();
+            $data['rooms'] = $rooms;
         }
-//        dd($data['classSessionRegistration']);
+//        dd($data['rooms']);
 
         return view('StudentAffairsDepartment.classSession.index', compact('data'));
+    }
+
+    public function comfirmClassSession(Request $request, $id)
+    {
+        $params = $request->all();
+//         dd($params);
+        $this->classSessionRequestService->comfirmClassSession($id, $params);
+
+        return redirect()->route('student-affairs-department.class-session.index')->with('success', 'Xác nhận thành công');
     }
 
     public function history($class_session_registration_id)

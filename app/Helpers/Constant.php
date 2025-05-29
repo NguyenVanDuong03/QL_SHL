@@ -56,4 +56,9 @@ class Constant
         'YES' => 0,
         'NO' => 1,
     ];
+
+    const ROOM_STATUS = [
+        'AVAILABLE' => 0,
+        'UNAVAILABLE' => 1,
+    ];
 }

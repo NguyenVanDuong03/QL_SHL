@@ -47,4 +47,9 @@ class ClassSessionRequestService extends BaseService
         return $this->getRepository()->countFlexibleClassSessionRequest();
     }
 
+    public function comfirmClassSession($id, $params)
+    {
+
+    }
+
 }

@@ -30,6 +30,15 @@ class RoomService extends BaseService
             ];
         }
 
+        $isEmptyRooms = Arr::get($params, 'isEmptyRoom', false);
+        if ($isEmptyRooms) {
+            $wheres[] = [
+                'field' => 'status',
+                'operator' => '=',
+                'value' => Constant::ROOM_STATUS['AVAILABLE'],
+            ];
+        }
+
         return [
             'sort' => $sort,
             'wheres' => $wheres,

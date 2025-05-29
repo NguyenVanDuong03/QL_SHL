@@ -47,10 +47,17 @@ class ClassSessionRegistrationRepository extends BaseRepository
         return $this->getModel()
             ->newQuery()
             ->join('class_session_requests', 'class_session_requests.class_session_registration_id', '=', 'class_session_registrations.id')
-             ->join('study_classes', 'class_session_requests.study_class_id', '=', 'study_classes.id')
+            ->join('study_classes', 'class_session_requests.study_class_id', '=', 'study_classes.id')
+            ->LeftJoin('rooms', 'class_session_requests.room_id', '=', 'rooms.id')
             ->where('class_session_registration_id', $latestRegistration->id)
             ->where('class_session_requests.status', Constant::CLASS_SESSION_STATUS['ACTIVE'])
             ->orderBy('class_session_requests.id', 'desc')
+            ->select([
+                'class_session_requests.*',
+                'class_session_registrations.semester_id',
+                'study_classes.name as study_class_name',
+                'rooms.name as room_name',
+            ])
             ->paginate(Constant::DEFAULT_LIMIT);
     }
 

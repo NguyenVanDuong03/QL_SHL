@@ -27,6 +27,7 @@ return new class extends Migration
             $table->string('meeting_url')->nullable();
             $table->string('title');
             $table->text('content');
+            $table->text('note')->nullable();
             $table->tinyInteger('status')->default(0)->comment('0:pending; 1:approved; 2:rejected');
             $table->string('rejection_reason')->nullable();
             $table->softDeletes();

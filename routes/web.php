@@ -84,7 +84,7 @@ Route::middleware(['auth'])->group(function () {
                     Route::get('/history/{id}', [StudentAffairsDepartmentController::class, 'history'])->name('history');
                     Route::post('/create-classSession-registration', [StudentAffairsDepartmentController::class, 'createClassSessionRegistration'])->name('createClassSessionRegistration');
                     Route::put('/edit-classSession-registration/{id?}', [StudentAffairsDepartmentController::class, 'editClassSessionRegistration'])->name('editClassSessionRegistration');
-                    Route::get('/getSemester', [StudentAffairsDepartmentController::class, 'getSemester'])->name('getSemester');
+                    Route::put('/confirm-classSession-registration/{id?}', [StudentAffairsDepartmentController::class, 'comfirmClassSession'])->name('updateClassRequest');
                 }
             );
 

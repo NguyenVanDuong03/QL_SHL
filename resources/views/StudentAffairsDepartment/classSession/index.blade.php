@@ -3,7 +3,7 @@
 @section('title', 'Sinh hoạt lớp')
 
 @section('breadcrumb')
-    <x-breadcrumb.breadcrumb :links="[['label' => 'Sinh hoạt lớp']]" />
+    <x-breadcrumb.breadcrumb :links="[['label' => 'Sinh hoạt lớp']]"/>
 @endsection
 
 @section('main')
@@ -26,18 +26,19 @@
                             {{ $data['classSessionRegistration']->total_registered_classes }}</p>
 
                         <button class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#confirmEditModal"
-                            data-id="#">Chỉnh sửa thời gian</button>
+                                data-id="#">Chỉnh sửa thời gian
+                        </button>
                     </div>
                     <div>
                         <div class="input-group mb-3">
                             <input type="text" class="form-control" placeholder="Tìm kiếm lớp học"
-                                aria-label="Recipient's username" aria-describedby="basic-addon2">
+                                   aria-label="Recipient's username" aria-describedby="basic-addon2">
                             <button class="input-group-text" id="basic-addon2"><i
                                     class="fas fa-magnifying-glass"></i></button>
                         </div>
                         <div class="d-flex justify-content-end">
                             <a class="btn btn-primary"
-                                href="{{ route('student-affairs-department.class-session.history', $data['classSessionRegistration']->id ) }}">
+                               href="{{ route('student-affairs-department.class-session.history', $data['classSessionRegistration']->id ) }}">
                                 Lịch sử
                             </a>
                         </div>
@@ -45,12 +46,12 @@
                 </div>
 
                 <div class="row g-4">
-                    @if (isset($data['ListCSRs']) && $data['ListCSRs']->total() > 0)
-                        @foreach ($data['ListCSRs'] as $class)
+                    @if (isset($data['ListCSRs']['data']) && $data['ListCSRs']['total'] > 0)
+                        @foreach ($data['ListCSRs']['data'] as $class)
                             <div class="col-md-6 col-lg-4">
                                 <div class="card shadow-sm">
                                     <div class="card-body position-relative">
-                                        <h5 class="card-title">{{ $class['name'] }}</h5>
+                                        <h5 class="card-title">{{ $class['study_class_name'] }}</h5>
                                         <div class="mt-3">
                                             <p class="mb-1">Thời gian:
                                                 {{ \Carbon\Carbon::parse($class['proposed_at'])->format('H:i d/m/Y') }}</p>
@@ -64,9 +65,22 @@
                                                 @endif
                                             </p>
                                         </div>
-                                        <button class="btn btn-primary position-absolute"
-                                            style="top: 10px; right: 10px; border-radius: 5px;" data-bs-toggle="modal"
-                                            data-bs-target="#onlineModal" data-id="#">
+                                        <button class="btn btn-primary position-absolute btn-comfirm-class"
+                                                style="top: 10px; right: 10px; border-radius: 5px;"
+                                                data-bs-toggle="modal"
+                                                data-bs-target="#formModal"
+                                                data-id="{{ $class['id'] }}"
+                                                data-type="{{ $class['type'] }}"
+                                                data-position="{{ $class['position'] }}"
+                                                data-proposed_at="{{ $class['proposed_at'] }}"
+                                                data-location="{{ $class['location'] }}"
+                                                data-meeting-type="{{ $class['meeting_type'] }}"
+                                                data-meeting-id="{{ $class['meeting_id'] }}"
+                                                data-meeting-password="{{ $class['meeting_password'] }}"
+                                                data-meeting-url="{{ $class['meeting_url'] }}"
+                                                data-study-class-name="{{ $class['study_class_name'] }}"
+                                                data-note="{{ $class['note'] }}"
+                                        >
                                             Xem chi tiết
                                         </button>
                                     </div>
@@ -90,15 +104,15 @@
                     @endif
                 </div>
             @else
-            <div class="d-flex justify-content-center align-items-center h-100">
-                <div class="">
-                    <button class="btn btn-primary btn-create-class-session"
-                        data-bs-toggle="modal"
-                        data-bs-target="#confirmCreateModal" data-id="#">
-                        Tạo lịch sinh hoạt lớp cố định
-                    </button>
+                <div class="d-flex justify-content-center align-items-center h-100">
+                    <div class="">
+                        <button class="btn btn-primary btn-create-class-session"
+                                data-bs-toggle="modal"
+                                data-bs-target="#confirmCreateModal" data-id="#">
+                            Tạo lịch sinh hoạt lớp cố định
+                        </button>
+                    </div>
                 </div>
-            </div>
                 <div class="mt-5">
                     <div class="text-center alert alert-warning" role="alert">
                         Chưa có lịch sinh hoạt lớp.
@@ -109,7 +123,7 @@
 
             <!-- Modal Tạo mới -->
             <div class="modal fade auto-reset-modal" id="confirmCreateModal" tabindex="-1"
-                aria-labelledby="confirmCreateModalLabel" >
+                 aria-labelledby="confirmCreateModalLabel">
                 <div class="modal-dialog">
                     <div class="modal-content">
                         <div class="modal-body p-4">
@@ -117,11 +131,12 @@
                                 <h5 class="modal-title fw-bold" id="createModalLabel">Đăng ký sinh hoạt lớp cố
                                     định</h5>
                                 <button type="button" class="btn btn-outline-danger btnReset" id="btnReset">Đặt
-                                    lại</button>
+                                    lại
+                                </button>
                             </div>
 
                             <form id="createform" method="POST"
-                                action="{{ route('student-affairs-department.class-session.createClassSessionRegistration') }}">
+                                  action="{{ route('student-affairs-department.class-session.createClassSessionRegistration') }}">
                                 @csrf
                                 @method('POST')
                                 <div class="mb-3">
@@ -142,210 +157,34 @@
                                 <div class="mb-3">
                                     <label for="open_date" class="form-label">Thời gian bắt đầu</label>
                                     <input type="text" class="form-control" id="open_date" name="open_date"
-                                        placeholder="Chọn thời gian bắt đầu" onfocus="(this.type='datetime-local')"
-                                        onblur="if(!this.value)this.type='text'" required
-                                        min="{{ now()->addMinutes(30)->format('Y-m-d\TH:i') }}">
+                                           placeholder="Chọn thời gian bắt đầu" onfocus="(this.type='datetime-local')"
+                                           onblur="if(!this.value)this.type='text'" required
+                                           min="{{ now()->addMinutes(30)->format('Y-m-d\TH:i') }}">
                                     <div id="open_date_error" class="text-danger text-danger-error"></div>
                                     @error('open_date')
-                                        <div class="text-danger text-danger-error">{{ $message }}</div>
+                                    <div class="text-danger text-danger-error">{{ $message }}</div>
                                     @enderror
                                 </div>
 
                                 <div class="mb-3">
                                     <label for="end_date" class="form-label">Thời gian kết thúc</label>
                                     <input type="text" class="form-control" id="end_date" name="end_date"
-                                        placeholder="Chọn thời gian kết thúc" onfocus="(this.type='datetime-local')"
-                                        onblur="if(!this.value)this.type='text'" required
-                                        min="{{ now()->addMinutes(30)->format('Y-m-d\TH:i') }}">
+                                           placeholder="Chọn thời gian kết thúc" onfocus="(this.type='datetime-local')"
+                                           onblur="if(!this.value)this.type='text'" required
+                                           min="{{ now()->addMinutes(30)->format('Y-m-d\TH:i') }}">
                                     <div id="end_date_error" class="text-danger text-danger-error"></div>
                                     @error('end_date')
-                                        <div class="text-danger text-danger-error">{{ $message }}</div>
+                                    <div class="text-danger text-danger-error">{{ $message }}</div>
                                     @enderror
                                 </div>
 
                                 <div class="d-flex justify-content-center gap-3 mt-4">
                                     <button type="button" class="btn btn-danger" data-bs-dismiss="modal"
-                                        style="width: 120px;">Quay lại</button>
+                                            style="width: 120px;">Quay lại
+                                    </button>
                                     <button type="submit" class="btn btn-primary btn-create-submit"
-                                        style="width: 120px;">Đăng ký</button>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Modal Sửa -->
-            @if (isset($data['classSessionRegistration']) && $data['classSessionRegistration'])
-                <div class="modal fade auto-reset-modal" id="confirmEditModal" tabindex="-1"
-                    aria-labelledby="confirmEditModalLabel" >
-                    <div class="modal-dialog">
-                        <div class="modal-content">
-                            <div class="modal-body p-4">
-                                <div class="d-flex justify-content-between align-items-center mb-4">
-                                    <h5 class="modal-title fw-bold" id="editModalLabel">Đăng ký sinh hoạt lớp cố
-                                        định</h5>
-                                    <button type="button" class="btn btn-outline-danger btnReset" id="btneditReset">Đặt
-                                        lại</button>
-                                </div>
-
-                                <form id="editform" method="POST"
-                                    action="{{ route('student-affairs-department.class-session.editClassSessionRegistration', $data['classSessionRegistration']->id) }}">
-                                    @csrf
-                                    @method('PUT')
-                                    <div class="mb-3">
-                                        <label for="semester_id_edit" class="form-label">Học kỳ</label>
-                                        <select class="form-select" id="semester_id_edit" name="semester_id" required>
-                                            @foreach ($data['semesters'] as $semester)
-                                                <option value="{{ $semester->id }}"
-                                                    {{ $semester->id == $data['classSessionRegistration']->semester_id ? 'selected' : '' }}>
-                                                    {{ $semester->name }} - {{ $semester->school_year }}</option>
-                                            @endforeach
-                                        </select>
-                                        <div id="semester_id_error-edit" class="text-danger text-danger-error"></div>
-                                    </div>
-
-                                    <div class="mb-3">
-                                        <label for="open_date_edit" class="form-label">Thời gian bắt đầu</label>
-                                        <input type="text" class="form-control" id="open_date_edit" name="open_date"
-                                            placeholder="Chọn thời gian bắt đầu" onfocus="(this.type='datetime-local')"
-                                            onblur="if(!this.value)this.type='text'" required
-                                            value="{{ $data['classSessionRegistration']->open_date }}"
-                                            min="{{ now()->addMinutes(30)->format('Y-m-d\TH:i') }}">
-                                        <div id="open_date_error_edit" class="text-danger text-danger-error"></div>
-                                        @error('open_date')
-                                            <div class="text-danger text-danger-error">{{ $message }}</div>
-                                        @enderror
-                                    </div>
-
-                                    <div class="mb-3">
-                                        <label for="end_date_edit" class="form-label">Thời gian kết thúc</label>
-                                        <input type="text" class="form-control" id="end_date_edit" name="end_date"
-                                            placeholder="Chọn thời gian kết thúc" onfocus="(this.type='datetime-local')"
-                                            onblur="if(!this.value)this.type='text'" required
-                                            value="{{ $data['classSessionRegistration']->end_date }}"
-                                            min="{{ now()->addMinutes(30)->format('Y-m-d\TH:i') }}">
-                                        <div id="end_date_error_edit" class="text-danger text-danger-error"></div>
-                                        @error('end_date')
-                                            <div class="text-danger text-danger-error">{{ $message }}</div>
-                                        @enderror
-                                    </div>
-
-                                    <div class="d-flex justify-content-center gap-3 mt-4">
-                                        <button type="button" class="btn btn-danger" data-bs-dismiss="modal"
-                                            style="width: 120px;">Quay lại</button>
-                                        <button type="submit" class="btn btn-primary btn-edit-submit"
-                                            style="width: 120px;">Đăng
-                                            ký</button>
-                                    </div>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            @endif
-
-            {{-- Modal Hình thức offline --}}
-            <div class="modal fade auto-reset-modal" id="offlineModal" tabindex="-1"
-                aria-labelledby="offlineModalLabel" >
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                        <div class="modal-body p-4">
-                            <div class="d-flex justify-content-between align-items-center mb-4">
-                                <h5 class="modal-title fw-bold" id="offlineModalLabel">Xét duyệt sinh hoạt lớp cố
-                                    định</h5>
-                                <button type="button" class="btn btn-outline-danger btnReset" id="offlineBtnReset">Huỷ
-                                    đăng
-                                    ký</button>
-                            </div>
-
-                            <form id="offlineForm" method="POST" action="#">
-                                @csrf
-
-                                <h6>Hình thức: Trực tiếp tại trường</h6>
-                                <h6>Thời gian: 7h00 - 20/04/2025</h6>
-                                <h6>Ghi chú: Lorem ipsum dolor sit, amet consectetur adipisicing elit. Quam exercitationem
-                                    labore earum tempore iure. Atque aliquid, neque sit velit unde nemo possimus praesentium
-                                    ut, consectetur maiores beatae cum quos qui.</h6>
-
-                                <div class="mb-3">
-                                    <label for="sinhHoatLopThoiGianKetThuc" class="form-label">Chọn phòng học:</label>
-                                    <select name="" id="sinhHoatLopThoiGianKetThuc" class="form-select">
-                                        <option value="1">230A6</option>
-                                        <option value="2">230A8</option>
-                                        <option value="3">230A9</option>
-                                    </select>
-                                </div>
-
-                                <div class="d-flex justify-content-center gap-3 mt-4">
-                                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal"
-                                        style="width: 120px;">Quay lại</button>
-                                    <button type="submit" class="btn btn-primary" style="width: 120px;">Đăng ký</button>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            {{-- Modal Hình thức online --}}
-            <div class="modal fade auto-reset-modal" id="onlineModal" tabindex="-1" aria-labelledby="onlineModalLabel"
-                >
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                        <div class="modal-body p-4">
-                            <div class="d-flex justify-content-between align-items-center mb-4">
-                                <h5 class="modal-title fw-bold" id="onlineModalLabel">Xét duyệt sinh hoạt lớp cố
-                                    định</h5>
-                                <button type="button" class="btn btn-outline-danger btnReset" id="onlineBtnReset">Huỷ
-                                    đăng
-                                    ký</button>
-                            </div>
-
-                            <form id="onlineForm" method="POST" action="#">
-                                @csrf
-
-                                <h6>Hình thức: Trực tuyến</h6>
-                                <h6>Thời gian: 7h00 - 20/04/2025</h6>
-                                <h6>Nền tảng tổ chức họp: Microsoft teams</h6>
-                                <h6>Phòng họp: 1000000</h6>
-                                <h6>Link họp: url::lkjdflajs.sdf</h6>
-                                <h6>Mật khẩu: 1234556</h6>
-
-                                <div class="d-flex justify-content-center gap-3 mt-4">
-                                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal"
-                                        style="width: 120px;">Quay lại</button>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            {{-- Modal Hình thức dã ngoại --}}
-            <div class="modal fade auto-reset-modal" id="picnicModal" tabindex="-1" aria-labelledby="picnicModalLabel">
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                        <div class="modal-body p-4">
-                            <div class="d-flex justify-content-between align-items-center mb-4">
-                                <h5 class="modal-title fw-bold" id="picnicModalLabel">Xét duyệt sinh hoạt lớp cố
-                                    định</h5>
-                                <button type="button" class="btn btn-outline-danger btnReset" id="picnicBtnReset">Huỷ
-                                    đăng
-                                    ký</button>
-                            </div>
-
-                            <form id="picnicForm" method="POST" action="#">
-                                @csrf
-
-                                <h6>Hình thức: Dã ngoại</h6>
-                                <h6>Thời gian: 7h00 - 20/04/2025</h6>
-                                <h6>Địa điểm: Công viên ABC</h6>
-                                <h6>Ghi chú: Mang theo đồ ăn trưa và nước uống</h6>
-
-                                <div class="d-flex justify-content-center gap-3 mt-4">
-                                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal"
-                                        style="width: 120px;">Quay lại</button>
+                                            style="width: 120px;">Đăng ký
+                                    </button>
                                 </div>
                             </form>
                         </div>
@@ -354,24 +193,174 @@
             </div>
         </div>
     </div>
+
+    <!-- Modal Sửa -->
+    @if (isset($data['classSessionRegistration']) && $data['classSessionRegistration'])
+        <div class="modal fade auto-reset-modal" id="confirmEditModal" tabindex="-1"
+             aria-labelledby="confirmEditModalLabel">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-body p-4">
+                        <div class="d-flex justify-content-between align-items-center mb-4">
+                            <h5 class="modal-title fw-bold" id="editModalLabel">Đăng ký sinh hoạt lớp cố
+                                định</h5>
+                            <button type="button" class="btn btn-outline-danger btnReset" id="btneditReset">Đặt
+                                lại
+                            </button>
+                        </div>
+
+                        <form id="editform" method="POST"
+                              action="{{ route('student-affairs-department.class-session.editClassSessionRegistration', $data['classSessionRegistration']->id) }}">
+                            @csrf
+                            @method('PUT')
+                            <div class="mb-3">
+                                <label for="semester_id_edit" class="form-label">Học kỳ</label>
+                                <select class="form-select" id="semester_id_edit" name="semester_id" required>
+                                    @foreach ($data['semesters'] as $semester)
+                                        <option value="{{ $semester->id }}"
+                                            {{ $semester->id == $data['classSessionRegistration']->semester_id ? 'selected' : '' }}>
+                                            {{ $semester->name }} - {{ $semester->school_year }}</option>
+                                    @endforeach
+                                </select>
+                                <div id="semester_id_error-edit" class="text-danger text-danger-error"></div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="open_date_edit" class="form-label">Thời gian bắt đầu</label>
+                                <input type="text" class="form-control" id="open_date_edit" name="open_date"
+                                       placeholder="Chọn thời gian bắt đầu"
+                                       onfocus="(this.type='datetime-local')"
+                                       onblur="if(!this.value)this.type='text'" required
+                                       value="{{ $data['classSessionRegistration']->open_date }}"
+                                       min="{{ now()->addMinutes(30)->format('Y-m-d\TH:i') }}">
+                                <div id="open_date_error_edit" class="text-danger text-danger-error"></div>
+                                @error('open_date')
+                                <div class="text-danger text-danger-error">{{ $message }}</div>
+                                @enderror
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="end_date_edit" class="form-label">Thời gian kết thúc</label>
+                                <input type="text" class="form-control" id="end_date_edit" name="end_date"
+                                       placeholder="Chọn thời gian kết thúc"
+                                       onfocus="(this.type='datetime-local')"
+                                       onblur="if(!this.value)this.type='text'" required
+                                       value="{{ $data['classSessionRegistration']->end_date }}"
+                                       min="{{ now()->addMinutes(30)->format('Y-m-d\TH:i') }}">
+                                <div id="end_date_error_edit" class="text-danger text-danger-error"></div>
+                                @error('end_date')
+                                <div class="text-danger text-danger-error">{{ $message }}</div>
+                                @enderror
+                            </div>
+
+                            <div class="d-flex justify-content-center gap-3 mt-4">
+                                <button type="button" class="btn btn-danger" data-bs-dismiss="modal"
+                                        style="width: 120px;">Quay lại
+                                </button>
+                                <button type="submit" class="btn btn-primary btn-edit-submit"
+                                        style="width: 120px;">Đăng
+                                    ký
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {{-- Modal Hình thức họp --}}
+        <div class="modal fade auto-reset-modal" id="formModal" tabindex="-1" aria-labelledby="formModalLabel"
+        >
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-body p-4">
+                        <div class="d-flex justify-content-between align-items-center mb-4">
+                            <h5 class="modal-title fw-bold" id="formModalLabel">Xét duyệt sinh hoạt lớp cố định</h5>
+                            <button type="button" class="btn btn-outline-danger" id="btnReject">Huỷ đăng ký</button>
+                        </div>
+
+                        <form id="formComfirm" method="POST">
+                            @csrf
+                            @method('PUT')
+                            <input type="hidden" name="id" class="class_session_id" value="">
+                            <input type="hidden" name="status" class="class_session_status" value="">
+
+                            <h6>Lớp: <span class="class_session_study_class"></span></h6>
+                            <h6>Hình thức họp: <span class="class_session_position"></span></h6>
+                            <h6>Thời gian: <span class="class_session_proposed_at"></span></h6>
+
+                            <div class="session-picnic">
+                                <h6>Địa điểm: <span class="class_session_location"></span></h6>
+                            </div>
+
+                            <div class="session-online d-none">
+                                <h6>Nền tảng tổ chức họp: <span class="class_session_meeting_type"></span></h6>
+                                <h6>ID phòng họp: <span class="class_session_meeting_id"></span></h6>
+                                <h6>Mật khẩu: <span class="class_session_meeting_password"></span></h6>
+                                <h6>Đường dẫn phòng họp: <a class="class_session_meeting_url" target="_blank">Bấm
+                                        vào đây!</a></h6>
+                            </div>
+
+                            <h6>Ghi chú: <span class="class_session_note"></span></h6>
+
+                            <div class="form-group session-offline d-none mb-3">
+                                <label for="room" class="form-label room">Chọn phòng họp:</label>
+                                <select class="form-select" id="room" name="room_id">
+                                    @foreach($data['rooms'] as $room )
+                                        <option value="{{ $room->id }}">{{ $room->name }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+
+                            <div class="form-group input-rejection d-none">
+                                <label for="rejection_reason" class="form-label">Lý do từ chối:</label>
+                                <textarea class="form-control resize-none" id="rejection_reason"
+                                          name="rejection_reason" rows="3"
+                                          placeholder="Nhập nội dung từ chối"></textarea>
+                            </div>
+
+
+                            <div class="d-flex justify-content-center gap-3 mt-4">
+                                <button type="button" class="btn btn-danger" data-bs-dismiss="modal"
+                                        style="width: 120px;">Quay lại
+                                </button>
+                                <button type="submit" class="btn btn-primary btn-comfirm-form"
+                                        style="width: 120px;">Xét duyệt
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    @endif
+
 @endsection
 
 @push('scripts')
     <script>
-        $(document).ready(function() {
+        $(document).ready(function () {
+            let isRejectMode = false;
             // Reset form when modal is closed
-            $('.auto-reset-modal').on('hidden.bs.modal', function() {
+            $('.auto-reset-modal').on('hidden.bs.modal', function () {
                 $('.text-danger-error').text('');
                 $(this).find('form')[0].reset();
+                $('.input-rejection').addClass('d-none');
+                $('#room').prop('disabled', false);
+                $('#btnReject').css({
+                    'background-color': '',
+                    'color': ''
+                });
+                isRejectMode = false; // Reset cờ trạng thái
             });
 
             // Reset form when button is clicked
-            $('.btnReset').click(function() {
+            $('.btnReset').click(function () {
                 $('.text-danger-error').text('');
                 $('#createform')[0].reset();
             });
 
-            $('.btn-create-submit').on('click', function(e) {
+            $('.btn-create-submit').on('click', function (e) {
                 e.preventDefault();
 
                 let openDate = $('#open_date').val();
@@ -400,7 +389,7 @@
                 $('#createform').submit();
             });
 
-            $('.btn-edit-submit').on('click', function(e) {
+            $('.btn-edit-submit').on('click', function (e) {
                 e.preventDefault();
 
                 let openDate = $('#open_date_edit').val();
@@ -430,6 +419,84 @@
                 $('#editform').submit();
             });
 
+            $('#btnReject').on('click', function () {
+                isRejectMode = !isRejectMode;
+
+                if (isRejectMode) {
+                    $('.input-rejection').removeClass('d-none');
+                    $('#room').prop('disabled', true);
+                    $(this).css({
+                        'background-color': '#dc3545',
+                        'color': '#fff'
+                    });
+                } else {
+                    $('.input-rejection').addClass('d-none');
+                    $('#room').prop('disabled', false);
+                    $(this).css({
+                        'background-color': '',
+                        'color': ''
+                    });
+                }
+
+            });
+
+            $('.btn-comfirm-class').on('click', function () {
+                const classId = $(this).data('id');
+                const studyClassName = $(this).data('study-class-name');
+                const type = $(this).data('type');
+                const position = $(this).data('position');
+                const proposedAt = $(this).data('proposed_at');
+                const location = $(this).data('location');
+                const meetingType = $(this).data('meeting-type');
+                const meetingId = $(this).data('meeting-id');
+                const meetingPassword = $(this).data('meeting-password');
+                const meetingUrl = $(this).data('meeting-url');
+                const note = $(this).data('note');
+
+                if (position === 0) {
+                    $('.session-offline').removeClass('d-none');
+                    $('.session-online').addClass('d-none');
+                    $('.session-picnic').addClass('d-none');
+                } else if (position === 1) {
+                    $('.session-offline').addClass('d-none');
+                    $('.session-online').removeClass('d-none');
+                    $('.session-picnic').addClass('d-none');
+                } else {
+                    $('.session-offline').addClass('d-none');
+                    $('.session-online').addClass('d-none');
+                    $('.session-picnic').removeClass('d-none');
+                }
+
+                $('.class_session_study_class').text(studyClassName);
+                $('.class_session_position').text(position === 0 ? 'Trực tiếp tại trường' : position === 1 ? 'Trực tuyến' : 'Dã ngoại');
+                $('.class_session_proposed_at').text(moment(proposedAt).format('H:mm DD/MM/YYYY'));
+                $('.class_session_location').text(location);
+                $('.class_session_meeting_type').text(meetingType);
+                $('.class_session_meeting_id').text(meetingId);
+                $('.class_session_meeting_password').text(meetingPassword);
+                $('.class_session_meeting_url').attr('href', meetingUrl);
+                $('.class_session_note').text(!note ? '---' : note);
+
+                $('#formComfirm').attr('action', `{{ route('student-affairs-department.class-session.updateClassRequest', '') }}/${classId}`);
+
+            });
+
+            // $('.btn-comfirm-form').on('click', function (e) {)
+            //     e.preventDefault();
+            //
+            //     const classId = $('.class_session_id').val();
+            //     const status = $('.class_session_status').val();
+            //     const rejectionReason = $('#rejection_reason').val();
+            //
+            //     if (isRejectMode && !rejectionReason) {
+            //         alert('Vui lòng nhập lý do từ chối');
+            //         return;
+            //     }
+            //
+            //     if (!isRejectMode) {
+            //         $('#formComfirm').submit();
+            //     }
+            // });
         });
     </script>
 @endpush

@@ -18,4 +18,9 @@ class ClassSessionRegistration extends Model
     {
         return $this->belongsTo(Semester::class);
     }
+
+    public function classSessionRequests()
+    {
+        return $this->hasMany(ClassSessionRequest::class);
+    }
 }
