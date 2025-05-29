@@ -306,9 +306,13 @@
                             <div class="form-group session-offline d-none mb-3">
                                 <label for="room" class="form-label room">Chọn phòng họp:</label>
                                 <select class="form-select" id="room" name="room_id">
-                                    @foreach($data['rooms'] as $room )
-                                        <option value="{{ $room->id }}">{{ $room->name }}</option>
-                                    @endforeach
+                                    @if($data['rooms']->isNotEmpty())
+                                        @foreach($data['rooms'] as $room)
+                                            <option value="{{ $room->id }}">{{ $room->name }}</option>
+                                        @endforeach
+                                    @else
+                                        <option value="" disabled selected>Không có phòng khả dụng</option>
+                                    @endif
                                 </select>
                             </div>
 
