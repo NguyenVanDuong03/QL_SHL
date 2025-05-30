@@ -21,10 +21,12 @@ class StudyClassService extends BaseService
     {
         $wheres = Arr::get($params, 'wheres', []);
         $sort = Arr::get($params, 'sort', 'id:desc');
+        $relates = Arr::get($params, 'relates', []);
 
         return [
             'sort' => $sort,
-            'wheres' => $wheres
+            'wheres' => $wheres,
+            'relates' => $relates,
         ];
     }
 

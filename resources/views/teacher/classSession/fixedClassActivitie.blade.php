@@ -38,7 +38,7 @@
                         <button class="input-group-text" id="basic-addon2"><i class="fas fa-magnifying-glass"></i></button>
                     </div>
                     <div class="d-flex justify-content-end">
-                        <a class="btn btn-primary" href="{{ route('student-affairs-department.class-session.history') }}">
+                        <a class="btn btn-primary" href="#">
                             Lịch sử
                         </a>
                     </div>
