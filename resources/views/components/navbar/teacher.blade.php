@@ -10,7 +10,8 @@
     <div class="px-3">
         <ul class="nav flex-column">
             <li class="nav-item">
-                <a class="nav-link {{ Route::currentRouteName() == 'teacher.index' ? 'active' : '' }}" href="{{ route('teacher.index') }}">
+                <a class="nav-link {{ Route::currentRouteName() == 'teacher.index' ? 'active' : '' }}"
+                   href="{{ route('teacher.index') }}">
                     <i class="fas fa-home"></i>
                     Trang chủ
                 </a>
@@ -22,13 +23,18 @@
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link {{ Route::currentRouteName() == 'teacher.class-session.index' ? 'active' : '' }}" href="{{ route('teacher.class-session.index') }}">
+                <a class="nav-link {{ Route::currentRouteName() == 'teacher.class-session.index' ||
+                                        Route::currentRouteName() == 'teacher.class-session.fixed-class-activitie' ||
+                                        Route::currentRouteName() == 'teacher.class-session.flexible-class-activitie' ||
+                                        Route::currentRouteName() == 'teacher.class-session.create'  ? 'active' : '' }}"
+                   href="{{ route('teacher.class-session.index') }}">
                     <i class="fas fa-book"></i>
                     Sinh hoạt lớp
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link {{ Route::currentRouteName() == 'teacher.class.index' ? 'active' : '' }}" href="{{ route('teacher.class.index') }}">
+                <a class="nav-link {{ Route::currentRouteName() == 'teacher.class.index' ? 'active' : '' }}"
+                   href="{{ route('teacher.class.index') }}">
                     <i class="fas fa-users"></i>
                     Lớp học
                 </a>

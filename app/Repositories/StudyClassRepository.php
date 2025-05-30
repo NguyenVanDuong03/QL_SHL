@@ -29,14 +29,31 @@ class StudyClassRepository extends BaseRepository
         return $query;
     }
 
-//    public function getStudyClassById($id)
-//    {
-//        $query = $this->getModel()
-//            ->with(['classSessionRequests'])
-//            ->where('lecturer_id', $id)
-//            ->paginate(constant::DEFAULT_LIMIT_12);
-//
-//        return $query;
-//    }
+    public function getStudyClassById($params)
+    {
+        $query = $this->getModel()
+            ->with(['major.faculty.department', 'cohort'])
+            ->where('lecturer_id', $params['lecturer_id'])
+            ->whereDoesntHave('classSessionRequests', function ($q) use ($params) {
+                $q->whereHas('classSessionRegistration', function ($qr) use ($params) {
+                    $qr->where('semester_id', $params['semester_id']);
+                });
+            });
+
+        // Nếu có từ khóa tìm kiếm
+        if (!empty($params['search'])) {
+            $search = $params['search'];
+            $query->where(function ($q) use ($search) {
+                $q->where('name', 'like', "%$search%")
+                    ->orWhereHas('lecturer.user', function ($q2) use ($search) {
+                        $q2->where('name', 'like', "%$search%");
+                    });
+            });
+        }
+
+        return $query->paginate(constant::DEFAULT_LIMIT_12);
+    }
+
+
 
 }

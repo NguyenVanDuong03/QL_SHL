@@ -76,10 +76,15 @@ class LecturerController extends Controller
     public function indexFixedClassActivitie(Request $request)
     {
         $params = $request->all();
+        $lecturerId = auth()->user()->lecturer?->id;
         $getCSRSemesterInfo = $this->classSessionRegistrationService->getCSRSemesterInfo();
-//        dd($getCSRSemesterInfo->id);
+        $params['lecturer_id'] = $lecturerId;
+        $params['semester_id'] = $getCSRSemesterInfo?->id;
+        $getStudyClassByIds = $this->studyClassService->getStudyClassById($params)->toArray();
+//        dd($getStudyClassByIds);
         $data = [
             'getCSRSemesterInfo' => $getCSRSemesterInfo,
+            'getStudyClassByIds' => $getStudyClassByIds,
         ];
 
         return view('teacher.classSession.fixedClassActivitie', compact('data'));
@@ -88,5 +93,18 @@ class LecturerController extends Controller
     public function indexFlexibleClassActivitie()
     {
         return view('teacher.classSession.flexibleClassActivitie');
+    }
+
+    public function createClassSession($id)
+    {
+        $getCSRSemesterInfo = $this->classSessionRegistrationService->getCSRSemesterInfo();
+        $getStudyClassByIds = $this->studyClassService->find($id);
+        $data = [
+            'getCSRSemesterInfo' => $getCSRSemesterInfo,
+            'getStudyClassByIds' => $getStudyClassByIds,
+        ];
+//        dd($data['getCSRSemesterInfo']);
+
+        return view('teacher.classSession.create', compact('data'));
     }
 }

@@ -9,12 +9,12 @@ class Major extends Model
 {
     use SoftDeletes;
     protected $fillable = [
-        'department_id',
+        'faculty_id',
         'name',
     ];
 
-    public function department()
+    public function faculty()
     {
-        return $this->belongsTo(Department::class);
+        return $this->belongsTo(Faculty::class);
     }
 }

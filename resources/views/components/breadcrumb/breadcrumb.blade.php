@@ -10,6 +10,10 @@
         }
 
     }
+
+    .breadcrumb-check {
+        font-size: 0.875rem;
+    }
 </style>
 @endpush
 

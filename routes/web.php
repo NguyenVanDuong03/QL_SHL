@@ -46,6 +46,7 @@ Route::middleware(['auth'])->group(function () {
                     Route::get('/', [LecturerController::class, 'indexClassSession'])->name('index');
                     Route::get('/fixed-class-activitie', [LecturerController::class, 'indexFixedClassActivitie'])->name('fixed-class-activitie');
                     Route::get('/flexible-class-activitie', [LecturerController::class, 'indexFlexibleClassActivitie'])->name('flexible-class-activitie');
+                    Route::get('/create/{id}', [LecturerController::class, 'createClassSession'])->name('create');
                 }
             );
 
