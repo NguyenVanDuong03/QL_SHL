@@ -73,9 +73,11 @@ class LecturerController extends Controller
         return view('teacher.class.infoStudent', compact('data'));
     }
 
-    public function indexFixedClassActivitie()
+    public function indexFixedClassActivitie(Request $request)
     {
+        $params = $request->all();
         $getCSRSemesterInfo = $this->classSessionRegistrationService->getCSRSemesterInfo();
+//        dd($getCSRSemesterInfo->id);
         $data = [
             'getCSRSemesterInfo' => $getCSRSemesterInfo,
         ];

@@ -29,4 +29,14 @@ class StudyClassRepository extends BaseRepository
         return $query;
     }
 
+//    public function getStudyClassById($id)
+//    {
+//        $query = $this->getModel()
+//            ->with(['classSessionRequests'])
+//            ->where('lecturer_id', $id)
+//            ->paginate(constant::DEFAULT_LIMIT_12);
+//
+//        return $query;
+//    }
+
 }
