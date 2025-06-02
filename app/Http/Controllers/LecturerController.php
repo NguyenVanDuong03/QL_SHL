@@ -128,6 +128,11 @@ class LecturerController extends Controller
         return view('teacher.classSession.create', compact('data'));
     }
 
+    public function indexStatistical()
+    {
+        return view('teacher.statistical.index');
+    }
+
     public function storeClassSession(Request $request)
     {
         $params = $request->all();
