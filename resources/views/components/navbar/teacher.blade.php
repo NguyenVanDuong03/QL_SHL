@@ -46,7 +46,7 @@
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="#">
+                <a class="nav-link {{ Route::currentRouteName() == 'teacher.statistical.index' ? 'active' : '' }}" href="{{ route('teacher.statistical.index') }}">
                     <i class="fas fa-chart-line"></i>
                     Thống kê
                 </a>
