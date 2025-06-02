@@ -61,6 +61,18 @@ Route::middleware(['auth'])->group(function () {
                     Route::get('/{id?}', [LecturerController::class, 'infoStudent'])->name('infoStudent');
                 }
             );
+
+            // Statistical
+            Route::group(
+                [
+                    'prefix' => 'statistical',
+                    'as' => 'statistical.',
+                ],
+                function () {
+                    Route::get('/', [LecturerController::class, 'indexStatistical'])->name('index');
+//                    Route::get('/{id?}', [LecturerController::class, 'infoStatistical'])->name('infoStatistical');
+                }
+            );
         }
     );
 
