@@ -15,8 +15,9 @@
         <!-- Header với thông tin khóa học -->
         <div class="mx-3">
             <div class="mb-2">
-                <a href="{{ route('teacher.class-session.fixed-class-activitie') }}">
-                    <i class="fas fa-arrow-left-long"></i>
+                <a href="{{ route('teacher.class-session.fixed-class-activitie') }}"
+                   class="btn btn-outline-secondary btn-sm">
+                    <i class="fas fa-arrow-left me-2"></i>Quay lại
                 </a>
             </div>
             <div class="row">
@@ -48,6 +49,7 @@
                 @csrf
                 <div class="row">
                     <input type="hidden" name="study_class_id" value="{{ $data['getStudyClassByIds']->id }}">
+                    <input type="hidden" name="status" value="0">
                     <!-- Cột trái - Form tiêu đề và nội dung -->
                     <div class="col-md-8">
                         <div class="card shadow-sm">
@@ -186,8 +188,28 @@
 
 
             $activityType.trigger('change');
+
+            const getClassSessionRequest = @json($data['getClassSessionRequest']);
+            if (getClassSessionRequest) {
+                $('#title').val(getClassSessionRequest['title']);
+                $('#content').val(getClassSessionRequest['content']);
+                $('#timeSelect').val(getClassSessionRequest['proposed_at']);
+                $('#location').val(getClassSessionRequest['location']);
+                $('#meeting_id').val(getClassSessionRequest['meeting_id']);
+                $('#meeting_password').val(getClassSessionRequest['meeting_password']);
+                $('#meeting_link').val(getClassSessionRequest['meeting_url']);
+                $('#notes').val(getClassSessionRequest['note']);
+
+                if (getClassSessionRequest['position'] === 0) {
+                    $activityType.val('0');
+                } else if (getClassSessionRequest['position'] === 1) {
+                    $activityType.val('1');
+                    $('.class-meeting').removeClass('d-none');
+                } else if (getClassSessionRequest['position'] === 2) {
+                    $activityType.val('2');
+                    $('.class-location').removeClass('d-none');
+                }
+            }
         });
-
-
     </script>
 @endpush

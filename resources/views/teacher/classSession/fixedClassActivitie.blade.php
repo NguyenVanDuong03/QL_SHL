@@ -19,8 +19,9 @@
                     <!-- Thông tin học kỳ -->
                     <div class="col-md-6 col-lg-5 mb-3">
                         <div class="mb-2">
-                            <a href="{{ route('teacher.class-session.index') }}" class="text-decoration-none">
-                                <i class="fas fa-arrow-left-long"></i>
+                            <a href="{{ route('teacher.class-session.index') }}"
+                               class="btn btn-outline-secondary btn-sm">
+                                <i class="fas fa-arrow-left me-2"></i>Quay lại
                             </a>
                         </div>
                         <h5 class="mb-1">{{ $data['getCSRSemesterInfo']->name }}
@@ -91,7 +92,7 @@
                                                 ---
                                             @else
                                                 <span
-                                                    class="badge {{ $class['class_session_requests']['position'] == '0' ? 'bg-success' : ($class['position'] == '1' ? 'bg-primary' : 'bg-warning') }}">           {{ $class['class_session_requests']['position'] == '0' ? 'Trực tiếp tại trường' : ($class['position'] == '1' ? 'Trực tuyến' : 'Dã ngoại') }}</span>
+                                                    class="badge {{ $class['class_session_requests']['position'] == '0' ? 'bg-success' : ($class['class_session_requests']['position'] == '1' ? 'bg-primary' : 'bg-warning') }}">{{ $class['class_session_requests']['position'] == '0' ? 'Trực tiếp tại trường' : ($class['class_session_requests']['position'] == '1' ? 'Trực tuyến' : 'Dã ngoại') }}</span>
                                             @endif
                                         </td>
                                         <td class="px-4 py-1">
@@ -106,21 +107,25 @@
                                             @endif
                                         </td>
                                         <td class="px-4 py-1 text-center">
-                                            <a class="btn btn-primary btn-sm"
-                                               title="{{ empty($class['class_session_requests']) ? 'Đăng ký' : 'Chỉnh sửa' }}"
-                                               href="{{ route('teacher.class-session.create', ['study-class-id' => $class['id'], 'session-request-id' => $class['class_session_requests']['id'] ?? null] ) }}">
-                                                <i class="fas fa-file-signature"></i>
-                                            </a>
-                                            <button
+                                            @if($data['checkClassSessionRegistration'])
+                                                <a class="btn btn-primary btn-sm"
+                                                   title="{{ empty($class['class_session_requests']) ? 'Đăng ký' : 'Chỉnh sửa' }}"
+                                                   href="{{ route('teacher.class-session.create', ['study-class-id' => $class['id'], 'session-request-id' => $class['class_session_requests']['id'] ?? null]) }}">
+                                                    <i class="fas fa-file-signature"></i>
+                                                </a>
+                                            @endif
+                                            <a href="{{ route('teacher.class-session.detail', ['study-class-id' => $class['id'], 'session-request-id' => $class['class_session_requests']['id'] ?? null]) }}"
                                                 class="btn btn-secondary btn-sm {{ empty($class['class_session_requests']) ? 'disabled' : '' }}"
                                                 title="Chi tiết">
                                                 <i class="fas fa-info-circle"></i>
-                                            </button>
-                                            <button
-                                                class="btn btn-danger btn-sm {{ empty($class['class_session_requests']) ? 'disabled' : '' }}"
-                                                title="Hủy đăng ký">
-                                                <i class="fas fa-trash-alt"></i>
-                                            </button>
+                                            </a>
+                                            @if($data['checkClassSessionRegistration'])
+                                                <button
+                                                    class="btn btn-danger btn-sm {{ empty($class['class_session_requests']) ? 'disabled' : '' }}"
+                                                    title="Hủy đăng ký">
+                                                    <i class="fas fa-trash-alt"></i>
+                                                </button>
+                                            @endif
 
                                         </td>
                                     </tr>
@@ -141,6 +146,78 @@
                     Tất cả các lớp đã được đăng ký.
                 </div>
             @endif
+        </div>
+    </div>
+
+    <!-- View Class Modal -->
+    <div class="modal fade" id="viewClassModal" tabindex="-1" aria-labelledby="viewClassModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="viewClassModalLabel">
+                        <i class="fas fa-user me-2"></i>Thông tin sinh viên
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">Tên lớp:</label>
+                                <p id="viewClassName" class="text-muted mb-0"></p>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">Khoa:</label>
+                                <p id="viewClassEmail" class="text-muted mb-0"></p>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">Hình thức:</label>
+                                <p id="viewClassGender" class="text-muted mb-0"></p>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">Ghi chú:</label>
+                                <p id="viewClassGender" class="text-muted mb-0"></p>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">Trạng thái:</label>
+                                <p id="viewClassDob" class="text-muted mb-0"></p>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">Phòng:</label>
+                                <p id="viewClassPhone" class="text-muted mb-0"></p>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">Địa điểm:</label>
+                                <p id="viewClassPosition" class="text-muted mb-0"></p>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">Nền tảng:</label>
+                                <p id="viewClassPosition" class="text-muted mb-0"></p>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">Mã phòng họp:</label>
+                                <p id="viewClassPosition" class="text-muted mb-0"></p>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">Mật khẩu:</label>
+                                <p id="viewClassPosition" class="text-muted mb-0"></p>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">Đường dẫn:</label>
+                                <p id="viewClassPosition" class="text-muted mb-0"></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                    <button type="button" class="btn btn-primary">
+                        <i class="fas fa-edit me-2"></i>Chỉnh sửa
+                    </button>
+                </div>
+            </div>
         </div>
     </div>
 @endsection

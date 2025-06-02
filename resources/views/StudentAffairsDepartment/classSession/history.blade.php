@@ -16,8 +16,9 @@
         <div class="p-4">
             <div class="d-flex justify-content-between align-items-start mb-4">
                 <div>
-                    <a href="{{ route('student-affairs-department.class-session.index') }}">
-                        <i class="fas fa-arrow-left-long"></i>
+                    <a href="{{ route('student-affairs-department.class-session.index') }}"
+                       class="btn btn-outline-secondary btn-sm">
+                        <i class="fas fa-arrow-left me-2"></i>Quay lại
                     </a>
                 </div>
                 <div>

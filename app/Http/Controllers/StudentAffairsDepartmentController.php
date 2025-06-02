@@ -72,6 +72,18 @@ class StudentAffairsDepartmentController extends Controller
     public function comfirmClassSession(Request $request, $id)
     {
         $params = $request->all();
+        if ($params['position'] != Constant::CLASS_SESSION_POSITION['OFFLINE']) {
+            $params['room_id'] = null;
+        } else {
+            $this->roomService->update($params['room_id'], [
+                'status' => Constant::ROOM_STATUS['UNAVAILABLE'],
+            ]);
+        }
+
+        if ($params['rejection_reason']) {
+            $params['status'] = Constant::CLASS_SESSION_STATUS['REJECTED'];
+            $params['room_id'] = null;
+        }
 //         dd($params, $id);
         $this->classSessionRequestService->update($id, $params);
 

@@ -89,6 +89,7 @@ class LecturerController extends Controller
         $totalClasses = $this->studyClassService->coutStudyClassListByLecturerId($lecturerId);
         $countApprovedByLecturerAndSemester = $this->classSessionRequestService->countApprovedByLecturerAndSemester($lecturerId, $getSemesterInfo?->id);
         $countRejectedByLecturerAndSemester = $this->classSessionRequestService->countRejectedByLecturerAndSemester($lecturerId, $getSemesterInfo?->id);
+        $checkClassSessionRegistration = $this->classSessionRegistrationService->checkClassSessionRegistration();
 //        dd($getStudyClassByIds);
         $data = [
             'getCSRSemesterInfo' => $getCSRSemesterInfo,
@@ -96,6 +97,7 @@ class LecturerController extends Controller
             'totalClasses' => $totalClasses,
             'countApprovedByLecturerAndSemester' => $countApprovedByLecturerAndSemester,
             'countRejectedByLecturerAndSemester' => $countRejectedByLecturerAndSemester,
+            'checkClassSessionRegistration' => $checkClassSessionRegistration,
         ];
 
         return view('teacher.classSession.fixedClassActivitie', compact('data'));
@@ -116,6 +118,7 @@ class LecturerController extends Controller
             'getCSRSemesterInfo' => $getCSRSemesterInfo,
             'getStudyClassByIds' => $getStudyClassByIds,
         ];
+        $data['getClassSessionRequest'] = null;
         if ($sessionRequestId) {
             $getClassSessionRequest = $this->classSessionRequestService->find($sessionRequestId);
             $rooms = $this->roomService->get();
@@ -123,14 +126,9 @@ class LecturerController extends Controller
             $data['getClassSessionRequest'] = $getClassSessionRequest;
             $data['rooms'] = $rooms;
         }
-//        dd($data['getStudyClassByIds']);
+//        dd($data['getClassSessionRequest']);
 
         return view('teacher.classSession.create', compact('data'));
-    }
-
-    public function indexStatistical()
-    {
-        return view('teacher.statistical.index');
     }
 
     public function storeClassSession(Request $request)
@@ -142,9 +140,40 @@ class LecturerController extends Controller
         $params['class_session_registration_id'] = $classSessionRegistration->id;
         if ($params['position'] == '2' || $params['position'] == '0')
             $params['meeting_type'] = null;
+        if ($params['position'] != '0')
+            $params['room_id'] = null;
 //        dd($params);
 
         $this->classSessionRequestService->createOrUpdateByClassAndSemester($params);
         return redirect()->route('teacher.class-session.fixed-class-activitie')->with('success', 'Tạo yêu cầu thành công');
     }
+
+    public function detailClassSession(Request $request)
+    {
+        $studyClassId = $request->query('study-class-id');
+        $sessionRequestId = $request->query('session-request-id');
+        $getCSRSemesterInfo = $this->classSessionRegistrationService->getCSRSemesterInfo();
+        $getStudyClassByIds = $this->studyClassService->find($studyClassId);
+        $data = [
+            'getCSRSemesterInfo' => $getCSRSemesterInfo,
+            'getStudyClassByIds' => $getStudyClassByIds,
+        ];
+        $data['getClassSessionRequest'] = null;
+        if ($sessionRequestId) {
+            $getClassSessionRequest = $this->classSessionRequestService->find($sessionRequestId);
+            $rooms = $this->roomService->get();
+
+            $data['getClassSessionRequest'] = $getClassSessionRequest;
+            $data['rooms'] = $rooms;
+        }
+
+//        dd($data['getClassSessionRequest']);
+        return view('teacher.classSession.detail', compact('data'));
+    }
+
+    public function indexStatistical()
+    {
+        return view('teacher.statistical.index');
+    }
+
 }

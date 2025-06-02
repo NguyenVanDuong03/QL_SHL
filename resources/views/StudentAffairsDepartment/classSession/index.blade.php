@@ -45,23 +45,23 @@
                     </div>
                 </div>
 
-                @if (isset($data['ListCSRs']['data']) && $data['ListCSRs']['total'] > 0)
-                    <!-- Table -->
-                    <div class="card shadow-sm">
-                        <div class="card-body p-0">
-                            <div class="table-responsive">
-                                <table class="table table-hover mb-0">
-                                    <thead class="table-light">
-                                    <tr>
-                                        <th scope="col" class="px-4 py-3">STT</th>
-                                        <th scope="col" class="px-4 py-3">Tên lớp</th>
-                                        <th scope="col" class="px-4 py-3">Thời gian</th>
-                                        <th scope="col" class="px-4 py-3">Hình thức</th>
-                                        <th scope="col" class="px-4 py-3">Trạng thái</th>
-                                        <th scope="col" class="px-4 py-3 text-center">Thao tác</th>
-                                    </tr>
-                                    </thead>
-                                    <tbody>
+                <!-- Table -->
+                <div class="card shadow-sm">
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table class="table table-hover mb-0">
+                                <thead class="table-light">
+                                <tr>
+                                    <th scope="col" class="px-4 py-3">STT</th>
+                                    <th scope="col" class="px-4 py-3">Tên lớp</th>
+                                    <th scope="col" class="px-4 py-3">Thời gian</th>
+                                    <th scope="col" class="px-4 py-3">Hình thức</th>
+                                    <th scope="col" class="px-4 py-3">Trạng thái</th>
+                                    <th scope="col" class="px-4 py-3 text-center">Thao tác</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                @if (isset($data['ListCSRs']['data']) && $data['ListCSRs']['total'] > 0)
                                     @foreach ($data['ListCSRs']['data'] as $index => $class)
                                         <tr>
                                             <td class="px-4 py-3">
@@ -139,26 +139,27 @@
                                             </td>
                                         </tr>
                                     @endforeach
-                                    </tbody>
-                                </table>
-                            </div>
+                                @else
+                                    <tr>
+                                        <td colspan="6" class="text-center py-4">
+                                            Không có lớp học nào được đăng ký.
+                                        </td>
+                                    </tr>
+                                @endif
+                                </tbody>
+                            </table>
                         </div>
                     </div>
+                </div>
 
-                    <!-- Pagination -->
-                    <div class="mt-4">
-                        <div class="d-flex justify-content-center">
-                            @include('components.pagination.pagination', [
-                                'paginate' => $data['ListCSRs'],
-                            ])
-                        </div>
+                <!-- Pagination -->
+                <div class="mt-4">
+                    <div class="d-flex justify-content-center">
+                        @include('components.pagination.pagination', [
+                            'paginate' => $data['ListCSRs'],
+                        ])
                     </div>
-                @else
-                    <div class="text-center alert alert-warning" role="alert">
-                        <i class="fas fa-exclamation-triangle me-2"></i>
-                        Chưa có lớp nào đăng ký.
-                    </div>
-                @endif
+                </div>
             @else
                 <div class="d-flex justify-content-center align-items-center h-100">
                     <div class="">
@@ -339,6 +340,7 @@
                             @csrf
                             @method('PATCH')
                             <input type="hidden" name="status" class="class_session_status" value="1">
+                            <input type="hidden" name="position" class="class_session_position_input">
 
                             <h6>Lớp: <span class="class_session_study_class"></span></h6>
                             <h6>Hình thức họp: <span class="class_session_position"></span></h6>
@@ -358,7 +360,8 @@
 
                             <h6>Ghi chú: <span class="class_session_note"></span></h6>
 
-                            <h6>Phòng: <span class="class_session_room d-none"></span></h6>
+                            <h6 class="class_session_room d-none">Phòng: <span class="class_session_room_name"></span>
+                            </h6>
                             <div class="form-group session-offline d-none mb-3">
                                 <label for="room" class="form-label room">Chọn phòng họp:</label>
                                 <select class="form-select" id="room" name="room_id">
@@ -557,6 +560,8 @@
                 $('.class_session_meeting_password').text(meetingPassword);
                 $('.class_session_meeting_url').attr('href', meetingUrl);
                 $('.class_session_note').text(!note ? '---' : note);
+                $('.class_session_position_input').val(position);
+
 
                 $('#formComfirm').attr('action', `{{ route('student-affairs-department.class-session.updateClassRequest', '') }}/${classId}`);
 
@@ -565,7 +570,7 @@
             $('.btn-detail-class').on('click', function () {
                 const classId = $(this).data('id');
                 const studyClassName = $(this).data('study-class-name');
-                const type = $(this).data('type');
+                let type = $(this).data('type');
                 const position = $(this).data('position');
                 const proposedAt = $(this).data('proposed_at');
                 const location = $(this).data('location');
@@ -603,7 +608,7 @@
                 $('.class_session_meeting_password').text(meetingPassword);
                 $('.class_session_meeting_url').attr('href', meetingUrl);
                 $('.class_session_note').text(!note ? '---' : note);
-                $('.class_session_room').text(roomName ?? '---');
+                $('.class_session_room_name').text(roomName ?? '---');
 
             });
 
