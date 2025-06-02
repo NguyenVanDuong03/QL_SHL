@@ -45,64 +45,120 @@
                     </div>
                 </div>
 
-                <div class="row g-4">
-                    @if (isset($data['ListCSRs']['data']) && $data['ListCSRs']['total'] > 0)
-                        @foreach ($data['ListCSRs']['data'] as $class)
-                            <div class="col-md-6 col-lg-4">
-                                <div class="card shadow-sm">
-                                    <div class="card-body position-relative">
-                                        <h5 class="card-title">{{ $class['study_class_name'] }}</h5>
-                                        <div class="mt-3">
-                                            <p class="mb-1">Thời gian:
-                                                {{ \Carbon\Carbon::parse($class['proposed_at'])->format('H:i d/m/Y') }}</p>
-                                            <p class="mb-1">Hình thức:
+                @if (isset($data['ListCSRs']['data']) && $data['ListCSRs']['total'] > 0)
+                    <!-- Table -->
+                    <div class="card shadow-sm">
+                        <div class="card-body p-0">
+                            <div class="table-responsive">
+                                <table class="table table-hover mb-0">
+                                    <thead class="table-light">
+                                    <tr>
+                                        <th scope="col" class="px-4 py-3">STT</th>
+                                        <th scope="col" class="px-4 py-3">Tên lớp</th>
+                                        <th scope="col" class="px-4 py-3">Thời gian</th>
+                                        <th scope="col" class="px-4 py-3">Hình thức</th>
+                                        <th scope="col" class="px-4 py-3">Trạng thái</th>
+                                        <th scope="col" class="px-4 py-3 text-center">Thao tác</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    @foreach ($data['ListCSRs']['data'] as $index => $class)
+                                        <tr>
+                                            <td class="px-4 py-3">
+                                                {{ ($data['ListCSRs']['current_page'] - 1) * $data['ListCSRs']['per_page'] + $index + 1 }}
+                                            </td>
+                                            <td class="px-4 py-3">
+                                                <strong>{{ $class['study_class_name'] }}</strong>
+                                            </td>
+                                            <td class="px-4 py-3">
+                                                {{ \Carbon\Carbon::parse($class['proposed_at'])->format('H:i d/m/Y') }}
+                                            </td>
+                                            <td class="px-4 py-3">
                                                 @if ($class['position'] == 0)
-                                                    Trực tiếp tại trường
+                                                    <span class="badge bg-success">Trực tiếp tại trường</span>
                                                 @elseif ($class['position'] == 1)
-                                                    Trực tuyến
+                                                    <span class="badge bg-primary">Trực tuyến</span>
                                                 @elseif ($class['position'] == 2)
-                                                    Dã ngoại
+                                                    <span class="badge bg-warning">Dã ngoại</span>
                                                 @endif
-                                            </p>
-                                        </div>
-                                        <button class="btn btn-primary position-absolute btn-comfirm-class"
-                                                style="top: 10px; right: 10px; border-radius: 5px;"
-                                                data-bs-toggle="modal"
-                                                data-bs-target="#formModal"
-                                                data-id="{{ $class['id'] }}"
-                                                data-type="{{ $class['type'] }}"
-                                                data-position="{{ $class['position'] }}"
-                                                data-proposed_at="{{ $class['proposed_at'] }}"
-                                                data-location="{{ $class['location'] }}"
-                                                data-meeting-type="{{ $class['meeting_type'] }}"
-                                                data-meeting-id="{{ $class['meeting_id'] }}"
-                                                data-meeting-password="{{ $class['meeting_password'] }}"
-                                                data-meeting-url="{{ $class['meeting_url'] }}"
-                                                data-study-class-name="{{ $class['study_class_name'] }}"
-                                                data-note="{{ $class['note'] }}"
-                                        >
-                                            Xem chi tiết
-                                        </button>
-                                    </div>
-                                </div>
+                                            </td>
+                                            <td class="px-4 py-3">
+                                                @if ($class['status'] == 0)
+                                                    <span class="badge bg-secondary">Chưa xét duyệt</span>
+                                                @elseif ($class['status'] == 1)
+                                                    <span class="badge bg-success">Đã xét duyệt</span>
+                                                @elseif ($class['status'] == 2)
+                                                    <span class="badge bg-danger">Đã từ chối</span>
+                                                @endif
+                                            </td>
+                                            <td class="px-4 py-3 text-center">
+                                                <button class="btn btn-primary btn-sm btn-comfirm-class"
+                                                        title="Xét duyệt"
+                                                        data-bs-toggle="modal"
+                                                        data-bs-target="#formModal"
+                                                        data-id="{{ $class['id'] }}"
+                                                        data-type="{{ $class['type'] }}"
+                                                        data-position="{{ $class['position'] }}"
+                                                        data-proposed_at="{{ $class['proposed_at'] }}"
+                                                        data-location="{{ $class['location'] }}"
+                                                        data-meeting-type="{{ $class['meeting_type'] }}"
+                                                        data-meeting-id="{{ $class['meeting_id'] }}"
+                                                        data-meeting-password="{{ $class['meeting_password'] }}"
+                                                        data-meeting-url="{{ $class['meeting_url'] }}"
+                                                        data-study-class-name="{{ $class['study_class_name'] }}"
+                                                        data-note="{{ $class['note'] }}"
+                                                        data-room-name="{{ $class['room_name'] }}"
+                                                        data-room-id="{{ $class['room_id'] }}"
+                                                >
+                                                    <i class="fas fa-file-signature"></i>
+                                                </button>
+                                                <button
+                                                    class="btn btn-secondary btn-sm btn-detail-class {{ $class['status'] == 0 ? 'disabled' : '' }}"
+                                                    title="Chi tiết"
+                                                    data-bs-toggle="modal"
+                                                    data-bs-target="#formModal"
+                                                    data-id="{{ $class['id'] }}"
+                                                    data-type="{{ $class['type'] }}"
+                                                    data-position="{{ $class['position'] }}"
+                                                    data-proposed_at="{{ $class['proposed_at'] }}"
+                                                    data-location="{{ $class['location'] }}"
+                                                    data-meeting-type="{{ $class['meeting_type'] }}"
+                                                    data-meeting-id="{{ $class['meeting_id'] }}"
+                                                    data-meeting-password="{{ $class['meeting_password'] }}"
+                                                    data-meeting-url="{{ $class['meeting_url'] }}"
+                                                    data-study-class-name="{{ $class['study_class_name'] }}"
+                                                    data-note="{{ $class['note'] }}"
+                                                    data-room-name="{{ $class['room_name'] }}"
+                                                    data-room-id="{{ $class['room_id'] }}">
+                                                    <i class="fas fa-info-circle"></i>
+                                                </button>
+                                                <button
+                                                    class="btn btn-danger btn-sm {{ $class['status'] == 0 ? 'disabled' : '' }}">
+                                                    <i class="fas fa-trash-alt"></i>
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    @endforeach
+                                    </tbody>
+                                </table>
                             </div>
-                        @endforeach
+                        </div>
+                    </div>
 
-                        <div class="col-md-12">
-                            <div class="d-flex justify-content-center mt-4">
-                                @include('components.pagination.pagination', [
-                                    'paginate' => $data['ListCSRs'],
-                                ])
-                            </div>
+                    <!-- Pagination -->
+                    <div class="mt-4">
+                        <div class="d-flex justify-content-center">
+                            @include('components.pagination.pagination', [
+                                'paginate' => $data['ListCSRs'],
+                            ])
                         </div>
-                    @else
-                        <div class="col-md-12">
-                            <div class="text-center alert alert-warning" role="alert">
-                                Chưa có lớp nào đăng ký.
-                            </div>
-                        </div>
-                    @endif
-                </div>
+                    </div>
+                @else
+                    <div class="text-center alert alert-warning" role="alert">
+                        <i class="fas fa-exclamation-triangle me-2"></i>
+                        Chưa có lớp nào đăng ký.
+                    </div>
+                @endif
             @else
                 <div class="d-flex justify-content-center align-items-center h-100">
                     <div class="">
@@ -115,13 +171,13 @@
                 </div>
                 <div class="mt-5">
                     <div class="text-center alert alert-warning" role="alert">
+                        <i class="fas fa-exclamation-triangle me-2"></i>
                         Chưa có lịch sinh hoạt lớp.
                     </div>
                 </div>
-
             @endif
 
-            <!-- Modal Tạo mới -->
+            <!-- Modal Tạo mới lịch đăng ký sinh hoạt lớp -->
             <div class="modal fade auto-reset-modal" id="confirmCreateModal" tabindex="-1"
                  aria-labelledby="confirmCreateModalLabel">
                 <div class="modal-dialog">
@@ -194,7 +250,7 @@
         </div>
     </div>
 
-    <!-- Modal Sửa -->
+    <!-- Modal Sửa lịch đăng ký sinh hoạt lớp -->
     @if (isset($data['classSessionRegistration']) && $data['classSessionRegistration'])
         <div class="modal fade auto-reset-modal" id="confirmEditModal" tabindex="-1"
              aria-labelledby="confirmEditModalLabel">
@@ -281,9 +337,8 @@
 
                         <form id="formComfirm" method="POST">
                             @csrf
-                            @method('PUT')
-                            <input type="hidden" name="id" class="class_session_id" value="">
-                            <input type="hidden" name="status" class="class_session_status" value="">
+                            @method('PATCH')
+                            <input type="hidden" name="status" class="class_session_status" value="1">
 
                             <h6>Lớp: <span class="class_session_study_class"></span></h6>
                             <h6>Hình thức họp: <span class="class_session_position"></span></h6>
@@ -303,6 +358,7 @@
 
                             <h6>Ghi chú: <span class="class_session_note"></span></h6>
 
+                            <h6>Phòng: <span class="class_session_room d-none"></span></h6>
                             <div class="form-group session-offline d-none mb-3">
                                 <label for="room" class="form-label room">Chọn phòng họp:</label>
                                 <select class="form-select" id="room" name="room_id">
@@ -314,6 +370,7 @@
                                         <option value="" disabled selected>Không có phòng khả dụng</option>
                                     @endif
                                 </select>
+
                             </div>
 
                             <div class="form-group input-rejection d-none">
@@ -456,6 +513,26 @@
                 const meetingPassword = $(this).data('meeting-password');
                 const meetingUrl = $(this).data('meeting-url');
                 const note = $(this).data('note');
+                const roomName = $(this).data('room-name');
+                const roomId = $(this).data('room-id');
+
+                $('.class_session_room').addClass('d-none');
+                const $roomSelect = $('#room');
+                $roomSelect.empty();
+
+
+                @if($data['rooms']->isNotEmpty())
+                @foreach($data['rooms'] as $room)
+                $roomSelect.append(`<option value="{{ $room->id }}">{{ $room->name }}</option>`);
+                @endforeach
+                    @endif
+
+                if (roomId && roomName) {
+                    if ($roomSelect.find(`option[value="${roomId}"]`).length === 0) {
+                        $roomSelect.append(`<option value="${roomId}">${roomName} (đã được chọn)</option>`);
+                    }
+                    $roomSelect.val(roomId);
+                }
 
                 if (position === 0) {
                     $('.session-offline').removeClass('d-none');
@@ -485,7 +562,52 @@
 
             });
 
-            // $('.btn-comfirm-form').on('click', function (e) {)
+            $('.btn-detail-class').on('click', function () {
+                const classId = $(this).data('id');
+                const studyClassName = $(this).data('study-class-name');
+                const type = $(this).data('type');
+                const position = $(this).data('position');
+                const proposedAt = $(this).data('proposed_at');
+                const location = $(this).data('location');
+                const meetingType = $(this).data('meeting-type');
+                const meetingId = $(this).data('meeting-id');
+                const meetingPassword = $(this).data('meeting-password');
+                const meetingUrl = $(this).data('meeting-url');
+                const note = $(this).data('note');
+                const roomName = $(this).data('room-name');
+                const roomId = $(this).data('room-id');
+
+                if (position === 0) {
+                    $('.session-offline').addClass('d-none');
+                    $('.session-online').addClass('d-none');
+                    $('.session-picnic').addClass('d-none');
+                    $('.class_session_room').removeClass('d-none');
+                } else if (position === 1) {
+                    $('.session-offline').addClass('d-none');
+                    $('.session-online').removeClass('d-none');
+                    $('.session-picnic').addClass('d-none');
+                    $('.class_session_room').addClass('d-none');
+                } else {
+                    $('.session-offline').addClass('d-none');
+                    $('.session-online').addClass('d-none');
+                    $('.session-picnic').removeClass('d-none');
+                    $('.class_session_room').addClass('d-none');
+                }
+
+                $('.class_session_study_class').text(studyClassName);
+                $('.class_session_position').text(position === 0 ? 'Trực tiếp tại trường' : position === 1 ? 'Trực tuyến' : 'Dã ngoại');
+                $('.class_session_proposed_at').text(moment(proposedAt).format('H:mm DD/MM/YYYY'));
+                $('.class_session_location').text(location);
+                $('.class_session_meeting_type').text(meetingType);
+                $('.class_session_meeting_id').text(meetingId);
+                $('.class_session_meeting_password').text(meetingPassword);
+                $('.class_session_meeting_url').attr('href', meetingUrl);
+                $('.class_session_note').text(!note ? '---' : note);
+                $('.class_session_room').text(roomName ?? '---');
+
+            });
+
+            // $('.btn-comfirm-form').on('click', function (e) {
             //     e.preventDefault();
             //
             //     const classId = $('.class_session_id').val();

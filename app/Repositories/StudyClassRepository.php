@@ -29,16 +29,47 @@ class StudyClassRepository extends BaseRepository
         return $query;
     }
 
+//    public function getStudyClassById($params)
+//    {
+//        $query = $this->getModel()
+//            ->with(['major.faculty.department', 'cohort'])
+//            ->where('lecturer_id', $params['lecturer_id'])
+//            ->whereDoesntHave('classSessionRequests', function ($q) use ($params) {
+//                $q->whereHas('classSessionRegistration', function ($qr) use ($params) {
+//                    $qr->where('semester_id', $params['semester_id']);
+//                });
+//            });
+//
+//        // Nếu có từ khóa tìm kiếm
+//        if (!empty($params['search'])) {
+//            $search = $params['search'];
+//            $query->where(function ($q) use ($search) {
+//                $q->where('name', 'like', "%$search%")
+//                    ->orWhereHas('lecturer.user', function ($q2) use ($search) {
+//                        $q2->where('name', 'like', "%$search%");
+//                    });
+//            });
+//        }
+//
+//        return $query->paginate(constant::DEFAULT_LIMIT_12);
+//    }
+
     public function getStudyClassById($params)
     {
+        $lecturerId = $params['lecturer_id'];
+        $semesterId = $params['semester_id'];
+
         $query = $this->getModel()
-            ->with(['major.faculty.department', 'cohort'])
-            ->where('lecturer_id', $params['lecturer_id'])
-            ->whereDoesntHave('classSessionRequests', function ($q) use ($params) {
-                $q->whereHas('classSessionRegistration', function ($qr) use ($params) {
-                    $qr->where('semester_id', $params['semester_id']);
-                });
-            });
+            ->with([
+                'major.faculty.department',
+                'cohort',
+                'classSessionRequests' => function ($q) use ($semesterId) {
+                    $q->whereHas('classSessionRegistration', function ($qr) use ($semesterId) {
+                        $qr->where('semester_id', $semesterId);
+                    });
+                }
+            ])
+            ->where('lecturer_id', $lecturerId);
 
         // Nếu có từ khóa tìm kiếm
         if (!empty($params['search'])) {
@@ -53,7 +84,5 @@ class StudyClassRepository extends BaseRepository
 
         return $query->paginate(constant::DEFAULT_LIMIT_12);
     }
-
-
 
 }

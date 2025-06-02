@@ -24,11 +24,46 @@ class ClassSessionRequestRepository extends BaseRepository
             ->count();
     }
 
-    // public function getFlexibleClassSessionRequest()
-    // {
-    //     return $this->getModel()
-    //         ->where('type', Constant::CLASS_SESSION_TYPE['FLEXIBLE'])
-    //         ->whereIn('status', [Constant::CLASS_SESSION_STATUS['APPROVED'], Constant::CLASS_SESSION_STATUS['ACTIVE']])
-    //         ->paginate(Constant::DEFAULT_LIMIT);
-    // }
+    public function countApprovedByLecturerAndSemester($lecturerId, $semesterId)
+    {
+        return $this->getModel()
+            ->where('lecturer_id', $lecturerId)
+            ->where('status', constant::CLASS_SESSION_STATUS['APPROVED'])
+            ->whereHas('classSessionRegistration', function ($q) use ($semesterId) {
+                $q->where('semester_id', $semesterId);
+            })
+            ->count();
+    }
+
+    public function countRejectedByLecturerAndSemester($lecturerId, $semesterId)
+    {
+        return $this->getModel()
+            ->where('lecturer_id', $lecturerId)
+            ->where('status', constant::CLASS_SESSION_STATUS['REJECTED'])
+            ->whereHas('classSessionRegistration', function ($q) use ($semesterId) {
+                $q->where('semester_id', $semesterId);
+            })
+            ->count();
+    }
+
+    public function getClassSessionRequestById($studyClassId, $class_session_registration_id)
+    {
+        return $this->getModel()
+            ->where('study_class_id', $studyClassId)
+            ->where('class_session_registration_id', $class_session_registration_id)
+            ->first();
+    }
+
+    public function createOrUpdateByClassAndSemester(array $params)
+    {
+        $modelClass = $this->getModel();
+
+        $instance = $modelClass::where('study_class_id', $params['study_class_id'])
+            ->where('class_session_registration_id', $params['class_session_registration_id'])
+            ->first();
+
+        return $this->createOrUpdate($params, $instance);
+    }
+
+
 }

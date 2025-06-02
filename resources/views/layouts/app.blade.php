@@ -43,8 +43,9 @@
 
         footer {
             background-color: #f8f9fa;
-            padding: 20px 0;
+            padding-top: 15px;
             text-align: center;
+            border-top: 1px solid #dee2e6;
         }
 
         footer p {

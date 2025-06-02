@@ -32,7 +32,7 @@ class StudyClass extends Model
 
     public function classSessionRequests()
     {
-        return $this->hasMany(ClassSessionRequest::class, 'study_class_id');
+        return $this->hasOne(ClassSessionRequest::class, 'study_class_id');
     }
 
     public function students()

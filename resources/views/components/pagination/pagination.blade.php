@@ -15,7 +15,7 @@
             </span>
         </div>
         <nav>
-            <ul class="pagination justify-content-center">
+            <ul class="pagination pagination-sm justify-content-center">
 
                 {{-- Previous Page --}}
                 <li class="page-item {{ $currentPage === 1 ? 'disabled' : '' }}">

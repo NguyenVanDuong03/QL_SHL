@@ -46,7 +46,8 @@ Route::middleware(['auth'])->group(function () {
                     Route::get('/', [LecturerController::class, 'indexClassSession'])->name('index');
                     Route::get('/fixed-class-activitie', [LecturerController::class, 'indexFixedClassActivitie'])->name('fixed-class-activitie');
                     Route::get('/flexible-class-activitie', [LecturerController::class, 'indexFlexibleClassActivitie'])->name('flexible-class-activitie');
-                    Route::get('/create/{id}', [LecturerController::class, 'createClassSession'])->name('create');
+                    Route::get('/fixed-class-activitie/create', [LecturerController::class, 'createClassSession'])->name('create');
+                    Route::post('/fixed-class-activitie', [LecturerController::class, 'storeClassSession'])->name('store');
                 }
             );
 
@@ -85,7 +86,7 @@ Route::middleware(['auth'])->group(function () {
                     Route::get('/history/{id}', [StudentAffairsDepartmentController::class, 'history'])->name('history');
                     Route::post('/create-classSession-registration', [StudentAffairsDepartmentController::class, 'createClassSessionRegistration'])->name('createClassSessionRegistration');
                     Route::put('/edit-classSession-registration/{id?}', [StudentAffairsDepartmentController::class, 'editClassSessionRegistration'])->name('editClassSessionRegistration');
-                    Route::put('/confirm-classSession-registration/{id?}', [StudentAffairsDepartmentController::class, 'comfirmClassSession'])->name('updateClassRequest');
+                    Route::patch('/confirm-classSession-registration/{id?}', [StudentAffairsDepartmentController::class, 'comfirmClassSession'])->name('updateClassRequest');
                 }
             );
 

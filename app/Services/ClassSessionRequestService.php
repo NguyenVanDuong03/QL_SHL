@@ -47,9 +47,26 @@ class ClassSessionRequestService extends BaseService
         return $this->getRepository()->countFlexibleClassSessionRequest();
     }
 
-    public function comfirmClassSession($id, $params)
+    public function countApprovedByLecturerAndSemester($lecturerId, $semesterId)
     {
+        return $this->getRepository()->countApprovedByLecturerAndSemester($lecturerId, $semesterId);
+    }
+
+    public function countRejectedByLecturerAndSemester($lecturerId, $semesterId)
+    {
+        return $this->getRepository()->countRejectedByLecturerAndSemester($lecturerId, $semesterId);
+    }
+
+    public function getClassSessionRequestById($studyClassId, $class_session_registration_id)
+    {
+        return $this->getRepository()->getClassSessionRequestById($studyClassId, $class_session_registration_id);
+    }
+
+    public function createOrUpdateByClassAndSemester(array $params)
+    {
+        return $this->getRepository()->createOrUpdateByClassAndSemester($params);
 
     }
+
 
 }

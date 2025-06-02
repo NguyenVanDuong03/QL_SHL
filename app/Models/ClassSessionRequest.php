@@ -14,6 +14,7 @@ class ClassSessionRequest extends Model
         'class_session_registration_id',
         'room_id',
         'type',
+        'position',
         'proposed_at',
         'location',
         'meeting_type',
