@@ -58,11 +58,8 @@
             </div>
             <div class="row">
                 <div class="col-12">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <p class="mb-0"><strong>{{ $data['getCSRSemesterInfo']->name }}
-                                - {{ $data['getCSRSemesterInfo']->school_year }}</strong></p>
+                    <div class="d-flex justify-content-center align-items-center">
                         <h3 class="fw-bold d-none d-md-block">Chi tiết sinh hoạt lớp</h3>
-                        <p class="mb-0 text-end"><strong>Lớp:</strong> {{ $data['getStudyClassByIds']->name }}</p>
                     </div>
                 </div>
             </div>
@@ -264,23 +261,63 @@
                             </h6>
                         </div>
                         <div class="card-body">
-                            <div class="mb-2">
-                                <small class="text-muted">Ngày tạo:</small>
-                                <p class="mb-0">{{ \Carbon\Carbon::parse($data['getClassSessionRequest']->created_at ?? now())->format('H:i d/m/Y') }}</p>
+                            <div class="row">
+                                <div class="col-6 mb-2">
+                                    <div class="mb-2">
+                                        <small class="text-muted">Học kỳ:</small>
+                                        <p class="mb-0">{{ $data['getCSRSemesterInfo']->name }} - {{ $data['getCSRSemesterInfo']->school_year }}</p>
+                                    </div>
+                                    <div class="mb-2">
+                                        <small class="text-muted">Lớp:</small>
+                                        <p class="mb-0">{{ $data['getStudyClassByIds']->name }}</p>
+                                    </div>
+                                    <div class="mb-2">
+                                        <small class="text-muted">Ngày tạo:</small>
+                                        <p class="mb-0">{{ \Carbon\Carbon::parse($data['getClassSessionRequest']->created_at ?? now())->format('H:i d/m/Y') }}</p>
+                                    </div>
+                                    <div class="mb-2">
+                                        <small class="text-muted">Cập nhật lần cuối:</small>
+                                        <p class="mb-0">{{ \Carbon\Carbon::parse($data['getClassSessionRequest']->updated_at ?? now())->format('H:i d/m/Y') }}</p>
+                                    </div>
+                                    <div class="mb-2">
+                                        <small class="text-muted">Loại sinh hoạt:</small>
+                                        <p class="mb-0">
+                                            @php
+                                                $type = $data['getClassSessionRequest']->type ?? 0;
+                                                echo $type == 0 ? 'SHL cố định' : 'SHL linh hoạt';
+                                            @endphp
+                                        </p>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="mb-2">
+                                        <small class="text-muted">Học kỳ:</small>
+                                        <p class="mb-0">{{ $data['getCSRSemesterInfo']->name }} - {{ $data['getCSRSemesterInfo']->school_year }}</p>
+                                    </div>
+                                    <div class="mb-2">
+                                        <small class="text-muted">Lớp:</small>
+                                        <p class="mb-0">{{ $data['getStudyClassByIds']->name }}</p>
+                                    </div>
+                                    <div class="mb-2">
+                                        <small class="text-muted">Ngày tạo:</small>
+                                        <p class="mb-0">{{ \Carbon\Carbon::parse($data['getClassSessionRequest']->created_at ?? now())->format('H:i d/m/Y') }}</p>
+                                    </div>
+                                    <div class="mb-2">
+                                        <small class="text-muted">Cập nhật lần cuối:</small>
+                                        <p class="mb-0">{{ \Carbon\Carbon::parse($data['getClassSessionRequest']->updated_at ?? now())->format('H:i d/m/Y') }}</p>
+                                    </div>
+                                    <div class="mb-2">
+                                        <small class="text-muted">Loại sinh hoạt:</small>
+                                        <p class="mb-0">
+                                            @php
+                                                $type = $data['getClassSessionRequest']->type ?? 0;
+                                                echo $type == 0 ? 'SHL cố định' : 'SHL linh hoạt';
+                                            @endphp
+                                        </p>
+                                    </div>
+                                </div>
                             </div>
-                            <div class="mb-2">
-                                <small class="text-muted">Cập nhật lần cuối:</small>
-                                <p class="mb-0">{{ \Carbon\Carbon::parse($data['getClassSessionRequest']->updated_at ?? now())->format('H:i d/m/Y') }}</p>
-                            </div>
-                            <div class="mb-2">
-                                <small class="text-muted">Loại sinh hoạt:</small>
-                                <p class="mb-0">
-                                    @php
-                                        $type = $data['getClassSessionRequest']->type ?? 0;
-                                        echo $type == 0 ? 'SHL cố định' : 'SHL linh hoạt';
-                                    @endphp
-                                </p>
-                            </div>
+
                         </div>
                     </div>
                 </div>
