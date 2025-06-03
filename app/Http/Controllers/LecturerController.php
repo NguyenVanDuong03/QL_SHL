@@ -154,6 +154,9 @@ class LecturerController extends Controller
         $sessionRequestId = $request->query('session-request-id');
         $getCSRSemesterInfo = $this->classSessionRegistrationService->getCSRSemesterInfo();
         $getStudyClassByIds = $this->studyClassService->find($studyClassId);
+        $params['study_class_id'] = $studyClassId;
+        $students = $this->studentService->get($params);
+//        dd($students);
         $data = [
             'getCSRSemesterInfo' => $getCSRSemesterInfo,
             'getStudyClassByIds' => $getStudyClassByIds,
@@ -167,7 +170,7 @@ class LecturerController extends Controller
             $data['rooms'] = $rooms;
         }
 
-//        dd($data['getClassSessionRequest']);
+//        dd($data['getStudyClassByIds']);
         return view('teacher.classSession.detail', compact('data'));
     }
 
