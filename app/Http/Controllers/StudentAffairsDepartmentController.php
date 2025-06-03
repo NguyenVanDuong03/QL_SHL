@@ -212,7 +212,7 @@ class StudentAffairsDepartmentController extends Controller
     public function accountStudent(Request $request)
     {
         $params = $request->all();
-        $params['relates'] = ['user', 'cohort', 'studyClass'];
+        $params['getAll'] = true;
         $students = $this->studentService->paginate($params)->toArray();
         $cohorts = $this->cohortService->get();
         $studyClasses = $this->studyClassService->get();

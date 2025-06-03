@@ -69,7 +69,28 @@ class StudyClassRepository extends BaseRepository
                     });
                 }
             ])
-            ->where('lecturer_id', $lecturerId);
+            ->where('lecturer_id', $lecturerId)
+            ->withCount([
+                'classSessionRequests as status_order' => function ($q) use ($semesterId) {
+                    $q->select(DB::raw('
+                CASE
+                    WHEN status = 0 THEN 1
+                    WHEN status = 2 THEN 2
+                    WHEN status = 1 THEN 3
+                    ELSE 4
+                END
+            '))
+                        ->whereHas('classSessionRegistration', function ($qr) use ($semesterId) {
+                            $qr->where('semester_id', $semesterId);
+                        });
+                }
+            ])
+            ->orderByRaw('
+        CASE
+            WHEN status_order IS NULL THEN 0
+            ELSE status_order
+        END ASC
+    ');
 
         // Nếu có từ khóa tìm kiếm
         if (!empty($params['search'])) {

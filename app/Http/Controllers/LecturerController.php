@@ -154,8 +154,7 @@ class LecturerController extends Controller
         $sessionRequestId = $request->query('session-request-id');
         $getCSRSemesterInfo = $this->classSessionRegistrationService->getCSRSemesterInfo();
         $getStudyClassByIds = $this->studyClassService->find($studyClassId);
-        $params['study_class_id'] = $studyClassId;
-        $students = $this->studentService->get($params);
+        $students = $this->studentService->getStudentsByClassId($studyClassId);
 //        dd($students);
         $data = [
             'getCSRSemesterInfo' => $getCSRSemesterInfo,

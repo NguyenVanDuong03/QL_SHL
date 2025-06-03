@@ -22,13 +22,11 @@ class StudentService extends BaseService
         $sort = Arr::get($params, 'sort', 'id:desc');
         $wheres = Arr::get($params, 'wheres', []);
         $relates = Arr::get($params, 'relates', []);
-        $studentClassId = Arr::get($params, 'student_class_id', null);
-        if ($studentClassId) {
-            $wheres[] = ['study_class_id', '=', $studentClassId];
-            $relates[] = ['user'];
+        $getAll = Arr::get($params, 'getAll', false);
+        if ($getAll) {
+            $relates = [...$relates, 'studyClass', 'user', 'cohort'];
         }
 
-//        dd($params);
         return [
             'sort' => $sort,
             'wheres' => $wheres,

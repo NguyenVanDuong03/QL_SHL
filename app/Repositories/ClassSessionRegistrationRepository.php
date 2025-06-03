@@ -48,17 +48,26 @@ class ClassSessionRegistrationRepository extends BaseRepository
             ->newQuery()
             ->join('class_session_requests', 'class_session_requests.class_session_registration_id', '=', 'class_session_registrations.id')
             ->join('study_classes', 'class_session_requests.study_class_id', '=', 'study_classes.id')
-            ->LeftJoin('rooms', 'class_session_requests.room_id', '=', 'rooms.id')
+            ->leftJoin('rooms', 'class_session_requests.room_id', '=', 'rooms.id')
             ->where('class_session_registration_id', $latestRegistration->id)
-            ->where('class_session_requests.status', Constant::CLASS_SESSION_STATUS['ACTIVE'])
-            ->orderBy('class_session_requests.id', 'desc')
+            ->orderByRaw('
+        CASE
+            WHEN class_session_requests.status IS NULL THEN 0
+            WHEN class_session_requests.status = 0 THEN 1
+            WHEN class_session_requests.status = 2 THEN 2
+            WHEN class_session_requests.status = 1 THEN 3
+            ELSE 4
+        END
+    ')
+            ->orderByDesc('class_session_requests.id') // nếu bạn vẫn muốn sắp xếp phụ theo id
             ->select([
                 'class_session_requests.*',
                 'class_session_registrations.semester_id',
                 'study_classes.name as study_class_name',
                 'rooms.name as room_name',
             ])
-            ->paginate(Constant::DEFAULT_LIMIT);
+            ->paginate(Constant::DEFAULT_LIMIT_12);
+
     }
 
     public function getListCSRHistory($class_session_registration_id)

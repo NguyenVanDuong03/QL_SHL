@@ -45,7 +45,7 @@
 
         <!-- Nội dung chính -->
         <div class="my-2 mx-3">
-            <form action="{{ route('teacher.class-session.store') }}" method="POST" class="form-class-session">
+            <form id="form-session" action="{{ route('teacher.class-session.store') }}" method="POST" class="form-class-session">
                 @csrf
                 <div class="row">
                     <input type="hidden" name="study_class_id" value="{{ $data['getStudyClassByIds']->id }}">
@@ -67,8 +67,20 @@
                                 </div>
 
                                 <div class="d-flex justify-content-end">
-                                    <button type="submit" class="btn btn-primary">Đăng ký</button>
+                                    <button type="submit" class="btn btn-primary btn-session-submit">Đăng ký</button>
                                 </div>
+
+                                <!-- Rejection reason if status = 2 -->
+                                @if($data['getClassSessionRequest']->status == 2 && !empty($data['getClassSessionRequest']->rejection_reason))
+                                    <div class="mt-2">
+                                        <div class="alert alert-danger">
+                                            <h6 class="alert-heading">
+                                                <i class="fas fa-exclamation-triangle me-2"></i>Lý do từ chối
+                                            </h6>
+                                            <p class="mb-0">{{ $data['getClassSessionRequest']->rejection_reason }}</p>
+                                        </div>
+                                    </div>
+                                @endif
                             </div>
                         </div>
                     </div>
@@ -130,6 +142,9 @@
                                         <label for="meeting_link" class="form-label">Link cuộc họp</label>
                                         <input type="text" class="form-control" name="meeting_url" id="meeting_link"
                                                placeholder="Nhập link cuộc họp">
+                                        <div class="invalid-feedback">
+                                            Vui lòng nhập một URL hợp lệ.
+                                        </div>
                                     </div>
                                 </div>
 
@@ -152,6 +167,11 @@
         $(document).ready(function () {
             const $activityType = $('#activityType');
             const $formRight = $('.form-class-session .col-md-4');
+
+            function isValidURL(str) {
+                const pattern = /^(https?:\/\/)[^\s$.?#].[^\s]*$/i;
+                return pattern.test(str);
+            }
 
             $('#resetBtn').click(function () {
                 $formRight.find('input[type="text"], input[type="datetime-local"], textarea').val('');
@@ -178,6 +198,30 @@
 
                     $('.class-meeting input, .class-meeting select').attr('required', true);
                     $('#meeting_type').attr('required', true);
+
+                    $('#meeting_link').on('input', function () {
+                        const url = $(this).val().trim();
+
+                        if (url === '') {
+                            $(this).attr('required', true)
+                        } else if (!isValidURL(url)) {
+                            $(this).addClass('is-invalid');
+                            $('.btn-session-submit').addClass('disabled').prop('disabled', true);
+                        } else {
+                            $(this).removeClass('is-invalid');
+                            $('.btn-session-submit').removeClass('disabled').prop('disabled', false);
+                        }
+                    });
+
+                    $('form').on('submit', function (e) {
+                        const url = $('#meeting_link').val().trim();
+
+                        if (url !== '' && !isValidURL(url)) {
+                            $('#meeting_link').addClass('is-invalid');
+                            $('.btn-session-submit').addClass('disabled').prop('disabled', true);
+                            e.preventDefault();
+                        }
+                    });
                 } else if (selectedValue === '2') {
                     $('.class-location').removeClass('d-none');
                     $('.class-meeting').addClass('d-none');
@@ -191,24 +235,23 @@
 
             const getClassSessionRequest = @json($data['getClassSessionRequest']);
             if (getClassSessionRequest) {
+                if (getClassSessionRequest['position'] === 0) {
+                    $activityType.val('0').trigger('change');
+                } else if (getClassSessionRequest['position'] === 1) {
+                    $activityType.val('1').trigger('change');
+                    $('#meeting_id').val(getClassSessionRequest['meeting_id']);
+                    $('#meeting_password').val(getClassSessionRequest['meeting_password']);
+                    $('#meeting_link').val(getClassSessionRequest['meeting_url']);
+                    $('#meeting_type').val(getClassSessionRequest['meeting_type']);
+                } else if (getClassSessionRequest['position'] === 2) {
+                    $activityType.val('2').trigger('change');
+                    $('#location').val(getClassSessionRequest['location']);
+                }
+
                 $('#title').val(getClassSessionRequest['title']);
                 $('#content').val(getClassSessionRequest['content']);
                 $('#timeSelect').val(getClassSessionRequest['proposed_at']);
-                $('#location').val(getClassSessionRequest['location']);
-                $('#meeting_id').val(getClassSessionRequest['meeting_id']);
-                $('#meeting_password').val(getClassSessionRequest['meeting_password']);
-                $('#meeting_link').val(getClassSessionRequest['meeting_url']);
                 $('#notes').val(getClassSessionRequest['note']);
-
-                if (getClassSessionRequest['position'] === 0) {
-                    $activityType.val('0');
-                } else if (getClassSessionRequest['position'] === 1) {
-                    $activityType.val('1');
-                    $('.class-meeting').removeClass('d-none');
-                } else if (getClassSessionRequest['position'] === 2) {
-                    $activityType.val('2');
-                    $('.class-location').removeClass('d-none');
-                }
             }
         });
     </script>

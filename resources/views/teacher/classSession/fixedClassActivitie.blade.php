@@ -34,7 +34,8 @@
                             <div class="text-end small">
                                 <p class="mb-0">📊 Tổng số lớp: <strong>{{ $data['totalClasses'] }}</strong></p>
                                 <p class="mb-0 text-muted">⏳ Chưa đăng ký:
-                                    <strong>{{ $data['getStudyClassByIds']['total'] }}</strong></p>
+                                    <strong>{{ $data['totalClasses'] - $data['countApprovedByLecturerAndSemester'] - $data['countRejectedByLecturerAndSemester'] }}
+                                    </strong></p>
                             </div>
                             <div class="text-end small">
                                 <p class="mb-0 text-success">✅ Đăng ký thành công:

@@ -228,7 +228,7 @@
                             </ul>
 
                             <div class="tab-content" id="rolesTabContent">
-                                <div class="tab-pane fade show active" id="ctsv" role="tabpanel">
+                                <div class="tab-pane fade show active" id="ctsv" role="tabpanel" style="height: 325px;">
                                     <div class="card">
                                         <div class="card-body p-4">
                                             <h3 class="h4 mb-4">Phòng Chính trị và Công tác Sinh viên</h3>
@@ -245,7 +245,7 @@
                                     </div>
                                 </div>
 
-                                <div class="tab-pane fade" id="gvcn" role="tabpanel">
+                                <div class="tab-pane fade" id="gvcn" role="tabpanel" style="height: 325px;">
                                     <div class="card">
                                         <div class="card-body p-4">
                                             <h3 class="h4 mb-4">Giáo viên chủ nhiệm</h3>
@@ -260,7 +260,7 @@
                                     </div>
                                 </div>
 
-                                <div class="tab-pane fade" id="canbo" role="tabpanel">
+                                <div class="tab-pane fade" id="canbo" role="tabpanel" style="height: 325px;">
                                     <div class="card">
                                         <div class="card-body p-4">
                                             <h3 class="h4 mb-4">Cán sự lớp</h3>
@@ -273,7 +273,7 @@
                                     </div>
                                 </div>
 
-                                <div class="tab-pane fade" id="sinhvien" role="tabpanel">
+                                <div class="tab-pane fade" id="sinhvien" role="tabpanel" style="height: 325px;">
                                     <div class="card">
                                         <div class="card-body p-4">
                                             <h3 class="h4 mb-4">Sinh viên</h3>
