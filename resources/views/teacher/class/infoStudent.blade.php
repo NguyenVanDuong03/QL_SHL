@@ -11,6 +11,25 @@
         .resize-none {
             resize: none;
         }
+
+         .bg-pink {
+             background-color: #e91e63 !important;
+         }
+
+        .tooltip-note {
+            display: none;
+            position: absolute;
+            top: -5px;
+            left: 60%;
+            transform: translateY(-100%);
+            background: #fff;
+            border: 1px solid #ccc;
+            padding: 10px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            z-index: 1000;
+            min-width: 200px;"
+        }
     </style>
 @endpush
 
@@ -18,7 +37,7 @@
     <div class="container-fluid py-4">
         <!-- Header with navigation and actions -->
         <div class="d-flex justify-content-between align-items-center mb-4">
-            <div class="d-flex align-items-center gap-3">
+            <div class="d-md-flex align-items-center gap-3">
                 <a href="{{ route('teacher.class.index') }}"
                    class="btn btn-outline-secondary btn-sm">
                     <i class="fas fa-arrow-left me-2"></i>Quay lại
@@ -28,17 +47,17 @@
 
             <div class="d-flex align-items-center gap-2">
                 <!-- Search -->
-                <div class="input-group" style="max-width: 250px;">
-                    <input type="text" class="form-control" placeholder="Tìm kiếm sinh viên" aria-label="Search">
-                    <button class="btn btn-outline-secondary" type="button">
+                <form class="input-group" method="GET" action="{{ route('teacher.class.infoStudent',$data['classInfo']->id) }}" style="max-width: 250px;">
+                    <input type="text" class="form-control" name="search" placeholder="Tìm kiếm sinh viên" aria-label="Search" value="{{ request('search') }}">
+                    <button class="btn btn-outline-secondary" type="submit">
                         <i class="fas fa-search"></i>
                     </button>
-                </div>
+                </form>
 
                 <!-- Action buttons -->
-                <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addStudentModal">
-                    <i class="fas fa-plus me-2"></i>Thêm sinh viên
-                </button>
+{{--                <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addStudentModal">--}}
+{{--                    <i class="fas fa-plus me-2"></i>Thêm sinh viên--}}
+{{--                </button>--}}
                 <button class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#noteModal">
                     <i class="fas fa-sticky-note me-2"></i>Sinh viên cần theo dõi
                 </button>
@@ -61,14 +80,14 @@
                     <table class="table table-hover align-middle mb-0">
                         <thead class="table-light">
                         <tr>
-                            <th scope="col" style="width: 5%">#</th>
-                            <th scope="col" style="width: 20%">Tên sinh viên</th>
-                            <th scope="col" style="width: 20%">Email</th>
-                            <th scope="col" style="width: 10%">Giới tính</th>
-                            <th scope="col" style="width: 12%">Ngày sinh</th>
-                            <th scope="col" style="width: 13%">Số điện thoại</th>
-                            <th scope="col" style="width: 10%">Chức vụ</th>
-                            <th scope="col" style="width: 10%">Thao tác</th>
+                            <th scope="col">#</th>
+                            <th scope="col">Tên sinh viên</th>
+                            <th scope="col" class="d-none d-md-table-cell">Email</th>
+                            <th scope="col" class="d-none d-md-table-cell">Giới tính</th>
+                            <th scope="col" class="d-none d-md-table-cell">Ngày sinh</th>
+                            <th scope="col" class="d-none d-md-table-cell">Số điện thoại</th>
+                            <th scope="col">Chức vụ</th>
+                            <th scope="col">Thao tác</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -76,24 +95,26 @@
                             <tr>
                                 <th scope="row">{{ $index + 1 }}</th>
                                 <td>
-                                    <div class="d-flex align-items-center">
-                                        <div class="avatar-sm bg-primary text-white rounded-circle d-flex align-items-center justify-content-center me-2" style="width: 35px; height: 35px;">
-                                            {{ strtoupper(substr($student['user']['name'], 0, 1)) }}
+                                    <div class="position-relative">
+                                        <div class="fw-medium">{{ $student['user']['name'] }}
+                                            @if(!empty($student['note']))
+                                                <i class="fas fa-sticky-note text-secondary note-icon" data-note="{{ $student['note'] }}"></i>
+                                           @endif
                                         </div>
-                                        <div>
-                                            <div class="fw-medium">{{ $student['user']['name'] }}</div>
-                                            <small class="text-muted">ID: {{ $student['id'] }}</small>
+                                        <small class="text-muted">ID: {{ $student['student_code'] }}</small>
+                                        <div class="note-tooltip tooltip-note">
+                                            <small class="text-primary"><strong>Ghi chú:</strong> <span class="note-text"></span></small>
                                         </div>
                                     </div>
                                 </td>
-                                <td>{{ $student['user']['email'] }}</td>
-                                <td>
+                                <td class="d-none d-md-table-cell">{{ $student['user']['email'] }}</td>
+                                <td class="d-none d-md-table-cell">
                                         <span class="badge {{ $student['user']['gender'] == 0 ? 'bg-info' : 'bg-pink' }}">
                                             {{ $student['user']['gender'] == 0 ? 'Nam' : 'Nữ' }}
                                         </span>
                                 </td>
-                                <td>{{ \Carbon\Carbon::parse($student['user']['date_of_birth'])->format('d/m/Y') }}</td>
-                                <td>{{ $student['user']['phone'] }}</td>
+                                <td class="d-none d-md-table-cell">{{ \Carbon\Carbon::parse($student['user']['date_of_birth'])->format('d/m/Y') }}</td>
+                                <td class="d-none d-md-table-cell">{{ $student['user']['phone'] }}</td>
                                 <td>
                                     @php
                                         $positions = [
@@ -142,10 +163,10 @@
                     @if(count($data['students']['data']) == 0)
                         <div class="text-center py-5">
                             <i class="fas fa-users fa-3x text-muted mb-3"></i>
-                            <p class="text-muted">Chưa có sinh viên nào trong lớp</p>
-                            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addStudentModal">
-                                <i class="fas fa-plus me-2"></i>Thêm sinh viên đầu tiên
-                            </button>
+                            <p class="text-muted">Không tìm thấy sinh viên có thông tin "{{ request('search') }}"</p>
+{{--                            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addStudentModal">--}}
+{{--                                <i class="fas fa-plus me-2"></i>Thêm sinh viên đầu tiên--}}
+{{--                            </button>--}}
                         </div>
                     @endif
                 </div>
@@ -159,43 +180,43 @@
     </div>
 
     <!-- Add Student Modal -->
-    <div class="modal fade" id="addStudentModal" tabindex="-1" aria-labelledby="addStudentModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="addStudentModalLabel">
-                        <i class="fas fa-user-plus me-2"></i>Thêm sinh viên vào lớp
-                    </h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <form id="addStudentForm">
-                        <div class="mb-3">
-                            <label for="studentEmail" class="form-label">Email sinh viên</label>
-                            <input type="email" class="form-control" id="studentEmail" name="studentEmail" required>
-                            <div class="form-text">Nhập email của sinh viên để thêm vào lớp</div>
-                            <div class="invalid-feedback">Vui lòng nhập email hợp lệ.</div>
-                        </div>
-                        <div class="mb-3">
-                            <label for="studentPosition" class="form-label">Chức vụ</label>
-                            <select class="form-select" id="studentPosition" name="studentPosition" required>
-                                <option value="0">Sinh viên</option>
-                                <option value="1">Lớp trưởng</option>
-                                <option value="2">Lớp phó</option>
-                                <option value="3">Bí thư</option>
-                            </select>
-                        </div>
-                    </form>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
-                    <button type="button" class="btn btn-success" id="saveStudentBtn">
-                        <i class="fas fa-plus me-2"></i>Thêm sinh viên
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
+{{--    <div class="modal fade" id="addStudentModal" tabindex="-1" aria-labelledby="addStudentModalLabel" aria-hidden="true">--}}
+{{--        <div class="modal-dialog">--}}
+{{--            <div class="modal-content">--}}
+{{--                <div class="modal-header">--}}
+{{--                    <h5 class="modal-title" id="addStudentModalLabel">--}}
+{{--                        <i class="fas fa-user-plus me-2"></i>Thêm sinh viên vào lớp--}}
+{{--                    </h5>--}}
+{{--                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>--}}
+{{--                </div>--}}
+{{--                <div class="modal-body">--}}
+{{--                    <form id="addStudentForm">--}}
+{{--                        <div class="mb-3">--}}
+{{--                            <label for="studentEmail" class="form-label">Email sinh viên</label>--}}
+{{--                            <input type="email" class="form-control" id="studentEmail" name="studentEmail" required>--}}
+{{--                            <div class="form-text">Nhập email của sinh viên để thêm vào lớp</div>--}}
+{{--                            <div class="invalid-feedback">Vui lòng nhập email hợp lệ.</div>--}}
+{{--                        </div>--}}
+{{--                        <div class="mb-3">--}}
+{{--                            <label for="studentPosition" class="form-label">Chức vụ</label>--}}
+{{--                            <select class="form-select" id="studentPosition" name="studentPosition" required>--}}
+{{--                                <option value="0">Sinh viên</option>--}}
+{{--                                <option value="1">Lớp trưởng</option>--}}
+{{--                                <option value="2">Lớp phó</option>--}}
+{{--                                <option value="3">Bí thư</option>--}}
+{{--                            </select>--}}
+{{--                        </div>--}}
+{{--                    </form>--}}
+{{--                </div>--}}
+{{--                <div class="modal-footer">--}}
+{{--                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>--}}
+{{--                    <button type="button" class="btn btn-success" id="saveStudentBtn">--}}
+{{--                        <i class="fas fa-plus me-2"></i>Thêm sinh viên--}}
+{{--                    </button>--}}
+{{--                </div>--}}
+{{--            </div>--}}
+{{--        </div>--}}
+{{--    </div>--}}
 
     <!-- View Student Modal -->
     <div class="modal fade" id="viewStudentModal" tabindex="-1" aria-labelledby="viewStudentModalLabel" aria-hidden="true">
@@ -369,85 +390,82 @@
             </div>
         </div>
     </div>
-
-    <style>
-        .bg-pink {
-            background-color: #e91e63 !important;
-        }
-        .avatar-sm {
-            font-size: 14px;
-            font-weight: 600;
-        }
-    </style>
-
-    <script>
-        // View Student Modal
-        document.getElementById('viewStudentModal').addEventListener('show.bs.modal', function (event) {
-            const button = event.relatedTarget;
-
-            document.getElementById('viewStudentName').textContent = button.getAttribute('data-student-name');
-            document.getElementById('viewStudentEmail').textContent = button.getAttribute('data-student-email');
-            document.getElementById('viewStudentGender').textContent = button.getAttribute('data-student-gender');
-            document.getElementById('viewStudentDob').textContent = button.getAttribute('data-student-dob');
-            document.getElementById('viewStudentPhone').textContent = button.getAttribute('data-student-phone');
-            document.getElementById('viewStudentPosition').textContent = button.getAttribute('data-student-position');
-        });
-
-        // Delete Student Modal
-        document.getElementById('deleteStudentModal').addEventListener('show.bs.modal', function (event) {
-            const button = event.relatedTarget;
-            const studentId = button.getAttribute('data-student-id');
-            const studentName = button.getAttribute('data-student-name');
-
-            document.getElementById('deleteStudentId').value = studentId;
-            document.getElementById('deleteStudentName').textContent = studentName;
-        });
-
-        // Add Student
-        document.getElementById('saveStudentBtn').addEventListener('click', function() {
-            const form = document.getElementById('addStudentForm');
-            const formData = new FormData(form);
-
-            // Add your AJAX call here
-            console.log('Adding student...', Object.fromEntries(formData));
-
-            bootstrap.Modal.getInstance(document.getElementById('addStudentModal')).hide();
-        });
-
-        // Confirm Delete Student
-        document.getElementById('confirmDeleteStudentBtn').addEventListener('click', function() {
-            const studentId = document.getElementById('deleteStudentId').value;
-
-            // Add your AJAX call here
-            console.log('Deleting student with ID:', studentId);
-
-            bootstrap.Modal.getInstance(document.getElementById('deleteStudentModal')).hide();
-        });
-
-        // Save Notes
-        document.getElementById('saveNotesBtn').addEventListener('click', function() {
-            const form = document.getElementById('studentNotesForm');
-            const formData = new FormData(form);
-
-            // Add your AJAX call here
-            console.log('Saving notes...', Object.fromEntries(formData));
-
-            bootstrap.Modal.getInstance(document.getElementById('noteModal')).hide();
-        });
-
-        // Save Class Officers
-        document.getElementById('saveClassOfficersBtn').addEventListener('click', function() {
-            const form = document.getElementById('classOfficersForm');
-            const formData = new FormData(form);
-
-            // Add your AJAX call here
-            console.log('Saving class officers...', Object.fromEntries(formData));
-
-            bootstrap.Modal.getInstance(document.getElementById('ClassModal')).hide();
-        });
-    </script>
 @endsection
 
 @push('scripts')
-    <script></script>
+    <script>
+        $(document).ready(function() {
+            $('.note-icon').click(function(e) {
+                e.stopPropagation(); // Ngăn click lan ra ngoài
+                const $this = $(this);
+                const $tooltip = $this.closest('.position-relative').find('.note-tooltip');
+                const $noteText = $tooltip.find('.note-text');
+                const noteData = $this.data('note');
+
+                // Ẩn tất cả tooltip khác
+                $('.note-tooltip').not($tooltip).fadeOut(200);
+
+                // Toggle tooltip hiện tại
+                if ($tooltip.is(':visible')) {
+                    $tooltip.fadeOut(200);
+                } else {
+                    $noteText.text(noteData);
+                    $tooltip.fadeIn(200);
+                }
+            });
+
+            // Ẩn tooltip khi click ra ngoài
+            $(document).click(function(e) {
+                if (!$(e.target).closest('.note-icon, .note-tooltip').length) {
+                    $('.note-tooltip').fadeOut(200);
+                }
+            });
+
+            // View Student Modal
+            $('#viewStudentModal').on('show.bs.modal', function(event) {
+                const button = $(event.relatedTarget);
+                $('#viewStudentName').text(button.data('student-name'));
+                $('#viewStudentEmail').text(button.data('student-email'));
+                $('#viewStudentGender').text(button.data('student-gender'));
+                $('#viewStudentDob').text(button.data('student-dob'));
+                $('#viewStudentPhone').text(button.data('student-phone'));
+                $('#viewStudentPosition').text(button.data('student-position'));
+            });
+
+            // Delete Student Modal
+            $('#deleteStudentModal').on('show.bs.modal', function(event) {
+                const button = $(event.relatedTarget);
+                $('#deleteStudentId').val(button.data('student-id'));
+                $('#deleteStudentName').text(button.data('student-name'));
+            });
+
+            // Add Student
+            $('#saveStudentBtn').click(function() {
+                const formData = $('#addStudentForm').serialize();
+                console.log('Adding student...', formData);
+                $('#addStudentModal').modal('hide');
+            });
+
+            // Confirm Delete Student
+            $('#confirmDeleteStudentBtn').click(function() {
+                const studentId = $('#deleteStudentId').val();
+                console.log('Deleting student with ID:', studentId);
+                $('#deleteStudentModal').modal('hide');
+            });
+
+            // Save Notes
+            $('#saveNotesBtn').click(function() {
+                const formData = $('#studentNotesForm').serialize();
+                console.log('Saving notes...', formData);
+                $('#noteModal').modal('hide');
+            });
+
+            // Save Class Officers
+            $('#saveClassOfficersBtn').click(function() {
+                const formData = $('#classOfficersForm').serialize();
+                console.log('Saving class officers...', formData);
+                $('#ClassModal').modal('hide');
+            });
+        });
+    </script>
 @endpush

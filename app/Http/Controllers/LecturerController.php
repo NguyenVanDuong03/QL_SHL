@@ -64,9 +64,12 @@ class LecturerController extends Controller
         return view('teacher.class.index', compact('data'));
     }
 
-    public function infoStudent($id)
+    public function infoStudent(Request $request, $id)
     {
-        $students = $this->studentService->getStudentsByClassId($id)->toArray();
+        $params = $request->all();
+        $params['class_id'] = $id;
+        $students = $this->studentService->getStudentsByClassId($params)->toArray();
+//        dd($students['data'][0]['note']);
         $classInfo = $this->studyClassService->find($id);
         $data = [
             'students' => $students,
