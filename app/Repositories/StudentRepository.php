@@ -42,4 +42,33 @@ class StudentRepository extends BaseRepository
         return $query->paginate(Constant::DEFAULT_LIMIT_8);
     }
 
+    public function getNoteStudentById($class_id)
+    {
+        $query = $this->getModel()
+            ->with(['studyClass', 'user'])
+            ->where('study_class_id', $class_id)
+            ->whereNotNull('note');
+
+        return $query->get();
+    }
+
+    public function resetClassOfficers($studyClassId)
+    {
+        return $this->getModel()
+            ->where('study_class_id', $studyClassId)
+            ->whereIn('position', [
+                Constant::STUDENT_POSITION['CLASS_PRESIDENT'],
+                Constant::STUDENT_POSITION['VICE_PRESIDENT'],
+                Constant::STUDENT_POSITION['SECRETARY'],
+            ])
+            ->update(['position' => Constant::STUDENT_POSITION['STUDENT']]);
+    }
+
+    public function updateStudentPosition($studentId, $newPosition)
+    {
+        return $this->getModel()
+            ->where('id', $studentId)
+            ->update(['position' => $newPosition]);
+    }
+
 }

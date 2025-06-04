@@ -62,6 +62,8 @@ Route::middleware(['auth'])->group(function () {
                 function () {
                     Route::get('/', [LecturerController::class, 'indexClass'])->name('index');
                     Route::get('/{id?}', [LecturerController::class, 'infoStudent'])->name('infoStudent');
+                    Route::patch('note/{id}', [LecturerController::class, 'saveNotes'])->name('saveNotes');
+                    Route::patch('updateOfficers', [LecturerController::class, 'updateOfficers'])->name('updateOfficers');
                 }
             );
 

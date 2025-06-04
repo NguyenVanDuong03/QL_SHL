@@ -14,6 +14,7 @@ class Student extends Model
         'study_class_id',
         'student_code',
         'position',
+        'note'
     ];
 
     public function user()

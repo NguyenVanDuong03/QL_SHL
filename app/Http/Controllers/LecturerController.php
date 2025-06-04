@@ -69,15 +69,38 @@ class LecturerController extends Controller
         $params = $request->all();
         $params['class_id'] = $id;
         $students = $this->studentService->getStudentsByClassId($params)->toArray();
-//        dd($students['data'][0]['note']);
+        $getNoteStudentById = $this->studentService->getNoteStudentById($id)->toArray();
+//        dd($getNoteStudentById);
         $classInfo = $this->studyClassService->find($id);
         $data = [
             'students' => $students,
             'classInfo' => $classInfo,
+            'getNoteStudentById' => $getNoteStudentById,
+            'studyClassId' => $id,
         ];
-        // dd($data['classInfo']->name);
+//         dd($data['students']);
 
         return view('teacher.class.infoStudent', compact('data'));
+    }
+
+    public function saveNotes(Request $request, $id)
+    {
+        $params = $request->all();
+//        dd($params);
+        $this->studentService->update($id, [
+            'note' => $params['note'],
+        ]);
+
+        return redirect()->back()->with('success', 'Lưu ghi chú thành công');
+    }
+
+    public function updateOfficers(Request $request)
+    {
+        $params = $request->all();
+//dd($params);
+        $this->studentService->updateOfficers($params);
+
+        return redirect()->back()->with('success', 'Cập nhật cán bộ lớp thành công');
     }
 
     public function indexFixedClassActivitie(Request $request)
