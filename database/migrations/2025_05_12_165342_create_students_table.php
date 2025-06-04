@@ -18,6 +18,7 @@ return new class extends Migration
             $table->unsignedBigInteger('study_class_id');
             $table->string('student_code')->unique();
             $table->tinyInteger('position')->comment('0: sinh viên; 1: Lớp trưởng; 2: Lớp Phó; 3: Bí thư');
+            $table->text('note')->nullable();
             $table->softDeletes();
             $table->timestamps();
 

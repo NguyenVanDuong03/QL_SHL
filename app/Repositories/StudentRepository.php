@@ -16,14 +16,30 @@ class StudentRepository extends BaseRepository
         return $this->model;
     }
 
-    public function getStudentListByClassId($classId)
+    public function getStudentListByClassId($params)
     {
+        $search = $params['search'] ?? '';
+        $classId = $params['class_id'] ?? null;
+
+//        if (empty($classId)) {
+//            return [];
+//        }
+
         $query = $this->getModel()
             ->with(['studyClass', 'user'])
-            ->where('study_class_id', $classId)
-            ->paginate(Constant::DEFAULT_LIMIT_8);
+            ->where('study_class_id', $classId);
 
-        return $query;
+        if (!empty($search)) {
+            $query = $query->where(function ($q) use ($search) {
+                $q->where('student_code', 'like', '%' . $search . '%')
+                  ->orWhereHas('user', function ($q) use ($search) {
+                      $q->where('email', 'like', '%' . $search . '%')
+                      ->orWhere('name', 'like', '%' . $search . '%');
+                  });
+            });
+        }
+
+        return $query->paginate(Constant::DEFAULT_LIMIT_8);
     }
 
 }

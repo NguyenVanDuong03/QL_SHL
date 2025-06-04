@@ -34,9 +34,9 @@ class StudentService extends BaseService
         ];
     }
 
-    public function getStudentsByClassId($classId)
+    public function getStudentsByClassId($params)
     {
-        return $this->getRepository()->getStudentListByClassId($classId);
+        return $this->getRepository()->getStudentListByClassId($params);
     }
 
 }
