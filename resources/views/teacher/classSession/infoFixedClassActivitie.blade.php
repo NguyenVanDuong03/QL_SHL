@@ -1,12 +1,12 @@
 @extends('layouts.teacher')
 
-@section('title', 'Sinh hoạt lớp cố định')
+@section('title', 'Chi tiết sinh hoạt lớp')
 
 @section('breadcrumb')
     <x-breadcrumb.breadcrumb :links="[
         ['label' => 'Sinh hoạt lớp', 'url' => 'teacher.class-session.index'],
-        ['label' => 'Sinh hoạt lớp cố định', 'url' => 'teacher.class-session.fixed-class-activitie'],
-        ['label' => 'Đăng ký sinh hoạt lớp']
+        ['label' => 'Lịch sinh hoạt lớp', 'url' => 'teacher.class-session.fixed-class-activitie'],
+        ['label' => 'Chi tiết sinh hoạt lớp']
     ]"/>
 @endsection
 

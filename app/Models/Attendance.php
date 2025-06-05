@@ -12,6 +12,7 @@ class Attendance extends Model
         'student_id',
         'class_session_request_id',
         'status',
+        'reason'
     ];
 
     public function student()

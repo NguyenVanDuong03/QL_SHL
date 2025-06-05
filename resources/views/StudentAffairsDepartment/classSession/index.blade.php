@@ -109,6 +109,7 @@
                                                         data-note="{{ $class['note'] }}"
                                                         data-room-name="{{ $class['room_name'] }}"
                                                         data-room-id="{{ $class['room_id'] }}"
+                                                        data-status="{{ $class['status'] }}"
                                                 >
                                                     <i class="fas fa-file-signature"></i>
                                                 </button>
@@ -129,7 +130,10 @@
                                                     data-study-class-name="{{ $class['study_class_name'] }}"
                                                     data-note="{{ $class['note'] }}"
                                                     data-room-name="{{ $class['room_name'] }}"
-                                                    data-room-id="{{ $class['room_id'] }}">
+                                                    data-room-id="{{ $class['room_id'] }}"
+                                                    data-status="{{ $class['status'] }}"
+                                                    data-detail="true"
+                                                    >
                                                     <i class="fas fa-info-circle"></i>
                                                 </button>
 {{--                                                <button--}}
@@ -334,6 +338,7 @@
                         <div class="d-flex justify-content-between align-items-center mb-4">
                             <h5 class="modal-title fw-bold" id="formModalLabel">Xét duyệt sinh hoạt lớp cố định</h5>
                             <button type="button" class="btn btn-outline-danger" id="btnReject">Huỷ đăng ký</button>
+                            <button type="button" class="btn btn-outline-danger" id="btnRejectStatus">Huỷ đăng ký</button>
                         </div>
 
                         <form id="formComfirm" method="POST">
@@ -373,7 +378,6 @@
                                         <option value="" disabled selected>Không có phòng khả dụng</option>
                                     @endif
                                 </select>
-
                             </div>
 
                             <div class="form-group input-rejection d-none">
@@ -504,6 +508,29 @@
 
             });
 
+            $('#btnRejectStatus').on('click', function () {
+                isRejectMode = !isRejectMode;
+
+                if (isRejectMode) {
+                    $('.input-rejection').removeClass('d-none');
+                    $('#room').prop('disabled', true);
+                    $(this).css({
+                        'background-color': '#dc3545',
+                        'color': '#fff'
+                    });
+                    $('.btn-comfirm-form').removeClass('d-none');
+                } else {
+                    $('.input-rejection').addClass('d-none');
+                    $('#room').prop('disabled', false);
+                    $(this).css({
+                        'background-color': '',
+                        'color': ''
+                    });
+                    $('.btn-comfirm-form').addClass('d-none');
+                }
+
+            });
+
             $('.btn-comfirm-class').on('click', function () {
                 const classId = $(this).data('id');
                 const studyClassName = $(this).data('study-class-name');
@@ -516,13 +543,22 @@
                 const meetingPassword = $(this).data('meeting-password');
                 const meetingUrl = $(this).data('meeting-url');
                 const note = $(this).data('note');
-                const roomName = $(this).data('room-name');
                 const roomId = $(this).data('room-id');
+                const status = $(this).data('status');
+
+                if (status === 1) {
+                    $('#btnReject').addClass('d-none');
+                    $('.btn-comfirm-form').addClass('d-none');
+                    $('#btnRejectStatus').removeClass('d-none');
+                } else {
+                    $('#btnReject').removeClass('d-none');
+                    $('.btn-comfirm-form').removeClass('d-none');
+                    $('#btnRejectStatus').addClass('d-none');
+                }
 
                 $('.class_session_room').addClass('d-none');
                 const $roomSelect = $('#room');
                 $roomSelect.empty();
-
 
                 @if(isset($data['rooms']) && $data['rooms']->isNotEmpty())
                 @foreach($data['rooms'] as $room)
@@ -581,6 +617,15 @@
                 const note = $(this).data('note');
                 const roomName = $(this).data('room-name');
                 const roomId = $(this).data('room-id');
+                const status = $(this).data('status');
+                const isDetail = $(this).data('detail');
+                console.log(roomName);
+
+                if(status === 1 && isDetail) {
+                    $('#btnReject').addClass('d-none');
+                    $('.btn-comfirm-form').addClass('d-none');
+                    $('#btnRejectStatus').addClass('d-none');
+                }
 
                 if (position === 0) {
                     $('.session-offline').addClass('d-none');
@@ -612,22 +657,18 @@
 
             });
 
-            // $('.btn-comfirm-form').on('click', function (e) {
-            //     e.preventDefault();
-            //
-            //     const classId = $('.class_session_id').val();
-            //     const status = $('.class_session_status').val();
-            //     const rejectionReason = $('#rejection_reason').val();
-            //
-            //     if (isRejectMode && !rejectionReason) {
-            //         alert('Vui lòng nhập lý do từ chối');
-            //         return;
-            //     }
-            //
-            //     if (!isRejectMode) {
-            //         $('#formComfirm').submit();
-            //     }
-            // });
+
+            $('.btn-comfirm-form').on('click', function (e) {
+                e.preventDefault();
+                const rejectionReason = $('#rejection_reason').val().trim();
+                if (isRejectMode && !rejectionReason) {
+                   $('#rejection_reason').focus();
+                    return;
+                }
+
+                $('#formComfirm').submit();
+
+            });
         });
     </script>
 @endpush

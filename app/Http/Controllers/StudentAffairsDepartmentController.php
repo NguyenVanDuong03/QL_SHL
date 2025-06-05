@@ -64,7 +64,7 @@ class StudentAffairsDepartmentController extends Controller
             $data['ListCSRs'] = $this->classSessionRegistrationService->getListCSR()->toArray();
             $data['rooms'] = $rooms;
         }
-//        dd($data['checkClassSessionRegistration']);
+//        dd($data['ListCSRs']);
 
         return view('StudentAffairsDepartment.classSession.index', compact('data'));
     }
@@ -72,12 +72,15 @@ class StudentAffairsDepartmentController extends Controller
     public function comfirmClassSession(Request $request, $id)
     {
         $params = $request->all();
+//        dd($params);
         if ($params['position'] != Constant::CLASS_SESSION_POSITION['OFFLINE']) {
             $params['room_id'] = null;
         } else {
-            $this->roomService->update($params['room_id'], [
-                'status' => Constant::ROOM_STATUS['UNAVAILABLE'],
-            ]);
+            if (isset($params['room_id'])) {
+                $this->roomService->update($params['room_id'], [
+                    'status' => Constant::ROOM_STATUS['UNAVAILABLE'],
+                ]);
+            }
         }
 
         if ($params['rejection_reason']) {

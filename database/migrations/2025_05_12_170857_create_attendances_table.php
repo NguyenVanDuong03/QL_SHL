@@ -16,6 +16,7 @@ return new class extends Migration
             $table->unsignedBigInteger('student_id');
             $table->unsignedBigInteger('class_session_request_id');
             $table->tinyInteger('status')->default(0)->comment('0:present(có mặt); 1:absent(Vắng mặt); 2:late(Muộn); 3:excused(Vắng mặt có phép)')->default(0);
+            $table->text('reason')->nullable()->comment('Lý do vắng mặt, muộn, có phép');
             $table->softDeletes();
             $table->timestamps();
 

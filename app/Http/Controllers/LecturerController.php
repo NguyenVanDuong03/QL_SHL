@@ -148,6 +148,7 @@ class LecturerController extends Controller
     {
         $studyClassId = $request->query('study-class-id');
         $sessionRequestId = $request->query('session-request-id');
+//        dd($studyClassId, $sessionRequestId);
         $getCSRSemesterInfo = $this->classSessionRegistrationService->getCSRSemesterInfo();
         $getStudyClassByIds = $this->studyClassService->find($studyClassId);
         $data = [
@@ -211,15 +212,16 @@ class LecturerController extends Controller
             'getStudyClassByIds' => $getStudyClassByIds,
         ];
         $data['getClassSessionRequest'] = null;
-        if ($sessionRequestId) {
+        if ($sessionRequestId != null) {
             $getClassSessionRequest = $this->classSessionRequestService->find($sessionRequestId);
             $rooms = $this->roomService->get();
 
             $data['getClassSessionRequest'] = $getClassSessionRequest;
             $data['rooms'] = $rooms;
+//            dd($data['rooms']);
         }
 
-//        dd($data['getStudyClassByIds']);
+//        dd($data['getClassSessionRequest']);
         return view('teacher.classSession.detail', compact('data'));
     }
 
@@ -259,7 +261,7 @@ class LecturerController extends Controller
         $getCSRSemesterInfo = $this->classSessionRegistrationService->getCSRSemesterInfo();
         $getStudyClassByIds = $this->studyClassService->find($params['study-class-id']);
         $students = $this->studentService->getStudentsByClassId($params);
-        dd($students);
+//        dd($students);
         $data = [
             'getCSRSemesterInfo' => $getCSRSemesterInfo,
             'getStudyClassByIds' => $getStudyClassByIds,
