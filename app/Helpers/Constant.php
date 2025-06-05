@@ -43,6 +43,7 @@ class Constant
         'ACTIVE' => 0,
         'APPROVED' => 1,
         'REJECTED' => 2,
+        'DONE' => 3,
     ];
 
     const ATTENDANCE_STATUS = [

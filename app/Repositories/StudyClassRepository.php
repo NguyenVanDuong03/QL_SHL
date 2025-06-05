@@ -96,14 +96,56 @@ class StudyClassRepository extends BaseRepository
         if (!empty($params['search'])) {
             $search = $params['search'];
             $query->where(function ($q) use ($search) {
-                $q->where('name', 'like', "%$search%")
-                    ->orWhereHas('lecturer.user', function ($q2) use ($search) {
-                        $q2->where('name', 'like', "%$search%");
-                    });
+                $q->where('name', 'like', "%$search%");
             });
         }
 
         return $query->paginate(constant::DEFAULT_LIMIT_12);
+    }
+
+    public function approvedClassSessionRequestInSemester($semesterId)
+    {
+        return $this->hasOne(ClassSessionRequest::class, 'study_class_id')
+            ->where('status', 1)
+            ->whereHas('classSessionRegistration', function ($query) use ($semesterId) {
+                $query->where('semester_id', $semesterId);
+            });
+    }
+
+
+    public function getStudyClassesWithApprovedRequestsOnly($params)
+    {
+        $lecturerId = $params['lecturer_id'];
+        $semesterId = $params['semester_id'];
+
+        $query = $this->getModel()
+            ->where('lecturer_id', $lecturerId)
+            ->whereHas('classSessionRequests', function ($q) use ($semesterId) {
+                $q->where('status', 1)
+                    ->whereHas('classSessionRegistration', function ($qr) use ($semesterId) {
+                        $qr->where('semester_id', $semesterId);
+                    });
+            })
+            ->with([
+                'major.faculty.department',
+                'cohort',
+                'classSessionRequests' => function ($q) use ($semesterId) {
+                    $q->where('status', 1)
+                        ->whereHas('classSessionRegistration', function ($qr) use ($semesterId) {
+                            $qr->where('semester_id', $semesterId);
+                        });
+                }
+            ]);
+
+        // Tìm kiếm theo tên lớp hoặc tên giảng viên
+        if (!empty($params['search'])) {
+            $search = $params['search'];
+            $query->where(function ($q) use ($search) {
+                $q->where('name', 'like', "%$search%");
+            });
+        }
+
+        return $query->paginate(Constant::DEFAULT_LIMIT_12);
     }
 
 }

@@ -45,4 +45,9 @@ class StudyClassService extends BaseService
         return $this->getRepository()->getStudyClassById($params);
     }
 
+    public function getStudyClassWithApprovedRequests($params)
+    {
+        return $this->getRepository()->getStudyClassesWithApprovedRequestsOnly($params);
+    }
+
 }

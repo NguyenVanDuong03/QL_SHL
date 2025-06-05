@@ -64,7 +64,7 @@ class StudentAffairsDepartmentController extends Controller
             $data['ListCSRs'] = $this->classSessionRegistrationService->getListCSR()->toArray();
             $data['rooms'] = $rooms;
         }
-//        dd($data['ListCSRs']);
+//        dd($data['checkClassSessionRegistration']);
 
         return view('StudentAffairsDepartment.classSession.index', compact('data'));
     }

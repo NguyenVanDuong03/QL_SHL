@@ -44,7 +44,13 @@ class ClassSessionRequestService extends BaseService
 
     public function countFlexibleClassSessionRequest()
     {
-        return $this->getRepository()->countFlexibleClassSessionRequest();
+        $lecturerId = auth()->user()->lecturer?->id;
+        return $this->getRepository()->countFlexibleClassSessionRequest($lecturerId);
+    }
+
+    public function countFixeClassSessionRequest($lecturerId, $classSessionRegistrationId)
+    {
+        return $this->getRepository()->countFixeClassSessionRequest($lecturerId, $classSessionRegistrationId);
     }
 
     public function countApprovedByLecturerAndSemester($lecturerId, $semesterId)
