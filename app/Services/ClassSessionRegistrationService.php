@@ -21,7 +21,11 @@ class ClassSessionRegistrationService extends BaseService
 
     protected function buildFilterParams(array $params): array
     {
-        return $params;
+        $sort = Arr::get($params, 'sort', 'id:desc');
+
+        return [
+            'sort' => $sort,
+        ];
     }
 
     public function checkClassSessionRegistration()

@@ -71,7 +71,7 @@
                                 </div>
 
                                 <!-- Rejection reason if status = 2 -->
-                                @if($data['getClassSessionRequest']->status == 2 && !empty($data['getClassSessionRequest']->rejection_reason))
+                                @if(optional($data['getClassSessionRequest'])->status == 2 && !empty($data['getClassSessionRequest']->rejection_reason))
                                     <div class="mt-2">
                                         <div class="alert alert-danger">
                                             <h6 class="alert-heading">

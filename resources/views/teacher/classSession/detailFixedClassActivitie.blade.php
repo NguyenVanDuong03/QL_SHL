@@ -1,11 +1,11 @@
 @extends('layouts.teacher')
 
-@section('title', 'Sinh hoạt lớp cố định')
+@section('title', 'Lịch sinh hoạt lớp')
 
 @section('breadcrumb')
     <x-breadcrumb.breadcrumb :links="[
         ['label' => 'Sinh hoạt lớp', 'url' => 'teacher.class-session.index'],
-        ['label' => 'Sinh hoạt lớp cố định'],
+        ['label' => 'Lịch sinh hoạt lớp'],
     ]"/>
 @endsection
 
@@ -26,10 +26,6 @@
                         </div>
                         <h5 class="mb-1">{{ $data['getCSRSemesterInfo']->name }}
                             - {{ $data['getCSRSemesterInfo']->school_year }}</h5>
-                        <p class="mb-1">📅 Thời gian đăng ký:
-                            {{ \Carbon\Carbon::parse($data['getCSRSemesterInfo']->open_date)->format('H:i d/m/Y') }}
-                            - {{ \Carbon\Carbon::parse($data['getCSRSemesterInfo']->end_date)->format('H:i d/m/Y') }}
-                        </p>
                         <div class="d-flex justify-content-between">
                             <div class="text-end small">
                                 <p class="mb-0">📊 Tổng số lớp: <strong>{{ $data['totalClasses'] }}</strong></p>
@@ -48,17 +44,19 @@
 
                     <!-- Tìm kiếm & thống kê -->
                     <div class="col-md-6 col-lg-7 d-flex justify-content-end align-items-end">
-                        <form method="GET" action="{{ route('teacher.class-session.fixed-class-activitie') }}" class="input-group mb-3" style="max-width: 300px; margin-left: auto;">
-                                <input type="text" class="form-control" placeholder="Tìm kiếm lớp học" name="search" value="{{ request('search') }}"
-                                       aria-label="Search class" aria-describedby="search-addon">
-                                <button class="btn btn-outline-secondary" id="search-addon">
-                                    <i class="fas fa-magnifying-glass"></i>
-                                </button>
+                        <form method="GET" action="{{ route('teacher.class-session.detailFixedClassActivitie') }}" class="input-group mb-3" style="max-width: 300px; margin-left: auto;">
+                            <input type="text" class="form-control" placeholder="Tìm kiếm lớp học" name="search" value="{{ request('search') }}"
+                                   aria-label="Search class" aria-describedby="search-addon">
+                            <button class="btn btn-outline-secondary" id="search-addon">
+                                <i class="fas fa-magnifying-glass"></i>
+                            </button>
                         </form>
                     </div>
                 </div>
             </div>
 
+
+{{--            @if (isset($data['getStudyClassByIds']) && $data['getStudyClassByIds']['total'] > 0)--}}
                 <!-- Table -->
                 <div class="card shadow-sm">
                     <div class="card-body p-0">
@@ -70,7 +68,7 @@
                                     <th scope="col" class="px-4 py-1">Tên lớp</th>
                                     <th scope="col" class="px-4 py-1 d-none d-md-table-cell">Khoa</th>
                                     <th scope="col" class="px-4 py-1 d-none d-md-table-cell">Hình thức</th>
-                                    <th scope="col" class="px-4 py-1">Trạng thái</th>
+                                    <th scope="col" class="px-4 py-1">Thời gian họp</th>
                                     <th scope="col" class="px-4 py-1 text-center">Thao tác</th>
                                 </tr>
                                 </thead>
@@ -88,60 +86,29 @@
                                                 {{ $class['major']['faculty']['department']['name'] }}
                                             </td>
                                             <td class="px-4 py-1 d-none d-md-table-cell">
-                                                @if (empty($class['class_session_requests']))
-                                                    ---
-                                                @else
                                                     <span
                                                         class="badge {{ $class['class_session_requests']['position'] == '0' ? 'bg-success' : ($class['class_session_requests']['position'] == '1' ? 'bg-primary' : 'bg-warning') }}">{{ $class['class_session_requests']['position'] == '0' ? 'Trực tiếp tại trường' : ($class['class_session_requests']['position'] == '1' ? 'Trực tuyến' : 'Dã ngoại') }}</span>
-                                                @endif
                                             </td>
                                             <td class="px-4 py-1">
-                                                @if (empty($class['class_session_requests']))
-                                                    <span class="badge bg-warning">Chưa đăng ký</span>
-                                                @elseif ($class['class_session_requests']['status'] == '2')
-                                                    <span class="badge bg-danger">Không thành công</span>
-                                                @elseif ($class['class_session_requests']['status'] == '0')
-                                                    <span class="badge bg-secondary">Đang chờ duyệt</span>
-                                                @else
-                                                    <span class="badge bg-success">Đăng ký thành công</span>
-                                                @endif
+                                                {{ \Carbon\Carbon::parse($class['class_session_requests']['proposed_at'])->format('H:i d/m/Y') }}
                                             </td>
                                             <td class="px-4 py-1 text-center">
-                                                @if($data['checkClassSessionRegistration'])
-                                                    <a class="btn btn-primary btn-sm"
-                                                       title="{{ empty($class['class_session_requests']) ? 'Đăng ký' : 'Chỉnh sửa' }}"
-                                                       href="{{ route('teacher.class-session.create', ['study-class-id' => $class['id'], 'session-request-id' => $class['class_session_requests']['id'] ?? null]) }}">
-                                                        <i class="fas fa-file-signature"></i>
-                                                    </a>
-                                                @endif
-                                                <a href="{{ route('teacher.class-session.detail', ['study-class-id' => $class['id'], 'session-request-id' => $class['class_session_requests']['id'] ?? null]) }}"
+                                                <a href="{{ route('teacher.class-session.infoFixedClassActivitie', ['study-class-id' => $class['id'], 'session-request-id' => $class['class_session_requests']['id'] ?? null]) }}"
                                                    class="btn btn-secondary btn-sm {{ empty($class['class_session_requests']) ? 'disabled' : '' }}"
                                                    title="Chi tiết">
-                                                    <i class="fas fa-info-circle"></i>
+                                                    <i class="fas fa-eye"></i>
                                                 </a>
-                                                @if($data['checkClassSessionRegistration'])
-                                                    <button
-                                                        class="btn btn-danger btn-sm btn-delete-class-session {{ empty($class['class_session_requests']) ? 'disabled' : '' }}"
-                                                        title="Hủy đăng ký"
-                                                        @if(!empty($class['class_session_requests']))
-                                                            data-id="{{ $class['class_session_requests']['id'] }}"
-                                                        data-room-id="{{ $class['class_session_requests']['room_id'] }}"
-                                                        data-current-page="{{ $data['getStudyClassByIds']['current_page'] }}"
-                                                        data-bs-toggle="modal"
-                                                        data-bs-target="#confirmDeleteModal"
-                                                        @endif
-                                                    >
-                                                        <i class="fas fa-trash-alt"></i>
-                                                    </button>
-                                                @endif
                                             </td>
                                         </tr>
                                     @endforeach
                                 @else
                                     <tr>
-                                        <td colspan="6" class="text-center text-muted py-3">Không có lớp học nào được tìm thấy.</td>
+                                        <td colspan="6" class="text-center text-muted py-3">
+                                            Không có lớp học nào được tìm thấy.
+                                        </td>
                                     </tr>
                                 @endif
+
                                 </tbody>
                             </table>
                         </div>
@@ -152,6 +119,12 @@
                 <div class="mt-4">
                     <x-pagination.pagination :paginate="$data['getStudyClassByIds']"/>
                 </div>
+{{--            @else--}}
+{{--                <div class="text-center alert alert-warning" role="alert">--}}
+{{--                    <i class="fas fa-exclamation-triangle me-2"></i>--}}
+{{--                    Tất cả các lớp đã được đăng ký.--}}
+{{--                </div>--}}
+{{--            @endif--}}
         </div>
     </div>
 
@@ -226,48 +199,14 @@
             </div>
         </div>
     </div>
-
-    <!-- Modal delete -->
-    <div class="modal fade" id="confirmDeleteModal" tabindex="-1" aria-labelledby="confirmDeleteModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="confirmDeleteModalLabel">Xác nhận hủy đăng ký</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-
-                <div class="modal-body">
-                    Bạn có chắc muốn hủy đăng ký này?
-                </div>
-                <form id="deleteForm" method="POST">
-                    @csrf
-                    @method('DELETE')
-                    <input type="hidden" name="room_id" id="request_room_id" value="">
-                    <input type="hidden" name="current_page" class="current_page" value="">
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
-                    <button type="submit" class="btn btn-danger" id="confirmDeleteBtn">Xác nhận</button>
-                </div>
-                </form>
-            </div>
-        </div>
-    </div>
 @endsection
 
-@push('scripts')
+@section('scripts')
+
     <script>
         $(document).ready(function () {
-            $('.btn-delete-class-session').on('click', function (e) {
-                e.preventDefault();
-                const id = $(this).data('id');
-                const roomId = $(this).data('room-id');
-                const currentPage = $(this).data('current-page');
 
-                $('#request_room_id').val(roomId);
-                $('.current_page').val(currentPage);
-
-                $('#deleteForm').attr('action', `/teacher/class-session/fixed-class-activitie/${id}`);
-            });
         });
     </script>
-@endpush
+
+@endsection

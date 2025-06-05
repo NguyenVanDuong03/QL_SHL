@@ -132,10 +132,10 @@
                                                     data-room-id="{{ $class['room_id'] }}">
                                                     <i class="fas fa-info-circle"></i>
                                                 </button>
-                                                <button
-                                                    class="btn btn-danger btn-sm {{ $class['status'] == 0 ? 'disabled' : '' }}">
-                                                    <i class="fas fa-trash-alt"></i>
-                                                </button>
+{{--                                                <button--}}
+{{--                                                    class="btn btn-danger btn-sm {{ $class['status'] == 0 ? 'disabled' : '' }}">--}}
+{{--                                                    <i class="fas fa-trash-alt"></i>--}}
+{{--                                                </button>--}}
                                             </td>
                                         </tr>
                                     @endforeach
@@ -365,7 +365,7 @@
                             <div class="form-group session-offline d-none mb-3">
                                 <label for="room" class="form-label room">Chọn phòng họp:</label>
                                 <select class="form-select" id="room" name="room_id">
-                                    @if($data['rooms']->isNotEmpty())
+                                    @if(isset($data['rooms']) && $data['rooms']->isNotEmpty())
                                         @foreach($data['rooms'] as $room)
                                             <option value="{{ $room->id }}">{{ $room->name }}</option>
                                         @endforeach
@@ -524,7 +524,7 @@
                 $roomSelect.empty();
 
 
-                @if($data['rooms']->isNotEmpty())
+                @if(isset($data['rooms']) && $data['rooms']->isNotEmpty())
                 @foreach($data['rooms'] as $room)
                 $roomSelect.append(`<option value="{{ $room->id }}">{{ $room->name }}</option>`);
                 @endforeach

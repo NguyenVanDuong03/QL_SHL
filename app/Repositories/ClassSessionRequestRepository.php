@@ -16,11 +16,27 @@ class ClassSessionRequestRepository extends BaseRepository
         return $this->model;
     }
 
-    public function countFlexibleClassSessionRequest()
+    public function countFlexibleClassSessionRequest($lecturerId)
     {
         return $this->getModel()
             ->where('type', Constant::CLASS_SESSION_TYPE['FLEXIBLE'])
-            ->whereIn('status', [Constant::CLASS_SESSION_STATUS['APPROVED'], Constant::CLASS_SESSION_STATUS['ACTIVE']])
+            ->where('lecturer_id', $lecturerId)
+            ->whereIn('status', [
+                Constant::CLASS_SESSION_STATUS['ACTIVE'],
+                Constant::CLASS_SESSION_STATUS['REJECTED'],
+                Constant::CLASS_SESSION_STATUS['APPROVED'],
+            ])
+            ->count();
+    }
+
+
+    public function countFixeClassSessionRequest($lecturerId, $classSessionRegistrationId)
+    {
+        return $this->getModel()
+            ->where('type', Constant::CLASS_SESSION_TYPE['FIXED'])
+            ->where('lecturer_id', $lecturerId)
+            ->where('class_session_registration_id', $classSessionRegistrationId)
+            ->where('status', Constant::CLASS_SESSION_STATUS['APPROVED'])
             ->count();
     }
 

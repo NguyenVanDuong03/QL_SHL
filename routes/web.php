@@ -47,7 +47,11 @@ Route::middleware(['auth'])->group(function () {
                     Route::get('/fixed-class-activitie', [LecturerController::class, 'indexFixedClassActivitie'])->name('fixed-class-activitie');
                     Route::get('/fixed-class-activitie/create', [LecturerController::class, 'createClassSession'])->name('create');
                     Route::post('/fixed-class-activitie', [LecturerController::class, 'storeClassSession'])->name('store');
+                    Route::delete('/fixed-class-activitie/{id}', [LecturerController::class, 'deleteClassSession'])->name('delete');
                     Route::get('/fixed-class-activitie/detail', [LecturerController::class, 'detailClassSession'])->name('detail');
+                    Route::get('/detail-fixed-class-activitie', [LecturerController::class, 'detailFixedClassActivitie'])->name('detailFixedClassActivitie');
+                    Route::get('/info-fixed-class-activitie', [LecturerController::class, 'infoFixedClassActivitie'])->name('infoFixedClassActivitie');
+                    Route::patch('/done-fixed-class-activitie/{id}', [LecturerController::class, 'doneFixedClassActivitie'])->name('doneFixedClassActivitie');
 
                     Route::get('/flexible-class-activitie', [LecturerController::class, 'indexFlexibleClassActivitie'])->name('flexible-class-activitie');
                 }

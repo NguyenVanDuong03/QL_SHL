@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\Constant;
 use App\Services\AcademicWarningService;
 use App\Services\ClassSessionRegistrationService;
 use App\Services\ClassSessionRequestService;
@@ -40,15 +41,23 @@ class LecturerController extends Controller
 
     public function indexClassSession()
     {
+
         $checkClassSessionRegistration = $this->classSessionRegistrationService->checkClassSessionRegistration();
         $getCSRSemesterInfo = $this->classSessionRegistrationService->getCSRSemesterInfo();
+        $getClassSessionRegistration = $this->classSessionRegistrationService->get()->first();
+        $lecturerId = auth()->user()->lecturer?->id;
+        $classSessionRegistrationId = $getClassSessionRegistration?->id;
         $countFlexibleClassSessionRequest = $this->classSessionRequestService->countFlexibleClassSessionRequest();
+        $countFixeClassSessionRequest = $this->classSessionRequestService->countFixeClassSessionRequest($lecturerId, $classSessionRegistrationId);
+
         $data = [
             'checkClassSessionRegistration' => $checkClassSessionRegistration,
             'getCSRSemesterInfo' => $getCSRSemesterInfo,
-            'countFlexibleClassSessionRequest' => $countFlexibleClassSessionRequest
+            'countFlexibleClassSessionRequest' => $countFlexibleClassSessionRequest,
+            'countFixeClassSessionRequest' => $countFixeClassSessionRequest,
+            'getClassSessionRegistration' => $getClassSessionRegistration,
         ];
-
+//dd($data['countFixeClassSessionRequest']);
         return view('teacher.classSession.index', compact('data'));
     }
 
@@ -125,6 +134,7 @@ class LecturerController extends Controller
             'countRejectedByLecturerAndSemester' => $countRejectedByLecturerAndSemester,
             'checkClassSessionRegistration' => $checkClassSessionRegistration,
         ];
+//        dd($data['getStudyClassByIds']['total']);
 
         return view('teacher.classSession.fixedClassActivitie', compact('data'));
     }
@@ -174,6 +184,20 @@ class LecturerController extends Controller
         return redirect()->route('teacher.class-session.fixed-class-activitie')->with('success', 'Tạo yêu cầu thành công');
     }
 
+    public function deleteClassSession(Request $request, $id)
+    {
+        $params = $request->all();
+        $roomId = $params['room_id'] ?? null;
+        if ($roomId) {
+            $this->roomService->update($roomId, [
+                'status' => 0,
+            ]);
+        }
+        $this->classSessionRequestService->delete($id);
+
+        return redirect()->back()->with('success', 'Xóa yêu cầu thành công');
+    }
+
     public function detailClassSession(Request $request)
     {
         $studyClassId = $request->query('study-class-id');
@@ -197,6 +221,75 @@ class LecturerController extends Controller
 
 //        dd($data['getStudyClassByIds']);
         return view('teacher.classSession.detail', compact('data'));
+    }
+
+    public function detailFixedClassActivitie(Request $request)
+    {
+        $params = $request->all();
+        $lecturerId = auth()->user()->lecturer?->id;
+        $getSemesterInfo = $this->SemesterService->get()->first();
+        $getCSRSemesterInfo = $this->classSessionRegistrationService->getCSRSemesterInfo();
+        $params['lecturer_id'] = $lecturerId;
+        $params['semester_id'] = $getSemesterInfo?->id;
+        $getStudyClassByIds = $this->studyClassService->getStudyClassWithApprovedRequests($params)->toArray();
+        $totalClasses = $this->studyClassService->coutStudyClassListByLecturerId($lecturerId);
+        $countApprovedByLecturerAndSemester = $this->classSessionRequestService->countApprovedByLecturerAndSemester($lecturerId, $getSemesterInfo?->id);
+        $countRejectedByLecturerAndSemester = $this->classSessionRequestService->countRejectedByLecturerAndSemester($lecturerId, $getSemesterInfo?->id);
+        $checkClassSessionRegistration = $this->classSessionRegistrationService->checkClassSessionRegistration();
+//        dd($getStudyClassByIds);
+        $data = [
+            'getCSRSemesterInfo' => $getCSRSemesterInfo,
+            'getStudyClassByIds' => $getStudyClassByIds,
+            'totalClasses' => $totalClasses,
+            'countApprovedByLecturerAndSemester' => $countApprovedByLecturerAndSemester,
+            'countRejectedByLecturerAndSemester' => $countRejectedByLecturerAndSemester,
+            'checkClassSessionRegistration' => $checkClassSessionRegistration,
+        ];
+
+        return view('teacher.classSession.detailFixedClassActivitie', compact('data'));
+    }
+
+    public function infoFixedClassActivitie(Request $request)
+    {
+        $params = $request->all();
+//        $studyClassId = $request->query('study-class-id');
+//        $sessionRequestId = $request->query('session-request-id');
+        $infoClassRequestbyId = $this->classSessionRequestService->find($params['session-request-id']);
+        $params['class_session_registration_id'] = $infoClassRequestbyId->class_session_registration_id ?? null;
+        $getCSRSemesterInfo = $this->classSessionRegistrationService->getCSRSemesterInfo();
+        $getStudyClassByIds = $this->studyClassService->find($params['study-class-id']);
+        $students = $this->studentService->getStudentsByClassId($params);
+        dd($students);
+        $data = [
+            'getCSRSemesterInfo' => $getCSRSemesterInfo,
+            'getStudyClassByIds' => $getStudyClassByIds,
+        ];
+        $data['getClassSessionRequest'] = null;
+        if ($params['session-request-id']) {
+            $getClassSessionRequest = $this->classSessionRequestService->find($params['session-request-id']);
+            $rooms = $this->roomService->get();
+
+            $data['getClassSessionRequest'] = $getClassSessionRequest;
+            $data['rooms'] = $rooms;
+        }
+
+        return view('teacher.classSession.infoFixedClassActivitie', compact('data'));
+    }
+
+    public function doneFixedClassActivitie(Request $request,$id)
+    {
+        $params = $request->all();
+        $roomId = $params['room_id'] ?? null;
+        if ($roomId) {
+            $this->roomService->update($roomId, [
+                'status' => 0,
+            ]);
+        }
+        $this->classSessionRequestService->update($id, [
+            'status' => Constant::CLASS_SESSION_STATUS['DONE']
+        ]);
+
+        return redirect()->route('teacher.class-session.detailFixedClassActivitie')->with('success', 'Hoàn thành yêu cầu thành công');
     }
 
     public function indexStatistical()
