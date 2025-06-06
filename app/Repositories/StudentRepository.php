@@ -4,6 +4,7 @@ namespace App\Repositories;
 
 use App\Helpers\Constant;
 use App\Models\Student;
+use Illuminate\Support\Facades\DB;
 
 class StudentRepository extends BaseRepository
 {
@@ -20,26 +21,33 @@ class StudentRepository extends BaseRepository
     {
         $search = $params['search'] ?? '';
         $studyClassId = $params['study-class-id'] ?? null;
-        $classSessionRegistrationId = $params['class_session_registration_id'] ?? null;
+        $classSessionRequestId = $params['session-request-id'] ?? null;
 
-        $query = Student::query()
+        $query = $this->getModel()
             ->select([
                 'students.id as student_id',
                 'students.student_code',
-                'users.name as student_name',
+                'users.name',
                 'users.email',
-                'users.gender',
-                'users.phone',
-                'attendances.status',
-                'attendances.updated_at as attendance_recorded_at',
+                'students.note',
+                DB::raw('COALESCE(attendances.status, -1) as attendance_status'),
+                'attendances.reason',
+                DB::raw("CASE
+                    WHEN attendances.status = 0 THEN 'Xác nhận tham gia'
+                    WHEN attendances.status = 1 THEN 'Vắng mặt có phép'
+                    WHEN attendances.status = 2 THEN 'Có mặt'
+                    WHEN attendances.status = 3 THEN 'Vắng mặt'
+                    ELSE 'Chưa xác nhận tham gia'
+                 END as attendance_status_text")
             ])
-            ->join('users', 'students.user_id', '=', 'users.id')
-            ->leftJoin('attendances', 'attendances.student_id', '=', 'students.id')
-            ->leftJoin('class_session_requests', 'attendances.class_session_request_id', '=', 'class_session_requests.id')
+            ->leftJoin('users', 'students.user_id', '=', 'users.id')
+            ->leftJoin('attendances', function ($join) use ($classSessionRequestId) {
+                $join->on('students.id', '=', 'attendances.student_id')
+                    ->where('attendances.class_session_request_id', '=', $classSessionRequestId);
+            })
             ->where('students.study_class_id', $studyClassId)
-            ->where('class_session_requests.class_session_registration_id', $classSessionRegistrationId);
+            ->orderBy('students.student_code');
 
-        // Phần tìm kiếm
         if (!empty($search)) {
             $query->where(function ($q) use ($search) {
                 $q->where('students.student_code', 'like', '%' . $search . '%')
@@ -48,7 +56,75 @@ class StudentRepository extends BaseRepository
             });
         }
 
-        return $query->paginate(Constant::DEFAULT_LIMIT_8);
+        return $query->get();
+    }
+
+    public function getTotalStudentsByClass($params)
+    {
+        $studyClassId = $params['study-class-id'] ?? null;
+
+        return $this->getModel()
+            ->where('study_class_id', $studyClassId)
+            ->count();
+    }
+
+//    public function getAttendanceStatusSummary($params, int $limit = 25, int $offset = 0): array
+//    {
+//        $studyClassId = $params['study-class-id'] ?? null;
+//        $classSessionRequestId = $params['session-request-id'] ?? null;
+//
+//        return $this->getModel()
+//            ->select([
+//                DB::raw('COALESCE(attendances.status, -1) as status'),
+//                DB::raw('COUNT(*) as count'),
+//                DB::raw("CASE
+//                            WHEN attendances.status = 0 THEN 'Xác nhận tham gia'
+//                            WHEN attendances.status = 1 THEN 'Vắng mặt có phép'
+//                            WHEN attendances.status = 2 THEN 'Có mặt'
+//                            WHEN attendances.status = 3 THEN 'Vắng mặt'
+//                            ELSE 'Chưa xác nhận tham gia'
+//                         END as status_text")
+//            ])
+//            ->leftJoin('attendances', function ($join) use ($classSessionRequestId) {
+//                $join->on('students.id', '=', 'attendances.student_id')
+//                    ->where('attendances.class_session_request_id', '=', $classSessionRequestId);
+//            })
+//            ->where('students.study_class_id', $studyClassId)
+//            ->groupBy(DB::raw('COALESCE(attendances.status, -1)'), DB::raw("CASE
+//                                                                            WHEN attendances.status = 0 THEN 'Xác nhận tham gia'
+//                                                                            WHEN attendances.status = 1 THEN 'Vắng mặt có phép'
+//                                                                            WHEN attendances.status = 2 THEN 'Có mặt'
+//                                                                            WHEN attendances.status = 3 THEN 'Vắng mặt'
+//                                                                            ELSE 'Chưa xác nhận tham gia'
+//                                                                         END"))
+//            ->orderBy('status')
+//            ->offset($offset)
+//            ->limit($limit)
+//            ->get()
+//            ->toArray();
+//    }
+
+    public function getAttendanceStatusSummary($params, int $limit = 25, int $offset = 0): array
+    {
+        $studyClassId = $params['study-class-id'] ?? null;
+        $classSessionRequestId = $params['session-request-id'] ?? null;
+
+        return $this->getModel()
+            ->select([
+                DB::raw('COALESCE(attendances.status, -1) as status'),
+                DB::raw('COUNT(*) as count')
+            ])
+            ->leftJoin('attendances', function ($join) use ($classSessionRequestId) {
+                $join->on('students.id', '=', 'attendances.student_id')
+                    ->where('attendances.class_session_request_id', '=', $classSessionRequestId);
+            })
+            ->where('students.study_class_id', $studyClassId)
+            ->groupBy(DB::raw('COALESCE(attendances.status, -1)'))
+            ->orderBy('status')
+            ->offset($offset)
+            ->limit($limit)
+            ->get()
+            ->toArray();
     }
 
 
@@ -79,6 +155,13 @@ class StudentRepository extends BaseRepository
         return $this->getModel()
             ->where('id', $studentId)
             ->update(['position' => $newPosition]);
+    }
+
+    public function updateAttendance($params)
+    {
+        $classSessionRequestId = $params['class_session_request_id'] ?? null;
+        $studentIds = $params['student_ids'] ?? null;
+
     }
 
 }

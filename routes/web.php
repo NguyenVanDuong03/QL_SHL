@@ -57,6 +57,19 @@ Route::middleware(['auth'])->group(function () {
                 }
             );
 
+            // Attendance
+            Route::group(
+                [
+                    'prefix' => 'attendance',
+                    'as' => 'attendance.',
+                ],
+                function () {
+                    Route::get('/', [LecturerController::class, 'indexAttendance'])->name('index');
+                    Route::post('/', [LecturerController::class, 'updateAttendance'])->name('updateAttendance');
+                    Route::post('/{id?}', [LecturerController::class, 'saveAttendance'])->name('saveAttendance');
+                }
+            );
+
             // Class
             Route::group(
                 [
