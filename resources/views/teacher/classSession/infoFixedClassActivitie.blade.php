@@ -516,7 +516,7 @@
                                         @endphp
                                         @foreach($data['students'] as $student)
                                             <tr class="student-row"
-                                                data-status="confirmed"
+                                                data-status="{{ $student->attendance_status }}"
                                                 data-student-id="{{ $student->student_id }}"
                                                 data-student-name="{{ $student->name }}">
                                                 <td>{{ $loop->iteration }}</td>
@@ -545,7 +545,14 @@
                                                     <input class="form-check-input attendance-checkbox"
                                                            type="checkbox"
                                                            name="student_ids[]"
-                                                           value="{{ $student->student_id }}">
+                                                           value="{{ $student->student_id }}"
+                                                           @if($student->attendance_status == -1 || $student->attendance_status == 1)
+                                                               disabled
+                                                           @elseif($student->attendance_status == 2)
+                                                               checked
+                                                        @endif>
+
+
                                                 </td>
                                             </tr>
                                         @endforeach
@@ -595,7 +602,7 @@
 
                             <!-- Desktop Footer -->
                             <div class="d-none d-md-flex justify-content-between align-items-center w-100">
-                                <div>
+                                <div >
                                     <button type="button" class="btn btn-outline-success btn-sm me-2" onclick="checkAllAttendance()">
                                         <i class="fas fa-check-double me-1"></i>Chọn tất cả
                                     </button>
@@ -603,7 +610,7 @@
                                         <i class="fas fa-times me-1"></i>Bỏ chọn
                                     </button>
                                 </div>
-                                <div>
+                                <div class="text-end">
                                     <span class="text-muted me-3">Đã chọn: <strong id="selectedCount">0</strong></span>
                                     <button type="button" class="btn btn-secondary me-2" data-bs-dismiss="modal">Đóng</button>
                                     <button type="submit" class="btn btn-success submitAttendanceBtn">
@@ -836,7 +843,7 @@
         function checkAllAttendance() {
             $('.attendance-checkbox').each(function() {
                 const $container = $(this).closest('.student-row, .mobile-student-card');
-                if ($container.is(':visible') && $container.data('status') !== 'absent') {
+                if ($container.is(':visible') && $container.data('status') == 0) {
                     $(this).prop('checked', true);
                 }
             });

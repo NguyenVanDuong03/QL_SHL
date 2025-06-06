@@ -25,6 +25,11 @@
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="#">
+                            {{ __('Lớp học') }}
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">
                             {{ __('Điểm rèn luyện') }}
                         </a>
                     </li>

@@ -77,9 +77,9 @@ class LecturerController extends Controller
     {
         $params = $request->all();
         $params['class_id'] = $id;
-        $students = $this->studentService->getStudentsByClassId($params)->toArray();
+        $students = $this->studentService->getListStudentByClassId($params)->toArray();
         $getNoteStudentById = $this->studentService->getNoteStudentById($id)->toArray();
-//        dd($getNoteStudentById);
+//        dd($students);
         $classInfo = $this->studyClassService->find($id);
         $data = [
             'students' => $students,
@@ -302,22 +302,22 @@ class LecturerController extends Controller
     public function updateAttendance(Request $request)
     {
         $params = $request->all();
-//        dd($params);
-        $classSessionRequestId = $params['class_session_registration_id'] ?? null;
-        if (empty($classSessionRequestId)) {
-            return redirect()->json([
-                'status' => 'error',
-                'message' => 'Không tìm thấy yêu cầu điểm danh',
-            ]);
-        }
-
-        // Cập nhật trạng thái điểm danh cho từng sinh viên
-        $this->studentService->updateAttendance($params);
-
-        return redirect()->json([
-            'status' => 'success',
-            'message' => 'Cập nhật trạng thái điểm danh thành công',
-        ]);
+        dd($params);
+//        $classSessionRequestId = $params['class_session_registration_id'] ?? null;
+//        if (empty($classSessionRequestId)) {
+//            return redirect()->json([
+//                'status' => 'error',
+//                'message' => 'Không tìm thấy yêu cầu điểm danh',
+//            ]);
+//        }
+//
+//        // Cập nhật trạng thái điểm danh cho từng sinh viên
+//        $this->studentService->updateAttendance($params);
+//
+//        return redirect()->json([
+//            'status' => 'success',
+//            'message' => 'Cập nhật trạng thái điểm danh thành công',
+//        ]);
     }
 
     public function indexStatistical()

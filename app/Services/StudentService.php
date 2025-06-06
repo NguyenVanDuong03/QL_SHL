@@ -39,6 +39,11 @@ class StudentService extends BaseService
         return $this->getRepository()->getStudentListByClassId($params);
     }
 
+    public function getListStudentByClassId($params)
+    {
+        return $this->getRepository()->getListStudentByClassId($params);
+    }
+
     public function getNoteStudentById($class_id)
     {
         return $this->getRepository()->getNoteStudentById($class_id);

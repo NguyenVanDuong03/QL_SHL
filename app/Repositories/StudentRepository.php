@@ -59,6 +59,34 @@ class StudentRepository extends BaseRepository
         return $query->get();
     }
 
+    public function getListStudentByClassId($params)
+    {
+        {
+            $search = $params['search'] ?? '';
+            $classId = $params['class_id'] ?? null;
+
+//        if (empty($classId)) {
+//            return [];
+//        }
+
+            $query = $this->getModel()
+                ->with(['studyClass', 'user'])
+                ->where('study_class_id', $classId);
+
+            if (!empty($search)) {
+                $query = $query->where(function ($q) use ($search) {
+                    $q->where('student_code', 'like', '%' . $search . '%')
+                        ->orWhereHas('user', function ($q) use ($search) {
+                            $q->where('email', 'like', '%' . $search . '%')
+                                ->orWhere('name', 'like', '%' . $search . '%');
+                        });
+                });
+            }
+
+            return $query->paginate(Constant::DEFAULT_LIMIT_8);
+        }
+    }
+
     public function getTotalStudentsByClass($params)
     {
         $studyClassId = $params['study-class-id'] ?? null;
@@ -140,7 +168,16 @@ class StudentRepository extends BaseRepository
 
     public function resetClassOfficers($studyClassId)
     {
-        return $this->getModel()
+        $studentUserIds = $this->getModel()
+            ->where('study_class_id', $studyClassId)
+            ->whereIn('position', [
+                Constant::STUDENT_POSITION['CLASS_PRESIDENT'],
+                Constant::STUDENT_POSITION['VICE_PRESIDENT'],
+                Constant::STUDENT_POSITION['SECRETARY'],
+            ])
+            ->pluck('user_id');
+
+        $this->getModel()
             ->where('study_class_id', $studyClassId)
             ->whereIn('position', [
                 Constant::STUDENT_POSITION['CLASS_PRESIDENT'],
@@ -148,14 +185,38 @@ class StudentRepository extends BaseRepository
                 Constant::STUDENT_POSITION['SECRETARY'],
             ])
             ->update(['position' => Constant::STUDENT_POSITION['STUDENT']]);
+
+        if ($studentUserIds->isNotEmpty()) {
+            DB::table('users')
+                ->whereIn('id', $studentUserIds)
+                ->update(['role' => Constant::ROLE_LIST['STUDENT']]);
+        }
+
+        return true;
     }
 
     public function updateStudentPosition($studentId, $newPosition)
     {
-        return $this->getModel()
+        $updated = $this->getModel()
             ->where('id', $studentId)
             ->update(['position' => $newPosition]);
+
+        if ($updated && in_array($newPosition, [
+                Constant::STUDENT_POSITION['CLASS_PRESIDENT'],
+                Constant::STUDENT_POSITION['VICE_PRESIDENT'],
+                Constant::STUDENT_POSITION['SECRETARY'],
+            ])) {
+            $student = $this->getModel()->find($studentId);
+            if ($student) {
+                DB::table('users')
+                    ->where('id', $student->user_id)
+                    ->update(['role' => Constant::ROLE_LIST['CLASS_STAFF']]);
+            }
+        }
+
+        return $updated;
     }
+
 
     public function updateAttendance($params)
     {
