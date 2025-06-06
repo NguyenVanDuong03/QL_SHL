@@ -71,4 +71,74 @@ class StudentService extends BaseService
         return true;
     }
 
+    public function getTotalStudentsByClass($params)
+    {
+
+        return $this->getRepository()->getTotalStudentsByClass($params);
+    }
+
+//    public function getAttendanceStatusSummary($params)
+//    {
+//        $limit = Arr::get($params, 'limit', 25);
+//        $offset = Arr::get($params, 'offset', 0);
+//
+//        $rawData = $this->getRepository()->getAttendanceStatusSummary($params, $limit, $offset);
+//
+//        $defaultStatuses = [
+//            -1 => 'Chưa xác nhận tham gia',
+//            0 => 'Xác nhận tham gia',
+//            1 => 'Vắng mặt có phép',
+//            2 => 'Có mặt',
+//            3 => 'Vắng mặt',
+//        ];
+//
+//        $summary = [];
+//        foreach ($defaultStatuses as $status => $text) {
+//            $found = collect($rawData)->firstWhere('status', $status);
+//            $summary[] = [
+//                'status' => $status,
+//                'status_text' => $text,
+//                'count' => $found['count'] ?? 0,
+//            ];
+//        }
+//
+//        return $summary;
+//    }
+
+    public function getAttendanceStatusSummary($params)
+    {
+        $limit = Arr::get($params, 'limit', 25);
+        $offset = Arr::get($params, 'offset', 0);
+
+        $rawData = $this->getRepository()->getAttendanceStatusSummary($params, $limit, $offset);
+
+        $defaultStatuses = [
+            -1 => ['text' => 'Chưa xác nhận tham gia', 'badge' => 'warning'],
+            0  => ['text' => 'Xác nhận tham gia',      'badge' => 'success'],
+            1  => ['text' => 'Vắng mặt có phép',       'badge' => 'secondary'],
+            2  => ['text' => 'Có mặt',                 'badge' => 'primary'],
+            3  => ['text' => 'Vắng mặt',               'badge' => 'danger'],
+        ];
+
+        $summary = [];
+        foreach ($defaultStatuses as $status => $info) {
+            $found = collect($rawData)->firstWhere('status', $status);
+            $summary[] = [
+                'status' => $status,
+                'status_text' => $info['text'],
+                'badge_class' => $info['badge'],
+                'count' => $found['count'] ?? 0,
+            ];
+        }
+
+        return $summary;
+    }
+
+    public function updateAttendance($params)
+    {
+        return $this->getRepository()->updateAttendance($params);
+    }
+
+
+
 }

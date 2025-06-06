@@ -152,6 +152,16 @@
             overflow-y: auto;
         }
 
+        .stat-box {
+            min-height: 100px;
+            border: 1px solid #f1f1f1;
+            transition: box-shadow 0.2s ease;
+        }
+        .stat-box:hover {
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+
     </style>
 @endpush
 
@@ -444,33 +454,23 @@
                             aria-label="Close"></button>
                 </div>
                 <div class="modal-body p-0">
-                    <!-- Quick Stats -->
                     <div class="bg-light p-2 p-md-3 border-bottom">
-                        <div class="row text-center g-2">
-                            <div class="col-6 col-md-3">
-                                <div class="p-2 bg-white rounded">
-                                    <h6 class="mb-0 text-primary fs-6" id="totalStudents">45</h6>
+                        <div class="row text-center g-3 align-items-stretch">
+                            <div class="col-6 col-md-2">
+                                <div class="stat-box p-3 bg-white rounded d-flex flex-column justify-content-center align-items-center h-100">
+                                    <h6 class="mb-0 text-primary fs-5 fw-bold" id="totalStudents">{{ $data['getTotalStudentsByClass'] }}</h6>
                                     <small class="text-muted d-block">Tổng số</small>
                                 </div>
                             </div>
-                            <div class="col-6 col-md-3">
-                                <div class="p-2 bg-white rounded">
-                                    <h6 class="mb-0 text-success fs-6" id="confirmedStudents">38</h6>
-                                    <small class="text-muted d-block">Xác nhận</small>
+
+                            @foreach($data['getAttendanceStatusSummary'] as $status)
+                                <div class="col-6 col-md-2">
+                                    <div class="stat-box p-3 bg-white rounded d-flex flex-column justify-content-center align-items-center h-100">
+                                        <h6 class="mb-0 text-success fs-5 fw-bold">{{ $status['count'] }}</h6>
+                                        <small class="text-muted d-block">{{ $status['status_text'] }}</small>
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="col-6 col-md-3">
-                                <div class="p-2 bg-white rounded">
-                                    <h6 class="mb-0 text-danger fs-6" id="absentStudents">5</h6>
-                                    <small class="text-muted d-block">Xin vắng</small>
-                                </div>
-                            </div>
-                            <div class="col-6 col-md-3">
-                                <div class="p-2 bg-white rounded">
-                                    <h6 class="mb-0 text-warning fs-6" id="attendedStudents">0</h6>
-                                    <small class="text-muted d-block">Có mặt</small>
-                                </div>
-                            </div>
+                            @endforeach
                         </div>
                     </div>
 
@@ -488,296 +488,131 @@
                         </div>
                     </div>
 
-                    <div class="d-none d-md-block">
-                        <div class="table-responsive" style="max-height: 400px; overflow-y: auto;">
-                            <table class="table table-hover mb-0">
-                                <thead class="table-light sticky-top">
-                                <tr>
-                                    <th scope="col" style="width: 8%">#</th>
-                                    <th scope="col" style="width: 30%">Tên sinh viên</th>
-                                    <th scope="col" style="width: 20%">Trạng thái</th>
-                                    <th scope="col" style="width: 35%">Lý do vắng</th>
-                                    <th scope="col" style="width: 7%" class="text-center">Có mặt</th>
-                                </tr>
-                                </thead>
-                                <tbody id="studentsTableBody">
-                                <tr class="student-row" data-status="confirmed" data-student-id="20210001"
-                                    data-student-name="Nguyễn Văn An">
-                                    <td>1</td>
-                                    <td class="fw-medium">
-                                        <p class="m-0">Nguyễn Văn An</p>
-                                        <small>#20210001</small>
-                                    </td>
-                                    <td>
-                                        <span class="badge bg-success">
-                                            <i class="fas fa-check me-1"></i>Đã xác nhận
-                                        </span>
-                                    </td>
-                                    <td><span class="text-muted">-</span></td>
-                                    <td class="text-center">
-                                        <input class="form-check-input attendance-checkbox" type="checkbox"
-                                               value="20210001">
-                                    </td>
-                                </tr>
-
-                                <tr class="student-row" data-status="pending" data-student-id="20210002"
-                                    data-student-name="Lê Thị Bình">
-                                    <td>2</td>
-                                    <td class="fw-medium"><p class="m-0">Lê Thị Bình</p>
-                                        <small>#20210001</small></td>
-                                    <td>
-                                        <span class="badge bg-warning">
-                                            <i class="fas fa-clock me-1"></i>Chưa phản hồi
-                                        </span>
-                                    </td>
-                                    <td><span class="text-muted">-</span></td>
-                                    <td class="text-center">
-                                        <input class="form-check-input attendance-checkbox" type="checkbox"
-                                               value="20210002">
-                                    </td>
-                                </tr>
-                                <tr class="student-row" data-status="pending" data-student-id="20210002"
-                                    data-student-name="Lê Thị Bình">
-                                    <td>2</td>
-                                    <td class="fw-medium"><p class="m-0">Lê Thị Bình</p>
-                                        <small>#20210001</small></td>
-                                    <td>
-                                        <span class="badge bg-warning">
-                                            <i class="fas fa-clock me-1"></i>Chưa phản hồi
-                                        </span>
-                                    </td>
-                                    <td><span class="text-muted">-</span></td>
-                                    <td class="text-center">
-                                        <input class="form-check-input attendance-checkbox" type="checkbox"
-                                               value="20210002">
-                                    </td>
-                                </tr>
-                                <tr class="student-row" data-status="pending" data-student-id="20210002"
-                                    data-student-name="Lê Thị Bình">
-                                    <td>2</td>
-                                    <td class="fw-medium"><p class="m-0">Lê Thị Bình</p>
-                                        <small>#20210001</small></td>
-                                    <td>
-                                        <span class="badge bg-warning">
-                                            <i class="fas fa-clock me-1"></i>Chưa phản hồi
-                                        </span>
-                                    </td>
-                                    <td><span class="text-muted">-</span></td>
-                                    <td class="text-center">
-                                        <input class="form-check-input attendance-checkbox" type="checkbox"
-                                               value="20210002">
-                                    </td>
-                                </tr>
-                                <tr class="student-row" data-status="pending" data-student-id="20210002"
-                                    data-student-name="Lê Thị Bình">
-                                    <td>2</td>
-                                    <td class="fw-medium"><p class="m-0">Lê Thị Bình</p>
-                                        <small>#20210001</small></td>
-                                    <td>
-                                        <span class="badge bg-warning">
-                                            <i class="fas fa-clock me-1"></i>Chưa phản hồi
-                                        </span>
-                                    </td>
-                                    <td><span class="text-muted">-</span></td>
-                                    <td class="text-center">
-                                        <input class="form-check-input attendance-checkbox" type="checkbox"
-                                               value="20210002">
-                                    </td>
-                                </tr>
-                                <tr class="student-row" data-status="pending" data-student-id="20210002"
-                                    data-student-name="Lê Thị Bình">
-                                    <td>2</td>
-                                    <td class="fw-medium"><p class="m-0">Lê Thị Bình <i
-                                                class="fas fa-info-circle text-info ms-1 note-icon"
-                                                style="font-size: 0.8rem; cursor: pointer;"
-                                                data-note="Sinh viên học tập tích cực, thường xuyên tham gia các hoạt động lớp. Cần theo dõi thêm về việc nộp bài tập đúng hạn."></i>
-                                        </p>
-                                        <small>#20210001</small>
-                                        <div class="note-content" style="display: none; margin-top: 5px;">
-                                            <small class="text-primary bg-light p-2 rounded d-block">
-                                                <strong>Ghi chú:</strong> <span class="note-text"></span>
-                                            </small>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <span class="badge bg-warning">
-                                            <i class="fas fa-clock me-1"></i>Chưa phản hồi
-                                        </span>
-                                    </td>
-                                    <td><span class="text-muted">-</span></td>
-                                    <td class="text-center">
-                                        <input class="form-check-input attendance-checkbox" type="checkbox"
-                                               value="20210002">
-                                    </td>
-                                </tr>
-                                <tr class="student-row" data-status="pending" data-student-id="20210002"
-                                    data-student-name="Lê Thị Bình">
-                                    <td>2</td>
-                                    <td class="fw-medium"><p class="m-0">Lê Thị Bình</p>
-                                        <small>#20210001</small></td>
-                                    <td>
-                                        <span class="badge bg-warning">
-                                            <i class="fas fa-clock me-1"></i>Chưa phản hồi
-                                        </span>
-                                    </td>
-                                    <td><span class="text-muted">-</span></td>
-                                    <td class="text-center">
-                                        <input class="form-check-input attendance-checkbox" type="checkbox"
-                                               value="20210002">
-                                    </td>
-                                </tr>
-                                <tr class="student-row" data-status="pending" data-student-id="20210002"
-                                    data-student-name="Lê Thị Bình">
-                                    <td>2</td>
-                                    <td class="fw-medium"><p class="m-0">Lê Thị Bình</p>
-                                        <small>#20210001</small></td>
-                                    <td>
-                                        <span class="badge bg-warning">
-                                            <i class="fas fa-clock me-1"></i>Chưa phản hồi
-                                        </span>
-                                    </td>
-                                    <td><span class="text-muted">-</span></td>
-                                    <td class="text-center">
-                                        <input class="form-check-input attendance-checkbox" type="checkbox"
-                                               value="20210002">
-                                    </td>
-                                </tr>
-                                <tr class="student-row" data-status="pending" data-student-id="20210002"
-                                    data-student-name="Lê Thị Bình">
-                                    <td>2</td>
-                                    <td class="fw-medium"><p class="m-0">Lê Thị Bình</p>
-                                        <small>#20210001</small></td>
-                                    <td>
-                                        <span class="badge bg-warning">
-                                            <i class="fas fa-clock me-1"></i>Chưa phản hồi
-                                        </span>
-                                    </td>
-                                    <td><span class="text-muted">-</span></td>
-                                    <td class="text-center">
-                                        <input class="form-check-input attendance-checkbox" type="checkbox"
-                                               value="20210002">
-                                    </td>
-                                </tr>
-                                <tr class="student-row" data-status="pending" data-student-id="20210002"
-                                    data-student-name="Lê Thị Bình">
-                                    <td>2</td>
-                                    <td class="fw-medium"><p class="m-0">Lê Thị Bình</p>
-                                        <small>#20210001</small></td>
-                                    <td>
-                                        <span class="badge bg-warning">
-                                            <i class="fas fa-clock me-1"></i>Chưa phản hồi
-                                        </span>
-                                    </td>
-                                    <td><span class="text-muted">-</span></td>
-                                    <td class="text-center">
-                                        <input class="form-check-input attendance-checkbox" type="checkbox"
-                                               value="20210002">
-                                    </td>
-                                </tr>
-
-                                <tr class="student-row" data-status="absent" data-student-id="20210003"
-                                    data-student-name="Phạm Văn Cường" data-absent-reason="Có việc gia đình đột xuất">
-                                    <td>3</td>
-                                    <td class="fw-medium"><p class="m-0">Lê Thị Bình</p>
-                                        <small>#20210001</small></td>
-                                    <td>
-                                        <span class="badge bg-danger">
-                                            <i class="fas fa-times me-1"></i>Xin vắng
-                                        </span>
-                                    </td>
-                                    <td>
-                                        <small class="text-danger">Có việc gia đình đột xuất</small>
-                                    </td>
-                                    <td class="text-center">
-                                        <span class="text-muted"><i class="fas fa-ban"></i></span>
-                                    </td>
-                                </tr>
-
-                                <tr class="student-row" data-status="confirmed" data-student-id="20210004"
-                                    data-student-name="Hoàng Thị Dung">
-                                    <td>4</td>
-                                    <td class="fw-medium"><p class="m-0">Lê Thị Bình</p>
-                                        <small>#20210001</small></td>
-                                    <td>
-                                        <span class="badge bg-success">
-                                            <i class="fas fa-check me-1"></i>Đã xác nhận
-                                        </span>
-                                    </td>
-                                    <td><span class="text-muted">-</span></td>
-                                    <td class="text-center">
-                                        <input class="form-check-input attendance-checkbox" type="checkbox"
-                                               value="20210004">
-                                    </td>
-                                </tr>
-
-                                <tr class="student-row" data-status="absent" data-student-id="20210005"
-                                    data-student-name="Nguyễn Minh Em" data-absent-reason="Đi khám bệnh theo lịch hẹn">
-                                    <td>5</td>
-                                    <td class="fw-medium"><p class="m-0">Lê Thị Bình</p>
-                                        <small>#20210001</small></td>
-                                    <td>
-                                        <span class="badge bg-danger">
-                                            <i class="fas fa-times me-1"></i>Xin vắng
-                                        </span>
-                                    </td>
-                                    <td>
-                                        <small class="text-danger">Đi khám bệnh theo lịch hẹn</small>
-                                    </td>
-                                    <td class="text-center">
-                                        <span class="text-muted"><i class="fas fa-ban"></i></span>
-                                    </td>
-                                </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-
-                    <!-- No results -->
-                    <div id="noResults" class="text-center py-4 d-none">
-                        <i class="fas fa-search fa-2x text-muted mb-2"></i>
-                        <p class="text-muted">Không tìm thấy sinh viên</p>
-                    </div>
-                </div>
-                <div class="modal-footer p-2 p-md-3">
-                    <!-- Mobile Footer -->
-                    <div class="d-md-none w-100">
-                        <div class="d-flex justify-content-between align-items-center mb-2">
-                            <div class="btn-group btn-group-sm">
-                                <button class="btn btn-outline-success" onclick="checkAllAttendance()">
-                                    <i class="fas fa-check-double"></i>
-                                </button>
-                                <button class="btn btn-outline-secondary" onclick="uncheckAllAttendance()">
-                                    <i class="fas fa-times"></i>
-                                </button>
+                    <!-- HTML/PHP structure remains largely the same, but I'll add a form element for submission -->
+                    <form id="attendanceForm">
+                        <input type="hidden" name="class_session_registration_id" class="class_session_registration_id" value="{{ $data['getClassSessionRequest']->id }}">
+                        <div class="d-none d-md-block">
+                            <div class="table-responsive" style="max-height: 400px; overflow-y: auto;">
+                                <table class="table table-hover mb-0">
+                                    <thead class="table-light sticky-top">
+                                    <tr>
+                                        <th scope="col" style="width: 8%">#</th>
+                                        <th scope="col" style="width: 30%">Tên sinh viên</th>
+                                        <th scope="col" style="width: 20%">Trạng thái</th>
+                                        <th scope="col" style="width: 35%">Lý do vắng</th>
+                                        <th scope="col" style="width: 7%" class="text-center">Có mặt</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody id="studentsTableBody">
+                                    @if($data['students'])
+                                        @php
+                                            $statusColors = [
+                                                -1 => 'warning',
+                                                0  => 'success',
+                                                1  => 'secondary',
+                                                2  => 'primary',
+                                                3  => 'danger',
+                                            ];
+                                        @endphp
+                                        @foreach($data['students'] as $student)
+                                            <tr class="student-row"
+                                                data-status="confirmed"
+                                                data-student-id="{{ $student->student_id }}"
+                                                data-student-name="{{ $student->name }}">
+                                                <td>{{ $loop->iteration }}</td>
+                                                <td class="fw-medium">
+                                                    <p class="m-0">{{ $student->name }}
+                                                        @if($student->note)
+                                                            <i class="fas fa-info-circle text-info ms-1 note-icon"
+                                                               style="font-size: 0.8rem; cursor: pointer;"
+                                                               data-note="{{ $student->note }}"></i>
+                                                        @endif
+                                                    </p>
+                                                    <small>#{{ $student->student_code }}</small>
+                                                    <div class="note-content" style="display: none; margin-top: 5px;">
+                                                        <small class="text-primary bg-light p-2 rounded d-block">
+                                                            <strong>Ghi chú:</strong> <span class="note-text"></span>
+                                                        </small>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                    <span class="badge bg-{{ $statusColors[$student->attendance_status] ?? 'secondary' }}">
+                                        <i class="fas fa-check me-1"></i>{{ $student->attendance_status_text }}
+                                    </span>
+                                                </td>
+                                                <td><span class="text-muted">{{ $student->reason ?? '-' }}</span></td>
+                                                <td class="text-center">
+                                                    <input class="form-check-input attendance-checkbox"
+                                                           type="checkbox"
+                                                           name="student_ids[]"
+                                                           value="{{ $student->student_id }}">
+                                                </td>
+                                            </tr>
+                                        @endforeach
+                                    @else
+                                        <tr>
+                                            <td colspan="5" class="text-center text-muted py-4">
+                                                <i class="fas fa-users fa-2x mb-2"></i>
+                                                <p class="mb-0">Không có sinh viên trong lớp này</p>
+                                            </td>
+                                        </tr>
+                                    @endif
+                                    </tbody>
+                                </table>
                             </div>
-                            <span class="text-muted small">Đã chọn: <strong id="selectedCountMobile">0</strong></span>
                         </div>
-                        <div class="d-grid gap-2">
-                            <button type="button" class="btn btn-success" onclick="saveAttendance()">
-                                <i class="fas fa-save me-2"></i>Lưu điểm danh
-                            </button>
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
-                        </div>
-                    </div>
 
-                    <!-- Desktop Footer -->
-                    <div class="d-none d-md-flex justify-content-between align-items-center w-100">
-                        <div>
-                            <button class="btn btn-outline-success btn-sm me-2" onclick="checkAllAttendance()">
-                                <i class="fas fa-check-double me-1"></i>Chọn tất cả
-                            </button>
-                            <button class="btn btn-outline-secondary btn-sm" onclick="uncheckAllAttendance()">
-                                <i class="fas fa-times me-1"></i>Bỏ chọn
-                            </button>
+                        <!-- No results -->
+                        <div id="noResults" class="text-center py-4 d-none">
+                            <i class="fas fa-search fa-2x text-muted mb-2"></i>
+                            <p class="text-muted">Không tìm thấy sinh viên</p>
                         </div>
-                        <div>
-                            <span class="text-muted me-3">Đã chọn: <strong id="selectedCount">0</strong></span>
-                            <button type="button" class="btn btn-secondary me-2" data-bs-dismiss="modal">Đóng</button>
-                            <button type="button" class="btn btn-success" onclick="saveAttendance()">
-                                <i class="fas fa-save me-2"></i>Lưu điểm danh
-                            </button>
+
+                        <!-- Mobile view -->
+                        <div id="mobileStudentList" class="d-md-none"></div>
+
+                        <div class="modal-footer p-2 p-md-3">
+                            <!-- Mobile Footer -->
+                            <div class="d-md-none w-100">
+                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                    <div class="btn-group btn-group-sm">
+                                        <button type="button" class="btn btn-outline-success" onclick="checkAllAttendance()">
+                                            <i class="fas fa-check-double"></i>
+                                        </button>
+                                        <button type="button" class="btn btn-outline-secondary" onclick="uncheckAllAttendance()">
+                                            <i class="fas fa-times"></i>
+                                        </button>
+                                    </div>
+                                    <span class="text-muted small">Đã chọn: <strong id="selectedCountMobile">0</strong></span>
+                                </div>
+                                <div class="d-grid gap-2">
+                                    <button type="submit" class="btn btn-success btn-submit-attendance submitAttendanceBtn">
+                                        <i class="fas fa-save me-2"></i>Lưu điểm danh
+                                    </button>
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                                </div>
+                            </div>
+
+                            <!-- Desktop Footer -->
+                            <div class="d-none d-md-flex justify-content-between align-items-center w-100">
+                                <div>
+                                    <button type="button" class="btn btn-outline-success btn-sm me-2" onclick="checkAllAttendance()">
+                                        <i class="fas fa-check-double me-1"></i>Chọn tất cả
+                                    </button>
+                                    <button type="button" class="btn btn-outline-secondary btn-sm" onclick="uncheckAllAttendance()">
+                                        <i class="fas fa-times me-1"></i>Bỏ chọn
+                                    </button>
+                                </div>
+                                <div>
+                                    <span class="text-muted me-3">Đã chọn: <strong id="selectedCount">0</strong></span>
+                                    <button type="button" class="btn btn-secondary me-2" data-bs-dismiss="modal">Đóng</button>
+                                    <button type="submit" class="btn btn-success submitAttendanceBtn">
+                                        <i class="fas fa-save me-2"></i>Lưu điểm danh
+                                    </button>
+                                </div>
+                            </div>
                         </div>
-                    </div>
+                    </form>
                 </div>
             </div>
         </div>
@@ -826,99 +661,121 @@
             }
         }
 
-        function showToast(message, type = 'info') {
-            // Simple toast implementation
-            const toast = document.createElement('div');
-            toast.className = `alert alert-${type === 'success' ? 'success' : 'info'} position-fixed`;
-            toast.style.cssText = 'top: 20px; right: 20px; z-index: 9999; min-width: 250px;';
-            toast.innerHTML = `
-                <i class="fas fa-${type === 'success' ? 'check' : 'info'}-circle me-2"></i>
-                ${message}
-            `;
-            document.body.appendChild(toast);
-
-            setTimeout(() => {
-                toast.remove();
-            }, 3000);
-        }
+        // function showToast(message, type = 'info') {
+        //     // Simple toast implementation
+        //     const toast = document.createElement('div');
+        //     toast.className = `alert alert-${type === 'success' ? 'success' : 'info'} position-fixed`;
+        //     toast.style.cssText = 'top: 20px; right: 20px; z-index: 9999; min-width: 250px;';
+        //     toast.innerHTML = `
+        //         <i class="fas fa-${type === 'success' ? 'check' : 'info'}-circle me-2"></i>
+        //         ${message}
+        //     `;
+        //     document.body.appendChild(toast);
+        //
+        //     setTimeout(() => {
+        //         toast.remove();
+        //     }, 3000);
+        // }
     </script>
 
     <script>
         $(document).ready(function () {
             generateMobileCards();
+            updateCounts();
 
-            // Search
+            // Search functionality
             $('#searchStudent').on('input', function () {
                 const searchTerm = $(this).val().toLowerCase();
                 let visibleCount = 0;
 
-                // Desktop rows
-                $('.student-row').each(function () {
-                    const studentName = $(this).data('student-name').toLowerCase();
-                    const studentId = $(this).data('student-id').toLowerCase();
+                $('.student-row, .mobile-student-card').each(function () {
+                    const $this = $(this);
+                    const studentName = $this.data('student-name').toLowerCase();
+                    const studentId = $this.data('student-id').toLowerCase();
 
                     if (studentName.includes(searchTerm) || studentId.includes(searchTerm)) {
-                        $(this).show();
-                        visibleCount++;
+                        $this.show();
+                        if ($this.hasClass('student-row')) visibleCount++;
                     } else {
-                        $(this).hide();
-                    }
-                });
-
-                // Mobile cards
-                $('.mobile-student-card').each(function () {
-                    const studentName = $(this).data('student-name').toLowerCase();
-                    const studentId = $(this).data('student-id').toLowerCase();
-
-                    if (studentName.includes(searchTerm) || studentId.includes(searchTerm)) {
-                        $(this).show();
-                    } else {
-                        $(this).hide();
+                        $this.hide();
                     }
                 });
 
                 $('#noResults').toggleClass('d-none', visibleCount > 0);
             });
 
-            // Checkbox change
-            $(document).on('change', '.attendance-checkbox', function () {
-                updateCounts();
-            });
+            // Checkbox change handler
+            $(document).on('change', '.attendance-checkbox', updateCounts);
 
-            updateCounts();
+            // Note icon click handler
+            $(document).on('click', '.note-icon', function(e) {
+                e.stopPropagation();
+                const $this = $(this);
+                const $noteContent = $this.closest('td').find('.note-content');
+                const $noteText = $noteContent.find('.note-text');
+                const noteData = $this.data('note');
 
-            // Xử lý click vào icon ghi chú
-            $('.note-icon').click(function() {
-                var $this = $(this);
-                var $noteContent = $this.closest('td').find('.note-content');
-                var $noteText = $noteContent.find('.note-text');
-                var noteData = $this.data('note');
-
-                // Ẩn tất cả note khác
                 $('.note-content').not($noteContent).slideUp(200);
-
-                // Toggle note hiện tại
-                if ($noteContent.is(':visible')) {
-                    $noteContent.slideUp(200);
-                } else {
-                    $noteText.text(noteData || 'Chưa có ghi chú.');
-                    $noteContent.slideDown(200);
-                }
+                $noteText.text(noteData || 'Chưa có ghi chú.');
+                $noteContent.slideToggle(200);
             });
 
-            // Ẩn note khi click ra ngoài
-            $(document).click(function(e) {
+            // Hide notes when clicking outside
+            $(document).on('click', function(e) {
                 if (!$(e.target).closest('.note-icon, .note-content').length) {
                     $('.note-content').slideUp(200);
                 }
             });
+
+            $('#attendanceModal').on('shown.bs.modal', function () {
+                toggleSubmitButton(); // kiểm tra trạng thái ban đầu
+            });
+
+            $(document).on('change', '.attendance-checkbox', function () {
+                toggleSubmitButton();
+            });
+
+            // Form submission
+            $('#attendanceForm').on('submit', function(e) {
+                e.preventDefault();
+
+                const attendanceData = $('.attendance-checkbox:checked').map(function() {
+                    return $(this).val();
+                }).get();
+                const class_session_registration_id = $('.class_session_registration_id').val();
+
+
+                if (attendanceData.length === 0) {
+                    toastr.error('Vui lòng chọn ít nhất một sinh viên để điểm danh.');
+                    return;
+                }
+
+                // Send AJAX request
+                $.ajax({
+                    url: `{{ route('teacher.attendance.updateAttendance') }}`, // Replace with your actual endpoint
+                    method: 'POST',
+                    data: {
+                        student_ids: attendanceData,
+                        class_session_registration_id: class_session_registration_id,
+                        _token: $('meta[name="csrf-token"]').attr('content') // Add CSRF token if needed
+                    },
+                    success: function(response) {
+                        console.log(response);
+                        toastr.success('Đã lưu điểm danh thành công!');
+                        bootstrap.Modal.getInstance($('#attendanceModal')[0]).hide();
+                    },
+                    error: function(xhr) {
+                        toastr.error('Đã xảy ra lỗi khi lưu điểm danh: ' + (xhr.responseText || 'Lỗi không xác định'));
+                    }
+                });
+            });
         });
 
         function generateMobileCards() {
-            const $rows = $('.student-row');
             const $mobileContainer = $('#mobileStudentList');
+            $mobileContainer.empty();
 
-            $rows.each(function () {
+            $('.student-row').each(function() {
                 const $row = $(this);
                 const studentId = $row.data('student-id');
                 const studentName = $row.data('student-name');
@@ -930,75 +787,72 @@
 
                 if (status === 'confirmed') {
                     statusBadge = '<span class="badge bg-success"><i class="fas fa-check me-1"></i>Đã xác nhận</span>';
-                    checkboxHtml = `<input class="form-check-input attendance-checkbox" type="checkbox" value="${studentId}" style="transform: scale(1.2);">`;
+                    checkboxHtml = `<input class="form-check-input attendance-checkbox" type="checkbox" name="student_ids[]" value="${studentId}" style="transform: scale(1.2);">`;
                 } else if (status === 'pending') {
                     statusBadge = '<span class="badge bg-warning"><i class="fas fa-clock me-1"></i>Chưa phản hồi</span>';
-                    checkboxHtml = `<input class="form-check-input attendance-checkbox" type="checkbox" value="${studentId}" style="transform: scale(1.2);">`;
+                    checkboxHtml = `<input class="form-check-input attendance-checkbox" type="checkbox" name="student_ids[]" value="${studentId}" style="transform: scale(1.2);">`;
                 } else {
                     statusBadge = '<span class="badge bg-danger"><i class="fas fa-times me-1"></i>Xin vắng</span>';
                     checkboxHtml = '<span class="text-muted"><i class="fas fa-ban"></i></span>';
                 }
 
                 const card = $(`
-                <div class="mobile-student-card card mb-2 border-0 shadow-sm"
-                     data-student-id="${studentId}"
-                     data-student-name="${studentName}"
-                     data-status="${status}">
-                    <div class="card-body p-3">
-                        <div class="d-flex justify-content-between align-items-start">
-                            <div class="flex-grow-1">
-                                <div class="d-flex justify-content-between align-items-center mb-2">
-                                    <h6 class="mb-0 fw-bold">${studentName}</h6>
-                                    <span class="badge bg-light text-dark">${studentId}</span>
-                                </div>
-                                <div class="mb-2">${statusBadge}</div>
-                                ${absentReason ? `<small class="text-danger"><i class="fas fa-exclamation-triangle me-1"></i>${absentReason}</small>` : ''}
+            <div class="mobile-student-card card mb-2 border-0 shadow-sm"
+                 data-student-id="${studentId}"
+                 data-student-name="${studentName}"
+                 data-status="${status}">
+                <div class="card-body p-3">
+                    <div class="d-flex justify-content-between align-items-start">
+                        <div class="flex-grow-1">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <h6 class="mb-0 fw-bold">${studentName}</h6>
+                                <span class="badge bg-light text-dark">${studentId}</span>
                             </div>
-                            <div class="ms-3 d-flex align-items-center">
-                                <div class="text-center">
-                                    <small class="text-muted d-block mb-1">Có mặt</small>
-                                    ${checkboxHtml}
-                                </div>
+                            <div class="mb-2">${statusBadge}</div>
+                            ${absentReason ? `<small class="text-danger"><i class="fas fa-exclamation-triangle me-1"></i>${absentReason}</small>` : ''}
+                        </div>
+                        <div class="ms-3 d-flex align-items-center">
+                            <div class="text-center">
+                                <small class="text-muted d-block mb-1">Có mặt</small>
+                                ${checkboxHtml}
                             </div>
                         </div>
                     </div>
                 </div>
-            `);
+            </div>
+        `);
 
                 $mobileContainer.append(card);
             });
         }
 
+        // Hàm kiểm tra xem có checkbox nào được chọn không
+        function toggleSubmitButton() {
+            const checkedCount = $('.attendance-checkbox:checked').length;
+            $('.submitAttendanceBtn').prop('disabled', checkedCount === 0);
+            $('#selectedCount, #selectedCountMobile').text(checkedCount);
+        }
+
         function checkAllAttendance() {
-            $('.attendance-checkbox').each(function () {
+            $('.attendance-checkbox').each(function() {
                 const $container = $(this).closest('.student-row, .mobile-student-card');
                 if ($container.is(':visible') && $container.data('status') !== 'absent') {
                     $(this).prop('checked', true);
                 }
             });
             updateCounts();
+            toggleSubmitButton()
         }
 
         function uncheckAllAttendance() {
             $('.attendance-checkbox').prop('checked', false);
             updateCounts();
+            toggleSubmitButton()
         }
 
         function updateCounts() {
             const checkedCount = $('.attendance-checkbox:checked').length;
             $('#selectedCount, #selectedCountMobile, #attendedStudents').text(checkedCount);
-        }
-
-        function saveAttendance() {
-            const attendanceData = $('.attendance-checkbox:checked').map(function () {
-                return $(this).val();
-            }).get();
-
-            if (confirm(`Lưu điểm danh cho ${attendanceData.length} sinh viên?`)) {
-                console.log('Attendance data:', attendanceData);
-                alert('Đã lưu điểm danh thành công!');
-                bootstrap.Modal.getInstance($('#attendanceModal')[0]).hide();
-            }
         }
     </script>
 @endpush

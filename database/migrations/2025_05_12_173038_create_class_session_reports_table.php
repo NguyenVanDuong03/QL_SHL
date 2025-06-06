@@ -15,15 +15,15 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('class_session_request_id');
             $table->unsignedBigInteger('reporter_id');
-            $table->text('value_1')->comment('Số sinh viên tham dự họp lớp/Tổng số sinh viên trong lớp');
-            $table->tinyInteger('value_2')->comment('GVCN có tham gia buổi Sinh hoạt lớp');
-            $table->text('value_3')->comment('Tình hình chính trị, tư tưởng, đạo đức, lối sống');
-            $table->text('value_4')->comment('Tình hình học tập, rèn luyện');
-            $table->text('value_5')->comment('Tình hình sinh viên nội trú');
-            $table->text('value_6')->comment('Tình hình sinh viên ngoại trú');
-            $table->text('value_7')->comment('Các hoạt động khác');
-            $table->text('value_8')->comment('Đề xuất, kiến nghị với Khoa, Nhà trường');
-            $table->binary('value_9')->comment('Minh chứng, hình ảnh buổi sinh hoạt lớp');
+            $table->text('attending_students')->comment('Số sinh viên tham dự họp lớp/Tổng số sinh viên trong lớp');
+            $table->tinyInteger('teacher_attendance')->comment('GVCN có tham gia buổi Sinh hoạt lớp');
+            $table->text('politics_ethics_lifestyle')->comment('Tình hình chính trị, tư tưởng, đạo đức, lối sống');
+            $table->text('academic_training_status')->comment('Tình hình học tập, rèn luyện');
+            $table->text('on_campus_student_status')->comment('Tình hình sinh viên nội trú');
+            $table->text('off_campus_student_status')->comment('Tình hình sinh viên ngoại trú');
+            $table->text('other_activities')->comment('Các hoạt động khác');
+            $table->text('suggestions_to_faculty_university')->comment('Đề xuất, kiến nghị với Khoa, Nhà trường');
+            $table->binary('activity_evidence_images')->comment('Minh chứng, hình ảnh buổi sinh hoạt lớp');
             $table->softDeletes();
             $table->timestamps();
 

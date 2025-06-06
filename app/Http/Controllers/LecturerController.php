@@ -205,7 +205,7 @@ class LecturerController extends Controller
         $sessionRequestId = $request->query('session-request-id');
         $getCSRSemesterInfo = $this->classSessionRegistrationService->getCSRSemesterInfo();
         $getStudyClassByIds = $this->studyClassService->find($studyClassId);
-        $students = $this->studentService->getStudentsByClassId($studyClassId);
+//        $students = $this->studentService->getStudentsByClassId($studyClassId);
 //        dd($students);
         $data = [
             'getCSRSemesterInfo' => $getCSRSemesterInfo,
@@ -261,10 +261,15 @@ class LecturerController extends Controller
         $getCSRSemesterInfo = $this->classSessionRegistrationService->getCSRSemesterInfo();
         $getStudyClassByIds = $this->studyClassService->find($params['study-class-id']);
         $students = $this->studentService->getStudentsByClassId($params);
+        $getTotalStudentsByClass = $this->studentService->getTotalStudentsByClass($params);
+        $getAttendanceStatusSummary = $this->studentService->getAttendanceStatusSummary($params);
 //        dd($students);
         $data = [
             'getCSRSemesterInfo' => $getCSRSemesterInfo,
             'getStudyClassByIds' => $getStudyClassByIds,
+            'students' => $students,
+            'getTotalStudentsByClass' => $getTotalStudentsByClass,
+            'getAttendanceStatusSummary' => $getAttendanceStatusSummary,
         ];
         $data['getClassSessionRequest'] = null;
         if ($params['session-request-id']) {
@@ -292,6 +297,27 @@ class LecturerController extends Controller
         ]);
 
         return redirect()->route('teacher.class-session.detailFixedClassActivitie')->with('success', 'Hoàn thành yêu cầu thành công');
+    }
+
+    public function updateAttendance(Request $request)
+    {
+        $params = $request->all();
+//        dd($params);
+        $classSessionRequestId = $params['class_session_registration_id'] ?? null;
+        if (empty($classSessionRequestId)) {
+            return redirect()->json([
+                'status' => 'error',
+                'message' => 'Không tìm thấy yêu cầu điểm danh',
+            ]);
+        }
+
+        // Cập nhật trạng thái điểm danh cho từng sinh viên
+        $this->studentService->updateAttendance($params);
+
+        return redirect()->json([
+            'status' => 'success',
+            'message' => 'Cập nhật trạng thái điểm danh thành công',
+        ]);
     }
 
     public function indexStatistical()
