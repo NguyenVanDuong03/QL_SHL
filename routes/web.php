@@ -10,9 +10,9 @@ use App\Http\Controllers\UserController;
 
 Route::get('/', function () {
     if (Auth::check() && Auth::user()->role == 0) {
-        return redirect()->route('student-affairs-department.index');
-    } else if (Auth::check() && Auth::user()->role == 1) {
         return redirect()->route('teacher.index');
+    } else if (Auth::check() && Auth::user()->role == 1) {
+        return redirect()->route('student-affairs-department.index');
     } else if (Auth::check() && Auth::user()->role == 2) {
         return redirect()->route('class-staff.index');
     } else if (Auth::check() && Auth::user()->role == 3) {
