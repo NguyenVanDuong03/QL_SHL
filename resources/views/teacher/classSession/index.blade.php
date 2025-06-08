@@ -3,7 +3,7 @@
 @section('title', 'Sinh hoạt lớp')
 
 @section('breadcrumb')
-    <x-breadcrumb.breadcrumb :links="[['label' => 'Sinh hoạt lớp']]" />
+    <x-breadcrumb.breadcrumb :links="[['label' => 'Sinh hoạt lớp']]"/>
 @endsection
 
 @push('styles')
@@ -55,8 +55,8 @@
                             <p class="text-muted m-0">Không có lịch họp</p>
                         @endif
                         <a class="btn btn-primary position-absolute"
-                            href="{{ route('teacher.class-session.flexible-class-activitie') }}"
-                            style="top: 10px; right: 10px; width: 40px; height: 40px; border-radius: 5px;">
+                           href="{{ route('teacher.class-session.flexible-class-activitie') }}"
+                           style="top: 10px; right: 10px; width: 40px; height: 40px; border-radius: 5px;">
                             <i class="fas fa-plus"></i>
                         </a>
                     </div>
@@ -86,7 +86,7 @@
 @section('scripts')
 
     <script>
-        $(document).ready(function() {
+        $(document).ready(function () {
 
         });
     </script>

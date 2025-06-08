@@ -54,6 +54,9 @@ Route::middleware(['auth'])->group(function () {
                     Route::patch('/done-fixed-class-activitie/{id}', [LecturerController::class, 'doneFixedClassActivitie'])->name('doneFixedClassActivitie');
 
                     Route::get('/flexible-class-activitie', [LecturerController::class, 'indexFlexibleClassActivitie'])->name('flexible-class-activitie');
+                    Route::get('/flexible-class-activitie/create', [LecturerController::class, 'flexibleCreate'])->name('flexibleCreate');
+                    Route::post('/flexible-class-activitie', [LecturerController::class, 'storeFlexibleClassSession'])->name('storeFlexibleClassSession');
+                    Route::get('/flexible-class-activitie/detail', [LecturerController::class, 'flexibleDetail'])->name('flexibleDetail');
                 }
             );
 
@@ -65,7 +68,7 @@ Route::middleware(['auth'])->group(function () {
                 ],
                 function () {
                     Route::get('/', [LecturerController::class, 'indexAttendance'])->name('index');
-                    Route::post('/', [LecturerController::class, 'updateAttendance'])->name('updateAttendance');
+                    Route::patch('/', [LecturerController::class, 'updateAttendance'])->name('updateAttendance');
                     Route::post('/{id?}', [LecturerController::class, 'saveAttendance'])->name('saveAttendance');
                 }
             );
@@ -116,7 +119,7 @@ Route::middleware(['auth'])->group(function () {
                 ],
                 function () {
                     Route::get('/', [StudentAffairsDepartmentController::class, 'classSession'])->name('index');
-                    Route::get('/history/{id}', [StudentAffairsDepartmentController::class, 'history'])->name('history');
+                    Route::get('/flexible-class-activities', [StudentAffairsDepartmentController::class, 'flexibleClassActivities'])->name('flexibleClassActivities');
                     Route::post('/create-classSession-registration', [StudentAffairsDepartmentController::class, 'createClassSessionRegistration'])->name('createClassSessionRegistration');
                     Route::put('/edit-classSession-registration/{id?}', [StudentAffairsDepartmentController::class, 'editClassSessionRegistration'])->name('editClassSessionRegistration');
                     Route::patch('/confirm-classSession-registration/{id?}', [StudentAffairsDepartmentController::class, 'comfirmClassSession'])->name('updateClassRequest');
@@ -214,7 +217,25 @@ Route::middleware(['auth'])->group(function () {
         ],
         function () {
             Route::get('/', [ClassStaffController::class, 'index'])->name('index');
+
+            // class session
+            Route::group(
+                [
+                    'prefix' => 'class-session',
+                    'as' => 'class-session.',
+                ],
+                function () {
+                    Route::get('/', [ClassStaffController::class, 'indexClassSession'])->name('index');
+                    Route::get('/detail', [ClassStaffController::class, 'detailClassSession'])->name('detailClassSession');
+                    Route::post('/', [ClassStaffController::class, 'confirmAttendance'])->name('confirmAttendance');
+                    Route::patch('/', [ClassStaffController::class, 'updateAbsence'])->name('updateAbsence');
+//                    Route::post('/create-classSession-registration', [ClassStaffController::class, 'createClassSessionRegistration'])->name('createClassSessionRegistration');
+//                    Route::put('/edit-classSession-registration/{id?}', [ClassStaffController::class, 'editClassSessionRegistration'])->name('editClassSessionRegistration');
+//                    Route::patch('/confirm-classSession-registration/{id?}', [ClassStaffController::class, 'comfirmClassSession'])->name('updateClassRequest');
+                }
+            );
         }
+
     );
 
     // Route Student

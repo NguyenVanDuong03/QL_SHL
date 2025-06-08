@@ -5,7 +5,7 @@
 @section('breadcrumb')
     <x-breadcrumb.breadcrumb :links="[
         ['label' => 'Sinh hoạt lớp', 'url' => 'teacher.class-session.index'],
-        ['label' => 'Lịch sinh hoạt lớp', 'url' => 'teacher.class-session.fixed-class-activitie'],
+        ['label' => 'Lịch sinh linh hoạt', 'url' => 'teacher.class-session.flexible-class-activitie'],
         ['label' => 'Chi tiết sinh hoạt lớp']
     ]"/>
 @endsection
@@ -175,7 +175,7 @@
         <!-- Header với thông tin khóa học -->
         <div class="mx-3">
             <div class="mb-2">
-                <a href="{{ route('teacher.class-session.detailFixedClassActivitie') }}"
+                <a href="{{ route('teacher.class-session.flexible-class-activitie') }}"
                    class="btn btn-outline-secondary btn-sm">
                     <i class="fas fa-arrow-left me-2"></i>Quay lại
                 </a>
@@ -240,7 +240,7 @@
 
                             <!-- Action buttons -->
                             <div class="d-flex justify-content-end gap-2">
-                                @if(($data['getClassSessionRequest']->status ?? 0) == 1)
+                                @if($data['getClassSessionRequest']->status == 1)
                                     <button type="button" class="btn btn-info" data-bs-target="#attendanceModal"
                                             data-bs-toggle="modal">
                                         <i class="fas fa-users me-2"></i>Danh sách tham gia
@@ -290,7 +290,7 @@
                                 <!-- Trực tiếp tại trường -->
                                 <div class="mb-3">
                                     <label class="form-label fw-bold text-success">Phòng học:</label>
-                                    <p class="text-dark mb-0 fs-5">{{ $data['getClassSessionRequest']->room->name }}</p>
+                                    <p class="text-dark mb-0 fs-5">{{ $data['getClassSessionRequest']->room->name ?? 'Chưa có phòng' }}</p>
                                 </div>
                                 <div class="alert alert-info">
                                     <i class="fas fa-info-circle me-2"></i>
@@ -501,7 +501,7 @@
                     <form id="attendanceForm">
                         <input type="hidden" name="session-request-id" class="session_request_id" value="{{ $data['getClassSessionRequest']->id }}">
                         <input type="hidden" name="study-class-id" class="study_class_id" value="{{ $data['getClassSessionRequest']->study_class_id }}">
-{{--                        <input type="hidden" name="session-request-id" value="{{ $data['getClassSessionRequest']->id }}">--}}
+                        {{--                        <input type="hidden" name="session-request-id" value="{{ $data['getClassSessionRequest']->id }}">--}}
                         <div class="d-none d-md-block">
                             <div class="table-responsive" style="max-height: 400px; overflow-y: auto;">
                                 <table class="table table-hover mb-0">
@@ -598,56 +598,56 @@
                         <div id="mobileStudentList" class="d-md-none"></div>
 
                         @if($data['getClassSessionRequest']->proposed_at < now())
-                        <div class="modal-footer p-2 p-md-3">
-                            <!-- Mobile Footer -->
-                            <div class="d-md-none w-100">
-                                <div class="d-flex justify-content-between align-items-center mb-2">
-                                    <div class="btn-group btn-group-sm">
-                                        <button type="button" class="btn btn-outline-success"
-                                                onclick="checkAllAttendance()">
-                                            <i class="fas fa-check-double"></i>
+                            <div class="modal-footer p-2 p-md-3">
+                                <!-- Mobile Footer -->
+                                <div class="d-md-none w-100">
+                                    <div class="d-flex justify-content-between align-items-center mb-2">
+                                        <div class="btn-group btn-group-sm">
+                                            <button type="button" class="btn btn-outline-success"
+                                                    onclick="checkAllAttendance()">
+                                                <i class="fas fa-check-double"></i>
+                                            </button>
+                                            <button type="button" class="btn btn-outline-secondary"
+                                                    onclick="uncheckAllAttendance()">
+                                                <i class="fas fa-times"></i>
+                                            </button>
+                                        </div>
+                                        <span class="text-muted small">Đã chọn: <strong id="selectedCountMobile">0</strong></span>
+                                    </div>
+                                    <div class="d-grid gap-2">
+                                        <button type="submit"
+                                                class="btn btn-success btn-submit-attendance submitAttendanceBtn">
+                                            <i class="fas fa-save me-2"></i>Lưu điểm danh
                                         </button>
-                                        <button type="button" class="btn btn-outline-secondary"
-                                                onclick="uncheckAllAttendance()">
-                                            <i class="fas fa-times"></i>
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng
                                         </button>
                                     </div>
-                                    <span class="text-muted small">Đã chọn: <strong id="selectedCountMobile">0</strong></span>
                                 </div>
-                                <div class="d-grid gap-2">
-                                    <button type="submit"
-                                            class="btn btn-success btn-submit-attendance submitAttendanceBtn">
-                                        <i class="fas fa-save me-2"></i>Lưu điểm danh
-                                    </button>
-                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng
-                                    </button>
-                                </div>
-                            </div>
 
-                            <!-- Desktop Footer -->
-                            <div class="d-none d-md-flex justify-content-between align-items-center w-100">
-                                <div>
-                                    <button type="button" class="btn btn-outline-success btn-sm me-2"
-                                            onclick="checkAllAttendance()">
-                                        <i class="fas fa-check-double me-1"></i>Chọn tất cả
-                                    </button>
-                                    <button type="button" class="btn btn-outline-secondary btn-sm"
-                                            onclick="uncheckAllAttendance()">
-                                        <i class="fas fa-times me-1"></i>Bỏ chọn
-                                    </button>
-                                </div>
-                                <div class="text-end">
-                                    <span class="text-muted me-3">Đã chọn: <strong id="selectedCount">0</strong></span>
-                                    <button type="button" class="btn btn-secondary me-2" data-bs-dismiss="modal">Đóng</button>
-                                    <button type="submit" class="btn btn-success submitAttendanceBtn">
-                                        <i class="fas fa-save me-2"></i>Lưu điểm danh
-                                    </button>
+                                <!-- Desktop Footer -->
+                                <div class="d-none d-md-flex justify-content-between align-items-center w-100">
+                                    <div>
+                                        <button type="button" class="btn btn-outline-success btn-sm me-2"
+                                                onclick="checkAllAttendance()">
+                                            <i class="fas fa-check-double me-1"></i>Chọn tất cả
+                                        </button>
+                                        <button type="button" class="btn btn-outline-secondary btn-sm"
+                                                onclick="uncheckAllAttendance()">
+                                            <i class="fas fa-times me-1"></i>Bỏ chọn
+                                        </button>
+                                    </div>
+                                    <div class="text-end">
+                                        <span class="text-muted me-3">Đã chọn: <strong id="selectedCount">0</strong></span>
+                                        <button type="button" class="btn btn-secondary me-2" data-bs-dismiss="modal">Đóng</button>
+                                        <button type="submit" class="btn btn-success submitAttendanceBtn">
+                                            <i class="fas fa-save me-2"></i>Lưu điểm danh
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
                         @else
                             <div class="d-flex justify-content-center align-items-center w-100 my-2">
-                            <button type="button" class="btn btn-secondary me-2" data-bs-dismiss="modal">Đóng</button>
+                                <button type="button" class="btn btn-secondary me-2" data-bs-dismiss="modal">Đóng</button>
                             </div>
                         @endif
                     </form>

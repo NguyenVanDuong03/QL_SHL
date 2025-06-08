@@ -1,18 +1,33 @@
 @extends('layouts.studentAffairsDepartment')
 
-@section('title', 'Sinh hoạt lớp')
+@section('title', 'Sinh hoạt lớp cố định')
 
 @section('breadcrumb')
-    <x-breadcrumb.breadcrumb :links="[['label' => 'Sinh hoạt lớp']]"/>
+    <x-breadcrumb.breadcrumb :links="[['label' => 'Sinh hoạt lớp cố định']]"/>
 @endsection
 
+@push('styles')
+    <style>
+        .nav-tabs .nav-link.active {
+            background-color: #0d6efd;
+            color: #fff;
+            border-color: #0d6efd #0d6efd #fff;
+        }
+
+        .nav-tabs .nav-link {
+            color: #0d6efd;
+        }
+    </style>
+@endpush
+
 @section('main')
+    @include('StudentAffairsDepartment.classSession.tabs')
     <!-- Main Content -->
     <div class="col bg-light">
         <!-- Content -->
-        <div class="p-4">
+        <div class="px-4">
             @if ($data['checkClassSessionRegistration'])
-                <div class="d-flex justify-content-between align-items-start mb-4">
+                <div class="d-flex justify-content-between align-items-end mb-4">
                     <div>
                         <h4>{{ $data['classSessionRegistration']->name }} -
                             {{ $data['classSessionRegistration']->school_year }}</h4>
@@ -35,12 +50,6 @@
                                    aria-label="Recipient's username" aria-describedby="basic-addon2">
                             <button class="input-group-text" id="basic-addon2"><i
                                     class="fas fa-magnifying-glass"></i></button>
-                        </div>
-                        <div class="d-flex justify-content-end">
-                            <a class="btn btn-primary"
-                               href="{{ route('student-affairs-department.class-session.history', $data['classSessionRegistration']->id ) }}">
-                                Lịch sử
-                            </a>
                         </div>
                     </div>
                 </div>
@@ -107,8 +116,8 @@
                                                         data-meeting-url="{{ $class['meeting_url'] }}"
                                                         data-study-class-name="{{ $class['study_class_name'] }}"
                                                         data-note="{{ $class['note'] }}"
-                                                        data-room-name="{{ $class['room_name'] }}"
-                                                        data-room-id="{{ $class['room_id'] }}"
+                                                        data-room-name="{{ $class['room_name'] ?? '' }}"
+                                                        data-room-id="{{ $class['room_id'] ?? '' }}"
                                                         data-status="{{ $class['status'] }}"
                                                 >
                                                     <i class="fas fa-file-signature"></i>
@@ -129,8 +138,8 @@
                                                     data-meeting-url="{{ $class['meeting_url'] }}"
                                                     data-study-class-name="{{ $class['study_class_name'] }}"
                                                     data-note="{{ $class['note'] }}"
-                                                    data-room-name="{{ $class['room_name'] }}"
-                                                    data-room-id="{{ $class['room_id'] }}"
+                                                    data-room-name="{{ $class['room_name'] ?? '' }}"
+                                                    data-room-id="{{ $class['room_id'] ?? '' }}"
                                                     data-status="{{ $class['status'] }}"
                                                     data-detail="true"
                                                     >
@@ -346,6 +355,7 @@
                             @method('PATCH')
                             <input type="hidden" name="status" class="class_session_status" value="1">
                             <input type="hidden" name="position" class="class_session_position_input">
+                            <input type="hidden" name="type" value="0">
 
                             <h6>Lớp: <span class="class_session_study_class"></span></h6>
                             <h6>Hình thức họp: <span class="class_session_position"></span></h6>
@@ -409,6 +419,7 @@
     <script>
         $(document).ready(function () {
             let isRejectMode = false;
+
             // Reset form when modal is closed
             $('.auto-reset-modal').on('hidden.bs.modal', function () {
                 $('.text-danger-error').text('');
@@ -419,7 +430,16 @@
                     'background-color': '',
                     'color': ''
                 });
-                isRejectMode = false; // Reset cờ trạng thái
+                $('#btnRejectStatus').css({
+                    'background-color': '',
+                    'color': ''
+                });
+                $('.btn-comfirm-form').removeClass('d-none');
+                $('.class_session_room').addClass('d-none');
+                $('.session-offline').addClass('d-none');
+                $('.session-online').addClass('d-none');
+                $('.session-picnic').addClass('d-none');
+                isRejectMode = false;
             });
 
             // Reset form when button is clicked
@@ -468,8 +488,7 @@
                 $('#end_date_error_edit').text('');
 
                 if (semesterId == null) {
-                    $('#semester_id_error-edit').text(
-                        'Vui lòng tạo học kỳ trước khi tạo lịch sinh hoạt lớp');
+                    $('#semester_id_error-edit').text('Vui lòng tạo học kỳ trước khi tạo lịch sinh hoạt lớp');
                     return;
                 }
 
@@ -505,7 +524,6 @@
                         'color': ''
                     });
                 }
-
             });
 
             $('#btnRejectStatus').on('click', function () {
@@ -526,9 +544,8 @@
                         'background-color': '',
                         'color': ''
                     });
-                    $('.btn-comfirm-form').addClass('d-none');
+                    $('.btn-comfirm-form').removeClass('d-none');
                 }
-
             });
 
             $('.btn-comfirm-class').on('click', function () {
@@ -543,6 +560,7 @@
                 const meetingPassword = $(this).data('meeting-password');
                 const meetingUrl = $(this).data('meeting-url');
                 const note = $(this).data('note');
+                const roomName = $(this).data('room-name') || '';
                 const roomId = $(this).data('room-id');
                 const status = $(this).data('status');
 
@@ -564,13 +582,17 @@
                 @foreach($data['rooms'] as $room)
                 $roomSelect.append(`<option value="{{ $room->id }}">{{ $room->name }}</option>`);
                 @endforeach
-                    @endif
+                @else
+                $roomSelect.append(`<option value="" disabled selected>Không có phòng khả dụng</option>`);
+                @endif
 
                 if (roomId && roomName) {
                     if ($roomSelect.find(`option[value="${roomId}"]`).length === 0) {
                         $roomSelect.append(`<option value="${roomId}">${roomName} (đã được chọn)</option>`);
                     }
                     $roomSelect.val(roomId);
+                } else {
+                    $roomSelect.val('');
                 }
 
                 if (position === 0) {
@@ -598,15 +620,13 @@
                 $('.class_session_note').text(!note ? '---' : note);
                 $('.class_session_position_input').val(position);
 
-
                 $('#formComfirm').attr('action', `{{ route('student-affairs-department.class-session.updateClassRequest', '') }}/${classId}`);
-
             });
 
             $('.btn-detail-class').on('click', function () {
                 const classId = $(this).data('id');
                 const studyClassName = $(this).data('study-class-name');
-                let type = $(this).data('type');
+                const type = $(this).data('type');
                 const position = $(this).data('position');
                 const proposedAt = $(this).data('proposed_at');
                 const location = $(this).data('location');
@@ -615,13 +635,12 @@
                 const meetingPassword = $(this).data('meeting-password');
                 const meetingUrl = $(this).data('meeting-url');
                 const note = $(this).data('note');
-                const roomName = $(this).data('room-name');
+                const roomName = $(this).data('room-name') || '---';
                 const roomId = $(this).data('room-id');
                 const status = $(this).data('status');
                 const isDetail = $(this).data('detail');
-                console.log(roomName);
 
-                if(status === 1 && isDetail) {
+                if (status === 1 && isDetail) {
                     $('#btnReject').addClass('d-none');
                     $('.btn-comfirm-form').addClass('d-none');
                     $('#btnRejectStatus').addClass('d-none');
@@ -653,21 +672,30 @@
                 $('.class_session_meeting_password').text(meetingPassword);
                 $('.class_session_meeting_url').attr('href', meetingUrl);
                 $('.class_session_note').text(!note ? '---' : note);
-                $('.class_session_room_name').text(roomName ?? '---');
-
+                $('.class_session_room_name').text(roomName);
             });
-
 
             $('.btn-comfirm-form').on('click', function (e) {
                 e.preventDefault();
+
                 const rejectionReason = $('#rejection_reason').val().trim();
                 if (isRejectMode && !rejectionReason) {
-                   $('#rejection_reason').focus();
+                    $('#rejection_reason').focus();
                     return;
                 }
 
-                $('#formComfirm').submit();
+                const position = $('.class_session_position_input').val();
+                if (position === '0') {
+                    const roomId = $('#room').val();
+                    if (!roomId) {
+                        $('#formComfirm input[name="room_id"]').remove();
+                        $('#formComfirm').append('<input type="hidden" name="room_id" value="">');
+                    }
+                } else {
+                    $('#formComfirm input[name="room_id"]').remove();
+                }
 
+                $('#formComfirm').submit();
             });
         });
     </script>

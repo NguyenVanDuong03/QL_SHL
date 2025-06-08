@@ -29,7 +29,10 @@
                                         Route::currentRouteName() == 'teacher.class-session.create' ||
                                         Route::currentRouteName() == 'teacher.class-session.detail' ||
                                         Route::currentRouteName() == 'teacher.class-session.detailFixedClassActivitie' ||
-                                        Route::currentRouteName() == 'teacher.class-session.infoFixedClassActivitie' ? 'active' : '' }}"
+                                        Route::currentRouteName() == 'teacher.class-session.infoFixedClassActivitie' ||
+                                        Route::currentRouteName() == 'teacher.class-session.flexibleCreate' ||
+                                        Route::currentRouteName() == 'teacher.class-session.flexibleDetail'
+                                        ? 'active' : '' }}"
                    href="{{ route('teacher.class-session.index') }}">
                     <i class="fas fa-book"></i>
                     Sinh hoạt lớp

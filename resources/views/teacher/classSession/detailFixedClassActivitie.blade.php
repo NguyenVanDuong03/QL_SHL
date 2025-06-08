@@ -44,8 +44,10 @@
 
                     <!-- Tìm kiếm & thống kê -->
                     <div class="col-md-6 col-lg-7 d-flex justify-content-end align-items-end">
-                        <form method="GET" action="{{ route('teacher.class-session.detailFixedClassActivitie') }}" class="input-group mb-3" style="max-width: 300px; margin-left: auto;">
-                            <input type="text" class="form-control" placeholder="Tìm kiếm lớp học" name="search" value="{{ request('search') }}"
+                        <form method="GET" action="{{ route('teacher.class-session.detailFixedClassActivitie') }}"
+                              class="input-group mb-3" style="max-width: 300px; margin-left: auto;">
+                            <input type="text" class="form-control" placeholder="Tìm kiếm lớp học" name="search"
+                                   value="{{ request('search') }}"
                                    aria-label="Search class" aria-describedby="search-addon">
                             <button class="btn btn-outline-secondary" id="search-addon">
                                 <i class="fas fa-magnifying-glass"></i>
@@ -56,75 +58,75 @@
             </div>
 
 
-{{--            @if (isset($data['getStudyClassByIds']) && $data['getStudyClassByIds']['total'] > 0)--}}
-                <!-- Table -->
-                <div class="card shadow-sm">
-                    <div class="card-body p-0">
-                        <div class="table-responsive">
-                            <table class="table table-hover mb-0">
-                                <thead class="table-light">
-                                <tr>
-                                    <th scope="col" class="px-4 py-1">STT</th>
-                                    <th scope="col" class="px-4 py-1">Tên lớp</th>
-                                    <th scope="col" class="px-4 py-1 d-none d-md-table-cell">Khoa</th>
-                                    <th scope="col" class="px-4 py-1 d-none d-md-table-cell">Hình thức</th>
-                                    <th scope="col" class="px-4 py-1">Thời gian họp</th>
-                                    <th scope="col" class="px-4 py-1 text-center">Thao tác</th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                @if($data['getStudyClassByIds']['total'] > 0)
-                                    @foreach ($data['getStudyClassByIds']['data'] as $index => $class)
-                                        <tr>
-                                            <td class="px-4 py-1">
-                                                {{ $loop->iteration }}
-                                            </td>
-                                            <td class="px-4 py-1">
-                                                <strong>{{ $class['name'] }}</strong>
-                                            </td>
-                                            <td class="px-4 py-1 d-none d-md-table-cell">
-                                                {{ $class['major']['faculty']['department']['name'] }}
-                                            </td>
-                                            <td class="px-4 py-1 d-none d-md-table-cell">
+            {{--            @if (isset($data['getStudyClassByIds']) && $data['getStudyClassByIds']['total'] > 0)--}}
+            <!-- Table -->
+            <div class="card shadow-sm">
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover mb-0">
+                            <thead class="table-light">
+                            <tr>
+                                <th scope="col" class="px-4 py-1">STT</th>
+                                <th scope="col" class="px-4 py-1">Tên lớp</th>
+                                <th scope="col" class="px-4 py-1 d-none d-md-table-cell">Khoa</th>
+                                <th scope="col" class="px-4 py-1 d-none d-md-table-cell">Hình thức</th>
+                                <th scope="col" class="px-4 py-1">Thời gian họp</th>
+                                <th scope="col" class="px-4 py-1 text-center">Thao tác</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            @if($data['getStudyClassByIds']['total'] > 0)
+                                @foreach ($data['getStudyClassByIds']['data'] as $index => $class)
+                                    <tr>
+                                        <td class="px-4 py-1">
+                                            {{ $loop->iteration }}
+                                        </td>
+                                        <td class="px-4 py-1">
+                                            <strong>{{ $class['name'] }}</strong>
+                                        </td>
+                                        <td class="px-4 py-1 d-none d-md-table-cell">
+                                            {{ $class['major']['faculty']['department']['name'] }}
+                                        </td>
+                                        <td class="px-4 py-1 d-none d-md-table-cell">
                                                     <span
                                                         class="badge {{ $class['class_session_requests']['position'] == '0' ? 'bg-success' : ($class['class_session_requests']['position'] == '1' ? 'bg-primary' : 'bg-warning') }}">{{ $class['class_session_requests']['position'] == '0' ? 'Trực tiếp tại trường' : ($class['class_session_requests']['position'] == '1' ? 'Trực tuyến' : 'Dã ngoại') }}</span>
-                                            </td>
-                                            <td class="px-4 py-1">
-                                                {{ \Carbon\Carbon::parse($class['class_session_requests']['proposed_at'])->format('H:i d/m/Y') }}
-                                            </td>
-                                            <td class="px-4 py-1 text-center">
-                                                <a href="{{ route('teacher.class-session.infoFixedClassActivitie', ['study-class-id' => $class['id'], 'session-request-id' => $class['class_session_requests']['id'] ?? null]) }}"
-                                                   class="btn btn-secondary btn-sm {{ empty($class['class_session_requests']) ? 'disabled' : '' }}"
-                                                   title="Chi tiết">
-                                                    <i class="fas fa-eye"></i>
-                                                </a>
-                                            </td>
-                                        </tr>
-                                    @endforeach
-                                @else
-                                    <tr>
-                                        <td colspan="6" class="text-center text-muted py-3">
-                                            Không có lớp học nào được tìm thấy.
+                                        </td>
+                                        <td class="px-4 py-1">
+                                            {{ \Carbon\Carbon::parse($class['class_session_requests']['proposed_at'])->format('H:i d/m/Y') }}
+                                        </td>
+                                        <td class="px-4 py-1 text-center">
+                                            <a href="{{ route('teacher.class-session.infoFixedClassActivitie', ['study-class-id' => $class['id'], 'session-request-id' => $class['class_session_requests']['id'] ?? null]) }}"
+                                               class="btn btn-secondary btn-sm {{ empty($class['class_session_requests']) ? 'disabled' : '' }}"
+                                               title="Chi tiết">
+                                                <i class="fas fa-eye"></i>
+                                            </a>
                                         </td>
                                     </tr>
-                                @endif
+                                @endforeach
+                            @else
+                                <tr>
+                                    <td colspan="6" class="text-center text-muted py-3">
+                                        Không có lớp học nào được tìm thấy.
+                                    </td>
+                                </tr>
+                            @endif
 
-                                </tbody>
-                            </table>
-                        </div>
+                            </tbody>
+                        </table>
                     </div>
                 </div>
+            </div>
 
-                <!-- Pagination -->
-                <div class="mt-4">
-                    <x-pagination.pagination :paginate="$data['getStudyClassByIds']"/>
-                </div>
-{{--            @else--}}
-{{--                <div class="text-center alert alert-warning" role="alert">--}}
-{{--                    <i class="fas fa-exclamation-triangle me-2"></i>--}}
-{{--                    Tất cả các lớp đã được đăng ký.--}}
-{{--                </div>--}}
-{{--            @endif--}}
+            <!-- Pagination -->
+            <div class="mt-4">
+                <x-pagination.pagination :paginate="$data['getStudyClassByIds']"/>
+            </div>
+            {{--            @else--}}
+            {{--                <div class="text-center alert alert-warning" role="alert">--}}
+            {{--                    <i class="fas fa-exclamation-triangle me-2"></i>--}}
+            {{--                    Tất cả các lớp đã được đăng ký.--}}
+            {{--                </div>--}}
+            {{--            @endif--}}
         </div>
     </div>
 

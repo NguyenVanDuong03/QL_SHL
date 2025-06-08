@@ -1,6 +1,6 @@
 body {
     background-color: #4a90e2;
-    background-image: url("{{ asset('images/wave-bg.png') }}");
+    /*background-image: url("{{ asset('images/wave-bg.png') }}");*/
     background-size: cover;
     background-position: center;
     min-height: 100vh;

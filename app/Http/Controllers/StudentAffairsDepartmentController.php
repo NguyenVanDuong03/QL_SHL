@@ -7,7 +7,6 @@ use App\Http\Requests\ClassSessionRegistrationRequest;
 use App\Http\Requests\SemesterRequest;
 use App\Imports\LecturerImportByExcel;
 use App\Imports\StudentImportByExcel;
-use App\Models\StudyClass;
 use App\Services\ClassSessionRegistrationService;
 use App\Services\ClassSessionRequestService;
 use App\Services\CohortService;
@@ -27,18 +26,18 @@ use Maatwebsite\Excel\Facades\Excel;
 class StudentAffairsDepartmentController extends Controller
 {
     public function __construct(
-        protected SemesterService $semesterService,
+        protected SemesterService                 $semesterService,
         protected ClassSessionRegistrationService $classSessionRegistrationService,
-        protected ClassSessionRequestService $classSessionRequestService,
-        protected StudentService $studentService,
-        protected LecturerService $lecturerService,
-        protected RoomService $roomService,
-        protected DepartmentService $titleService,
-        protected FacultyService $facultyService,
-        protected UserService $userService,
-        protected CohortService $cohortService,
-        protected StudyClassService $studyClassService,
-        protected ConductEvaluationPeriodService $conductEvaluationPeriodService,
+        protected ClassSessionRequestService      $classSessionRequestService,
+        protected StudentService                  $studentService,
+        protected LecturerService                 $lecturerService,
+        protected RoomService                     $roomService,
+        protected DepartmentService               $titleService,
+        protected FacultyService                  $facultyService,
+        protected UserService                     $userService,
+        protected CohortService                   $cohortService,
+        protected StudyClassService               $studyClassService,
+        protected ConductEvaluationPeriodService  $conductEvaluationPeriodService,
     )
     {
     }
@@ -69,11 +68,24 @@ class StudentAffairsDepartmentController extends Controller
         return view('StudentAffairsDepartment.classSession.index', compact('data'));
     }
 
+    public function flexibleClassActivities(Request $request)
+    {
+        $params = $request->all();
+        $params['isEmptyRoom'] = true;
+        $rooms = $this->roomService->get($params);
+        $data = [
+            'ListCSRs' => $this->classSessionRequestService->getListFlexibleClass()->toArray(),
+            'rooms' => $rooms,
+        ];
+//        dd($data['rooms']);
+
+        return view('StudentAffairsDepartment.classSession.flexibleClassActivities', compact('data'));
+    }
+
     public function comfirmClassSession(Request $request, $id)
     {
         $params = $request->all();
-//        dd($params);
-        if ($params['position'] != Constant::CLASS_SESSION_POSITION['OFFLINE']) {
+        if ($params['position'] != Constant::CLASS_SESSION_POSITION['OFFLINE'] && $params['rejection_reason'] == null) {
             $params['room_id'] = null;
         } else {
             if (isset($params['room_id'])) {
@@ -85,20 +97,15 @@ class StudentAffairsDepartmentController extends Controller
 
         if ($params['rejection_reason']) {
             $params['status'] = Constant::CLASS_SESSION_STATUS['REJECTED'];
-            $params['room_id'] = null;
         }
 //         dd($params, $id);
         $this->classSessionRequestService->update($id, $params);
 
-        return redirect()->route('student-affairs-department.class-session.index')->with('success', 'Xác nhận thành công');
-    }
-
-    public function history($class_session_registration_id)
-    {
-        $data = $this->classSessionRegistrationService->getListCSRHistory($class_session_registration_id)->toArray();
-//        dd($semesterId);
-
-        return view('StudentAffairsDepartment.classSession.history', compact('data'));
+        if ($params['type'] == 1) {
+            return redirect()->route('student-affairs-department.class-session.flexibleClassActivities')->with('success', 'Xác nhận thành công');
+        } else {
+            return redirect()->route('student-affairs-department.class-session.index')->with('success', 'Xác nhận thành công');
+        }
     }
 
     public function createClassSessionRegistration(ClassSessionRegistrationRequest $request)

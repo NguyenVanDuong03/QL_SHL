@@ -4,6 +4,7 @@ namespace App\Repositories;
 
 use App\Helpers\Constant;
 use App\Models\ClassSessionRequest;
+use http\Env\Request;
 
 class ClassSessionRequestRepository extends BaseRepository
 {
@@ -14,6 +15,35 @@ class ClassSessionRequestRepository extends BaseRepository
         }
 
         return $this->model;
+    }
+
+    public function getClassSessionRequestBySclIdAndCsrId($params)
+    {
+        return $this->getModel()
+            ->where('study_class_id', $params['study_class_id'])
+            ->where('class_session_registration_id', $params['class_session_registration_id'])
+            ->first();
+    }
+
+    public function classSessionRequests($params)
+    {
+        $params['class_session_request_id'] = $this->getClassSessionRequestBySclIdAndCsrId($params)->id;
+        return $this->getModel()
+            ->with([
+                'lecturer',
+                'studyClass',
+                'room',
+                'attendances' => function ($query) use ($params) {
+                    $query->where('student_id', $params['student_id'])
+                        ->latest('id')
+                        ->first();
+                }
+            ])
+            ->where('study_class_id', $params['study_class_id'])
+            ->where('class_session_registration_id', $params['class_session_registration_id'])
+            ->limit(Constant::DEFAULT_LIMIT)
+            ->orderBy('id', 'desc')
+            ->get();
     }
 
     public function countFlexibleClassSessionRequest($lecturerId)
@@ -51,6 +81,17 @@ class ClassSessionRequestRepository extends BaseRepository
             ->count();
     }
 
+    public function countFlexibleClassSessionRequestByLecturer($lecturerId)
+    {
+        return $this->getModel()
+            ->where('type', Constant::CLASS_SESSION_TYPE['FLEXIBLE'])
+            ->where('lecturer_id', $lecturerId)
+            ->whereIn('status', [
+                Constant::CLASS_SESSION_STATUS['APPROVED'],
+            ])
+            ->count();
+    }
+
     public function countRejectedByLecturerAndSemester($lecturerId, $semesterId)
     {
         return $this->getModel()
@@ -59,6 +100,15 @@ class ClassSessionRequestRepository extends BaseRepository
             ->whereHas('classSessionRegistration', function ($q) use ($semesterId) {
                 $q->where('semester_id', $semesterId);
             })
+            ->count();
+    }
+
+    public function countFlexibleRejectedByLecturer($lecturerId)
+    {
+        return $this->getModel()
+            ->where('type', Constant::CLASS_SESSION_TYPE['FLEXIBLE'])
+            ->where('lecturer_id', $lecturerId)
+            ->where('status', Constant::CLASS_SESSION_STATUS['REJECTED'])
             ->count();
     }
 
@@ -81,5 +131,44 @@ class ClassSessionRequestRepository extends BaseRepository
         return $this->createOrUpdate($params, $instance);
     }
 
+    public function flexibleCreateOrUpdateByClassAndSemester(array $params)
+    {
+        $modelClass = $this->getModel();
+
+        $instance = $modelClass::where('study_class_id', $params['study_class_id'])
+            ->where('type', Constant::CLASS_SESSION_TYPE['FLEXIBLE'])
+            ->whereIn('status', [
+                Constant::CLASS_SESSION_STATUS['ACTIVE'],
+                Constant::CLASS_SESSION_STATUS['REJECTED'],
+                Constant::CLASS_SESSION_STATUS['APPROVED'],
+            ])
+            ->first();
+
+        return $this->createOrUpdate($params, $instance);
+    }
+
+    public function getListFlexibleClass()
+    {
+        return $this->getModel()
+            ->with('studyClass', 'room')
+            ->where('type', Constant::CLASS_SESSION_TYPE['FLEXIBLE'])
+            ->whereIn('status', [
+                Constant::CLASS_SESSION_STATUS['ACTIVE'],
+                Constant::CLASS_SESSION_STATUS['REJECTED'],
+                Constant::CLASS_SESSION_STATUS['APPROVED'],
+            ])
+            ->orderByRaw('
+            CASE status
+                WHEN ? THEN 1
+                WHEN ? THEN 2
+                WHEN ? THEN 3
+                ELSE 4
+            END', [
+                Constant::CLASS_SESSION_STATUS['ACTIVE'],
+                Constant::CLASS_SESSION_STATUS['REJECTED'],
+                Constant::CLASS_SESSION_STATUS['APPROVED']
+            ])
+            ->paginate(Constant::DEFAULT_LIMIT_12);
+    }
 
 }

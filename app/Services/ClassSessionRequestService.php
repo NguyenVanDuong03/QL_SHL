@@ -21,25 +21,32 @@ class ClassSessionRequestService extends BaseService
     {
         $sort = Arr::get($params, 'sort', 'id:desc');
         $wheres = Arr::get($params, 'wheres', []);
-        $relates = array_intersect(
-        Arr::get($params, 'relates', []),
-        ['lecturer', 'studyClass', 'room']
-        );
-        $flexibleClassActivities = Arr::get($params, 'flexibleClassActivities', null);
-        // dd($flexibleClassActivities);
-        if ($flexibleClassActivities) {
-            $wheres[] = [ function ($q)  {
-                $q->where('type', Constant::CLASS_SESSION_TYPE['FLEXIBLE'])
-                    ->where('status', Constant::CLASS_SESSION_STATUS['ACTIVE']);
-            }
-            ];
-        }
+        $relates = Arr::get($params, 'relates', ['lecturer', 'studyClass', 'room', 'lecturer.user', 'attendances']);
+
+//        $flexibleClassActivities = Arr::get($params, 'flexibleClassActivities', null);
+//        if ($flexibleClassActivities) {
+//            $wheres[] = [function ($q)  {
+//                $q->where('status', Constant::CLASS_SESSION_STATUS['ACTIVE']);
+//            }];
+//
+//            $relates[] = ['lecturer', 'studyClass', 'room', 'attendances'];
+//        }
 
         return [
             'sort' => $sort,
             'wheres' => $wheres,
             'relates' => $relates
         ];
+    }
+
+    public function getClassSessionRequestBySclIdAndCsrId($params)
+    {
+        return $this->getRepository()->getClassSessionRequestBySclIdAndCsrId($params);
+    }
+
+    public function classSessionRequests($params)
+    {
+        return $this->getRepository()->classSessionRequests($params);
     }
 
     public function countFlexibleClassSessionRequest()
@@ -58,9 +65,19 @@ class ClassSessionRequestService extends BaseService
         return $this->getRepository()->countApprovedByLecturerAndSemester($lecturerId, $semesterId);
     }
 
+    public function countFlexibleClassSessionRequestByLecturer($lecturerId)
+    {
+        return $this->getRepository()->countFlexibleClassSessionRequestByLecturer($lecturerId);
+    }
+
     public function countRejectedByLecturerAndSemester($lecturerId, $semesterId)
     {
         return $this->getRepository()->countRejectedByLecturerAndSemester($lecturerId, $semesterId);
+    }
+
+    public function countFlexibleRejectedByLecturer($lecturerId)
+    {
+        return $this->getRepository()->countFlexibleRejectedByLecturer($lecturerId);
     }
 
     public function getClassSessionRequestById($studyClassId, $class_session_registration_id)
@@ -74,5 +91,14 @@ class ClassSessionRequestService extends BaseService
 
     }
 
+    public function flexibleCreateOrUpdateByClassAndSemester(array $params)
+    {
+        return $this->getRepository()->flexibleCreateOrUpdateByClassAndSemester($params);
+    }
+
+    public function getListFlexibleClass()
+    {
+        return $this->getRepository()->getListFlexibleClass();
+    }
 
 }

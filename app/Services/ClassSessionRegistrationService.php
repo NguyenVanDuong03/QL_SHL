@@ -30,7 +30,7 @@ class ClassSessionRegistrationService extends BaseService
 
     public function checkClassSessionRegistration()
     {
-        $currentSemester = $this->getRepository()->getCurrentSemester();
+        $currentSemester = $this->getCurrentSemester();
         if ($currentSemester) {
             $openDate = Carbon::parse($currentSemester->open_date);
             $endDate = Carbon::parse($currentSemester->end_date);
@@ -44,6 +44,11 @@ class ClassSessionRegistrationService extends BaseService
         return false;
     }
 
+    public function getCurrentSemester()
+    {
+        return $this->getRepository()->getCurrentSemester();
+    }
+
     public function getCSRSemesterInfo()
     {
         return $this->getRepository()->getCSRSemesterInfo();
@@ -55,9 +60,9 @@ class ClassSessionRegistrationService extends BaseService
         return $this->getRepository()->getListCSR();
     }
 
-    public function getListCSRHistory($class_session_registration_id)
-    {
-        return $this->getRepository()->getListCSRHistory($class_session_registration_id);
-    }
+//    public function getListFlexibleClass()
+//    {
+//        return $this->getRepository()->getListFlexibleClass();
+//    }
 
 }

@@ -118,10 +118,10 @@ class StudentService extends BaseService
         $rawData = $this->getRepository()->getAttendanceStatusSummary($params, $limit, $offset);
 
         $defaultStatuses = [
-            -1 => ['text' => 'Chưa xác nhận tham gia', 'badge' => 'warning'],
-            0  => ['text' => 'Xác nhận tham gia',      'badge' => 'success'],
-            1  => ['text' => 'Vắng mặt có phép',       'badge' => 'secondary'],
-            2  => ['text' => 'Có mặt',                 'badge' => 'primary'],
+            -1 => ['text' => 'Chưa xác nhận', 'badge' => 'warning'],
+            0  => ['text' => 'Xác nhận',      'badge' => 'primary'],
+            1  => ['text' => 'Xin vắng',       'badge' => 'secondary'],
+            2  => ['text' => 'Có mặt',                 'badge' => 'success'],
             3  => ['text' => 'Vắng mặt',               'badge' => 'danger'],
         ];
 
@@ -138,12 +138,5 @@ class StudentService extends BaseService
 
         return $summary;
     }
-
-    public function updateAttendance($params)
-    {
-        return $this->getRepository()->updateAttendance($params);
-    }
-
-
 
 }

@@ -47,10 +47,10 @@ class Constant
     ];
 
     const ATTENDANCE_STATUS = [
-        'PRESENT' => 0,
-        'ABSENT' => 1,
-        'LATE' => 2,
-        'EXCUSED' => 3,
+        'CONFIRM' => 0,
+        'EXCUSED' => 1,
+        'PRESENT' => 2,
+        'ABSENT' => 3,
     ];
 
     const CLASS_SESSION_VALUE_2 = [

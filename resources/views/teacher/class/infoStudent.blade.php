@@ -107,8 +107,8 @@
                                 <td class="d-none d-md-table-cell">{{ $student['user']['email'] }}</td>
                                 <td class="d-none d-md-table-cell">
                                         <span
-                                            class="badge {{ $student['user']['gender'] == 0 ? 'bg-info' : 'bg-pink' }}">
-                                            {{ $student['user']['gender'] == 0 ? 'Nam' : 'Nữ' }}
+                                            class="badge {{ $student['user']['gender'] == 'Nam' ? 'bg-info' : 'bg-pink' }}">
+                                            {{ $student['user']['gender'] == 'Nam' ? 'Nam' : 'Nữ' }}
                                         </span>
                                 </td>
                                 <td class="d-none d-md-table-cell">{{ \Carbon\Carbon::parse($student['user']['date_of_birth'])->format('d/m/Y') }}</td>
@@ -134,7 +134,7 @@
                                                 data-student-id="{{ $student['id'] }}"
                                                 data-student-name="{{ $student['user']['name'] }}"
                                                 data-student-email="{{ $student['user']['email'] }}"
-                                                data-student-gender="{{ $student['user']['gender'] == 0 ? 'Nam' : 'Nữ' }}"
+                                                data-student-gender="{{ $student['user']['gender'] == 'Nam' ? 'Nam' : 'Nữ' }}"
                                                 data-student-dob="{{ \Carbon\Carbon::parse($student['user']['date_of_birth'])->format('d/m/Y') }}"
                                                 data-student-phone="{{ $student['user']['phone'] }}"
                                                 data-student-position="{{ $position['text'] }}"
@@ -338,16 +338,14 @@
     <script>
         $(document).ready(function () {
             $('.note-icon').click(function (e) {
-                e.stopPropagation(); // Ngăn click lan ra ngoài
+                e.stopPropagation();
                 const $this = $(this);
                 const $tooltip = $this.closest('.position-relative').find('.note-tooltip');
                 const $noteText = $tooltip.find('.note-text');
                 const noteData = $this.data('note');
 
-                // Ẩn tất cả tooltip khác
                 $('.note-tooltip').not($tooltip).fadeOut(200);
 
-                // Toggle tooltip hiện tại
                 if ($tooltip.is(':visible')) {
                     $tooltip.fadeOut(200);
                 } else {
@@ -356,14 +354,12 @@
                 }
             });
 
-            // Ẩn tooltip khi click ra ngoài
             $(document).click(function (e) {
                 if (!$(e.target).closest('.note-icon, .note-tooltip').length) {
                     $('.note-tooltip').fadeOut(200);
                 }
             });
 
-            // View Student Modal
             $('#viewStudentModal').on('show.bs.modal', function (event) {
                 const button = $(event.relatedTarget);
                 $('#viewStudentName').text(button.data('student-name'));
@@ -378,18 +374,16 @@
                 $('#form-save-note').attr('action', `/teacher/class/note/${button.data('student-id')}`);
             });
 
-            // Save Class Officers
             const allStudents = @json($data['students']['data']);
 
             function renderSelectOptions(selectedIds, currentSelectId) {
                 const select = $('#' + currentSelectId);
                 const currentValue = select.val();
 
-                select.empty(); // Xóa hết options cũ
+                select.empty();
                 select.append(`<option value="">-- Chọn --</option>`);
 
                 allStudents.forEach(student => {
-                    // Nếu học sinh này đang được chọn ở select khác thì không hiển thị
                     if (!selectedIds.includes(student.id.toString()) || student.id.toString() === currentValue) {
                         const selectedAttr = student.id.toString() === currentValue ? 'selected' : '';
                         select.append(`<option value="${student.id}" ${selectedAttr}>${student.user.name}</option>`);
@@ -406,27 +400,22 @@
                 });
 
                 ['classLeader', 'classViceLeader', 'classSecretary'].forEach(selectId => {
-                    // Nếu không phải select vừa thay đổi thì update lại
                     if (selectId !== changedSelectId) {
                         renderSelectOptions(selectedIds, selectId);
                     }
                 });
             }
 
-            // Gán sự kiện thay đổi
             $('#classLeader, #classViceLeader, #classSecretary').on('change', function () {
                 const changedId = $(this).attr('id');
                 updateAllSelects(changedId);
             });
 
-            // Khi mở modal, hiển thị đúng người đang giữ chức vụ và loại trừ các người khác khỏi các select khác
             $('#ClassModal').on('show.bs.modal', function () {
-                updateAllSelects(); // Cập nhật lại các select khi mở modal
+                updateAllSelects();
             });
 
-
             updateAllSelects();
-
         });
     </script>
 @endpush

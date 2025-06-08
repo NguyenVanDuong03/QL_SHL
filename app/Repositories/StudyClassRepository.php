@@ -29,31 +29,6 @@ class StudyClassRepository extends BaseRepository
         return $query;
     }
 
-//    public function getStudyClassById($params)
-//    {
-//        $query = $this->getModel()
-//            ->with(['major.faculty.department', 'cohort'])
-//            ->where('lecturer_id', $params['lecturer_id'])
-//            ->whereDoesntHave('classSessionRequests', function ($q) use ($params) {
-//                $q->whereHas('classSessionRegistration', function ($qr) use ($params) {
-//                    $qr->where('semester_id', $params['semester_id']);
-//                });
-//            });
-//
-//        // Nếu có từ khóa tìm kiếm
-//        if (!empty($params['search'])) {
-//            $search = $params['search'];
-//            $query->where(function ($q) use ($search) {
-//                $q->where('name', 'like', "%$search%")
-//                    ->orWhereHas('lecturer.user', function ($q2) use ($search) {
-//                        $q2->where('name', 'like', "%$search%");
-//                    });
-//            });
-//        }
-//
-//        return $query->paginate(constant::DEFAULT_LIMIT_12);
-//    }
-
     public function getStudyClassById($params)
     {
         $lecturerId = $params['lecturer_id'];
@@ -64,9 +39,10 @@ class StudyClassRepository extends BaseRepository
                 'major.faculty.department',
                 'cohort',
                 'classSessionRequests' => function ($q) use ($semesterId) {
-                    $q->whereHas('classSessionRegistration', function ($qr) use ($semesterId) {
-                        $qr->where('semester_id', $semesterId);
-                    });
+                    $q->where('type', Constant::CLASS_SESSION_TYPE['FIXED'])
+                        ->whereHas('classSessionRegistration', function ($qr) use ($semesterId) {
+                            $qr->where('semester_id', $semesterId);
+                        });
                 }
             ])
             ->where('lecturer_id', $lecturerId)
@@ -92,7 +68,6 @@ class StudyClassRepository extends BaseRepository
         END ASC
     ');
 
-        // Nếu có từ khóa tìm kiếm
         if (!empty($params['search'])) {
             $search = $params['search'];
             $query->where(function ($q) use ($search) {
@@ -103,14 +78,56 @@ class StudyClassRepository extends BaseRepository
         return $query->paginate(constant::DEFAULT_LIMIT_12);
     }
 
-    public function approvedClassSessionRequestInSemester($semesterId)
+    public function getStudyClassByIdFlex($params)
     {
-        return $this->hasOne(ClassSessionRequest::class, 'study_class_id')
-            ->where('status', 1)
-            ->whereHas('classSessionRegistration', function ($query) use ($semesterId) {
-                $query->where('semester_id', $semesterId);
+        $lecturerId = $params['lecturer_id'];
+
+        $query = $this->getModel()
+            ->with([
+                'major.faculty.department',
+                'cohort',
+                'classSessionRequests' => function ($q) {
+                    $q->where('type', Constant::CLASS_SESSION_TYPE['FLEXIBLE']);
+                }
+            ])
+            ->where('lecturer_id', $lecturerId)
+            ->withCount([
+                'classSessionRequests as status_order' => function ($q) {
+                    $q->select(DB::raw('MIN(
+            CASE
+                WHEN status = 0 THEN 1
+                WHEN status = 2 THEN 2
+                WHEN status = 1 THEN 3
+                ELSE 4
+            END
+        )'));
+                }
+            ])
+            ->orderByRaw('
+        CASE
+            WHEN status_order IS NULL THEN 0
+            ELSE status_order
+        END ASC
+    ');
+
+        if (!empty($params['search'])) {
+            $search = $params['search'];
+            $query->where(function ($q) use ($search) {
+                $q->where('name', 'like', "%$search%");
             });
+        }
+
+        return $query->paginate(constant::DEFAULT_LIMIT_12);
     }
+
+//    public function approvedClassSessionRequestInSemester($semesterId)
+//    {
+//        return $this->hasOne(ClassSessionRequest::class, 'study_class_id')
+//            ->where('status', 1)
+//            ->whereHas('classSessionRegistration', function ($query) use ($semesterId) {
+//                $query->where('semester_id', $semesterId);
+//            });
+//    }
 
 
     public function getStudyClassesWithApprovedRequestsOnly($params)
@@ -131,13 +148,13 @@ class StudyClassRepository extends BaseRepository
                 'cohort',
                 'classSessionRequests' => function ($q) use ($semesterId) {
                     $q->where('status', 1)
+                        ->where('type', Constant::CLASS_SESSION_TYPE['FIXED'])
                         ->whereHas('classSessionRegistration', function ($qr) use ($semesterId) {
                             $qr->where('semester_id', $semesterId);
                         });
                 }
             ]);
 
-        // Tìm kiếm theo tên lớp hoặc tên giảng viên
         if (!empty($params['search'])) {
             $search = $params['search'];
             $query->where(function ($q) use ($search) {

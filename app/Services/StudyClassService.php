@@ -37,12 +37,17 @@ class StudyClassService extends BaseService
 
     public function coutStudyClassListByLecturerId($lecturerId)
     {
-        return count($this->getRepository()->getStudyClassListByLecturerId($lecturerId));
+        return $this->getRepository()->getStudyClassListByLecturerId($lecturerId)->count();
     }
 
     public function getStudyClassById($params)
     {
         return $this->getRepository()->getStudyClassById($params);
+    }
+
+    public function getStudyClassByIdFlex($params)
+    {
+        return $this->getRepository()->getStudyClassByIdFlex($params);
     }
 
     public function getStudyClassWithApprovedRequests($params)

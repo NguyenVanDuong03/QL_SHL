@@ -1,5 +1,5 @@
 <header>
-    <nav class="navbar navbar-expand-md navbar-light bg-white shadow-sm">
+    <nav class="navbar navbar-expand-md navbar-light bg-white shadow-sm fixed-top">
         <div class="container">
             <a class="navbar-brand" id="toggleLogo" href="{{ route('class-staff.index') }}">
                 <img src="{{ asset('images/LogoTlu.png') }}" alt="Logo" width="32">

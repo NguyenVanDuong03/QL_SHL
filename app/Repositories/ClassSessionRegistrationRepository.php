@@ -59,7 +59,7 @@ class ClassSessionRegistrationRepository extends BaseRepository
             ELSE 4
         END
     ')
-            ->orderByDesc('class_session_requests.id') // nếu bạn vẫn muốn sắp xếp phụ theo id
+            ->orderByDesc('class_session_requests.id')
             ->select([
                 'class_session_requests.*',
                 'class_session_registrations.semester_id',
@@ -68,19 +68,6 @@ class ClassSessionRegistrationRepository extends BaseRepository
             ])
             ->paginate(Constant::DEFAULT_LIMIT_12);
 
-    }
-
-    public function getListCSRHistory($class_session_registration_id)
-    {
-//        dd($semesterId);
-        return $this->getModel()
-            ->newQuery()
-            ->join('class_session_requests', 'class_session_requests.class_session_registration_id', '=', 'class_session_registrations.id')
-            ->join('study_classes', 'class_session_requests.study_class_id', '=', 'study_classes.id')
-            ->where('class_session_registration_id', $class_session_registration_id)
-            ->whereIn('class_session_requests.status', [Constant::CLASS_SESSION_STATUS['APPROVED'], Constant::CLASS_SESSION_STATUS['REJECTED']])
-            ->orderBy('class_session_requests.id', 'desc')
-            ->paginate(Constant::DEFAULT_LIMIT);
     }
 
 }

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Helpers\Constant;
 use App\Services\AcademicWarningService;
+use App\Services\AttendanceService;
 use App\Services\ClassSessionRegistrationService;
 use App\Services\ClassSessionRequestService;
 use App\Services\RoomService;
@@ -22,6 +23,7 @@ class LecturerController extends Controller
         protected RoomService $roomService,
         protected SemesterService $SemesterService,
         protected AcademicWarningService $academicWarningService,
+        protected AttendanceService $attendanceService,
         )
         {
         }
@@ -139,11 +141,6 @@ class LecturerController extends Controller
         return view('teacher.classSession.fixedClassActivitie', compact('data'));
     }
 
-    public function indexFlexibleClassActivitie()
-    {
-        return view('teacher.classSession.flexibleClassActivitie');
-    }
-
     public function createClassSession(Request $request)
     {
         $studyClassId = $request->query('study-class-id');
@@ -172,7 +169,7 @@ class LecturerController extends Controller
     {
         $params = $request->all();
         $params['lecturer_id'] = auth()->user()->lecturer?->id;
-        $params['type'] = 0;
+        $params['type'] = Constant::CLASS_SESSION_TYPE['FIXED'];
         $classSessionRegistration = $this->classSessionRegistrationService->getCSRSemesterInfo();
         $params['class_session_registration_id'] = $classSessionRegistration->id;
         if ($params['position'] == '2' || $params['position'] == '0')
@@ -256,7 +253,7 @@ class LecturerController extends Controller
         $params = $request->all();
 //        $studyClassId = $request->query('study-class-id');
 //        $sessionRequestId = $request->query('session-request-id');
-        $infoClassRequestbyId = $this->classSessionRequestService->find($params['session-request-id']);
+        $infoClassRequestbyId = $this->classSessionRequestService->find($params['session-request-id']) ?? null;
         $params['class_session_registration_id'] = $infoClassRequestbyId->class_session_registration_id ?? null;
         $getCSRSemesterInfo = $this->classSessionRegistrationService->getCSRSemesterInfo();
         $getStudyClassByIds = $this->studyClassService->find($params['study-class-id']);
@@ -302,22 +299,108 @@ class LecturerController extends Controller
     public function updateAttendance(Request $request)
     {
         $params = $request->all();
-        dd($params);
-//        $classSessionRequestId = $params['class_session_registration_id'] ?? null;
-//        if (empty($classSessionRequestId)) {
-//            return redirect()->json([
-//                'status' => 'error',
-//                'message' => 'Không tìm thấy yêu cầu điểm danh',
-//            ]);
-//        }
-//
-//        // Cập nhật trạng thái điểm danh cho từng sinh viên
-//        $this->studentService->updateAttendance($params);
-//
-//        return redirect()->json([
-//            'status' => 'success',
-//            'message' => 'Cập nhật trạng thái điểm danh thành công',
-//        ]);
+        $params['session-request-id'] = $params['session_request_id'];
+        $params['study-class-id'] = $params['study_class_id'];
+//        dd($params);
+        $result = $this->attendanceService->updateAttendance($params);
+
+        if ($result) {
+            return response()->json(['message' => 'Attendance updated successfully']);
+        }
+
+        return response()->json(['message' => 'Failed to update attendance'], 400);
+
+    }
+
+    public function indexFlexibleClassActivitie(Request $request)
+    {
+        $params = $request->all();
+        $lecturerId = auth()->user()->lecturer?->id;
+        $params['lecturer_id'] = $lecturerId;
+        $getStudyClassByIds = $this->studyClassService->getStudyClassByIdFlex($params)->toArray();
+        $totalClasses = $this->studyClassService->coutStudyClassListByLecturerId($lecturerId);
+        $countFlexibleClassSessionRequestByLecturer = $this->classSessionRequestService->countFlexibleClassSessionRequestByLecturer($lecturerId);
+        $countFlexibleRejectedByLecturer = $this->classSessionRequestService->countFlexibleRejectedByLecturer($lecturerId);
+//        dd($getStudyClassByIds);
+        $data = [
+            'getStudyClassByIds' => $getStudyClassByIds,
+            'totalClasses' => $totalClasses,
+            'countFlexibleClassSessionRequestByLecturer' => $countFlexibleClassSessionRequestByLecturer,
+            'countFlexibleRejectedByLecturer' => $countFlexibleRejectedByLecturer,
+        ];
+
+        return view('teacher.classSession.flexibleClassActivitie', compact('data'));
+    }
+
+    public function flexibleCreate(Request $request)
+    {
+        $studyClassId = $request->query('study-class-id');
+        $sessionRequestId = $request->query('session-request-id');
+        $getCSRSemesterInfo = $this->classSessionRegistrationService->getCSRSemesterInfo();
+        $getStudyClassByIds = $this->studyClassService->find($studyClassId);
+        $data = [
+            'getCSRSemesterInfo' => $getCSRSemesterInfo,
+            'getStudyClassByIds' => $getStudyClassByIds,
+        ];
+        $data['getClassSessionRequest'] = null;
+        if ($sessionRequestId) {
+            $getClassSessionRequest = $this->classSessionRequestService->find($sessionRequestId);
+            $rooms = $this->roomService->get();
+
+            $data['getClassSessionRequest'] = $getClassSessionRequest;
+            $data['rooms'] = $rooms;
+        }
+//        dd($data['getClassSessionRequest']);
+
+        return view('teacher.classSession.flexibleCreate', compact('data'));
+    }
+
+    public function storeFlexibleClassSession(Request $request)
+    {
+        $params = $request->all();
+        $params['lecturer_id'] = auth()->user()->lecturer?->id;
+        $params['type'] = Constant::CLASS_SESSION_TYPE['FLEXIBLE'];
+        $params['class_session_registration_id'] = null;
+        if ($params['position'] == '2' || $params['position'] == '0')
+            $params['meeting_type'] = null;
+        if ($params['position'] != '0')
+            $params['room_id'] = null;
+//        dd($params);
+
+        $this->classSessionRequestService->flexibleCreateOrUpdateByClassAndSemester($params);
+        return redirect()->route('teacher.class-session.flexible-class-activitie')->with('success', 'Tạo yêu cầu thành công');
+    }
+
+    public function flexibleDetail(Request $request)
+    {
+        $params = $request->all();
+//        $studyClassId = $request->query('study-class-id');
+//        $sessionRequestId = $request->query('session-request-id');
+        $infoClassRequestbyId = $this->classSessionRequestService->find($params['session-request-id']) ?? null;
+        $params['class_session_registration_id'] = $infoClassRequestbyId->class_session_registration_id ?? null;
+        $getCSRSemesterInfo = $this->classSessionRegistrationService->getCSRSemesterInfo();
+        $getStudyClassByIds = $this->studyClassService->find($params['study-class-id']);
+        $students = $this->studentService->getStudentsByClassId($params);
+        $getTotalStudentsByClass = $this->studentService->getTotalStudentsByClass($params);
+        $getAttendanceStatusSummary = $this->studentService->getAttendanceStatusSummary($params);
+        $data = [
+            'getCSRSemesterInfo' => $getCSRSemesterInfo,
+            'getStudyClassByIds' => $getStudyClassByIds,
+            'students' => $students,
+            'getTotalStudentsByClass' => $getTotalStudentsByClass,
+            'getAttendanceStatusSummary' => $getAttendanceStatusSummary,
+        ];
+        $data['getClassSessionRequest'] = null;
+        if ($params['session-request-id']) {
+            $getClassSessionRequest = $this->classSessionRequestService->find($params['session-request-id']);
+            $rooms = $this->roomService->get();
+
+            $data['getClassSessionRequest'] = $getClassSessionRequest;
+            $data['rooms'] = $rooms;
+//            dd($data['getClassSessionRequest']);
+        }
+
+        return view('teacher.classSession.flexibleDetail', compact('data'));
     }
 
     public function indexStatistical()

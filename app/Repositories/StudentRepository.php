@@ -33,11 +33,11 @@ class StudentRepository extends BaseRepository
                 DB::raw('COALESCE(attendances.status, -1) as attendance_status'),
                 'attendances.reason',
                 DB::raw("CASE
-                    WHEN attendances.status = 0 THEN 'Xác nhận tham gia'
-                    WHEN attendances.status = 1 THEN 'Vắng mặt có phép'
+                    WHEN attendances.status = 0 THEN 'Xác nhận'
+                    WHEN attendances.status = 1 THEN 'Xin vắng'
                     WHEN attendances.status = 2 THEN 'Có mặt'
                     WHEN attendances.status = 3 THEN 'Vắng mặt'
-                    ELSE 'Chưa xác nhận tham gia'
+                    ELSE 'Chưa xác nhận'
                  END as attendance_status_text")
             ])
             ->leftJoin('users', 'students.user_id', '=', 'users.id')
@@ -215,14 +215,6 @@ class StudentRepository extends BaseRepository
         }
 
         return $updated;
-    }
-
-
-    public function updateAttendance($params)
-    {
-        $classSessionRequestId = $params['class_session_request_id'] ?? null;
-        $studentIds = $params['student_ids'] ?? null;
-
     }
 
 }
