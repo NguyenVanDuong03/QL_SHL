@@ -661,10 +661,11 @@
          aria-hidden="true">
         <div class="modal-dialog">
             <form id="doneForm" method="POST"
-                  action="{{ route('teacher.class-session.doneFixedClassActivitie', $data['getClassSessionRequest']->id) }}">
+                  action="{{ route('teacher.class-session.doneSessionClass', $data['getClassSessionRequest']->id) }}">
                 @csrf
                 @method('PATCH')
                 <input type="hidden" name="room_id" value="{{ $data['getClassSessionRequest']->room_id }}">
+                <input type="hidden" name="type" value="{{ $data['getClassSessionRequest']->type }}">
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title" id="confirmDoneModalLabel">Xác nhận hoàn thành</h5>

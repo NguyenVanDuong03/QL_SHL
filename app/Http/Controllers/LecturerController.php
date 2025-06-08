@@ -280,18 +280,22 @@ class LecturerController extends Controller
         return view('teacher.classSession.infoFixedClassActivitie', compact('data'));
     }
 
-    public function doneFixedClassActivitie(Request $request,$id)
+    public function doneSessionClass(Request $request,$id)
     {
         $params = $request->all();
         $roomId = $params['room_id'] ?? null;
         if ($roomId) {
             $this->roomService->update($roomId, [
-                'status' => 0,
+                'status' => Constant::ROOM_STATUS['AVAILABLE'],
             ]);
         }
         $this->classSessionRequestService->update($id, [
             'status' => Constant::CLASS_SESSION_STATUS['DONE']
         ]);
+
+        if ($params['type'] == Constant::CLASS_SESSION_TYPE['FLEXIBLE']) {
+            return redirect()->route('teacher.class-session.flexible-class-activitie')->with('success', 'Hoàn thành yêu cầu thành công');
+        }
 
         return redirect()->route('teacher.class-session.detailFixedClassActivitie')->with('success', 'Hoàn thành yêu cầu thành công');
     }

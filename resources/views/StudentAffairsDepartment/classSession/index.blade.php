@@ -44,6 +44,7 @@
                                 data-id="#">Chỉnh sửa thời gian
                         </button>
                     </div>
+                    <h4 class="fw-bold">Sinh hoạt lớp cố định</h4>
                     <div>
                         <div class="input-group mb-3">
                             <input type="text" class="form-control" placeholder="Tìm kiếm lớp học"
@@ -101,7 +102,7 @@
                                                 @endif
                                             </td>
                                             <td class="px-4 py-3 text-center">
-                                                <button class="btn btn-primary btn-sm btn-comfirm-class"
+                                                <button class="btn btn-primary btn-sm btn-confirm-class"
                                                         title="Xét duyệt"
                                                         data-bs-toggle="modal"
                                                         data-bs-target="#formModal"
@@ -347,15 +348,15 @@
                         <div class="d-flex justify-content-between align-items-center mb-4">
                             <h5 class="modal-title fw-bold" id="formModalLabel">Xét duyệt sinh hoạt lớp cố định</h5>
                             <button type="button" class="btn btn-outline-danger" id="btnReject">Huỷ đăng ký</button>
-                            <button type="button" class="btn btn-outline-danger" id="btnRejectStatus">Huỷ đăng ký</button>
                         </div>
 
-                        <form id="formComfirm" method="POST">
+                        <form id="formConfirm" method="POST">
                             @csrf
                             @method('PATCH')
                             <input type="hidden" name="status" class="class_session_status" value="1">
                             <input type="hidden" name="position" class="class_session_position_input">
                             <input type="hidden" name="type" value="0">
+                            <input type="hidden" name="room_id" class="class_session_room_id">
 
                             <h6>Lớp: <span class="class_session_study_class"></span></h6>
                             <h6>Hình thức họp: <span class="class_session_position"></span></h6>
@@ -375,18 +376,17 @@
 
                             <h6>Ghi chú: <span class="class_session_note"></span></h6>
 
-                            <h6 class="class_session_room d-none">Phòng: <span class="class_session_room_name"></span>
-                            </h6>
+                            <h6 class="class_session_room d-none">Phòng: <span class="class_session_room_name"></span></h6>
                             <div class="form-group session-offline d-none mb-3">
                                 <label for="room" class="form-label room">Chọn phòng họp:</label>
                                 <select class="form-select" id="room" name="room_id">
-                                    @if(isset($data['rooms']) && $data['rooms']->isNotEmpty())
-                                        @foreach($data['rooms'] as $room)
-                                            <option value="{{ $room->id }}">{{ $room->name }}</option>
-                                        @endforeach
-                                    @else
-                                        <option value="" disabled selected>Không có phòng khả dụng</option>
-                                    @endif
+{{--                                    @if(isset($data['rooms']) && $data['rooms']->isNotEmpty())--}}
+{{--                                        @foreach($data['rooms'] as $room)--}}
+{{--                                            <option value="{{ $room->id }}">{{ $room->name }}</option>--}}
+{{--                                        @endforeach--}}
+{{--                                    @else--}}
+{{--                                        <option value="" disabled selected>Không có phòng khả dụng</option>--}}
+{{--                                    @endif--}}
                                 </select>
                             </div>
 
@@ -402,7 +402,7 @@
                                 <button type="button" class="btn btn-danger" data-bs-dismiss="modal"
                                         style="width: 120px;">Quay lại
                                 </button>
-                                <button type="submit" class="btn btn-primary btn-comfirm-form"
+                                <button type="submit" class="btn btn-primary btn-confirm-form"
                                         style="width: 120px;">Xét duyệt
                                 </button>
                             </div>
@@ -430,11 +430,7 @@
                     'background-color': '',
                     'color': ''
                 });
-                $('#btnRejectStatus').css({
-                    'background-color': '',
-                    'color': ''
-                });
-                $('.btn-comfirm-form').removeClass('d-none');
+                $('.btn-confirm-form').removeClass('d-none');
                 $('.class_session_room').addClass('d-none');
                 $('.session-offline').addClass('d-none');
                 $('.session-online').addClass('d-none');
@@ -512,6 +508,7 @@
                 if (isRejectMode) {
                     $('.input-rejection').removeClass('d-none');
                     $('#room').prop('disabled', true);
+                    $('.btn-confirm-form').removeClass('d-none');
                     $(this).css({
                         'background-color': '#dc3545',
                         'color': '#fff'
@@ -519,6 +516,7 @@
                 } else {
                     $('.input-rejection').addClass('d-none');
                     $('#room').prop('disabled', false);
+                    $('.btn-confirm-form').addClass('d-none');
                     $(this).css({
                         'background-color': '',
                         'color': ''
@@ -526,29 +524,7 @@
                 }
             });
 
-            $('#btnRejectStatus').on('click', function () {
-                isRejectMode = !isRejectMode;
-
-                if (isRejectMode) {
-                    $('.input-rejection').removeClass('d-none');
-                    $('#room').prop('disabled', true);
-                    $(this).css({
-                        'background-color': '#dc3545',
-                        'color': '#fff'
-                    });
-                    $('.btn-comfirm-form').removeClass('d-none');
-                } else {
-                    $('.input-rejection').addClass('d-none');
-                    $('#room').prop('disabled', false);
-                    $(this).css({
-                        'background-color': '',
-                        'color': ''
-                    });
-                    $('.btn-comfirm-form').removeClass('d-none');
-                }
-            });
-
-            $('.btn-comfirm-class').on('click', function () {
+            $('.btn-confirm-class').on('click', function () {
                 const classId = $(this).data('id');
                 const studyClassName = $(this).data('study-class-name');
                 const type = $(this).data('type');
@@ -565,34 +541,31 @@
                 const status = $(this).data('status');
 
                 if (status === 1) {
-                    $('#btnReject').addClass('d-none');
-                    $('.btn-comfirm-form').addClass('d-none');
-                    $('#btnRejectStatus').removeClass('d-none');
+                    $('.btn-confirm-form').addClass('d-none');
                 } else {
-                    $('#btnReject').removeClass('d-none');
-                    $('.btn-comfirm-form').removeClass('d-none');
-                    $('#btnRejectStatus').addClass('d-none');
+                    $('.btn-confirm-form').removeClass('d-none');
                 }
 
                 $('.class_session_room').addClass('d-none');
-                const $roomSelect = $('#room');
-                $roomSelect.empty();
+                const roomSelect = $('#room');
+                roomSelect.empty();
 
                 @if(isset($data['rooms']) && $data['rooms']->isNotEmpty())
                 @foreach($data['rooms'] as $room)
-                $roomSelect.append(`<option value="{{ $room->id }}">{{ $room->name }}</option>`);
+                roomSelect.append(`<option value="{{ $room->id }}">{{ $room->name }}</option>`);
                 @endforeach
                 @else
-                $roomSelect.append(`<option value="" disabled selected>Không có phòng khả dụng</option>`);
+                roomSelect.append(`<option value="" disabled selected>Không có phòng khả dụng</option>`);
                 @endif
 
                 if (roomId && roomName) {
-                    if ($roomSelect.find(`option[value="${roomId}"]`).length === 0) {
-                        $roomSelect.append(`<option value="${roomId}">${roomName} (đã được chọn)</option>`);
+                    if (roomSelect.find(`option[value="${roomId}"]`).length === 0) {
+                        roomSelect.prop('selectedIndex', 0);
+                    } else {
+                        roomSelect.val(roomId);
                     }
-                    $roomSelect.val(roomId);
                 } else {
-                    $roomSelect.val('');
+                    roomSelect.prop('selectedIndex', 0);
                 }
 
                 if (position === 0) {
@@ -619,8 +592,9 @@
                 $('.class_session_meeting_url').attr('href', meetingUrl);
                 $('.class_session_note').text(!note ? '---' : note);
                 $('.class_session_position_input').val(position);
+                $('.class_session_room_id').val(roomId || '');
 
-                $('#formComfirm').attr('action', `{{ route('student-affairs-department.class-session.updateClassRequest', '') }}/${classId}`);
+                $('#formConfirm').attr('action', `{{ route('student-affairs-department.class-session.updateClassRequest', '') }}/${classId}`);
             });
 
             $('.btn-detail-class').on('click', function () {
@@ -641,9 +615,7 @@
                 const isDetail = $(this).data('detail');
 
                 if (status === 1 && isDetail) {
-                    $('#btnReject').addClass('d-none');
-                    $('.btn-comfirm-form').addClass('d-none');
-                    $('#btnRejectStatus').addClass('d-none');
+                    $('.btn-confirm-form').addClass('d-none');
                 }
 
                 if (position === 0) {
@@ -675,7 +647,7 @@
                 $('.class_session_room_name').text(roomName);
             });
 
-            $('.btn-comfirm-form').on('click', function (e) {
+            $('.btn-confirm-form').on('click', function (e) {
                 e.preventDefault();
 
                 const rejectionReason = $('#rejection_reason').val().trim();
@@ -688,14 +660,14 @@
                 if (position === '0') {
                     const roomId = $('#room').val();
                     if (!roomId) {
-                        $('#formComfirm input[name="room_id"]').remove();
-                        $('#formComfirm').append('<input type="hidden" name="room_id" value="">');
+                        $('#formConfirm input[name="room_id"]').remove();
+                        $('#formConfirm').append('<input type="hidden" name="room_id" value="">');
                     }
                 } else {
-                    $('#formComfirm input[name="room_id"]').remove();
+                    $('#formConfirm input[name="room_id"]').remove();
                 }
 
-                $('#formComfirm').submit();
+                $('#formConfirm').submit();
             });
         });
     </script>

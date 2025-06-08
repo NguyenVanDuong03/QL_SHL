@@ -1,11 +1,9 @@
 @extends('layouts.studentAffairsDepartment')
 
-@section('title', 'Sinh hoạt lớp linh hoạt')
+@section('title', 'Sinh hoạt lớp Linh hoạt')
 
 @section('breadcrumb')
-    <x-breadcrumb.breadcrumb :links="[
-        ['label' => 'Sinh hoạt lớp linh hoạt'],
-    ]"/>
+    <x-breadcrumb.breadcrumb :links="[['label' => 'Sinh hoạt lớp linh hoạt']]"/>
 @endsection
 
 @push('styles')
@@ -28,11 +26,7 @@
     <div class="col bg-light">
         <!-- Content -->
         <div class="px-4">
-            <div class="d-flex justify-content-center align-items-start mb-4">
-                <div>
-                    <h4>Sinh hoạt lớp linh hoạt</h4>
-                </div>
-            </div>
+            <h4 class="text-center mb-4 fw-bold">Sinh hoạt lớp linh hoạt</h4>
             <!-- Table -->
             <div class="card shadow-sm">
                 <div class="card-body p-0">
@@ -80,7 +74,7 @@
                                             @endif
                                         </td>
                                         <td class="px-4 py-3 text-center">
-                                            <button class="btn btn-primary btn-sm btn-comfirm-class"
+                                            <button class="btn btn-primary btn-sm btn-confirm-class"
                                                     title="Xét duyệt"
                                                     data-bs-toggle="modal"
                                                     data-bs-target="#formModal"
@@ -95,8 +89,8 @@
                                                     data-meeting-url="{{ $class['meeting_url'] }}"
                                                     data-study-class-name="{{ $class['study_class']['name'] }}"
                                                     data-note="{{ $class['note'] }}"
-                                                    data-room-name="{{ $class['room']['name'] ?? null }}"
-                                                    data-room-id="{{ $class['room']['id'] ?? null }}"
+                                                    data-room-name="{{ $class['room']['name'] ?? '' }}"
+                                                    data-room-id="{{ $class['room']['id'] ?? '' }}"
                                                     data-status="{{ $class['status'] }}"
                                             >
                                                 <i class="fas fa-file-signature"></i>
@@ -117,8 +111,8 @@
                                                 data-meeting-url="{{ $class['meeting_url'] }}"
                                                 data-study-class-name="{{ $class['study_class']['name'] }}"
                                                 data-note="{{ $class['note'] }}"
-                                                data-room-name="{{ $class['room']['name'] ?? null }}"
-                                                data-room-id="{{ $class['room']['id'] ?? null }}"
+                                                data-room-name="{{ $class['room']['name'] ?? '' }}"
+                                                data-room-id="{{ $class['room']['id'] ?? '' }}"
                                                 data-status="{{ $class['status'] }}"
                                                 data-detail="true"
                                             >
@@ -152,349 +146,337 @@
                     ])
                 </div>
             </div>
-        </div>
-    </div>
 
-    {{-- Modal Hình thức họp --}}
-    <div class="modal fade auto-reset-modal" id="formModal" tabindex="-1" aria-labelledby="formModalLabel"
-    >
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-body p-4">
-                    <div class="d-flex justify-content-between align-items-center mb-4">
-                        <h5 class="modal-title fw-bold" id="formModalLabel">Xét duyệt sinh hoạt lớp cố định</h5>
-                        <button type="button" class="btn btn-outline-danger" id="btnReject">Huỷ đăng ký</button>
-                        <button type="button" class="btn btn-outline-danger" id="btnRejectStatus">Huỷ đăng ký
-                        </button>
+            {{-- Modal Hình thức họp --}}
+            <div class="modal fade auto-reset-modal" id="formModal" tabindex="-1" aria-labelledby="formModalLabel"
+            >
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-body p-4">
+                            <div class="d-flex justify-content-between align-items-center mb-4">
+                                <h5 class="modal-title fw-bold" id="formModalLabel">Xét duyệt sinh hoạt lớp cố định</h5>
+                                <button type="button" class="btn btn-outline-danger" id="btnReject">Huỷ đăng ký</button>
+                            </div>
+
+                            <form id="formConfirm" method="POST">
+                                @csrf
+                                @method('PATCH')
+                                <input type="hidden" name="status" class="class_session_status" value="1">
+                                <input type="hidden" name="position" class="class_session_position_input">
+                                <input type="hidden" name="type" value="1">
+                                <input type="hidden" name="room_id" class="class_session_room_id">
+
+                                <h6>Lớp: <span class="class_session_study_class"></span></h6>
+                                <h6>Hình thức họp: <span class="class_session_position"></span></h6>
+                                <h6>Thời gian: <span class="class_session_proposed_at"></span></h6>
+
+                                <div class="session-picnic">
+                                    <h6>Địa điểm: <span class="class_session_location"></span></h6>
+                                </div>
+
+                                <div class="session-online d-none">
+                                    <h6>Nền tảng tổ chức họp: <span class="class_session_meeting_type"></span></h6>
+                                    <h6>ID phòng họp: <span class="class_session_meeting_id"></span></h6>
+                                    <h6>Mật khẩu: <span class="class_session_meeting_password"></span></h6>
+                                    <h6>Đường dẫn phòng họp: <a class="class_session_meeting_url" target="_blank">Bấm
+                                            vào đây!</a></h6>
+                                </div>
+
+                                <h6>Ghi chú: <span class="class_session_note"></span></h6>
+
+                                <h6 class="class_session_room d-none">Phòng: <span
+                                        class="class_session_room_name"></span></h6>
+                                <div class="form-group session-offline d-none mb-3">
+                                    <label for="room" class="form-label room">Chọn phòng họp:</label>
+                                    <select class="form-select" id="room" name="room_id">
+                                        {{--                                    @if(isset($data['rooms']) && $data['rooms']->isNotEmpty())--}}
+                                        {{--                                        @foreach($data['rooms'] as $room)--}}
+                                        {{--                                            <option value="{{ $room->id }}">{{ $room->name }}</option>--}}
+                                        {{--                                        @endforeach--}}
+                                        {{--                                    @else--}}
+                                        {{--                                        <option value="" disabled selected>Không có phòng khả dụng</option>--}}
+                                        {{--                                    @endif--}}
+                                    </select>
+                                </div>
+
+                                <div class="form-group input-rejection d-none">
+                                    <label for="rejection_reason" class="form-label">Lý do từ chối:</label>
+                                    <textarea class="form-control resize-none" id="rejection_reason"
+                                              name="rejection_reason" rows="3"
+                                              placeholder="Nhập nội dung từ chối"></textarea>
+                                </div>
+
+
+                                <div class="d-flex justify-content-center gap-3 mt-4">
+                                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal"
+                                            style="width: 120px;">Quay lại
+                                    </button>
+                                    <button type="submit" class="btn btn-primary btn-confirm-form"
+                                            style="width: 120px;">Xét duyệt
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
                     </div>
-
-                    <form id="formComfirm" method="POST">
-                        @csrf
-                        @method('PATCH')
-                        <input type="hidden" name="status" class="class_session_status" value="1">
-                        <input type="hidden" name="position" class="class_session_position_input">
-                        <input type="hidden" name="type" value="1">
-
-                        <h6>Lớp: <span class="class_session_study_class"></span></h6>
-                        <h6>Hình thức họp: <span class="class_session_position"></span></h6>
-                        <h6>Thời gian: <span class="class_session_proposed_at"></span></h6>
-
-                        <div class="session-picnic">
-                            <h6>Địa điểm: <span class="class_session_location"></span></h6>
-                        </div>
-
-                        <div class="session-online d-none">
-                            <h6>Nền tảng tổ chức họp: <span class="class_session_meeting_type"></span></h6>
-                            <h6>ID phòng họp: <span class="class_session_meeting_id"></span></h6>
-                            <h6>Mật khẩu: <span class="class_session_meeting_password"></span></h6>
-                            <h6>Đường dẫn phòng họp: <a class="class_session_meeting_url" target="_blank">Bấm
-                                    vào đây!</a></h6>
-                        </div>
-
-                        <h6>Ghi chú: <span class="class_session_note"></span></h6>
-
-                        <h6 class="class_session_room d-none">Phòng: <span class="class_session_room_name"></span>
-                        </h6>
-                        <div class="form-group session-offline d-none mb-3">
-                            <label for="room" class="form-label room">Chọn phòng họp:</label>
-                            <select class="form-select" id="room" name="room_id">
-                                @if(isset($data['rooms']) && $data['rooms']->isNotEmpty())
-                                    @foreach($data['rooms'] as $room)
-                                        <option value="{{ $room->id }}">{{ $room->name }}</option>
-                                    @endforeach
-                                @else
-                                    <option value="" disabled selected>Không có phòng khả dụng</option>
-                                @endif
-                            </select>
-                        </div>
-
-                        <div class="form-group input-rejection d-none">
-                            <label for="rejection_reason" class="form-label">Lý do từ chối:</label>
-                            <textarea class="form-control resize-none" id="rejection_reason"
-                                      name="rejection_reason" rows="3"
-                                      placeholder="Nhập nội dung từ chối"></textarea>
-                        </div>
-
-
-                        <div class="d-flex justify-content-center gap-3 mt-4">
-                            <button type="button" class="btn btn-danger" data-bs-dismiss="modal"
-                                    style="width: 120px;">Quay lại
-                            </button>
-                            <button type="submit" class="btn btn-primary btn-comfirm-form"
-                                    style="width: 120px;">Xét duyệt
-                            </button>
-                        </div>
-                    </form>
                 </div>
             </div>
-        </div>
-    </div>
 
-@endsection
+            @endsection
 
-@push('scripts')
-    <script>
-        $(document).ready(function () {
-            let isRejectMode = false;
-            // Reset form when modal is closed
-            $('.auto-reset-modal').on('hidden.bs.modal', function () {
-                $('.text-danger-error').text('');
-                $(this).find('form')[0].reset();
-                $('.input-rejection').addClass('d-none');
-                $('#room').prop('disabled', false);
-                $('#btnReject').css({
-                    'background-color': '',
-                    'color': ''
-                });
-                isRejectMode = false; // Reset cờ trạng thái
-            });
+            @push('scripts')
+                <script>
+                    $(document).ready(function () {
+                        let isRejectMode = false;
 
-            // Reset form when button is clicked
-            $('.btnReset').click(function () {
-                $('.text-danger-error').text('');
-                $('#createform')[0].reset();
-            });
+                        // Reset form when modal is closed
+                        $('.auto-reset-modal').on('hidden.bs.modal', function () {
+                            $('.text-danger-error').text('');
+                            $(this).find('form')[0].reset();
+                            $('.input-rejection').addClass('d-none');
+                            $('#room').prop('disabled', false);
+                            $('#btnReject').css({
+                                'background-color': '',
+                                'color': ''
+                            });
+                            $('.btn-confirm-form').removeClass('d-none');
+                            $('.class_session_room').addClass('d-none');
+                            $('.session-offline').addClass('d-none');
+                            $('.session-online').addClass('d-none');
+                            $('.session-picnic').addClass('d-none');
+                            isRejectMode = false;
+                        });
 
-            $('.btn-create-submit').on('click', function (e) {
-                e.preventDefault();
+                        // Reset form when button is clicked
+                        $('.btnReset').click(function () {
+                            $('.text-danger-error').text('');
+                            $('#createform')[0].reset();
+                        });
 
-                let openDate = $('#open_date').val();
-                let endDate = $('#end_date').val();
-                let semesterId = $('#semester_id').val();
+                        $('.btn-create-submit').on('click', function (e) {
+                            e.preventDefault();
 
-                $('#open_date_error').text('');
-                $('#end_date_error').text('');
+                            let openDate = $('#open_date').val();
+                            let endDate = $('#end_date').val();
+                            let semesterId = $('#semester_id').val();
 
-                if (semesterId == null) {
-                    $('#semester_id_error').text('Vui lòng tạo học kỳ trước khi tạo lịch sinh hoạt lớp');
-                    return;
-                }
+                            $('#open_date_error').text('');
+                            $('#end_date_error').text('');
 
-                if (!openDate || !endDate) {
-                    if (!openDate) $('#open_date_error').text('Vui lòng chọn thời gian bắt đầu');
-                    if (!endDate) $('#end_date_error').text('Vui lòng chọn thời gian kết thúc');
-                    return;
-                }
+                            if (semesterId == null) {
+                                $('#semester_id_error').text('Vui lòng tạo học kỳ trước khi tạo lịch sinh hoạt lớp');
+                                return;
+                            }
 
-                if (new Date(openDate) >= new Date(endDate)) {
-                    $('#end_date_error').text('Thời gian kết thúc phải lớn hơn thời gian bắt đầu');
-                    return;
-                }
+                            if (!openDate || !endDate) {
+                                if (!openDate) $('#open_date_error').text('Vui lòng chọn thời gian bắt đầu');
+                                if (!endDate) $('#end_date_error').text('Vui lòng chọn thời gian kết thúc');
+                                return;
+                            }
 
-                $('#createform').submit();
-            });
+                            if (new Date(openDate) >= new Date(endDate)) {
+                                $('#end_date_error').text('Thời gian kết thúc phải lớn hơn thời gian bắt đầu');
+                                return;
+                            }
 
-            $('.btn-edit-submit').on('click', function (e) {
-                e.preventDefault();
+                            $('#createform').submit();
+                        });
 
-                let openDate = $('#open_date_edit').val();
-                let endDate = $('#end_date_edit').val();
-                let semesterId = $('#semester_id_edit').val();
+                        $('.btn-edit-submit').on('click', function (e) {
+                            e.preventDefault();
 
-                $('#open_date_error_edit').text('');
-                $('#end_date_error_edit').text('');
+                            let openDate = $('#open_date_edit').val();
+                            let endDate = $('#end_date_edit').val();
+                            let semesterId = $('#semester_id_edit').val();
 
-                if (semesterId == null) {
-                    $('#semester_id_error-edit').text(
-                        'Vui lòng tạo học kỳ trước khi tạo lịch sinh hoạt lớp');
-                    return;
-                }
+                            $('#open_date_error_edit').text('');
+                            $('#end_date_error_edit').text('');
 
-                if (!openDate || !endDate) {
-                    if (!openDate) $('#open_date_error_edit').text('Vui lòng chọn thời gian bắt đầu');
-                    if (!endDate) $('#end_date_error_edit').text('Vui lòng chọn thời gian kết thúc');
-                    return;
-                }
+                            if (semesterId == null) {
+                                $('#semester_id_error-edit').text('Vui lòng tạo học kỳ trước khi tạo lịch sinh hoạt lớp');
+                                return;
+                            }
 
-                if (new Date(openDate) >= new Date(endDate)) {
-                    $('#end_date_error_edit').text('Thời gian kết thúc phải lớn hơn thời gian bắt đầu');
-                    return;
-                }
+                            if (!openDate || !endDate) {
+                                if (!openDate) $('#open_date_error_edit').text('Vui lòng chọn thời gian bắt đầu');
+                                if (!endDate) $('#end_date_error_edit').text('Vui lòng chọn thời gian kết thúc');
+                                return;
+                            }
 
-                $('#editform').submit();
-            });
+                            if (new Date(openDate) >= new Date(endDate)) {
+                                $('#end_date_error_edit').text('Thời gian kết thúc phải lớn hơn thời gian bắt đầu');
+                                return;
+                            }
 
-            $('#btnReject').on('click', function () {
-                isRejectMode = !isRejectMode;
+                            $('#editform').submit();
+                        });
 
-                if (isRejectMode) {
-                    $('.input-rejection').removeClass('d-none');
-                    $('#room').prop('disabled', true);
-                    $(this).css({
-                        'background-color': '#dc3545',
-                        'color': '#fff'
+                        $('#btnReject').on('click', function () {
+                            isRejectMode = !isRejectMode;
+
+                            if (isRejectMode) {
+                                $('.input-rejection').removeClass('d-none');
+                                $('#room').prop('disabled', true);
+                                $('.btn-confirm-form').removeClass('d-none');
+                                $(this).css({
+                                    'background-color': '#dc3545',
+                                    'color': '#fff'
+                                });
+                            } else {
+                                $('.input-rejection').addClass('d-none');
+                                $('#room').prop('disabled', false);
+                                $('.btn-confirm-form').addClass('d-none');
+                                $(this).css({
+                                    'background-color': '',
+                                    'color': ''
+                                });
+                            }
+                        });
+
+                        $('.btn-confirm-class').on('click', function () {
+                            const classId = $(this).data('id');
+                            const studyClassName = $(this).data('study-class-name');
+                            const type = $(this).data('type');
+                            const position = $(this).data('position');
+                            const proposedAt = $(this).data('proposed_at');
+                            const location = $(this).data('location');
+                            const meetingType = $(this).data('meeting-type');
+                            const meetingId = $(this).data('meeting-id');
+                            const meetingPassword = $(this).data('meeting-password');
+                            const meetingUrl = $(this).data('meeting-url');
+                            const note = $(this).data('note');
+                            const roomName = $(this).data('room-name') || '';
+                            const roomId = $(this).data('room-id');
+                            const status = $(this).data('status');
+
+                            if (status === 1) {
+                                $('.btn-confirm-form').addClass('d-none');
+                            } else {
+                                $('.btn-confirm-form').removeClass('d-none');
+                            }
+
+                            $('.class_session_room').addClass('d-none');
+                            const roomSelect = $('#room');
+                            roomSelect.empty();
+
+                            @if(isset($data['rooms']) && $data['rooms']->isNotEmpty())
+                            @foreach($data['rooms'] as $room)
+                            roomSelect.append(`<option value="{{ $room->id }}">{{ $room->name }}</option>`);
+                            @endforeach
+                            @else
+                            roomSelect.append(`<option value="" disabled selected>Không có phòng khả dụng</option>`);
+                            @endif
+
+                            if (roomId && roomName) {
+                                if (roomSelect.find(`option[value="${roomId}"]`).length === 0) {
+                                    roomSelect.prop('selectedIndex', 0);
+                                } else {
+                                    roomSelect.val(roomId);
+                                }
+                            } else {
+                                roomSelect.prop('selectedIndex', 0);
+                            }
+
+                            if (position === 0) {
+                                $('.session-offline').removeClass('d-none');
+                                $('.session-online').addClass('d-none');
+                                $('.session-picnic').addClass('d-none');
+                            } else if (position === 1) {
+                                $('.session-offline').addClass('d-none');
+                                $('.session-online').removeClass('d-none');
+                                $('.session-picnic').addClass('d-none');
+                            } else {
+                                $('.session-offline').addClass('d-none');
+                                $('.session-online').addClass('d-none');
+                                $('.session-picnic').removeClass('d-none');
+                            }
+
+                            $('.class_session_study_class').text(studyClassName);
+                            $('.class_session_position').text(position === 0 ? 'Trực tiếp tại trường' : position === 1 ? 'Trực tuyến' : 'Dã ngoại');
+                            $('.class_session_proposed_at').text(moment(proposedAt).format('H:mm DD/MM/YYYY'));
+                            $('.class_session_location').text(location);
+                            $('.class_session_meeting_type').text(meetingType);
+                            $('.class_session_meeting_id').text(meetingId);
+                            $('.class_session_meeting_password').text(meetingPassword);
+                            $('.class_session_meeting_url').attr('href', meetingUrl);
+                            $('.class_session_note').text(!note ? '---' : note);
+                            $('.class_session_position_input').val(position);
+                            $('.class_session_room_id').val(roomId || '');
+
+                            $('#formConfirm').attr('action', `{{ route('student-affairs-department.class-session.updateClassRequest', '') }}/${classId}`);
+                        });
+
+                        $('.btn-detail-class').on('click', function () {
+                            const classId = $(this).data('id');
+                            const studyClassName = $(this).data('study-class-name');
+                            const type = $(this).data('type');
+                            const position = $(this).data('position');
+                            const proposedAt = $(this).data('proposed_at');
+                            const location = $(this).data('location');
+                            const meetingType = $(this).data('meeting-type');
+                            const meetingId = $(this).data('meeting-id');
+                            const meetingPassword = $(this).data('meeting-password');
+                            const meetingUrl = $(this).data('meeting-url');
+                            const note = $(this).data('note');
+                            const roomName = $(this).data('room-name') || '---';
+                            const roomId = $(this).data('room-id');
+                            const status = $(this).data('status');
+                            const isDetail = $(this).data('detail');
+
+                            if (status === 1 && isDetail) {
+                                $('.btn-confirm-form').addClass('d-none');
+                            }
+
+                            if (position === 0) {
+                                $('.session-offline').addClass('d-none');
+                                $('.session-online').addClass('d-none');
+                                $('.session-picnic').addClass('d-none');
+                                $('.class_session_room').removeClass('d-none');
+                            } else if (position === 1) {
+                                $('.session-offline').addClass('d-none');
+                                $('.session-online').removeClass('d-none');
+                                $('.session-picnic').addClass('d-none');
+                                $('.class_session_room').addClass('d-none');
+                            } else {
+                                $('.session-offline').addClass('d-none');
+                                $('.session-online').addClass('d-none');
+                                $('.session-picnic').removeClass('d-none');
+                                $('.class_session_room').addClass('d-none');
+                            }
+
+                            $('.class_session_study_class').text(studyClassName);
+                            $('.class_session_position').text(position === 0 ? 'Trực tiếp tại trường' : position === 1 ? 'Trực tuyến' : 'Dã ngoại');
+                            $('.class_session_proposed_at').text(moment(proposedAt).format('H:mm DD/MM/YYYY'));
+                            $('.class_session_location').text(location);
+                            $('.class_session_meeting_type').text(meetingType);
+                            $('.class_session_meeting_id').text(meetingId);
+                            $('.class_session_meeting_password').text(meetingPassword);
+                            $('.class_session_meeting_url').attr('href', meetingUrl);
+                            $('.class_session_note').text(!note ? '---' : note);
+                            $('.class_session_room_name').text(roomName);
+                        });
+
+                        $('.btn-confirm-form').on('click', function (e) {
+                            e.preventDefault();
+
+                            const rejectionReason = $('#rejection_reason').val().trim();
+                            if (isRejectMode && !rejectionReason) {
+                                $('#rejection_reason').focus();
+                                return;
+                            }
+
+                            const position = $('.class_session_position_input').val();
+                            if (position === '0') {
+                                const roomId = $('#room').val();
+                                if (!roomId) {
+                                    $('#formConfirm input[name="room_id"]').remove();
+                                    $('#formConfirm').append('<input type="hidden" name="room_id" value="">');
+                                }
+                            } else {
+                                $('#formConfirm input[name="room_id"]').remove();
+                            }
+
+                            $('#formConfirm').submit();
+                        });
                     });
-                } else {
-                    $('.input-rejection').addClass('d-none');
-                    $('#room').prop('disabled', false);
-                    $(this).css({
-                        'background-color': '',
-                        'color': ''
-                    });
-                }
-
-            });
-
-            $('#btnRejectStatus').on('click', function () {
-                isRejectMode = !isRejectMode;
-
-                if (isRejectMode) {
-                    $('.input-rejection').removeClass('d-none');
-                    $('#room').prop('disabled', true);
-                    $(this).css({
-                        'background-color': '#dc3545',
-                        'color': '#fff'
-                    });
-                    $('.btn-comfirm-form').removeClass('d-none');
-                } else {
-                    $('.input-rejection').addClass('d-none');
-                    $('#room').prop('disabled', false);
-                    $(this).css({
-                        'background-color': '',
-                        'color': ''
-                    });
-                    $('.btn-comfirm-form').addClass('d-none');
-                }
-
-            });
-
-            $('.btn-comfirm-class').on('click', function () {
-                const classId = $(this).data('id');
-                const studyClassName = $(this).data('study-class-name');
-                const type = $(this).data('type');
-                const position = $(this).data('position');
-                const proposedAt = $(this).data('proposed_at');
-                const location = $(this).data('location');
-                const meetingType = $(this).data('meeting-type');
-                const meetingId = $(this).data('meeting-id');
-                const meetingPassword = $(this).data('meeting-password');
-                const meetingUrl = $(this).data('meeting-url');
-                const note = $(this).data('note');
-                const roomId = $(this).data('room-id') || '';
-                const roomName = $(this).data('room-name') || '';
-                const status = $(this).data('status');
-
-                if (status === 1) {
-                    $('#btnReject').addClass('d-none');
-                    $('.btn-comfirm-form').addClass('d-none');
-                    $('#btnRejectStatus').removeClass('d-none');
-                } else {
-                    $('#btnReject').removeClass('d-none');
-                    $('.btn-comfirm-form').removeClass('d-none');
-                    $('#btnRejectStatus').addClass('d-none');
-                }
-
-                $('.class_session_room').addClass('d-none');
-                const $roomSelect = $('#room');
-                $roomSelect.empty();
-
-                @if(isset($data['rooms']) && $data['rooms']->isNotEmpty())
-                @foreach($data['rooms'] as $room)
-                $roomSelect.append(`<option value="{{ $room->id }}">{{ $room->name }}</option>`);
-                @endforeach
-                @endif
-
-                if (roomId && roomName) {
-                    if ($roomSelect.find(`option[value="${roomId}"]`).length === 0) {
-                        $roomSelect.append(`<option value="${roomId}">${roomName} (đã được chọn)</option>`);
-                    }
-                    $roomSelect.val(roomId);
-                }
-
-                if (position === 0) {
-                    $('.session-offline').removeClass('d-none');
-                    $('.session-online').addClass('d-none');
-                    $('.session-picnic').addClass('d-none');
-                } else if (position === 1) {
-                    $('.session-offline').addClass('d-none');
-                    $('.session-online').removeClass('d-none');
-                    $('.session-picnic').addClass('d-none');
-                } else {
-                    $('.session-offline').addClass('d-none');
-                    $('.session-online').addClass('d-none');
-                    $('.session-picnic').removeClass('d-none');
-                }
-
-                $('.class_session_study_class').text(studyClassName);
-                $('.class_session_position').text(position === 0 ? 'Trực tiếp tại trường' : position === 1 ? 'Trực tuyến' : 'Dã ngoại');
-                $('.class_session_proposed_at').text(moment(proposedAt).format('H:mm DD/MM/YYYY'));
-                $('.class_session_location').text(location);
-                $('.class_session_meeting_type').text(meetingType);
-                $('.class_session_meeting_id').text(meetingId);
-                $('.class_session_meeting_password').text(meetingPassword);
-                $('.class_session_meeting_url').attr('href', meetingUrl);
-                $('.class_session_note').text(!note ? '---' : note);
-                $('.class_session_position_input').val(position);
-
-                $('#formComfirm').attr('action', `{{ route('student-affairs-department.class-session.updateClassRequest', '') }}/${classId}`);
-            });
-
-            $('.btn-detail-class').on('click', function () {
-                const classId = $(this).data('id');
-                const studyClassName = $(this).data('study-class-name');
-                let type = $(this).data('type');
-                const position = $(this).data('position');
-                const proposedAt = $(this).data('proposed_at');
-                const location = $(this).data('location');
-                const meetingType = $(this).data('meeting-type');
-                const meetingId = $(this).data('meeting-id');
-                const meetingPassword = $(this).data('meeting-password');
-                const meetingUrl = $(this).data('meeting-url');
-                const note = $(this).data('note');
-                const roomName = $(this).data('room-name') || '';
-                const roomId = $(this).data('room-id') || '';
-                const status = $(this).data('status');
-                const isDetail = $(this).data('detail');
-                console.log(roomName);
-
-                if (status === 1 && isDetail) {
-                    $('#btnReject').addClass('d-none');
-                    $('.btn-comfirm-form').addClass('d-none');
-                    $('#btnRejectStatus').addClass('d-none');
-                }
-
-                if (position === 0) {
-                    $('.session-offline').addClass('d-none');
-                    $('.session-online').addClass('d-none');
-                    $('.session-picnic').addClass('d-none');
-                    $('.class_session_room').removeClass('d-none');
-                } else if (position === 1) {
-                    $('.session-offline').addClass('d-none');
-                    $('.session-online').removeClass('d-none');
-                    $('.session-picnic').addClass('d-none');
-                    $('.class_session_room').addClass('d-none');
-                } else {
-                    $('.session-offline').addClass('d-none');
-                    $('.session-online').addClass('d-none');
-                    $('.session-picnic').removeClass('d-none');
-                    $('.class_session_room').addClass('d-none');
-                }
-
-                $('.class_session_study_class').text(studyClassName);
-                $('.class_session_position').text(position === 0 ? 'Trực tiếp tại trường' : position === 1 ? 'Trực tuyến' : 'Dã ngoại');
-                $('.class_session_proposed_at').text(moment(proposedAt).format('H:mm DD/MM/YYYY'));
-                $('.class_session_location').text(location);
-                $('.class_session_meeting_type').text(meetingType);
-                $('.class_session_meeting_id').text(meetingId);
-                $('.class_session_meeting_password').text(meetingPassword);
-                $('.class_session_meeting_url').attr('href', meetingUrl);
-                $('.class_session_note').text(!note ? '---' : note);
-                $('.class_session_room_name').text(roomName ?? '---');
-
-            });
-
-
-            $('.btn-comfirm-form').on('click', function (e) {
-                e.preventDefault();
-                const rejectionReason = $('#rejection_reason').val().trim();
-                if (isRejectMode && !rejectionReason) {
-                    $('#rejection_reason').focus();
-                    return;
-                }
-
-                $('#formComfirm').submit();
-
-            });
-        });
-    </script>
-@endpush
+                </script>
+    @endpush

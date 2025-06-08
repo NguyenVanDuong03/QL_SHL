@@ -51,7 +51,7 @@ Route::middleware(['auth'])->group(function () {
                     Route::get('/fixed-class-activitie/detail', [LecturerController::class, 'detailClassSession'])->name('detail');
                     Route::get('/detail-fixed-class-activitie', [LecturerController::class, 'detailFixedClassActivitie'])->name('detailFixedClassActivitie');
                     Route::get('/info-fixed-class-activitie', [LecturerController::class, 'infoFixedClassActivitie'])->name('infoFixedClassActivitie');
-                    Route::patch('/done-fixed-class-activitie/{id}', [LecturerController::class, 'doneFixedClassActivitie'])->name('doneFixedClassActivitie');
+                    Route::patch('/done-session-class/{id}', [LecturerController::class, 'doneSessionClass'])->name('doneSessionClass');
 
                     Route::get('/flexible-class-activitie', [LecturerController::class, 'indexFlexibleClassActivitie'])->name('flexible-class-activitie');
                     Route::get('/flexible-class-activitie/create', [LecturerController::class, 'flexibleCreate'])->name('flexibleCreate');
@@ -122,7 +122,7 @@ Route::middleware(['auth'])->group(function () {
                     Route::get('/flexible-class-activities', [StudentAffairsDepartmentController::class, 'flexibleClassActivities'])->name('flexibleClassActivities');
                     Route::post('/create-classSession-registration', [StudentAffairsDepartmentController::class, 'createClassSessionRegistration'])->name('createClassSessionRegistration');
                     Route::put('/edit-classSession-registration/{id?}', [StudentAffairsDepartmentController::class, 'editClassSessionRegistration'])->name('editClassSessionRegistration');
-                    Route::patch('/confirm-classSession-registration/{id?}', [StudentAffairsDepartmentController::class, 'comfirmClassSession'])->name('updateClassRequest');
+                    Route::patch('/confirm-classSession/{id?}', [StudentAffairsDepartmentController::class, 'confirmClassSession'])->name('updateClassRequest');
                 }
             );
 

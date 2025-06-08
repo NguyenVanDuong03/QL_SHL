@@ -48,7 +48,7 @@
             <div class="col-md-6 class-flexible-m" style="height: 130px">
                 <div class="card shadow-sm h-100">
                     <div class="card-body position-relative">
-                        <h5 class="card-title title-class-session">ĐĂNG KÝ SINH HOẠT LỚP LINH HOẠT</h5>
+                        <h5 class="card-title title-class-session">LỊCH SINH HOẠT LỚP LINH HOẠT</h5>
                         @if ($data['countFlexibleClassSessionRequest'] > 0)
                             <p class="text-muted m-0">Có {{ $data['countFlexibleClassSessionRequest'] }} lịch họp</p>
                         @else
@@ -65,7 +65,7 @@
             <div class="col-md-6 class-flexible-m mt-3" style="height: 130px">
                 <div class="card shadow-sm h-100">
                     <div class="card-body position-relative">
-                        <h5 class="card-title title-class-session">LỊCH SINH HOẠT LỚP CỦA TÔI</h5>
+                        <h5 class="card-title title-class-session">LỊCH SINH HOẠT CỐ ĐỊNH</h5>
                         @if ($data['countFixeClassSessionRequest'] > 0)
                             <p class="text-muted m-0">Có {{ $data['countFixeClassSessionRequest'] }} lịch họp</p>
                         @else

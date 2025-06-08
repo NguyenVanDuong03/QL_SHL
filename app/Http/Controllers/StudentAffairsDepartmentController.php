@@ -77,36 +77,50 @@ class StudentAffairsDepartmentController extends Controller
             'ListCSRs' => $this->classSessionRequestService->getListFlexibleClass()->toArray(),
             'rooms' => $rooms,
         ];
-//        dd($data['rooms']);
+//        dd($data['ListCSRs']);
 
-        return view('StudentAffairsDepartment.classSession.flexibleClassActivities', compact('data'));
+        return view('StudentAffairsDepartment.classSession.flexibleClassActivitie', compact('data'));
     }
 
-    public function comfirmClassSession(Request $request, $id)
+    public function confirmClassSession(Request $request, $id)
     {
         $params = $request->all();
-        if ($params['position'] != Constant::CLASS_SESSION_POSITION['OFFLINE'] && $params['rejection_reason'] == null) {
+
+        if ($params['position'] != Constant::CLASS_SESSION_POSITION['OFFLINE']) {
             $params['room_id'] = null;
         } else {
-            if (isset($params['room_id'])) {
-                $this->roomService->update($params['room_id'], [
-                    'status' => Constant::ROOM_STATUS['UNAVAILABLE'],
-                ]);
+            if (!empty($params['rejection_reason'])) {
+                if (!empty($params['room_id'])) {
+                    $this->roomService->update($params['room_id'], [
+                        'status' => Constant::ROOM_STATUS['AVAILABLE'],
+                    ]);
+                }
+                $params['room_id'] = null;
+            } else {
+                if (!empty($params['room_id'])) {
+                    $this->roomService->update($params['room_id'], [
+                        'status' => Constant::ROOM_STATUS['UNAVAILABLE'],
+                    ]);
+                }
             }
         }
 
-        if ($params['rejection_reason']) {
+        if (!empty($params['rejection_reason'])) {
             $params['status'] = Constant::CLASS_SESSION_STATUS['REJECTED'];
         }
-//         dd($params, $id);
+
         $this->classSessionRequestService->update($id, $params);
 
         if ($params['type'] == 1) {
-            return redirect()->route('student-affairs-department.class-session.flexibleClassActivities')->with('success', 'Xác nhận thành công');
-        } else {
-            return redirect()->route('student-affairs-department.class-session.index')->with('success', 'Xác nhận thành công');
+            return redirect()->route('student-affairs-department.class-session.flexibleClassActivities')
+                ->with('success', 'Xác nhận thành công');
         }
+
+        return redirect()->route('student-affairs-department.class-session.index')
+                ->with('success', 'Xác nhận thành công');
+
     }
+
 
     public function createClassSessionRegistration(ClassSessionRegistrationRequest $request)
     {
