@@ -48,4 +48,9 @@ class ClassSessionRequest extends Model
     {
         return $this->hasMany(Attendance::class);
     }
+
+    public function classSessionReport()
+    {
+        return $this->hasOne(ClassSessionReport::class);
+    }
 }

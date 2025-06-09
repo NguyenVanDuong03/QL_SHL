@@ -120,9 +120,9 @@ class StudentService extends BaseService
         $defaultStatuses = [
             -1 => ['text' => 'Chưa xác nhận', 'badge' => 'warning'],
             0  => ['text' => 'Xác nhận',      'badge' => 'primary'],
-            1  => ['text' => 'Xin vắng',       'badge' => 'secondary'],
-            2  => ['text' => 'Có mặt',                 'badge' => 'success'],
-            3  => ['text' => 'Vắng mặt',               'badge' => 'danger'],
+            1  => ['text' => 'Xin vắng',      'badge' => 'secondary'],
+            2  => ['text' => 'Có mặt',        'badge' => 'success'],
+            3  => ['text' => 'Vắng mặt',      'badge' => 'danger'],
         ];
 
         $summary = [];

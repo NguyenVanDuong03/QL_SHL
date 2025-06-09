@@ -246,6 +246,10 @@ Route::middleware(['auth'])->group(function () {
                     Route::post('/', [ClassStaffController::class, 'confirmAttendance'])->name('confirmAttendance');
                     Route::patch('/', [ClassStaffController::class, 'updateAbsence'])->name('updateAbsence');
                     Route::get('/history', [ClassStaffController::class, 'history'])->name('history');
+                    Route::get('/report', [ClassStaffController::class, 'report'])->name('report');
+                    Route::post('/report', [ClassStaffController::class, 'storeReport'])->name('storeReport');
+                    Route::put('/report/{id}', [ClassStaffController::class, 'updateReport'])->name('updateReport');
+                    Route::delete('/report/{id}', [ClassStaffController::class, 'deleteReport'])->name('deleteReport');
                 }
             );
         }
@@ -261,6 +265,21 @@ Route::middleware(['auth'])->group(function () {
         ],
         function () {
             Route::get('/', [StudentController::class, 'index'])->name('index');
+
+//            Class session
+            Route::group(
+                [
+                    'prefix' => 'class-session',
+                    'as' => 'class-session.',
+                ],
+                function () {
+                    Route::get('/', [StudentController::class, 'indexClassSession'])->name('index');
+                    Route::get('/detail', [StudentController::class, 'detailClassSession'])->name('detailClassSession');
+                    Route::post('/', [StudentController::class, 'confirmAttendance'])->name('confirmAttendance');
+                    Route::patch('/', [StudentController::class, 'updateAbsence'])->name('updateAbsence');
+                    Route::get('/history', [StudentController::class, 'history'])->name('history');
+                }
+            );
         }
     );
 });

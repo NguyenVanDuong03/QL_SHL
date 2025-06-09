@@ -117,7 +117,13 @@
                             </thead>
                             <tbody>
                             @if(isset($data['classSessionRequests']) && $data['classSessionRequests']['total'] == 0)
-                                <p>Không có yêu cầu nào.</p>
+                                <tr>
+                                    <td colspan="6" class="text-center">
+                                        <div class="alert alert-info mb-0" role="alert">
+                                            <i class="fas fa-info-circle me-2"></i> Hiện tại không có sinh hoạt lớp nào.
+                                        </div>
+                                    </td>
+                                </tr>
                             @else
                                 @foreach($data['classSessionRequests']['data'] as $item)
                                     <tr>

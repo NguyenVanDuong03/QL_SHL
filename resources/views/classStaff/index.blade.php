@@ -182,7 +182,7 @@
         <div class="header-section">
             <div class="container">
                 <div class="welcome-card">
-                    <h1 class="h2 mb-3">Chào mừng đến với Trang Cán sự lớp</h1>
+                    <h1 class="h2 mb-3">Chào mừng đến với Hệ thống quản lý sinh hoạt lớp</h1>
                     <p class="mb-0 opacity-90">Quản lý và theo dõi các hoạt động lớp học một cách hiệu quả</p>
                 </div>
             </div>
@@ -203,7 +203,7 @@
                                 Tham gia và quản lý các buổi sinh hoạt lớp định kỳ
                             </p>
                             <div class="text-center">
-                                <a href="#" class="btn btn-primary-custom">Xem lịch</a>
+                                <a href="{{ route('class-staff.class-session.index') }}" class="btn btn-primary-custom">Xem lịch</a>
                             </div>
                         </div>
                     </div>

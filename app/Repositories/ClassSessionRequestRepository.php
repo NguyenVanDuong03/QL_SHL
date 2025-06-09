@@ -53,6 +53,7 @@ class ClassSessionRequestRepository extends BaseRepository
             ->with([
                 'lecturer.user',
                 'studyClass',
+                'classSessionReport'
             ])
             ->where('study_class_id', $params['study_class_id'])
             ->where('status', Constant::CLASS_SESSION_STATUS['DONE'])

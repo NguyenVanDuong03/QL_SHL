@@ -251,7 +251,6 @@
                                             data-bs-target="#confirmDoneModal">
                                         <i class="fas fa-check me-2"></i>Hoàn thành
                                     </button>
-
                                 @endif
                             </div>
                         </div>

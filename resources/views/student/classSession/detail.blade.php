@@ -1,4 +1,4 @@
-@extends('layouts.classStaff')
+@extends('layouts.student')
 
 @section('title', 'Chi tiết sinh hoạt lớp')
 
@@ -196,7 +196,7 @@
                             <p class="text-end text-danger-emphasis bg-primary-subtle fw-bold px-2">{{ isset($data['getAttendanceStudent'])? $statusTexts[$data['getAttendanceStudent']->status] : $statusTexts[-1] }}</p>
                             <div class="d-flex justify-content-between gap-2">
                                 <div class="">
-                                    <a href="{{ $data['getClassSessionRequest']->status == 3 ? route('class-staff.class-session.history') : route('class-staff.class-session.index') }}"
+                                    <a href="{{ $data['getClassSessionRequest']->status == 3 ? route('student.class-session.history') : route('student.class-session.index') }}"
                                        class="btn btn-outline-secondary btn-sm">
                                         <i class="fas fa-arrow-left me-2"></i>Quay lại
                                     </a>
@@ -523,7 +523,7 @@
          aria-hidden="true">
         <div class="modal-dialog">
             <form id="confirmAttendanceForm" method="POST"
-                  action="{{ route('class-staff.class-session.confirmAttendance') }}">
+                  action="{{ route('student.class-session.confirmAttendance') }}">
                 @csrf
                 @method('POST')
                 <div class="modal-content">
@@ -551,7 +551,7 @@
          aria-hidden="true">
         <div class="modal-dialog">
             <form id="requestAbsenceForm" method="POST"
-                  action="{{ route('class-staff.class-session.updateAbsence')}}">
+                  action="{{ route('student.class-session.updateAbsence')}}">
                 @csrf
                 @method('PATCH')
                 <div class="modal-content">
@@ -680,7 +680,7 @@
             $('.btn-request-absence').on('click', function () {
                 const reason = $(this).data('reason') || '';
                 $('#requestAbsenceForm #reason').val(reason);
-                {{--$('#requestAbsenceForm').attr('action', '{{ route('class-staff.class-session.requestAbsence') }}');--}}
+                {{--$('#requestAbsenceForm').attr('action', '{{ route('student.class-session.requestAbsence') }}');--}}
             });
         });
 

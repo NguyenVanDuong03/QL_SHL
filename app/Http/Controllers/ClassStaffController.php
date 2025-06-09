@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Helpers\Constant;
 use App\Services\AttendanceService;
 use App\Services\ClassSessionRegistrationService;
+use App\Services\ClassSessionReportService;
 use App\Services\ClassSessionRequestService;
 use App\Services\CohortService;
 use App\Services\ConductEvaluationPeriodService;
@@ -25,16 +26,17 @@ class ClassStaffController extends Controller
         protected SemesterService                 $semesterService,
         protected ClassSessionRegistrationService $classSessionRegistrationService,
         protected ClassSessionRequestService      $classSessionRequestService,
-        protected StudentService                  $studentService,
-        protected LecturerService                 $lecturerService,
-        protected RoomService                     $roomService,
-        protected DepartmentService               $titleService,
-        protected FacultyService                  $facultyService,
-        protected UserService                     $userService,
-        protected CohortService                   $cohortService,
-        protected StudyClassService               $studyClassService,
-        protected ConductEvaluationPeriodService  $conductEvaluationPeriodService,
-        protected AttendanceService                $attendanceService
+        protected StudentService                 $studentService,
+        protected LecturerService                $lecturerService,
+        protected RoomService                    $roomService,
+        protected DepartmentService              $titleService,
+        protected FacultyService                 $facultyService,
+        protected UserService                    $userService,
+        protected CohortService                  $cohortService,
+        protected StudyClassService              $studyClassService,
+        protected ConductEvaluationPeriodService $conductEvaluationPeriodService,
+        protected AttendanceService              $attendanceService,
+        protected ClassSessionReportService      $classSessionReport,
     )
     {
     }
@@ -46,7 +48,7 @@ class ClassStaffController extends Controller
         $params['study_class_id'] = auth()->user()->student?->studyClass?->id ?? null;
         $params['student_id'] = auth()->user()->student?->id ?? null;
         $classSessionRequests = $this->classSessionRequestService->ClassSessionRequests($params)->limit(Constant::DEFAULT_LIMIT)->get();
-        $attendanceStatus = $classSessionRequests->first()->attendances->first() ?? null;
+        $attendanceStatus = $classSessionRequests->first()?->attendances->first() ?? null;
 
         $data = [
             'classSessionRequests' => $classSessionRequests,
@@ -142,6 +144,63 @@ class ClassStaffController extends Controller
         return response()->json([
             'status' => 'success',
             'message' => 'Gửi lý do vắng mặt thành công',
+        ], 200);
+    }
+
+    public function report(Request $request)
+    {
+        $params = $request->all();
+
+        $data = [
+            'report' => null,
+        ];
+        if (isset($params['report_id'])) {
+            $report = $this->classSessionReport->find($params['report_id']) ?? null;
+            $report->path = $report->path ? asset('storage/' . $report->path) : null;
+            $data = [
+                'report' => $report,
+            ];
+        }
+
+        return view('classStaff.classSession.report', compact('data'));
+    }
+
+    public function storeReport(Request $request)
+    {
+        $params = $request->all();
+//        dd($params);
+
+        $classSessionReport = $this->classSessionReport->storeReport($params);
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Báo cáo đã được gửi thành công',
+            'data' => $classSessionReport,
+        ], 200);
+    }
+
+    public function updateReport(Request $request, $id)
+    {
+        $params = $request->all();
+        $params['id'] = $id;
+//        dd($params, $id);
+
+        $classSessionReport = $this->classSessionReport->updateReport($params);
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Báo cáo đã được cập nhật thành công',
+            'data' => $classSessionReport,
+        ], 200);
+    }
+
+    public function deleteReport($id)
+    {
+        $this->classSessionReport->deleteReport($id);
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Báo cáo đã được xóa thành công',
         ], 200);
     }
 }

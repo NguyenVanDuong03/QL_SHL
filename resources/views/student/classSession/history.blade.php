@@ -1,4 +1,4 @@
-@extends('layouts.classStaff')
+@extends('layouts.student')
 
 @section('title', 'Lịch sử sinh hoạt lớp')
 
@@ -97,13 +97,13 @@
         <!-- Content -->
         <div class="px-4 pt-2">
             <div class="mb-2">
-                <a href="{{ route('class-staff.class-session.index') }}"
+                <a href="{{ route('student.class-session.index') }}"
                    class="btn btn-outline-secondary btn-sm">
                     <i class="fas fa-arrow-left me-2"></i>Quay lại
                 </a>
             </div>
             <div class="d-flex justify-content-end align-items-end mb-3">
-                <form method="GET" action="{{ route('class-staff.class-session.history') }}"
+                <form method="GET" action="{{ route('student.class-session.history') }}"
                       class="input-group" style="max-width: 300px; margin-left: auto;">
                     <input type="text" class="form-control" placeholder="Tìm kiếm lớp học" name="search"
                            value="{{ request('search') }}"
@@ -160,11 +160,8 @@
                                         <td>
                                             <div
                                                 class="action-buttons d-flex flex-column flex-md-row gap-2 justify-content-center">
-                                                <a href="{{ route('class-staff.class-session.detailClassSession', ['study-class-id' => $item['study_class']['id'], 'session-request-id' => $item['id']]) }}" class="btn btn-action btn-details" title="Xem chi tiết">
+                                                <a href="{{ route('student.class-session.detailClassSession', ['study-class-id' => $item['study_class']['id'], 'session-request-id' => $item['id']]) }}" class="btn btn-action btn-details" title="Xem chi tiết">
                                                     <i class="fas fa-eye"></i>
-                                                </a>
-                                                <a href="{{ route('class-staff.class-session.report', ['class_session_request_id' => $item['id'], 'report_id' => $item['class_session_report']['id'] ?? null ]) }}" class="btn btn-success" title="{{ isset($item['class_session_report']) ? 'Xem báo cáo' : 'Tạo báo cáo' }}">
-                                                    <i class="fas fa-pager"></i>
                                                 </a>
                                             </div>
                                         </td>
