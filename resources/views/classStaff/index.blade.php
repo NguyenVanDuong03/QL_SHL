@@ -123,16 +123,6 @@
             font-size: 0.875rem;
         }
 
-        .badge-pending {
-            background-color: #fef3c7;
-            color: #92400e;
-        }
-
-        .badge-joined {
-            background-color: var(--teal-100);
-            color: var(--teal-700);
-        }
-
         .btn-action {
             padding: 0.4rem 1rem;
             border-radius: 6px;
@@ -140,27 +130,6 @@
             font-weight: 500;
             border: none;
             transition: all 0.3s ease;
-        }
-
-        .btn-join {
-            background-color: var(--primary-btn);
-            color: white;
-        }
-
-        .btn-join:hover {
-            background-color: var(--primary-btn-hover);
-            color: white;
-        }
-
-        .btn-absent {
-            background-color: #f1f5f9;
-            color: #64748b;
-            border: 1px solid #e2e8f0;
-        }
-
-        .btn-absent:hover {
-            background-color: #e2e8f0;
-            color: #475569;
         }
 
         .btn-details {
@@ -296,14 +265,17 @@
                                     <th class="d-none d-md-table-cell">Giáo viên</th>
                                     <th>Thời gian</th>
                                     <th>Lớp</th>
-                                    {{--                                    <th class="d-none d-xl-table-cell">Nội dung</th>--}}
                                     <th>Trạng thái</th>
                                     <th class="text-center">Thao tác</th>
                                 </tr>
                                 </thead>
                                 <tbody>
                                 @if($data['classSessionRequests']->isEmpty())
-                                    <p>Không có yêu cầu nào.</p>
+                                    <tr>
+                                        <td colspan="6" class="text-center text-muted">
+                                            Hiện tại không có yêu cầu sinh hoạt lớp nào.
+                                        </td>
+                                    </tr>
                                 @else
                                     @foreach($data['classSessionRequests'] as $request)
                                         <tr>
@@ -326,11 +298,11 @@
                                             </td>
                                             @php
                                                 $statusMap = [
-                                                    0 => ['text' => 'Xác nhận', 'class' => 'badge-pending'],
+                                                    0 => ['text' => 'Xác nhận', 'class' => 'bg-primary'],
                                                     1 => ['text' => 'Xin vắng', 'class' => 'badge-warning'],
-                                                    2 => ['text' => 'Có mặt', 'class' => 'badge-success'],
-                                                    3 => ['text' => 'Vắng mặt', 'class' => 'badge-danger'],
-                                                    4 => ['text' => 'Chưa xác nhận', 'class' => 'badge-pending'],
+                                                    2 => ['text' => 'Có mặt', 'class' => 'bg-success'],
+                                                    3 => ['text' => 'Vắng mặt', 'class' => 'bg-danger'],
+                                                    4 => ['text' => 'Chưa xác nhận', 'class' => 'bg-secondary'],
                                                 ];
                                                 if (!isset($data['attendanceStatus'])) {
                                                 $status = 4;
@@ -367,72 +339,7 @@
 @push('scripts')
     <script>
         $(document).ready(function () {
-            // Handle Join button click
-            $('.btn-join').click(function () {
-                const meetingId = $(this).data('id');
-                const button = $(this);
 
-                // Show loading state
-                button.html('<i class="fas fa-spinner fa-spin me-1"></i>Đang xử lý...');
-                button.prop('disabled', true);
-
-                // Simulate API call
-                setTimeout(function () {
-                    // Update status badge
-                    button.closest('tr').find('.badge-status')
-                        .removeClass('badge-pending')
-                        .addClass('badge-joined')
-                        .text('Đã tham gia');
-
-                    // Hide join and absent buttons
-                    button.closest('.action-buttons').find('.btn-join, .btn-absent').hide();
-
-                    // Show success message
-                    showNotification('Đã xác nhận tham gia buổi sinh hoạt lớp thành công!', 'success');
-                }, 1000);
-            });
-
-            // Handle Absent button click
-            $('.btn-absent').click(function () {
-                const meetingId = $(this).data('id');
-                const button = $(this);
-
-                // Show confirmation dialog
-                if (confirm('Bạn có chắc chắn muốn xin vắng buổi sinh hoạt này?')) {
-                    button.html('<i class="fas fa-spinner fa-spin me-1"></i>Đang gửi...');
-                    button.prop('disabled', true);
-
-                    // Simulate API call
-                    setTimeout(function () {
-                        showNotification('Đã gửi yêu cầu xin vắng thành công!', 'info');
-                        button.html('<i class="fas fa-check me-1"></i>Đã gửi yêu cầu');
-                        button.removeClass('btn-absent').addClass('btn-secondary');
-                        button.prop('disabled', true);
-                    }, 1000);
-                }
-            });
-
-            // Notification function
-            function showNotification(message, type) {
-                const alertClass = type === 'success' ? 'alert-success' :
-                    type === 'info' ? 'alert-info' : 'alert-warning';
-
-                const notification = $(`
-                    <div class="alert ${alertClass} alert-dismissible fade show position-fixed"
-                         style="top: 20px; right: 20px; z-index: 1050; min-width: 300px;">
-                        <i class="fas fa-${type === 'success' ? 'check-circle' : 'info-circle'} me-2"></i>
-                        ${message}
-                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                    </div>
-                `);
-
-                $('body').append(notification);
-
-                // Auto remove after 5 seconds
-                setTimeout(function () {
-                    notification.alert('close');
-                }, 5000);
-            }
         });
     </script>
 @endpush

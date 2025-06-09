@@ -19,12 +19,10 @@ class StudyClassRepository extends BaseRepository
 
     public function getStudyClassListByLecturerId($lecturerId)
     {
-        // $lecturerId = auth()->user()->lecturer?->id;
         $query = $this->getModel()
             ->with(['students'])
             ->where('lecturer_id', $lecturerId)
-            ->orderBy('id', 'desc')
-            ->paginate(constant::DEFAULT_LIMIT_12);
+            ->orderBy('id', 'desc');
 
         return $query;
     }
@@ -80,6 +78,7 @@ class StudyClassRepository extends BaseRepository
 
     public function getStudyClassByIdFlex($params)
     {
+//        Lọc ra các lớp học phần của gvcn có status là 0, 1, 2, 3
         $lecturerId = $params['lecturer_id'];
 
         $query = $this->getModel()

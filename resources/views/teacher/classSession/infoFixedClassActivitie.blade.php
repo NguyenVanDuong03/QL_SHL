@@ -501,7 +501,6 @@
                     <form id="attendanceForm">
                         <input type="hidden" name="session-request-id" class="session_request_id" value="{{ $data['getClassSessionRequest']->id }}">
                         <input type="hidden" name="study-class-id" class="study_class_id" value="{{ $data['getClassSessionRequest']->study_class_id }}">
-{{--                        <input type="hidden" name="session-request-id" value="{{ $data['getClassSessionRequest']->id }}">--}}
                         <div class="d-none d-md-block">
                             <div class="table-responsive" style="max-height: 400px; overflow-y: auto;">
                                 <table class="table table-hover mb-0">

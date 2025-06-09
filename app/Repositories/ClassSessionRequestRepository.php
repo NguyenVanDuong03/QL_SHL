@@ -27,10 +27,9 @@ class ClassSessionRequestRepository extends BaseRepository
 
     public function classSessionRequests($params)
     {
-        $params['class_session_request_id'] = $this->getClassSessionRequestBySclIdAndCsrId($params)->id;
         return $this->getModel()
             ->with([
-                'lecturer',
+                'lecturer.user',
                 'studyClass',
                 'room',
                 'attendances' => function ($query) use ($params) {
@@ -40,10 +39,24 @@ class ClassSessionRequestRepository extends BaseRepository
                 }
             ])
             ->where('study_class_id', $params['study_class_id'])
-            ->where('class_session_registration_id', $params['class_session_registration_id'])
-            ->limit(Constant::DEFAULT_LIMIT)
-            ->orderBy('id', 'desc')
-            ->get();
+                ->whereIn('status', [
+                    Constant::CLASS_SESSION_STATUS['ACTIVE'],
+                    Constant::CLASS_SESSION_STATUS['REJECTED'],
+                    Constant::CLASS_SESSION_STATUS['APPROVED'],
+                ])
+            ->orderBy('id', 'desc');
+    }
+
+    public function getClassSessionRequestsDone($params)
+    {
+        return $this->getModel()
+            ->with([
+                'lecturer.user',
+                'studyClass',
+            ])
+            ->where('study_class_id', $params['study_class_id'])
+            ->where('status', Constant::CLASS_SESSION_STATUS['DONE'])
+            ->orderBy('id', 'desc');
     }
 
     public function countFlexibleClassSessionRequest($lecturerId)
@@ -122,20 +135,24 @@ class ClassSessionRequestRepository extends BaseRepository
 
     public function createOrUpdateByClassAndSemester(array $params)
     {
-        $modelClass = $this->getModel();
-
-        $instance = $modelClass::where('study_class_id', $params['study_class_id'])
+        $instance = $this->getModel()
+            ->where('study_class_id', $params['study_class_id'])
+            ->where('type', Constant::CLASS_SESSION_TYPE['FIXED'])
             ->where('class_session_registration_id', $params['class_session_registration_id'])
+            ->whereIn('status', [
+                Constant::CLASS_SESSION_STATUS['ACTIVE'],
+                Constant::CLASS_SESSION_STATUS['REJECTED'],
+                Constant::CLASS_SESSION_STATUS['APPROVED'],
+            ])
             ->first();
 
         return $this->createOrUpdate($params, $instance);
     }
 
-    public function flexibleCreateOrUpdateByClassAndSemester(array $params)
+    public function flexibleCreateOrUpdate(array $params)
     {
-        $modelClass = $this->getModel();
-
-        $instance = $modelClass::where('study_class_id', $params['study_class_id'])
+        $instance = $this->getModel()
+            ->where('study_class_id', $params['study_class_id'])
             ->where('type', Constant::CLASS_SESSION_TYPE['FLEXIBLE'])
             ->whereIn('status', [
                 Constant::CLASS_SESSION_STATUS['ACTIVE'],
@@ -150,7 +167,7 @@ class ClassSessionRequestRepository extends BaseRepository
     public function getListFlexibleClass()
     {
         return $this->getModel()
-            ->with('studyClass', 'room')
+            ->with('studyClass', 'room', 'lecturer', 'studyClass.major.faculty.department')
             ->where('type', Constant::CLASS_SESSION_TYPE['FLEXIBLE'])
             ->whereIn('status', [
                 Constant::CLASS_SESSION_STATUS['ACTIVE'],

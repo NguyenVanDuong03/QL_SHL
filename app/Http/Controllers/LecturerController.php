@@ -66,7 +66,7 @@ class LecturerController extends Controller
     public function indexClass()
     {
         $lecturerId = auth()->user()->lecturer?->id;
-        $classes = $this->studyClassService->getStudyClassListByLecturerId($lecturerId)->toArray();
+        $classes = $this->studyClassService->getStudyClassListByLecturerId($lecturerId)->paginate(Constant::DEFAULT_LIMIT_12)->toArray();
         $data = [
             'classes' => $classes,
         ];
@@ -188,7 +188,7 @@ class LecturerController extends Controller
         $roomId = $params['room_id'] ?? null;
         if ($roomId) {
             $this->roomService->update($roomId, [
-                'status' => 0,
+                'status' => Constant::ROOM_STATUS['AVAILABLE'],
             ]);
         }
         $this->classSessionRequestService->delete($id);
@@ -294,10 +294,10 @@ class LecturerController extends Controller
         ]);
 
         if ($params['type'] == Constant::CLASS_SESSION_TYPE['FLEXIBLE']) {
-            return redirect()->route('teacher.class-session.flexible-class-activitie')->with('success', 'Hoàn thành yêu cầu thành công');
+            return redirect()->route('teacher.class-session.flexible-class-activitie')->with('success', 'Kết thúc sinh hoạt lớp thành công');
         }
 
-        return redirect()->route('teacher.class-session.detailFixedClassActivitie')->with('success', 'Hoàn thành yêu cầu thành công');
+        return redirect()->route('teacher.class-session.detailFixedClassActivitie')->with('success', 'Kết thúc sinh hoạt lớp thành công');
     }
 
     public function updateAttendance(Request $request)
@@ -309,10 +309,10 @@ class LecturerController extends Controller
         $result = $this->attendanceService->updateAttendance($params);
 
         if ($result) {
-            return response()->json(['message' => 'Attendance updated successfully']);
+            return response()->json(['message' => 'Đã lưu điểm danh thành công!']);
         }
 
-        return response()->json(['message' => 'Failed to update attendance'], 400);
+        return response()->json(['message' => 'Không thể lưu điểm danh'], 400);
 
     }
 
@@ -321,7 +321,7 @@ class LecturerController extends Controller
         $params = $request->all();
         $lecturerId = auth()->user()->lecturer?->id;
         $params['lecturer_id'] = $lecturerId;
-        $getStudyClassByIds = $this->studyClassService->getStudyClassByIdFlex($params)->toArray();
+        $getStudyClassByIds = $this->classSessionRequestService->getListFlexibleClass($params)->toArray();
         $totalClasses = $this->studyClassService->coutStudyClassListByLecturerId($lecturerId);
         $countFlexibleClassSessionRequestByLecturer = $this->classSessionRequestService->countFlexibleClassSessionRequestByLecturer($lecturerId);
         $countFlexibleRejectedByLecturer = $this->classSessionRequestService->countFlexibleRejectedByLecturer($lecturerId);
@@ -359,6 +359,14 @@ class LecturerController extends Controller
         return view('teacher.classSession.flexibleCreate', compact('data'));
     }
 
+    public function flexibleCreateRequest()
+    {
+        $lecturerId = auth()->user()->lecturer?->id;
+        $studyClasses = $this->studyClassService->getStudyClassListByLecturerId($lecturerId)->get();
+//        dd(($studyClasses));
+        return view('teacher.classSession.flexibleCreateRequest', compact('studyClasses'));
+    }
+
     public function storeFlexibleClassSession(Request $request)
     {
         $params = $request->all();
@@ -371,13 +379,14 @@ class LecturerController extends Controller
             $params['room_id'] = null;
 //        dd($params);
 
-        $this->classSessionRequestService->flexibleCreateOrUpdateByClassAndSemester($params);
+        $this->classSessionRequestService->flexibleCreateOrUpdate($params);
         return redirect()->route('teacher.class-session.flexible-class-activitie')->with('success', 'Tạo yêu cầu thành công');
     }
 
     public function flexibleDetail(Request $request)
     {
         $params = $request->all();
+//        dd($params);
 //        $studyClassId = $request->query('study-class-id');
 //        $sessionRequestId = $request->query('session-request-id');
         $infoClassRequestbyId = $this->classSessionRequestService->find($params['session-request-id']) ?? null;
@@ -401,7 +410,7 @@ class LecturerController extends Controller
 
             $data['getClassSessionRequest'] = $getClassSessionRequest;
             $data['rooms'] = $rooms;
-//            dd($data['getClassSessionRequest']);
+//            dd($data['getStudyClassByIds']);
         }
 
         return view('teacher.classSession.flexibleDetail', compact('data'));

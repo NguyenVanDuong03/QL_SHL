@@ -497,7 +497,6 @@
                         </div>
                     </div>
 
-                    <!-- HTML/PHP structure remains largely the same, but I'll add a form element for submission -->
                     <form id="attendanceForm">
                         <input type="hidden" name="session-request-id" class="session_request_id" value="{{ $data['getClassSessionRequest']->id }}">
                         <input type="hidden" name="study-class-id" class="study_class_id" value="{{ $data['getClassSessionRequest']->study_class_id }}">
@@ -788,10 +787,10 @@
                 const study_class_id = $('.study_class_id').val();
 
 
-                if (attendanceData.length === 0) {
-                    toastr.error('Vui lòng chọn ít nhất một sinh viên để điểm danh.');
-                    return;
-                }
+                // if (attendanceData.length === 0) {
+                //     toastr.error('Vui lòng chọn ít nhất một sinh viên để điểm danh.');
+                //     return;
+                // }
 
                 // Send AJAX request
                 $.ajax({
@@ -881,7 +880,7 @@
         // Hàm kiểm tra xem có checkbox nào được chọn không
         function toggleSubmitButton() {
             const checkedCount = $('.attendance-checkbox:checked').length;
-            $('.submitAttendanceBtn').prop('disabled', checkedCount === 0);
+            // $('.submitAttendanceBtn').prop('disabled', checkedCount === 0);
             $('#selectedCount, #selectedCountMobile').text(checkedCount);
         }
 

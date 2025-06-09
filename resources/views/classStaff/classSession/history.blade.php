@@ -1,6 +1,6 @@
 @extends('layouts.classStaff')
 
-@section('title', 'Sinh hoạt lớp')
+@section('title', 'Lịch sử sinh hoạt lớp')
 
 @push('styles')
     <style>
@@ -96,9 +96,23 @@
     <div class="col bg-light">
         <!-- Content -->
         <div class="px-4 pt-2">
-                <div class="d-flex justify-content-end align-items-end mb-3">
-                    <a class="btn btn-primary" href="{{ route('class-staff.class-session.history') }}">Lịch sử</a>
-                </div>
+            <div class="mb-2">
+                <a href="{{ route('class-staff.class-session.index') }}"
+                   class="btn btn-outline-secondary btn-sm">
+                    <i class="fas fa-arrow-left me-2"></i>Quay lại
+                </a>
+            </div>
+            <div class="d-flex justify-content-end align-items-end mb-3">
+                <form method="GET" action="{{ route('class-staff.class-session.history') }}"
+                      class="input-group" style="max-width: 300px; margin-left: auto;">
+                    <input type="text" class="form-control" placeholder="Tìm kiếm lớp học" name="search"
+                           value="{{ request('search') }}"
+                           aria-label="Search class" aria-describedby="search-addon">
+                    <button class="btn btn-outline-secondary" id="search-addon">
+                        <i class="fas fa-magnifying-glass"></i>
+                    </button>
+                </form>
+            </div>
 
             <!-- Table -->
             <div class="card shadow-sm">
@@ -111,7 +125,7 @@
                                 <th class="d-none d-md-table-cell">Giáo viên</th>
                                 <th>Thời gian</th>
                                 <th>Lớp</th>
-                                <th>Trạng thái</th>
+                                <th>Tiều đề</th>
                                 <th class="text-center">Thao tác</th>
                             </tr>
                             </thead>
@@ -138,24 +152,10 @@
                                                 <span
                                                     class="badge bg-light text-dark">{{ $item['study_class']['name'] }}</span>
                                         </td>
-                                        @php
-                                            $statusMap = [
-                                                0 => ['text' => 'Xác nhận', 'class' => 'bg-primary'],
-                                                1 => ['text' => 'Xin vắng', 'class' => 'badge-warning'],
-                                                2 => ['text' => 'Có mặt', 'class' => 'bg-success'],
-                                                3 => ['text' => 'Vắng mặt', 'class' => 'bg-danger'],
-                                                4 => ['text' => 'Chưa xác nhận', 'class' => 'bg-secondary'],
-                                            ];
-                                            if (!isset($data['attendanceStatus'])) {
-                                            $status = 4;
-                                            } else {
-                                                $status = $data['attendanceStatus'];
-                                            }
-                                        @endphp
                                         <td>
-                                                <span class="badge badge-status {{ $statusMap[$status]['class'] }}">
-                                                    {{ $statusMap[$status]['text'] }}
-                                                </span>
+                                            <span class="title_cut">
+                                                {{ $item['title'] }}
+                                            </span>
                                         </td>
                                         <td>
                                             <div
@@ -184,8 +184,14 @@
 
 @push('scripts')
     <script>
-        $(document).ready(function () {
-
+        $(document).ready(function() {
+            $(".title_cut").each(function() {
+                var text = $(this).text().trim();
+                if (text.length > 20) {
+                    $(this).attr("title", text);
+                    $(this).text(text.substring(0, 20) + '...');
+                }
+            });
         });
     </script>
 @endpush

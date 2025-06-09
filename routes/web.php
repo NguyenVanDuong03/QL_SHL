@@ -47,7 +47,7 @@ Route::middleware(['auth'])->group(function () {
                     Route::get('/fixed-class-activitie', [LecturerController::class, 'indexFixedClassActivitie'])->name('fixed-class-activitie');
                     Route::get('/fixed-class-activitie/create', [LecturerController::class, 'createClassSession'])->name('create');
                     Route::post('/fixed-class-activitie', [LecturerController::class, 'storeClassSession'])->name('store');
-                    Route::delete('/fixed-class-activitie/{id}', [LecturerController::class, 'deleteClassSession'])->name('delete');
+                    Route::delete('/session-class-activitie/{id}', [LecturerController::class, 'deleteClassSession'])->name('delete');
                     Route::get('/fixed-class-activitie/detail', [LecturerController::class, 'detailClassSession'])->name('detail');
                     Route::get('/detail-fixed-class-activitie', [LecturerController::class, 'detailFixedClassActivitie'])->name('detailFixedClassActivitie');
                     Route::get('/info-fixed-class-activitie', [LecturerController::class, 'infoFixedClassActivitie'])->name('infoFixedClassActivitie');
@@ -55,6 +55,7 @@ Route::middleware(['auth'])->group(function () {
 
                     Route::get('/flexible-class-activitie', [LecturerController::class, 'indexFlexibleClassActivitie'])->name('flexible-class-activitie');
                     Route::get('/flexible-class-activitie/create', [LecturerController::class, 'flexibleCreate'])->name('flexibleCreate');
+                    Route::get('/flexible-create-request', [LecturerController::class, 'flexibleCreateRequest'])->name('flexibleCreateRequest');
                     Route::post('/flexible-class-activitie', [LecturerController::class, 'storeFlexibleClassSession'])->name('storeFlexibleClassSession');
                     Route::get('/flexible-class-activitie/detail', [LecturerController::class, 'flexibleDetail'])->name('flexibleDetail');
                 }
@@ -205,6 +206,21 @@ Route::middleware(['auth'])->group(function () {
                 }
             );
 
+//            Academic warning
+            Route::group(
+                [
+                    'prefix' => 'academic-warning',
+                    'as' => 'academic-warning.',
+                ],
+                function () {
+                    Route::get('/', [StudentAffairsDepartmentController::class, 'indexAcademicWarning'])->name('index');
+                    Route::post('/', [StudentAffairsDepartmentController::class, 'createAcademicWarning'])->name('create');
+                    Route::get('/{id?}', [StudentAffairsDepartmentController::class, 'infoAcademicWarning'])->name('infoAcademicWarning');
+                    // Route::put('/{id?}', [StudentAffairsDepartmentController::class, 'editAcademicWarning'])->name('edit');
+                    // Route::delete('/{id?}', [StudentAffairsDepartmentController::class, 'deleteAcademicWarning'])->name('delete');
+                }
+            );
+
         }
     );
 
@@ -229,9 +245,7 @@ Route::middleware(['auth'])->group(function () {
                     Route::get('/detail', [ClassStaffController::class, 'detailClassSession'])->name('detailClassSession');
                     Route::post('/', [ClassStaffController::class, 'confirmAttendance'])->name('confirmAttendance');
                     Route::patch('/', [ClassStaffController::class, 'updateAbsence'])->name('updateAbsence');
-//                    Route::post('/create-classSession-registration', [ClassStaffController::class, 'createClassSessionRegistration'])->name('createClassSessionRegistration');
-//                    Route::put('/edit-classSession-registration/{id?}', [ClassStaffController::class, 'editClassSessionRegistration'])->name('editClassSessionRegistration');
-//                    Route::patch('/confirm-classSession-registration/{id?}', [ClassStaffController::class, 'comfirmClassSession'])->name('updateClassRequest');
+                    Route::get('/history', [ClassStaffController::class, 'history'])->name('history');
                 }
             );
         }

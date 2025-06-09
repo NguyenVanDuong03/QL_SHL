@@ -19,7 +19,10 @@
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">
+                        <a class="nav-link {{ Route::currentRouteName() == 'class-staff.class-session.index' ||
+                                              Route::currentRouteName() == 'class-staff.class-session.history' ||
+                                               Route::currentRouteName() == 'class-staff.class-session.detailClassSession'
+                                              ? 'active' : '' }}" href="{{ route('class-staff.class-session.index') }}">
                             {{ __('Sinh hoạt lớp') }}
                         </a>
                     </li>

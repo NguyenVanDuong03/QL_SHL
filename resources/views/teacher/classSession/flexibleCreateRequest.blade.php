@@ -1,12 +1,12 @@
 @extends('layouts.teacher')
 
-@section('title', 'Sinh hoạt lớp linh hoạt')
+@section('title', 'Tạo lịch sinh hoạt lớp linh hoạt')
 
 @section('breadcrumb')
     <x-breadcrumb.breadcrumb :links="[
         ['label' => 'Sinh hoạt lớp', 'url' => 'teacher.class-session.index'],
         ['label' => 'Sinh hoạt lớp linh hoạt', 'url' => 'teacher.class-session.flexible-class-activitie'],
-        ['label' => 'Cập nhật sinh hoạt lớp']
+        ['label' => 'Đăng ký sinh hoạt lớp']
     ]"/>
 @endsection
 
@@ -23,7 +23,7 @@
             <div class="row">
                 <div class="col-12">
                     <div class="d-flex justify-content-center">
-                        <h3 class="fw-bold d-none d-md-block">Đăng ký sinh hoạt lớp {{ $data['getStudyClassByIds']->name }}</h3>
+                        <h3 class="fw-bold d-none d-md-block">Đăng ký sinh hoạt lớp</h3>
                     </div>
                 </div>
             </div>
@@ -35,14 +35,20 @@
                   class="form-class-session">
                 @csrf
                 <div class="row">
-                    <input type="hidden" name="study_class_id" value="{{ $data['getStudyClassByIds']->id }}">
                     <input type="hidden" name="status" value="0">
                     <!-- Cột trái - Form tiêu đề và nội dung -->
                     <div class="col-md-8">
                         <div class="card shadow-sm">
                             <div class="card-body">
                                 <div class="mb-4">
-                                    <label for="title" class="form-label fw-bold">Tiêu đề</label>
+                                    <div class="d-flex justify-content-between align-items-end mb-2">
+                                        <label for="title" class="form-label fw-bold mb-0">Tiêu đề</label>
+                                        <select class="form-select" id="study_class_id" name="study_class_id" style="max-width: 180px;">
+                                            @foreach($studyClasses as $item)
+                                                <option value="{{ $item->id }}">{{ $item->name }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
                                     <input type="text" class="form-control" id="title" name="title"
                                            placeholder="Nhập tiêu đề" required>
                                 </div>
@@ -56,18 +62,6 @@
                                 <div class="d-flex justify-content-end">
                                     <button type="submit" class="btn btn-primary btn-session-submit">Đăng ký</button>
                                 </div>
-
-                                <!-- Rejection reason if status = 2 -->
-                                @if(optional($data['getClassSessionRequest'])->status == 2 && !empty($data['getClassSessionRequest']->rejection_reason))
-                                    <div class="mt-2">
-                                        <div class="alert alert-danger">
-                                            <h6 class="alert-heading">
-                                                <i class="fas fa-exclamation-triangle me-2"></i>Lý do từ chối
-                                            </h6>
-                                            <p class="mb-0">{{ $data['getClassSessionRequest']->rejection_reason }}</p>
-                                        </div>
-                                    </div>
-                                @endif
                             </div>
                         </div>
                     </div>
@@ -219,27 +213,6 @@
 
 
             $activityType.trigger('change');
-
-            const getClassSessionRequest = @json($data['getClassSessionRequest']);
-            if (getClassSessionRequest) {
-                if (getClassSessionRequest['position'] === 0) {
-                    $activityType.val('0').trigger('change');
-                } else if (getClassSessionRequest['position'] === 1) {
-                    $activityType.val('1').trigger('change');
-                    $('#meeting_id').val(getClassSessionRequest['meeting_id']);
-                    $('#meeting_password').val(getClassSessionRequest['meeting_password']);
-                    $('#meeting_link').val(getClassSessionRequest['meeting_url']);
-                    $('#meeting_type').val(getClassSessionRequest['meeting_type']);
-                } else if (getClassSessionRequest['position'] === 2) {
-                    $activityType.val('2').trigger('change');
-                    $('#location').val(getClassSessionRequest['location']);
-                }
-
-                $('#title').val(getClassSessionRequest['title']);
-                $('#content').val(getClassSessionRequest['content']);
-                $('#timeSelect').val(getClassSessionRequest['proposed_at']);
-                $('#notes').val(getClassSessionRequest['note']);
-            }
         });
     </script>
 @endpush
