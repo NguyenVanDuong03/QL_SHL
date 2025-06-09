@@ -53,7 +53,7 @@
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="#">
+                <a class="nav-link {{ Route::currentRouteName() == 'student-affairs-department.academic-warning.index' ? 'active' : '' }}" href="{{ route('student-affairs-department.academic-warning.index') }}">
                     <i class="fas fa-chart-bar"></i>
                     Cảnh báo học vụ
                 </a>

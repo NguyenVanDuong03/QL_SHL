@@ -4,6 +4,7 @@ namespace App\Repositories;
 
 use App\Helpers\Constant;
 use App\Models\Attendance;
+use App\Models\Student;
 
 class AttendanceRepository extends BaseRepository
 {
@@ -16,6 +17,14 @@ class AttendanceRepository extends BaseRepository
         return $this->model;
     }
 
+    protected function getStudentModel(): Student
+    {
+        if (empty($this->studentModel)) {
+            $this->studentModel = app()->make(Student::class);
+        }
+        return $this->studentModel;
+    }
+
     public function getAttendanceStudent ($params)
     {
         return $this->getModel()
@@ -25,20 +34,88 @@ class AttendanceRepository extends BaseRepository
     }
 
 
+//    public function updateAttendance($params)
+//    {
+//        $classSessionRequestId = $params['session-request-id'] ?? null;
+////        $studyClassId = $params['study-class-id'] ?? null;
+//        $studentIds = $params['student_ids'] ?? null;
+//
+//        if (!$classSessionRequestId || !$studentIds) {
+//            return false;
+//        }
+//
+//        return $this->getModel()
+//            ->where('class_session_request_id', $classSessionRequestId)
+//            ->whereIn('student_id', $studentIds)
+//            ->update(['status' => Constant::ATTENDANCE_STATUS['PRESENT']]);
+//    }
+
     public function updateAttendance($params)
     {
         $classSessionRequestId = $params['session-request-id'] ?? null;
-//        $studyClassId = $params['study-class-id'] ?? null;
+        $studyClassId = $params['study-class-id'] ?? null;
         $studentIds = $params['student_ids'] ?? null;
 
-        if (!$classSessionRequestId || !$studentIds) {
+        if (!$classSessionRequestId || !$studyClassId || !$studentIds) {
             return false;
         }
 
-        return $this->getModel()
+        $allStudents = $this->getStudentModel()
+            ->where('study_class_id', $studyClassId)
+            ->pluck('id')
+            ->toArray();
+
+        $existingAttendances = $this->getModel()
             ->where('class_session_request_id', $classSessionRequestId)
             ->whereIn('student_id', $studentIds)
-            ->update(['status' => Constant::ATTENDANCE_STATUS['PRESENT']]);
+            ->get();
+
+        foreach ($existingAttendances as $attendance) {
+            $attendance->update(['status' => Constant::ATTENDANCE_STATUS['PRESENT']]);
+        }
+
+        $absentStudentIds = array_diff($allStudents, $studentIds);
+
+        $existingAbsentAttendances = $this->getModel()
+            ->where('class_session_request_id', $classSessionRequestId)
+            ->whereIn('student_id', $absentStudentIds)
+            ->whereNotIn('status', [Constant::ATTENDANCE_STATUS['EXCUSED'], Constant::ATTENDANCE_STATUS['PRESENT']])
+            ->get();
+
+        foreach ($existingAbsentAttendances as $attendance) {
+            $attendance->update(['status' => Constant::ATTENDANCE_STATUS['ABSENT']]);
+        }
+
+        $studentsWithoutAttendance = $this->getModel()
+            ->where('class_session_request_id', $classSessionRequestId)
+            ->whereIn('student_id', $absentStudentIds)
+            ->doesntExist();
+
+        if ($studentsWithoutAttendance) {
+            $newAttendances = [];
+            foreach ($absentStudentIds as $studentId) {
+                $existing = $this->getModel()
+                    ->where('class_session_request_id', $classSessionRequestId)
+                    ->where('student_id', $studentId)
+                    ->first();
+
+                if (!$existing) {
+                    $newAttendances[] = [
+                        'student_id' => $studentId,
+                        'class_session_request_id' => $classSessionRequestId,
+                        'status' => Constant::ATTENDANCE_STATUS['ABSENT'],
+                        'created_at' => now(),
+                        'updated_at' => now(),
+                    ];
+                }
+            }
+
+            if (!empty($newAttendances)) {
+                $this->getModel()->insert($newAttendances);
+            }
+        }
+
+        return true;
     }
 
 }

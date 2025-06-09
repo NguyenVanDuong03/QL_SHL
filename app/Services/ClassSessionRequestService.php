@@ -49,6 +49,11 @@ class ClassSessionRequestService extends BaseService
         return $this->getRepository()->classSessionRequests($params);
     }
 
+    public function getClassSessionRequestsDone($params)
+    {
+        return $this->getRepository()->getClassSessionRequestsDone($params);
+    }
+
     public function countFlexibleClassSessionRequest()
     {
         $lecturerId = auth()->user()->lecturer?->id;
@@ -91,9 +96,9 @@ class ClassSessionRequestService extends BaseService
 
     }
 
-    public function flexibleCreateOrUpdateByClassAndSemester(array $params)
+    public function flexibleCreateOrUpdate(array $params)
     {
-        return $this->getRepository()->flexibleCreateOrUpdateByClassAndSemester($params);
+        return $this->getRepository()->flexibleCreateOrUpdate($params);
     }
 
     public function getListFlexibleClass()

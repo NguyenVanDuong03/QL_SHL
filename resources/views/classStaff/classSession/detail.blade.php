@@ -147,7 +147,8 @@
                                 $statusConfig = [
                                    0 => ['text' => 'Chờ duyệt', 'class' => 'bg-warning', 'icon' => 'fas fa-clock'],
                                    1 => ['text' => 'Đã duyệt', 'class' => 'bg-success', 'icon' => 'fas fa-check-circle'],
-                                   2 => ['text' => 'Đã từ chối', 'class' => 'bg-danger', 'icon' => 'fas fa-times-circle']
+                                   2 => ['text' => 'Đã từ chối', 'class' => 'bg-danger', 'icon' => 'fas fa-times-circle'],
+                                   3 => ['text' => 'Đã kết thúc', 'class' => 'bg-secondary', 'icon' => 'fas fa-archive']
                                ];
                                $currentStatus = $statusConfig[$data['getClassSessionRequest']->status ?? 0];
                             @endphp
@@ -220,6 +221,10 @@
                                                 data-reason="{{ $data['getAttendanceStudent']->reason ?? '' }}">
                                             <i class="fas fa-times me-2"></i>Xin vắng
                                         </button>
+                                    @else
+                                        <a href="#" class="btn btn-secondary">
+                                            <i class="fas fa-check me-2"></i>Tạo báo cáo
+                                        </a>
                                     @endif
                                 </div>
                             </div>
@@ -634,50 +639,47 @@
             });
 
             // Form submission for confirm attendance
-            // $('#confirmAttendanceForm').on('submit', function (e) {
-            //     e.preventDefault();
-            //     const formData = $(this).serialize();
-            //
-            //     $.ajax({
-            //         url: $(this).attr('action'),
-            //         method: 'POST',
-            //         data: formData,
-            //         success: function (response) {
-            //             status = response.status;
-            //             if (status === 0) {
-            //                 toastr.success(response.message);
-            //             } else {
-            //                 toastr.warning(response.message);
-            //             }
-            //             bootstrap.Modal.getInstance($('#confirmAttendanceModal')[0]).hide();
-            //             // Optionally reload the page or update the UI
-            //             window.location.reload();
-            //         },
-            //         error: function (xhr) {
-            //             toastr.error('Đã xảy ra lỗi: ' + (xhr.responseText || 'Lỗi không xác định'));
-            //         }
-            //     });
-            // });
+            $('#confirmAttendanceForm').on('submit', function (e) {
+                e.preventDefault();
+                const formData = $(this).serialize();
+
+                $.ajax({
+                    url: $(this).attr('action'),
+                    method: 'POST',
+                    data: formData,
+                    success: function (response) {
+                        $('#confirmAttendanceModal').modal('hide');
+                        // toastr.success('Xác nhận tham gia thành công');
+                        toastr.success(response.message, 'success');
+                        window.location.reload();
+
+                    },
+                    error: function (xhr) {
+                        toastr.error('Đã xảy ra lỗi: ' + (xhr.responseText || 'Lỗi không xác định'));
+                    }
+                });
+            });
 
             // Form submission for request absence
-            // $('#requestAbsenceForm').on('submit', function (e) {
-            //     e.preventDefault();
-            //     const formData = $(this).serialize();
-            //
-            //     $.ajax({
-            //         url: $(this).attr('action'),
-            //         method: 'POST',
-            //         data: formData,
-            //         success: function (response) {
-            //             toastr.success('Yêu cầu xin vắng đã được gửi!');
-            //             bootstrap.Modal.getInstance($('#requestAbsenceModal')[0]).hide();
-            //             // Optionally reload the page or update the UI
-            //         },
-            //         error: function (xhr) {
-            //             toastr.error('Đã xảy ra lỗi: ' + (xhr.responseText || 'Lỗi không xác định'));
-            //         }
-            //     });
-            // });
+            $('#requestAbsenceForm').on('submit', function (e) {
+                e.preventDefault();
+                const formData = $(this).serialize();
+
+                $.ajax({
+                    url: $(this).attr('action'),
+                    method: 'POST',
+                    data: formData,
+                    success: function (response) {
+                        $('#requestAbsenceModal').modal('hide');
+                        // toastr.success('Gửi lý do vắng mặt thành công');
+                        toastr.success(response.message, 'success');
+                        window.location.reload();
+                    },
+                    error: function (xhr) {
+                        toastr.error('Đã xảy ra lỗi: ' + (xhr.responseText || 'Lỗi không xác định'));
+                    }
+                });
+            });
 
             $('.btn-request-absence').on('click', function () {
                 const reason = $(this).data('reason') || '';

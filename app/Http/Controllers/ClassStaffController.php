@@ -16,6 +16,7 @@ use App\Services\SemesterService;
 use App\Services\StudentService;
 use App\Services\StudyClassService;
 use App\Services\UserService;
+use http\Env\Response;
 use Illuminate\Http\Request;
 
 class ClassStaffController extends Controller
@@ -41,16 +42,14 @@ class ClassStaffController extends Controller
     {
         $params = request()->all();
         $getCurrentSemester = $this->classSessionRegistrationService->getCurrentSemester();
-        $params['class_session_registration_id'] = $getCurrentSemester->id ?? null;
+//        $params['class_session_registration_id'] = $getCurrentSemester->id ?? null;
         $params['study_class_id'] = auth()->user()->student?->studyClass?->id ?? null;
         $params['student_id'] = auth()->user()->student?->id ?? null;
-        $params['class_session_request_id'] = $this->classSessionRequestService->getClassSessionRequestBySclIdAndCsrId($params);
-        $classSessionRequests = $this->classSessionRequestService->ClassSessionRequests($params);
+        $classSessionRequests = $this->classSessionRequestService->ClassSessionRequests($params)->limit(Constant::DEFAULT_LIMIT)->get();
         $attendanceStatus = $classSessionRequests->first()->attendances->first() ?? null;
 
         $data = [
             'classSessionRequests' => $classSessionRequests,
-//            'getCurrentSemester' => $getCurrentSemester,
             'attendanceStatus' => $attendanceStatus,
         ];
 
@@ -60,19 +59,36 @@ class ClassStaffController extends Controller
     public function indexClassSession(Request $request)
     {
         $params = $request->all();
-//        $params['myClassSessionRequests'] = true;
-//        $classSessionRequests = $this->classSessionRequestService->paginate($params);
-//        $data = [
-//            'classSessionRequests' => $classSessionRequests,
-//        ];
-        return view('classStaff.classSession.index');
+        $params['study_class_id'] = auth()->user()->student?->studyClass?->id ?? null;
+        $params['student_id'] = auth()->user()->student?->id ?? null;
+        $classSessionRequests = $this->classSessionRequestService->ClassSessionRequests($params)->paginate(Constant::DEFAULT_LIMIT_12)->toArray();
+        $attendanceStatus = $classSessionRequests['data'][0]['attendances'][0]['status'] ?? null;
+//        dd($attendanceStatus);
+        $data = [
+            'classSessionRequests' => $classSessionRequests,
+            'attendanceStatus' => $attendanceStatus,
+        ];
+
+        return view('classStaff.classSession.index', compact('data'));
+    }
+
+    public function history(Request $request)
+    {
+        $params = $request->all();
+        $params['study_class_id'] = auth()->user()->student?->studyClass?->id ?? null;
+        $params['student_id'] = auth()->user()->student?->id ?? null;
+        $classSessionRequests = $this->classSessionRequestService->getClassSessionRequestsDone($params)->paginate(Constant::DEFAULT_LIMIT_12)->toArray();
+//        dd($classSessionRequests);
+        $data = [
+            'classSessionRequests' => $classSessionRequests,
+        ];
+
+        return view('classStaff.classSession.history', compact('data'));
     }
 
     public function detailClassSession(Request $request)
     {
         $params = $request->all();
-//        $studyClassId = $request->query('study-class-id');
-//        $sessionRequestId = $request->query('session-request-id');
         $infoClassRequestbyId = $this->classSessionRequestService->find($params['session-request-id']);
         $params['class_session_registration_id'] = $infoClassRequestbyId->class_session_registration_id ?? null;
         $getCSRSemesterInfo = $this->classSessionRegistrationService->getCSRSemesterInfo();
@@ -107,18 +123,13 @@ class ClassStaffController extends Controller
         $params = $request->all();
         $params['student_id'] = auth()->user()->student?->id;
         $params['reason'] = null;
-//        dd($params);
 
         $attendance = $this->attendanceService->confirmAttendance($params);
 
-        if (!$attendance) {
-            return redirect()->back()->with('error', 'Xác nhận tham gia thất bại');
-        }
-
-        // Logic to confirm attendance
-        // ...
-
-        return redirect()->back()->with('success', 'Xác nhận tham gia thành công');
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Xác nhận tham gia thành công',
+        ], 200); // Mã HTTP 200
     }
 
     public function updateAbsence(Request $request)
@@ -128,10 +139,9 @@ class ClassStaffController extends Controller
 //        dd($params);
         $attendance = $this->attendanceService->updateAbsence($params);
 
-        if (!$attendance) {
-            return redirect()->back()->with('error', 'Cập nhật vắng mặt thất bại');
-        }
-
-        return redirect()->back()->with('success', 'Cập nhật vắng mặt thành công');
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Gửi lý do vắng mặt thành công',
+        ], 200);
     }
 }

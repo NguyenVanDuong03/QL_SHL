@@ -39,9 +39,9 @@
                 </div>
 
                 <!-- Tìm kiếm & thống kê -->
-                <div class="col-md-6 col-lg-7 d-flex justify-content-end align-items-end">
+                <div class="col-md-6 col-lg-7 d-flex justify-content-end align-items-end mb-3">
                     <form method="GET" action="{{ route('teacher.class-session.flexible-class-activitie') }}"
-                          class="input-group mb-3" style="max-width: 300px; margin-left: auto;">
+                          class="input-group" style="max-width: 300px; margin-left: auto;">
                         <input type="text" class="form-control" placeholder="Tìm kiếm lớp học" name="search"
                                value="{{ request('search') }}"
                                aria-label="Search class" aria-describedby="search-addon">
@@ -49,6 +49,12 @@
                             <i class="fas fa-magnifying-glass"></i>
                         </button>
                     </form>
+
+                    <div class="">
+                        <a href="{{ route('teacher.class-session.flexibleCreateRequest') }}" class="btn btn-success btn-sm ms-3 w-100">
+                            Tạo lịch
+                        </a>
+                    </div>
                 </div>
             </div>
 
@@ -75,25 +81,18 @@
                                             {{ $loop->iteration }}
                                         </td>
                                         <td class="px-4 py-1">
-                                            <strong>{{ $class['name'] }}</strong>
+                                            <strong>{{ $class['study_class']['name'] }}</strong>
                                         </td>
                                         <td class="px-4 py-1 d-none d-md-table-cell">
-                                            {{ $class['major']['faculty']['department']['name'] }}
+                                            {{ $class['study_class']['major']['faculty']['department']['name'] }}
                                         </td>
                                         <td class="px-4 py-1 d-none d-md-table-cell">
-                                            @if (empty($class['class_session_requests']))
-                                                ---
-                                            @else
-                                                <span
-                                                    class="badge {{ $class['class_session_requests']['position'] == '0' ? 'bg-success' : ($class['class_session_requests']['position'] == '1' ? 'bg-primary' : 'bg-warning') }}">{{ $class['class_session_requests']['position'] == '0' ? 'Trực tiếp tại trường' : ($class['class_session_requests']['position'] == '1' ? 'Trực tuyến' : 'Dã ngoại') }}</span>
-                                            @endif
+                                            <span class="badge {{ $class['position'] == '0' ? 'bg-success' : ($class['position'] == '1' ? 'bg-primary' : 'bg-warning') }}">{{ $class['position'] == '0' ? 'Trực tiếp tại trường' : ($class['position'] == '1' ? 'Trực tuyến' : 'Dã ngoại') }}</span>
                                         </td>
                                         <td class="px-4 py-1">
-                                            @if (empty($class['class_session_requests']))
-                                                <span class="badge bg-warning">Chưa đăng ký</span>
-                                            @elseif ($class['class_session_requests']['status'] == '2')
+                                            @if ($class['status'] == '2')
                                                 <span class="badge bg-danger">Không thành công</span>
-                                            @elseif ($class['class_session_requests']['status'] == '0')
+                                            @elseif ($class['status'] == '0')
                                                 <span class="badge bg-secondary">Đang chờ duyệt</span>
                                             @else
                                                 <span class="badge bg-success">Đăng ký thành công</span>
@@ -101,25 +100,23 @@
                                         </td>
                                         <td class="px-4 py-1 text-center">
                                             <a class="btn btn-primary btn-sm"
-                                               title="{{ empty($class['class_session_requests']) ? 'Đăng ký' : 'Chỉnh sửa' }}"
-                                               href="{{ route('teacher.class-session.flexibleCreate', ['study-class-id' => $class['id'], 'session-request-id' => $class['class_session_requests']['id'] ?? null]) }}">
+                                               title="{Chỉnh sửa"
+                                               href="{{ route('teacher.class-session.flexibleCreate', ['study-class-id' => $class['id'], 'session-request-id' => $class['id'] ?? null]) }}">
                                                 <i class="fas fa-file-signature"></i>
                                             </a>
-                                            <a href="{{ route('teacher.class-session.flexibleDetail', ['study-class-id' => $class['id'], 'session-request-id' => $class['class_session_requests']['id'] ?? null]) }}"
-                                               class="btn btn-secondary btn-sm {{ empty($class['class_session_requests']) ? 'disabled' : '' }}"
+                                            <a href="{{ route('teacher.class-session.flexibleDetail', ['study-class-id' => $class['study_class_id'], 'session-request-id' => $class['id'] ?? null]) }}"
+                                               class="btn btn-secondary btn-sm"
                                                title="Chi tiết">
                                                 <i class="fas fa-info-circle"></i>
                                             </a>
                                             <button
-                                                class="btn btn-danger btn-sm btn-delete-class-session {{ empty($class['class_session_requests']) ? 'disabled' : '' }}"
+                                                class="btn btn-danger btn-sm btn-delete-class-session"
                                                 title="Hủy đăng ký"
-                                                @if(!empty($class['class_session_requests']))
-                                                    data-id="{{ $class['class_session_requests']['id'] }}"
-                                                data-room-id="{{ $class['class_session_requests']['room_id'] }}"
+                                                data-id="{{ $class['id'] }}"
+                                                data-room-id="{{ $class['room']['id'] ?? '' }}"
                                                 data-current-page="{{ $data['getStudyClassByIds']['current_page'] }}"
                                                 data-bs-toggle="modal"
                                                 data-bs-target="#confirmDeleteModal"
-                                                @endif
                                             >
                                                 <i class="fas fa-trash-alt"></i>
                                             </button>
@@ -259,7 +256,7 @@
                 $('#request_room_id').val(roomId);
                 $('.current_page').val(currentPage);
 
-                $('#deleteForm').attr('action', `/teacher/class-session/fixed-class-activitie/${id}`);
+                $('#deleteForm').attr('action', `/teacher/class-session/session-class-activitie/${id}`);
             });
         });
     </script>

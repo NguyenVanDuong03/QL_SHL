@@ -271,7 +271,7 @@
                 $('#request_room_id').val(roomId);
                 $('.current_page').val(currentPage);
 
-                $('#deleteForm').attr('action', `/teacher/class-session/fixed-class-activitie/${id}`);
+                $('#deleteForm').attr('action', `/teacher/class-session/session-class-activitie/${id}`);
             });
         });
     </script>

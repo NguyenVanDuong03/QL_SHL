@@ -79,7 +79,7 @@ class StudentAffairsDepartmentController extends Controller
         ];
 //        dd($data['ListCSRs']);
 
-        return view('StudentAffairsDepartment.classSession.flexibleClassActivitie', compact('data'));
+        return view('StudentAffairsDepartment.classSession.flexibleClassActivities', compact('data'));
     }
 
     public function confirmClassSession(Request $request, $id)
@@ -392,5 +392,17 @@ class StudentAffairsDepartmentController extends Controller
         $params = $request->all();
 
         return view('StudentAffairsDepartment.conductScore.list');
+    }
+
+    public function indexAcademicWarning(Request $request)
+    {
+        $params = $request->all();
+        $params['limit'] = Constant::DEFAULT_LIMIT_12;
+//        $academicWarnings = $this->studentService->getAcademicWarning($params)->toArray();
+        $data = [
+//            'academicWarnings' => $academicWarnings,
+        ];
+
+        return view('StudentAffairsDepartment.academicWarning.index', compact('data'));
     }
 }
