@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class ClassSessionRegistration extends Model
 {
     use SoftDeletes;
+
     protected $fillable = [
         'semester_id',
         'open_date',

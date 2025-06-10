@@ -11,7 +11,7 @@
 
             <main class="col-md-9 col-lg-10 ms-sm-auto px-0 main-content">
                 <!-- Toggle Button and Header -->
-                <header class="main-header">
+                <header class="main-header fixed-top">
                     <button class="btn btn-sm" id="toggleSidebar">
                         <i class="fas fa-bars"></i>
                     </button>
@@ -21,7 +21,9 @@
                     <div class="text-white">Giáo viên: {{ Auth::user()->name }}</div>
                 </header>
 
-                @yield('main')
+                <main>
+                    @yield('main')
+                </main>
 
                 <x-footer.footer />
             </main>

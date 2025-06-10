@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('conduct_criteria_evidences', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('student_conduct_score_id');
-            $table->binary('image_path');
+            $table->string('path');
             $table->string('description');
             $table->softDeletes();
             $table->timestamps();

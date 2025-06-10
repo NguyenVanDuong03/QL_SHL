@@ -2,9 +2,11 @@
 
 namespace App\Services;
 
+use App\Exports\AttendancesExport;
 use App\Helpers\Constant;
 use App\Repositories\AttendanceRepository;
 use Illuminate\Support\Arr;
+use Maatwebsite\Excel\Facades\Excel;
 
 class AttendanceService extends BaseService
 {
@@ -19,7 +21,13 @@ class AttendanceService extends BaseService
 
     protected function buildFilterParams(array $params): array
     {
-        return $params;
+        $wheres = Arr::get($params, 'wheres', []);
+        $relates = Arr::get($params, 'relates', []);
+
+        return [
+            'wheres' => $wheres,
+            'relates' => $relates,
+        ];
     }
 
     public function getAttendanceStudent ($params)
@@ -75,5 +83,38 @@ class AttendanceService extends BaseService
     {
         return $this->getRepository()->updateAttendance($params);
     }
+
+    public function countAttendanceByClassSessionRequestId($classRequestId)
+    {
+        $studyClassId = auth()->user()->student?->study_class_id ?? null;
+
+        $attendanceStudentId = $this->getRepository()->countAttendanceByClassSessionRequestId($classRequestId, $studyClassId);
+        if (isset($attendanceStudentId)) {
+            return $attendanceStudentId;
+        }
+
+        return 0;
+    }
+
+//    public function getAttendanceByClassSessionRequestId($classRequestId)
+//    {
+//        $studyClassId = auth()->user()->student?->study_class_id ?? null;
+//
+//        $attendanceStudentId = $this->getRepository()->getAttendanceByClassSessionRequestId($classRequestId, $studyClassId);
+//        if (isset($attendanceStudentId)) {
+//            return $attendanceStudentId;
+//        }
+//
+//        return [];
+//    }
+
+//    public function exportAttendanceReport($classRequestId, $studyClassId)
+//    {
+//        if (!$studyClassId || !$classRequestId) {
+//            return null;
+//        }
+//
+//        return Excel::download(new AttendancesExport($classRequestId, $studyClassId), 'attendance.xlsx');
+//    }
 
 }

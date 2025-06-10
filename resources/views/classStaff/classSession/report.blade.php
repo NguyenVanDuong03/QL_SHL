@@ -31,17 +31,18 @@
                             @csrf
                             <input type="hidden" id="class_session_request_id" name="class_session_request_id" value="{{ request()->get('class_session_request_id') }}">
                             <input type="hidden" id="reporter_id" name="reporter_id" value="{{ auth()->user()->student?->id }}">
+                            <input type="hidden" name="attending_students" value="{{ $data['countAttendanceByClassSessionRequestId'] ?? 0 }}">
 
                             <div class="row">
                                 <!-- Thông tin cơ bản -->
                                 <div class="col-md-6 mb-3">
                                     <label for="attending_students" class="form-label">
                                         <i class="fas fa-users me-1"></i>
-                                        Số sinh viên tham dự <span class="text-danger">*</span>
+                                        Số sinh viên tham dự: <span id="attending_students">{{ $data['countAttendanceByClassSessionRequestId'] ?? 0 }}</span>
                                     </label>
-                                    <input type="number" class="form-control" id="attending_students" name="attending_students"
-                                           placeholder="Nhập số sinh viên tham dự" min="0" value="" required>
-                                    <div class="invalid-feedback">Vui lòng nhập số sinh viên tham dự</div>
+{{--                                    <input type="number" class="form-control" id="attending_students" name="attending_students"--}}
+{{--                                           placeholder="Nhập số sinh viên tham dự" min="0" value="" required>--}}
+{{--                                    <div class="invalid-feedback">Vui lòng nhập số sinh viên tham dự</div>--}}
                                 </div>
 
                                 <div class="col-md-6 mb-3">
@@ -241,7 +242,7 @@
                 const report = @json($data['report'] ?? null);
                 setTimeout(function() {
                     const sampleData = {
-                        attending_students: report['attending_students'] ?? '',
+                        // attending_students: report['attending_students'] ?? '',
                         teacher_attendance: report['teacher_attendance'] ?? '',
                         politics_ethics_lifestyle: report['politics_ethics_lifestyle'] ?? '',
                         academic_training_status: report['academic_training_status'] ?? '',
@@ -275,14 +276,14 @@
 
                 if (file) {
                     if (file.size > 10 * 1024 * 1024) {
-                        showToast('File quá lớn. Vui lòng chọn file nhỏ hơn 10MB.', 'error');
+                        toastr.error('File quá lớn. Vui lòng chọn file nhỏ hơn 10MB.');
                         $(this).val('');
                         $('#image-preview').hide();
                         return;
                     }
 
                     if (!file.type.startsWith('image/')) {
-                        showToast('Vui lòng chọn file hình ảnh hợp lệ.', 'error');
+                        toastr.error('Vui lòng chọn file hình ảnh hợp lệ.');
                         $(this).val('');
                         $('#image-preview').hide();
                         return;
@@ -323,12 +324,12 @@
                     }
                 });
 
-                const attendingStudents = $('#attending_students').val();
-                if (attendingStudents && (isNaN(attendingStudents) || parseInt(attendingStudents) < 0)) {
-                    $('#attending_students').addClass('is-invalid').removeClass('is-valid');
-                    showToast('Số sinh viên tham dự phải là số dương', 'error');
-                    isValid = false;
-                }
+                // const attendingStudents = $('#attending_students').val();
+                // if (attendingStudents && (isNaN(attendingStudents) || parseInt(attendingStudents) < 0)) {
+                //     $('#attending_students').addClass('is-invalid').removeClass('is-valid');
+                //     toastr.error('Số sinh viên tham dự phải là số dương');
+                //     isValid = false;
+                // }
 
                 const fileInput = $('#activity_evidence_image')[0];
                 const hasNewImage = fileInput.files.length > 0;
@@ -336,7 +337,7 @@
 
                 if (!hasNewImage && !hasExistingImage) {
                     $('#activity_evidence_image').addClass('is-invalid');
-                    showToast('Vui lòng chọn hình ảnh minh chứng', 'error');
+                    toastr.error('Vui lòng chọn hình ảnh minh chứng');
                     isValid = false;
                 }
 
@@ -348,7 +349,7 @@
                 e.preventDefault();
 
                 if (!validateForm()) {
-                    showToast('Vui lòng điền đầy đủ tất cả thông tin bắt buộc', 'error');
+                    toastr.error('Vui lòng điền đầy đủ tất cả thông tin bắt buộc');
                     const firstInvalid = $('.is-invalid').first();
                     if (firstInvalid.length) {
                         $('html, body').animate({
@@ -391,7 +392,7 @@
                     processData: false,
                     contentType: false,
                     success: function(response) {
-                        toastr.success('Gửi báo cáo thành công', 'success');
+                        toastr.success('Gửi báo cáo thành công');
                         setTimeout(() => {
                             window.location.href = '/class-staff/class-session/history';
                         }, 1500);
@@ -401,7 +402,7 @@
                         if (xhr.responseJSON && xhr.responseJSON.message) {
                             message = xhr.responseJSON.message;
                         }
-                        showToast(message, 'error');
+                        toastr.error(message);
                     },
                     complete: function() {
                         submitBtn.prop('disabled', false);
@@ -447,33 +448,33 @@
             });
 
             // Toast notification function
-            function showToast(message, type = 'info') {
-                const toastClass = type === 'error' ? 'bg-danger' : type === 'success' ? 'bg-success' : 'bg-info';
-                const toastHtml = `
-                    <div class="toast align-items-center text-white ${toastClass} border-0" role="alert" aria-live="assertive" aria-atomic="true">
-                        <div class="d-flex">
-                            <div class="toast-body">
-                                ${message}
-                            </div>
-                            <button type="btn" type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close">Xóa</button>
-                        </div>
-                    </div>
-                `;
-
-                if (!$('#toast-container').length) {
-                    $('body').append('<div id="toast-container" class="toast-container position-fixed top-0 end-0 p-3" style="z-index: 9999;"></div>');
-                }
-
-                const $toast = $(toastHtml);
-                $('#toast-container').append($toast);
-
-                const toast = new bootstrap.Toast($toast[0]);
-                toast.show();
-
-                $toast.on('hidden.bs.toast', function() {
-                    $(this).remove();
-                });
-            }
+            // function showToast(message, type = 'info') {
+            //     const toastClass = type === 'error' ? 'bg-danger' : type === 'success' ? 'bg-success' : 'bg-info';
+            //     const toastHtml = `
+            //         <div class="toast align-items-center text-white ${toastClass} border-0" role="alert" aria-live="assertive" aria-atomic="true">
+            //             <div class="d-flex">
+            //                 <div class="toast-body">
+            //                     ${message}
+            //                 </div>
+            //                 <button type="btn" type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close">Xóa</button>
+            //             </div>
+            //         </div>
+            //     `;
+            //
+            //     if (!$('#toast-container').length) {
+            //         $('body').append('<div id="toast-container" class="toast-container position-fixed top-0 end-0 p-3" style="z-index: 9999;"></div>');
+            //     }
+            //
+            //     const $toast = $(toastHtml);
+            //     $('#toast-container').append($toast);
+            //
+            //     const toast = new bootstrap.Toast($toast[0]);
+            //     toast.show();
+            //
+            //     $toast.on('hidden.bs.toast', function() {
+            //         $(this).remove();
+            //     });
+            // }
         });
     </script>
 @endpush

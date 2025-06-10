@@ -5,11 +5,26 @@ body {
 
 /* Sidebar styles */
 .sidebar-wrapper {
+    margin-top: 75px;
     background-color: #1976d2;
     min-height: 100vh;
     color: white;
     transition: all 0.3s;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+main {
+    margin-top: 90px;
+}
+
+@media (max-width: 768px) {
+    .sidebar-wrapper {
+        margin-top: 55px;
+    }
+
+    main {
+        margin-top: 55px;
+    }
 }
 
 .sidebar-logo {

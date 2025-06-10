@@ -44,7 +44,7 @@
                                 data-id="#">Chỉnh sửa thời gian
                         </button>
                     </div>
-                    <h4 class="fw-bold">Sinh hoạt lớp cố định</h4>
+                    <h4 class="fw-bold d-none d-md-block">Sinh hoạt lớp cố định</h4>
                     <div>
                         <div class="input-group mb-3">
                             <input type="text" class="form-control" placeholder="Tìm kiếm lớp học"
@@ -52,6 +52,10 @@
                             <button class="input-group-text" id="basic-addon2"><i
                                     class="fas fa-magnifying-glass"></i></button>
                         </div>
+
+                        <a class="btn btn-secondary btn-create-class-session" href="{{ route('student-affairs-department.class-session.listReports') }}">
+                            Danh sách báo cáo sinh hoạt lớp
+                        </a>
                     </div>
                 </div>
 
@@ -176,12 +180,15 @@
                 </div>
             @else
                 <div class="d-flex justify-content-center align-items-center h-100">
-                    <div class="">
+                    <div class="g-2">
                         <button class="btn btn-primary btn-create-class-session"
                                 data-bs-toggle="modal"
                                 data-bs-target="#confirmCreateModal" data-id="#">
-                            Tạo lịch sinh hoạt lớp cố định
+                            Tạo lịch đăng ký sinh hoạt lớp
                         </button>
+                        <a class="btn btn-secondary btn-create-class-session" href="{{ route('student-affairs-department.class-session.listReports') }}">
+                            Danh sách báo cáo sinh hoạt lớp
+                        </a>
                     </div>
                 </div>
                 <div class="mt-5">

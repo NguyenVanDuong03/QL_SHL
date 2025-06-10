@@ -57,7 +57,7 @@ class ClassSessionRequestRepository extends BaseRepository
             ])
             ->where('study_class_id', $params['study_class_id'])
             ->where('status', Constant::CLASS_SESSION_STATUS['DONE'])
-            ->orderBy('id', 'desc');
+            ->orderBy('proposed_at', 'desc');
     }
 
     public function countFlexibleClassSessionRequest($lecturerId)

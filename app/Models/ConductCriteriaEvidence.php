@@ -10,7 +10,7 @@ class ConductCriteriaEvidence extends Model
     use SoftDeletes;
     protected $fillable = [
         'student_conduct_id',
-        'image_path',
+        'path',
         'description',
     ];
 
