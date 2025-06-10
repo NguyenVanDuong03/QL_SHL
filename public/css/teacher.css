@@ -6,6 +6,7 @@ body {
 /* Sidebar styles */
 .sidebar-wrapper {
     margin-top: 75px;
+    padding-top: 20px;
     background-color: #1976d2;
     min-height: 100vh;
     color: white;
@@ -23,7 +24,7 @@ main {
     }
 
     main {
-        margin-top: 55px;
+        margin-top: 90px;
     }
 }
 

@@ -55,4 +55,9 @@ class StudyClassService extends BaseService
         return $this->getRepository()->getStudyClassesWithApprovedRequestsOnly($params);
     }
 
+    public function getStudyClassListByConductEvaluationPeriodId($params)
+    {
+        return $this->getRepository()->getStudyClassListByConductEvaluationPeriodId($params);
+    }
+
 }

@@ -1,10 +1,4 @@
 <div id="sidebarWrapper" class="col-md-3 col-lg-2 sidebar-wrapper fixed-top">
-    <!-- Logo -->
-    <div class="sidebar-logo">
-        <div>
-            <img src="{{ asset('images/LogoTlu.png') }}" alt="Logo" height="40">
-        </div>
-    </div>
 
     <!-- Navigation Menu -->
     <div class="px-3">

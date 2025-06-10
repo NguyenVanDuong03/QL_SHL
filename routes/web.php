@@ -202,9 +202,9 @@ Route::middleware(['auth'])->group(function () {
                 function () {
                     Route::get('/', [StudentAffairsDepartmentController::class, 'indexConductScore'])->name('index');
                     Route::post('/', [StudentAffairsDepartmentController::class, 'createConductScore'])->name('create');
+                     Route::put('/{id?}', [StudentAffairsDepartmentController::class, 'editConductScore'])->name('update');
                     Route::get('/{id?}', [StudentAffairsDepartmentController::class, 'infoConductScore'])->name('infoConductScore');
-                    // Route::put('/{id?}', [StudentAffairsDepartmentController::class, 'editConductScore'])->name('edit');
-                    // Route::delete('/{id?}', [StudentAffairsDepartmentController::class, 'deleteConductScore'])->name('delete');
+                     Route::delete('/{id?}', [StudentAffairsDepartmentController::class, 'deleteConductScore'])->name('delete');
                 }
             );
 

@@ -7,7 +7,7 @@
 @section('content')
     <div class="container-fluid p-0">
         <div class="row g-0">
-            <x-navbar.teacher />
+            <x-navbar.teacher/>
 
             <main class="col-md-9 col-lg-10 ms-sm-auto px-0 main-content">
                 <!-- Toggle Button and Header -->
@@ -15,9 +15,15 @@
                     <button class="btn btn-sm" id="toggleSidebar">
                         <i class="fas fa-bars"></i>
                     </button>
-                    <h1 class="h5 mb-0">
-                        @yield('breadcrumb')
-                    </h1>
+                    <div class="d-flex align-items-center justify-content-between px-3">
+                        <div class="d-none d-md-block">
+                            <img src="{{ asset('images/LogoTlu.png') }}" alt="Logo" height="40">
+                        </div>
+                        <h1 class="text-white mb-0">
+                            @yield('breadcrumb')
+                        </h1>
+                    </div>
+
                     <div class="text-white">Giáo viên: {{ Auth::user()->name }}</div>
                 </header>
 
@@ -25,7 +31,7 @@
                     @yield('main')
                 </main>
 
-                <x-footer.footer />
+                <x-footer.footer/>
             </main>
         </div>
     </div>
@@ -33,12 +39,12 @@
 
 @push('scripts')
     <script>
-        $(document).ready(function() {
-            $('#toggleSidebar').on('click', function() {
+        $(document).ready(function () {
+            $('#toggleSidebar').on('click', function () {
                 $('#sidebarWrapper').toggleClass('show');
             });
 
-            $('body').on('click', function(event) {
+            $('body').on('click', function (event) {
                 if ($(window).width() < 768) {
                     if (!$(event.target).closest('#sidebarWrapper, #toggleSidebar').length) {
                         $('#sidebarWrapper').removeClass('show');

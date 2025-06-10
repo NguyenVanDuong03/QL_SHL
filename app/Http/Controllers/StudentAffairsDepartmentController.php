@@ -381,7 +381,7 @@ class StudentAffairsDepartmentController extends Controller
             'ConductEvaluationPeriods' => $ConductEvaluationPeriods,
             'semesters' => $semesters,
         ];
-        // dd($data['ConductEvaluationPeriods']['data'][0]['semester']['name']);
+//         dd($data['ConductEvaluationPeriods']);
 
         return view('StudentAffairsDepartment.conductScore.index', compact('data'));
     }
@@ -395,11 +395,37 @@ class StudentAffairsDepartmentController extends Controller
         return redirect()->route('student-affairs-department.conduct-score.index')->with('success', 'Thêm mới thành công');
     }
 
+    public function editConductScore(Request $request, $id)
+    {
+        $params = $request->all();
+//         dd($params);
+        $this->conductEvaluationPeriodService->update($id, $params);
+
+        $targetPage = $this->conductEvaluationPeriodService->targetPage($params);
+
+        return redirect()->route('student-affairs-department.conduct-score.index', $targetPage)->with('success', 'Cập nhật thành công');
+    }
+
+    public function deleteConductScore(Request $request, $id)
+    {
+
+        $this->conductEvaluationPeriodService->delete($id);
+
+        return redirect()->route('student-affairs-department.conduct-score.index')->with('success', 'Xóa thành công');
+    }
+
     public function infoConductScore(Request $request, $id)
     {
         $params = $request->all();
+        $params['conduct_evaluation_period_id'] = $id;
+        $getStudyClassList = $this->studyClassService->getStudyClassListByConductEvaluationPeriodId($params)->toArray();
 
-        return view('StudentAffairsDepartment.conductScore.list');
+        $data = [
+            'getStudyClassList' => $getStudyClassList,
+        ];
+//        dd($getStudyClassList);
+
+        return view('StudentAffairsDepartment.conductScore.list', compact('data'));
     }
 
     public function indexAcademicWarning(Request $request)

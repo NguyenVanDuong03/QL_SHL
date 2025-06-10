@@ -164,4 +164,31 @@ class StudyClassRepository extends BaseRepository
         return $query->paginate(Constant::DEFAULT_LIMIT_12);
     }
 
+    public function getStudyClassListByConductEvaluationPeriodId($params)
+    {
+        $conductEvaluationPeriodId = $params['conduct_evaluation_period_id'];
+
+        $query = $this->getModel()
+            ->select([
+                'study_classes.name as study_class_name',
+                'majors.name as major_name',
+                'departments.name as department_name',
+                DB::raw('COUNT(DISTINCT students.id) as total_students'),
+                DB::raw("COUNT(DISTINCT CASE WHEN student_conduct_scores.id IS NOT NULL AND student_conduct_scores.self_score IS NOT NULL THEN students.id END) as has_evaluated"),
+                DB::raw("COUNT(DISTINCT CASE WHEN student_conduct_scores.id IS NULL OR student_conduct_scores.self_score IS NULL THEN students.id END) as not_evaluated"),
+            ])
+            ->leftJoin('majors', 'study_classes.major_id', '=', 'majors.id')
+            ->leftJoin('faculties', 'majors.faculty_id', '=', 'faculties.id')
+            ->leftJoin('departments', 'faculties.department_id', '=', 'departments.id')
+            ->leftJoin('students', 'students.study_class_id', '=', 'study_classes.id')
+            ->leftJoin('student_conduct_scores', function ($join) use ($conductEvaluationPeriodId) {
+                $join->on('students.id', '=', 'student_conduct_scores.student_id')
+                    ->where('student_conduct_scores.conduct_evaluation_period_id', '=', $conductEvaluationPeriodId);
+            })
+            ->groupBy('study_classes.id', 'study_classes.name', 'majors.name', 'departments.name');
+
+        return $query->paginate(Constant::DEFAULT_LIMIT_12);
+    }
+
+
 }

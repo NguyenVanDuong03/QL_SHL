@@ -21,7 +21,7 @@
 
         .stats-card {
             border-radius: 0.5rem;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
             padding: 1rem;
             margin-bottom: 1.5rem;
             background-color: white;
@@ -44,10 +44,12 @@
             <h4 class="text-center mb-4 fw-bold">Danh sách báo cáo sinh hoạt lớp</h4>
 
             <!-- Statistics Cards -->
-                <div class="d-flex justify-content-between">
-                    <h6 class="text-muted mb-2">Tổng số lớp toàn trường: <span class="fw-bold">{{ $data['countStudyClass'] ?? 0 }}</span></h6>
-                    <h6 class="text-muted mb-2">Tổng số báo cáo: <span class="fw-bold">{{ $data['reports']['total'] ?? 0 }}</span></h6>
-                </div>
+            <div class="d-flex justify-content-between">
+                <h6 class="text-muted mb-2">Tổng số lớp toàn trường: <span
+                        class="fw-bold">{{ $data['countStudyClass'] ?? 0 }}</span></h6>
+                <h6 class="text-muted mb-2">Tổng số báo cáo: <span
+                        class="fw-bold">{{ $data['reports']['total'] ?? 0 }}</span></h6>
+            </div>
 
             <!-- Filters -->
             <div class="card shadow-sm mb-4">
@@ -55,14 +57,17 @@
                     <h5 class="mb-0">Bộ lọc</h5>
                 </div>
                 <div class="card-body">
-                    <form id="filter-form" method="GET" action="{{ route('student-affairs-department.class-session.listReports') }}">
+                    <form id="filter-form" method="GET"
+                          action="{{ route('student-affairs-department.class-session.listReports') }}">
                         <div class="row">
                             <div class="col-md-4 mb-3">
                                 <label for="semester-filter" class="form-label">Học kỳ</label>
                                 <select id="semester-filter" name="semester_id" class="form-select">
                                     <option value="">Tất cả học kỳ</option>
                                     @foreach($data['getSemesters'] ?? [] as $semester)
-                                        <option value="{{ $semester['id'] }}" {{ $semester['id'] == request()->get('semester_id') ? 'selected' : '' }}>{{ $semester['name'] }} - {{ $semester['school_year'] }}</option>
+                                        <option
+                                            value="{{ $semester['id'] }}" {{ $semester['id'] == request()->get('semester_id') ? 'selected' : '' }}>{{ $semester['name'] }}
+                                            - {{ $semester['school_year'] }}</option>
                                     @endforeach
                                 </select>
                             </div>
@@ -71,17 +76,22 @@
                                 <select id="department-filter" name="major_id" class="form-select">
                                     <option value="">Tất cả khoa/ngành</option>
                                     @foreach($data['getMajors'] ?? [] as $major)
-                                        <option value="{{ $major['id'] }}" {{ $major['id'] == request()->get('major_id') ? 'selected' : '' }}>{{ $major['name'] }}/{{ $major['faculty']['department']['name'] }}</option>
+                                        <option
+                                            value="{{ $major['id'] }}" {{ $major['id'] == request()->get('major_id') ? 'selected' : '' }}>{{ $major['name'] }}
+                                            /{{ $major['faculty']['department']['name'] }}</option>
                                     @endforeach
                                 </select>
                             </div>
                             <div class="col-md-4 mb-3">
                                 <label for="class-filter" class="form-label">Tên lớp</label>
-                                <input type="text" id="class-filter" name="study_class_name" value="{{ request()->get('study_class_name') }}" class="form-control" placeholder="Nhập tên lớp...">
+                                <input type="text" id="class-filter" name="study_class_name"
+                                       value="{{ request()->get('study_class_name') }}" class="form-control"
+                                       placeholder="Nhập tên lớp...">
                             </div>
                         </div>
                         <div class="d-flex justify-content-end">
-                            <button type="button" id="reset-filter" class="btn btn-outline-secondary me-2">Đặt lại</button>
+                            <button type="button" id="reset-filter" class="btn btn-outline-secondary me-2">Đặt lại
+                            </button>
                             <button type="submit" class="btn btn-primary">Lọc</button>
                         </div>
                     </form>
@@ -109,16 +119,21 @@
                                     <td class="px-4 py-3">{{ $loop->iteration }}</td>
                                     <td class="px-4 py-3">{{ $report['class_session_request']['study_class']['name'] }}</td>
                                     <td class="px-4 py-3 d-none d-md-table-cell">{{ \Carbon\Carbon::parse($report['class_session_request']['proposed_at'])->format('H:i d/m/Y') }}</td>
-                                    <td class="px-4 py-3 d-none d-md-table-cell">{{ $report['class_session_request']['study_class']['major']['name'] }} <br> <small class="text-muted">{{ $report['class_session_request']['study_class']['major']['faculty']['department']['name'] }}</small></td>
-                                    <td class="px-4 py-3">{{ $report['class_session_request']['class_session_registration']['semester']['name'] }} - {{ $report['class_session_request']['class_session_registration']['semester']['school_year'] }} </td>
+                                    <td class="px-4 py-3 d-none d-md-table-cell">{{ $report['class_session_request']['study_class']['major']['name'] }}
+                                        <br> <small
+                                            class="text-muted">{{ $report['class_session_request']['study_class']['major']['faculty']['department']['name'] }}</small>
+                                    </td>
+                                    <td class="px-4 py-3">{{ $report['class_session_request']['class_session_registration']['semester']['name'] ?? '' }}
+                                        - {{ $report['class_session_request']['class_session_registration']['semester']['school_year'] ?? '' }} </td>
                                     <td class="px-4 py-3 text-center">
-                                        <button type="button" class="btn btn-outline-primary btn-sm view-report-btn" title="Xem chi tiết báo cáo"
+                                        <button type="button" class="btn btn-outline-primary btn-sm view-report-btn"
+                                                title="Xem chi tiết báo cáo"
                                                 data-id="{{ $report['id'] }}"
                                                 data-request-id="{{ $report['class_session_request']['id'] }}"
                                                 data-class-id="{{ $report['class_session_request']['study_class']['id'] }}"
                                                 data-class-name="{{ $report['class_session_request']['study_class']['name'] }}"
                                                 data-proposed-at="{{ \Carbon\Carbon::parse($report['class_session_request']['proposed_at'])->format('H:i d/m/Y') }}"
-                                                data-semester="{{ $report['class_session_request']['class_session_registration']['semester']['name'] }}"
+                                                data-semester="{{ $report['class_session_request']['class_session_registration']['semester']['name'] ?? '' }}"
                                                 data-other-activities="{{ $report['other_activities'] }}"
                                                 data-teacher-attendance="{{ $report['teacher_attendance'] ? 'Có' : 'Không' }}"
                                                 data-attending-students="{{ $report['attending_students'] }}"
@@ -145,15 +160,14 @@
 
             <!-- Pagination -->
             <div class="mt-4">
-                <div class="d-flex justify-content-center" id="pagination-container">
-{{--                    {{ $reports->links() ?? '' }}--}}
-                </div>
+                <x-pagination.pagination :paginate="$data['reports']"/>
             </div>
         </div>
     </div>
 
     <!-- Report Detail Modal -->
-    <div class="modal fade" id="reportDetailModal" tabindex="-1" aria-labelledby="reportDetailModalLabel" aria-hidden="true">
+    <div class="modal fade" id="reportDetailModal" tabindex="-1" aria-labelledby="reportDetailModalLabel"
+         aria-hidden="true">
         <div class="modal-dialog modal-xl">
             <div class="modal-content">
                 <div class="modal-header">
@@ -170,14 +184,19 @@
                     <div class="row mb-3">
                         <div class="col-md-6">
                             <h6 class="fw-bold mb-2">Thông tin chung</h6>
-                            <p class="mb-1"><strong>Giáo viên tham dự:</strong> <span id="modal-teacher-attendance"></span></p>
-                            <p class="mb-1"><strong>Số sinh viên tham dự:</strong> <span id="modal-attending-students"></span></p>
-                            <p class="mb-1"><strong>Hoạt động khác:</strong> <span id="modal-other-activities"></span></p>
+                            <p class="mb-1"><strong>Giáo viên tham dự:</strong> <span
+                                    id="modal-teacher-attendance"></span></p>
+                            <p class="mb-1"><strong>Số sinh viên tham dự:</strong> <span
+                                    id="modal-attending-students"></span></p>
+                            <p class="mb-1"><strong>Hoạt động khác:</strong> <span id="modal-other-activities"></span>
+                            </p>
                         </div>
                         <div class="col-md-6">
                             <h6 class="fw-bold mb-2">Tình hình lớp</h6>
-                            <p class="mb-1"><strong>Chính trị, đạo đức, lối sống:</strong> <span id="modal-politics"></span></p>
-                            <p class="mb-1"><strong>Tình hình học tập, rèn luyện:</strong> <span id="modal-academic"></span></p>
+                            <p class="mb-1"><strong>Chính trị, đạo đức, lối sống:</strong> <span
+                                    id="modal-politics"></span></p>
+                            <p class="mb-1"><strong>Tình hình học tập, rèn luyện:</strong> <span
+                                    id="modal-academic"></span></p>
                         </div>
                     </div>
 
@@ -185,7 +204,8 @@
                         <div class="col-md-6">
                             <h6 class="fw-bold mb-2">Tình hình sinh viên</h6>
                             <p class="mb-1"><strong>Sinh viên nội trú:</strong> <span id="modal-on-campus"></span></p>
-                            <p class="mb-1"><strong>Sinh viên ngoại trú:</strong> <span id="modal-off-campus"></span></p>
+                            <p class="mb-1"><strong>Sinh viên ngoại trú:</strong> <span id="modal-off-campus"></span>
+                            </p>
                         </div>
                         <div class="col-md-6">
                             <h6 class="fw-bold mb-2">Kiến nghị</h6>
@@ -195,7 +215,8 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
-                    <a href="{{ route('student-affairs-department.class-session.exportReport') }}" target="_blank" id="export-excel-btn" class="btn btn-success" title="Xuất Excel danh sách điểm danh">
+                    <a href="{{ route('student-affairs-department.class-session.exportReport') }}" target="_blank"
+                       id="export-excel-btn" class="btn btn-success" title="Xuất Excel danh sách điểm danh">
                         <i class="fa fa-file-excel-o me-2"></i>Xuất Excel
                     </a>
                 </div>
@@ -208,14 +229,14 @@
     <script>
         $(document).ready(function () {
             // Reset filters
-            $('#reset-filter').on('click', function() {
+            $('#reset-filter').on('click', function () {
                 $('#semester-filter').val('');
                 $('#department-filter').val('');
                 $('#class-filter').val('');
             });
 
             // Handle view report button click
-            $(document).on('click', '.view-report-btn', function() {
+            $(document).on('click', '.view-report-btn', function () {
                 const reportId = $(this).data('report-id');
                 const requestId = $(this).data('request-id');
                 const classId = $(this).data('class-id');

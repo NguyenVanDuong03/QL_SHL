@@ -4,20 +4,13 @@
         color: white;
     }
 
-    @media screen and (max-width: 768px) {
-        .breadcrumb-check {
-           display: none;
-        }
-
-    }
-
     .breadcrumb-check {
         font-size: 0.875rem;
     }
 </style>
 @endpush
 
-<nav class="p-3 rounded breadcrumb-check">
+<nav class="p-3 rounded breadcrumb-check d-none d-md-block">
     <ul class="breadcrumb mb-0">
         @foreach ($links as $link)
             @if (!$loop->last)
