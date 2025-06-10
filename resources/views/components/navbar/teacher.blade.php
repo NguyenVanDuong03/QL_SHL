@@ -1,4 +1,4 @@
-<div id="sidebarWrapper" class="col-md-3 col-lg-2 sidebar-wrapper">
+<div id="sidebarWrapper" class="col-md-3 col-lg-2 sidebar-wrapper fixed-top">
     <!-- Logo -->
     <div class="sidebar-logo">
         <div>

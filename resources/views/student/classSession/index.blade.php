@@ -88,6 +88,12 @@
                 gap: 0.5rem;
             }
         }
+
+        .section-title {
+            color: var(--teal-700);
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+        }
     </style>
 @endpush
 
@@ -99,6 +105,11 @@
                 <div class="d-flex justify-content-end align-items-end mb-3">
                     <a class="btn btn-primary" href="{{ route('student.class-session.history') }}">Lịch sử</a>
                 </div>
+
+            <h3 class="section-title text-lg-center mb-4">
+                <i class="fas fa-calendar-check me-2"></i>
+                Lịch sinh hoạt lớp
+            </h3>
 
             <!-- Table -->
             <div class="card shadow-sm">

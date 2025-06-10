@@ -1,4 +1,4 @@
-<div id="sidebarWrapper" class="col-md-3 col-lg-2 sidebar-wrapper">
+<div id="sidebarWrapper" class="col-md-3 col-lg-2 sidebar-wrapper fixed-top">
     <!-- Logo -->
     <div class="sidebar-logo">
         <div>
@@ -23,7 +23,10 @@
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link {{ Route::currentRouteName() == 'student-affairs-department.class-session.index' ? 'active' : '' }}" href="{{ route('student-affairs-department.class-session.index') }}">
+                <a class="nav-link {{ Route::currentRouteName() == 'student-affairs-department.class-session.index' ||
+                                      Route::currentRouteName() == 'student-affairs-department.class-session.flexibleClassActivities' ||
+                                      Route::currentRouteName() == 'student-affairs-department.class-session.listReports'
+                                      ? 'active' : '' }}" href="{{ route('student-affairs-department.class-session.index') }}">
                     <i class="fas fa-bell"></i>
                     Sinh hoạt lớp
                 </a>

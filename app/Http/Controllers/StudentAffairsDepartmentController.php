@@ -2,24 +2,29 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\AttendancesExport;
 use App\Helpers\Constant;
 use App\Http\Requests\ClassSessionRegistrationRequest;
 use App\Http\Requests\SemesterRequest;
 use App\Imports\LecturerImportByExcel;
 use App\Imports\StudentImportByExcel;
+use App\Services\AttendanceService;
 use App\Services\ClassSessionRegistrationService;
+use App\Services\ClassSessionReportService;
 use App\Services\ClassSessionRequestService;
 use App\Services\CohortService;
 use App\Services\ConductEvaluationPeriodService;
 use App\Services\DepartmentService;
 use App\Services\FacultyService;
 use App\Services\LecturerService;
+use App\Services\MajorService;
 use App\Services\SemesterService;
 use App\Services\StudentService;
 use App\Services\RoomService;
 use App\Services\StudyClassService;
 use App\Services\UserService;
 use Carbon\Carbon;
+use http\Env\Response;
 use Illuminate\Http\Request;
 use Maatwebsite\Excel\Facades\Excel;
 
@@ -38,6 +43,9 @@ class StudentAffairsDepartmentController extends Controller
         protected CohortService                   $cohortService,
         protected StudyClassService               $studyClassService,
         protected ConductEvaluationPeriodService  $conductEvaluationPeriodService,
+        protected ClassSessionReportService       $classSessionReportService,
+        protected AttendanceService               $attendanceService,
+        protected MajorService                   $majorService,
     )
     {
     }
@@ -404,5 +412,37 @@ class StudentAffairsDepartmentController extends Controller
         ];
 
         return view('StudentAffairsDepartment.academicWarning.index', compact('data'));
+    }
+
+    public function listReports(Request $request)
+    {
+        $params = $request->all();
+        $countStudyClass = $this->studyClassService->get()->count();
+        $getSemesters = $this->semesterService->get()->toArray();
+        $department['isDepartment'] = true;
+        $getMajors = $this->majorService->get($department)->toArray();
+        $reports = $this->classSessionReportService->getListReports($params)->toArray();
+        $data = [
+            'reports' => $reports,
+            'countStudyClass' => $countStudyClass,
+            'getSemesters' => $getSemesters,
+            'getMajors' => $getMajors,
+        ];
+//        dd($data['reports']);
+
+        return view('StudentAffairsDepartment.classSession.listReports', compact('data'));
+    }
+
+    public function exportReport($classRequestId, $studyClassId)
+    {
+//        $report = $this->attendanceService->exportAttendanceReport($classRequestId, $studyClassId);
+        $studyClass = $this->studyClassService->find($studyClassId);
+
+        if (!$studyClassId || !$classRequestId) {
+            return redirect()->back()->with('error', 'Không tìm thấy thông tin lớp học hoặc yêu cầu điểm danh.');
+        }
+
+        return Excel::download(new AttendancesExport($classRequestId, $studyClassId), 'attendance_' . $studyClass->name . '_' . Carbon::now()->format('Y_m_d_H_i_s') . '.xlsx');
+
     }
 }

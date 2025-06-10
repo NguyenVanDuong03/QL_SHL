@@ -150,7 +150,7 @@
                                         </td>
                                         <td>
                                                 <span
-                                                    class="badge bg-light text-dark">{{ $item['study_class']['name'] }}</span>
+                                                    class="badge bg-light">{{ $item['study_class']['name'] }}</span>
                                         </td>
                                         <td>
                                             <span class="title_cut">
@@ -160,10 +160,10 @@
                                         <td>
                                             <div
                                                 class="action-buttons d-flex flex-column flex-md-row gap-2 justify-content-center">
-                                                <a href="{{ route('class-staff.class-session.detailClassSession', ['study-class-id' => $item['study_class']['id'], 'session-request-id' => $item['id']]) }}" class="btn btn-action btn-details" title="Xem chi tiết">
+                                                <a href="{{ route('class-staff.class-session.detailClassSession', ['study-class-id' => $item['study_class_id'], 'session-request-id' => $item['id']]) }}" class="btn btn-action btn-details" title="Xem chi tiết">
                                                     <i class="fas fa-eye"></i>
                                                 </a>
-                                                <a href="{{ route('class-staff.class-session.report', ['class_session_request_id' => $item['id'], 'report_id' => $item['class_session_report']['id'] ?? null ]) }}" class="btn btn-success" title="{{ isset($item['class_session_report']) ? 'Xem báo cáo' : 'Tạo báo cáo' }}">
+                                                <a href="{{ route('class-staff.class-session.report', ['class_session_request_id' => $item['id'], 'report_id' => $item['class_session_report']['id'] ?? null ]) }}" class="btn btn-success {{ $item['type'] == 0 ? '' : 'd-none' }}" title="{{ isset($item['class_session_report']) ? 'Xem báo cáo' : 'Tạo báo cáo' }}">
                                                     <i class="fas fa-pager"></i>
                                                 </a>
                                             </div>

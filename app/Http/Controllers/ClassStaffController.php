@@ -80,10 +80,10 @@ class ClassStaffController extends Controller
         $params['study_class_id'] = auth()->user()->student?->studyClass?->id ?? null;
         $params['student_id'] = auth()->user()->student?->id ?? null;
         $classSessionRequests = $this->classSessionRequestService->getClassSessionRequestsDone($params)->paginate(Constant::DEFAULT_LIMIT_12)->toArray();
-//        dd($classSessionRequests);
         $data = [
             'classSessionRequests' => $classSessionRequests,
         ];
+//        dd($data['classSessionRequests']['data']);
 
         return view('classStaff.classSession.history', compact('data'));
     }
@@ -150,17 +150,19 @@ class ClassStaffController extends Controller
     public function report(Request $request)
     {
         $params = $request->all();
+//        dd($params);
+        $countAttendanceByClassSessionRequestId = $this->attendanceService->countAttendanceByClassSessionRequestId($params['class_session_request_id']);
 
         $data = [
             'report' => null,
+            'countAttendanceByClassSessionRequestId' => $countAttendanceByClassSessionRequestId,
         ];
         if (isset($params['report_id'])) {
             $report = $this->classSessionReport->find($params['report_id']) ?? null;
             $report->path = $report->path ? asset('storage/' . $report->path) : null;
-            $data = [
-                'report' => $report,
-            ];
+            $data['report'] = $report;
         }
+//        dd($data['countAttendanceByClassSessionRequestId']);
 
         return view('classStaff.classSession.report', compact('data'));
     }
@@ -173,7 +175,7 @@ class ClassStaffController extends Controller
         $classSessionReport = $this->classSessionReport->storeReport($params);
 
         return response()->json([
-            'status' => 'success',
+//            'status' => 'success',
             'message' => 'Báo cáo đã được gửi thành công',
             'data' => $classSessionReport,
         ], 200);
@@ -199,7 +201,7 @@ class ClassStaffController extends Controller
         $this->classSessionReport->deleteReport($id);
 
         return response()->json([
-            'status' => 'success',
+//            'status' => 'success',
             'message' => 'Báo cáo đã được xóa thành công',
         ], 200);
     }

@@ -124,6 +124,8 @@ Route::middleware(['auth'])->group(function () {
                     Route::post('/create-classSession-registration', [StudentAffairsDepartmentController::class, 'createClassSessionRegistration'])->name('createClassSessionRegistration');
                     Route::put('/edit-classSession-registration/{id?}', [StudentAffairsDepartmentController::class, 'editClassSessionRegistration'])->name('editClassSessionRegistration');
                     Route::patch('/confirm-classSession/{id?}', [StudentAffairsDepartmentController::class, 'confirmClassSession'])->name('updateClassRequest');
+                    Route::get('/list-reports', [StudentAffairsDepartmentController::class, 'listReports'])->name('listReports');
+                    Route::get('/export-attendance/{requestId?}/{classId?}', [StudentAffairsDepartmentController::class, 'exportReport'])->name('exportReport');
                 }
             );
 

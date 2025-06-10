@@ -22,11 +22,18 @@ class ClassSessionReportService extends BaseService
     {
         $wheres = Arr::get($params, 'wheres', []);
         $sort = Arr::get($params, 'sort', 'id:desc');
+        $relates = Arr::get($params, 'relates', []);
 
         return [
             'sort' => $sort,
             'wheres' => $wheres,
+            'relates' => $relates,
         ];
+    }
+
+    public function getListReports($params)
+    {
+        return $this->getRepository()->getListReports($params);
     }
 
     public function storeReport($params)

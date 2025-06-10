@@ -1,10 +1,10 @@
-<div class="container-fluid my-4 border-bottom">
+<div class="container-fluid mb-4 mt-5 border-bottom">
     <div class="row">
         <div class="col-12">
             <!-- Tab navigation -->
             <ul class="nav nav-tabs border-0 d-flex justify-content-center flex-wrap gap-2" id="accountTabs" role="tablist">
                 <li class="nav-item" role="presentation">
-                    <a class="nav-link border border-b-blue-200 rounded {{ request()->routeIs('student-affairs-department.class-session.index') ? 'active' : '' }}"
+                    <a class="nav-link border border-b-blue-200 rounded {{ request()->routeIs('student-affairs-department.class-session.index') || request()->routeIs('student-affairs-department.class-session.listReports') ? 'active' : '' }}"
                         href="{{ route('student-affairs-department.class-session.index') }}">
                         Sinh hoạt lớp cố định
                     </a>
