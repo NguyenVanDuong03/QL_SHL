@@ -24,7 +24,7 @@ class StudentService extends BaseService
         $relates = Arr::get($params, 'relates', []);
         $getAll = Arr::get($params, 'getAll', false);
         if ($getAll) {
-            $relates = [...$relates, 'studyClass', 'user', 'cohort'];
+            $relates = ['studyClass', 'user', 'cohort'];
         }
 
         return [

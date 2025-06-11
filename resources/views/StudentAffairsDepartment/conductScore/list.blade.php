@@ -21,7 +21,7 @@
         <div class="row mb-4">
             <div class="col-12">
                 <div class="d-flex justify-content-end justify-content-md-between align-items-center">
-                    <a href="{{ route('teacher.class-session.detailFixedClassActivitie') }}"
+                    <a href="{{ route('student-affairs-department.conduct-score.index') }}"
                        class="btn btn-outline-secondary btn-sm">
                         <i class="fas fa-arrow-left me-2"></i>Quay lại
                     </a>
@@ -98,7 +98,7 @@
                                 <tr>
                                     <th scope="col">STT</th>
                                     <th scope="col">Lớp học</th>
-                                    <th scope="col" class="d-none d-md-block">Ngành/Khoa</th>
+                                    <th scope="col" class="d-none d-md-table-cell">Ngành/Khoa</th>
                                     <th scope="col">Tổng sinh viên</th>
                                     <th scope="col">Đã đánh giá</th>
                                     <th scope="col">Chưa đánh giá</th>
@@ -111,7 +111,7 @@
                                     <tr>
                                         <td class="text-center fw-bold">{{ $loop->iteration }}</td>
                                         <td>{{ $item['study_class_name'] }}</td>
-                                        <td class="d-none d-md-block">
+                                        <td class="d-none d-md-table-cell">
                                             {{ $item['major_name'] }} <br>
                                             <small class="text-muted">{{ $item['department_name'] }}</small>
                                         </td>

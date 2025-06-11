@@ -15,4 +15,9 @@ class Semester extends Model
         'end_date',
     ];
 
+    public function academicWarnings()
+    {
+        return $this->hasMany(AcademicWarning::class);
+    }
+
 }

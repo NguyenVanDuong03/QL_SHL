@@ -8,6 +8,7 @@ use App\Http\Requests\ClassSessionRegistrationRequest;
 use App\Http\Requests\SemesterRequest;
 use App\Imports\LecturerImportByExcel;
 use App\Imports\StudentImportByExcel;
+use App\Services\AcademicWarningService;
 use App\Services\AttendanceService;
 use App\Services\ClassSessionRegistrationService;
 use App\Services\ClassSessionReportService;
@@ -45,7 +46,8 @@ class StudentAffairsDepartmentController extends Controller
         protected ConductEvaluationPeriodService  $conductEvaluationPeriodService,
         protected ClassSessionReportService       $classSessionReportService,
         protected AttendanceService               $attendanceService,
-        protected MajorService                   $majorService,
+        protected MajorService                    $majorService,
+        protected AcademicWarningService          $academicWarningService
     )
     {
     }
@@ -125,7 +127,7 @@ class StudentAffairsDepartmentController extends Controller
         }
 
         return redirect()->route('student-affairs-department.class-session.index')
-                ->with('success', 'Xác nhận thành công');
+            ->with('success', 'Xác nhận thành công');
 
     }
 
@@ -432,12 +434,50 @@ class StudentAffairsDepartmentController extends Controller
     {
         $params = $request->all();
         $params['limit'] = Constant::DEFAULT_LIMIT_12;
-//        $academicWarnings = $this->studentService->getAcademicWarning($params)->toArray();
+        $params['getAll'] = true;
+        $students = $this->studentService->get($params)->toArray();
+        $getSemesters = $this->semesterService->get()->toArray();
+        $academicWarnings = $this->academicWarningService->listStudyClassAcademicWarning($params)->toArray();
         $data = [
-//            'academicWarnings' => $academicWarnings,
+            'academicWarnings' => $academicWarnings,
+            'getSemesters' => $getSemesters,
+            'students' => $students,
         ];
-
+//dd($data['students']);
         return view('StudentAffairsDepartment.academicWarning.index', compact('data'));
+    }
+
+    public function createAcademicWarning(Request $request)
+    {
+        $params = $request->all();
+//        dd($params);
+
+        $this->academicWarningService->create($params);
+
+        return redirect()->route('student-affairs-department.academic-warning.index')->with('success', 'Thêm mới thành công');
+    }
+
+    public function editAcademicWarning(Request $request, $id)
+    {
+        $params = $request->all();
+//        dd($params);
+
+        $this->academicWarningService->update($id, $params);
+
+        $targetPage = $this->academicWarningService->targetPage($params);
+
+        return redirect()->route('student-affairs-department.academic-warning.index', $targetPage)->with('success', 'Cập nhật thành công');
+    }
+
+    public function deleteAcademicWarning(Request $request, $id)
+    {
+        $params = $request->all();
+
+        $this->academicWarningService->delete($id);
+
+        $targetPage = $this->academicWarningService->targetPage($params);
+
+        return redirect()->route('student-affairs-department.academic-warning.index', $targetPage)->with('success', 'Xóa thành công');
     }
 
     public function listReports(Request $request)
