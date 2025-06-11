@@ -190,5 +190,17 @@ class StudyClassRepository extends BaseRepository
         return $query->paginate(Constant::DEFAULT_LIMIT_12);
     }
 
+    public function participationRate($lecturerId)
+    {
+        $result = DB::table('study_classes as sc')
+            ->join('students as s', 's.study_class_id', '=', 'sc.id')
+            ->leftJoin('attendances as a', 'a.student_id', '=', 's.id')
+            ->where('sc.lecturer_id', $lecturerId)
+            ->selectRaw('ROUND(COUNT(CASE WHEN a.status = 2 THEN 1 END) * 100.0 / COUNT(DISTINCT s.id), 2) as attendance_rate')
+            ->first();
+
+        return $result;
+    }
+
 
 }

@@ -7,6 +7,7 @@ use App\Services\AcademicWarningService;
 use App\Services\AttendanceService;
 use App\Services\ClassSessionRegistrationService;
 use App\Services\ClassSessionRequestService;
+use App\Services\LecturerService;
 use App\Services\RoomService;
 use App\Services\SemesterService;
 use App\Services\StudentService;
@@ -24,6 +25,8 @@ class LecturerController extends Controller
         protected SemesterService $SemesterService,
         protected AcademicWarningService $academicWarningService,
         protected AttendanceService $attendanceService,
+        protected SemesterService $semesterService,
+        protected LecturerService $lecturerService,
         )
         {
         }
@@ -416,9 +419,30 @@ class LecturerController extends Controller
         return view('teacher.classSession.flexibleDetail', compact('data'));
     }
 
-    public function indexStatistical()
+    public function indexStatistical(Request $request)
     {
-        return view('teacher.statistical.index');
+        $params = $request->all();
+        $semesterId = $this->semesterService->get()->first()->id;
+        $lecturerId = auth()->user()->lecturer?->id;
+        $params['semester_id'] = $request->query('semester_id') ?? $semesterId;
+        $semesters = $this->SemesterService->get()->toArray();
+        $countStudyClassBySemester = $this->studyClassService->getStudyClassListByLecturerId($lecturerId)->count();
+        $getTotalStudentsByLecturer = $this->lecturerService->getTotalStudentsByLecturer($lecturerId);
+        $getTotalDoneSessionsByLecturer = $this->classSessionRequestService->getTotalDoneSessionsByLecturer($lecturerId);
+        $getTotalSessionsByLecturer = $this->classSessionRequestService->getTotalSessionsByLecturer($lecturerId);
+        $participationRate = $this->studyClassService->participationRate($lecturerId);
+
+        $data = [
+            'semesters' => $semesters,
+            'countStudyClassBySemester' => $countStudyClassBySemester,
+            'getTotalStudentsByLecturer' => $getTotalStudentsByLecturer,
+            'getTotalDoneSessionsByLecturer' => $getTotalDoneSessionsByLecturer,
+            'getTotalSessionsByLecturer' => $getTotalSessionsByLecturer,
+            'participationRate' => $participationRate,
+        ];
+//        dd($data['participationRate']);
+
+        return view('teacher.statistical.index', compact('data'));
     }
 
 }

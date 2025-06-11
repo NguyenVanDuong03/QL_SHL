@@ -60,6 +60,21 @@ class ClassSessionRequestRepository extends BaseRepository
             ->orderBy('proposed_at', 'desc');
     }
 
+    public function getTotalDoneSessionsByLecturer($lecturerId)
+    {
+        return $this->getModel()
+            ->where('lecturer_id', $lecturerId)
+            ->where('status', Constant::CLASS_SESSION_STATUS['DONE'])
+            ->count();
+    }
+
+    public function getTotalSessionsByLecturer($lecturerId)
+    {
+        return $this->getModel()
+            ->where('lecturer_id', $lecturerId)
+            ->count();
+    }
+
     public function countFlexibleClassSessionRequest($lecturerId)
     {
         return $this->getModel()

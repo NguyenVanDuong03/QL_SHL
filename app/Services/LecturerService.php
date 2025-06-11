@@ -36,4 +36,10 @@ class LecturerService extends BaseService
             'relates' => array_unique($relates),
         ];
     }
+
+    public function getTotalStudentsByLecturer($lecturerId)
+    {
+        return $this->getRepository()->getTotalStudentsByLecturer($lecturerId);
+    }
+
 }

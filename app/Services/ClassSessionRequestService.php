@@ -85,6 +85,16 @@ class ClassSessionRequestService extends BaseService
         return $this->getRepository()->countFlexibleRejectedByLecturer($lecturerId);
     }
 
+    public function getTotalDoneSessionsByLecturer($lecturerId)
+    {
+        return $this->getRepository()->getTotalDoneSessionsByLecturer($lecturerId);
+    }
+
+    public function getTotalSessionsByLecturer($lecturerId)
+    {
+        return $this->getRepository()->getTotalSessionsByLecturer($lecturerId);
+    }
+
     public function getClassSessionRequestById($studyClassId, $class_session_registration_id)
     {
         return $this->getRepository()->getClassSessionRequestById($studyClassId, $class_session_registration_id);
