@@ -14,52 +14,52 @@
             <!-- Card 1 -->
             <div class="col-md-6 col-lg-3">
                 <div class="stat-card">
-                    <div class="stat-card-header">
-                        <div class="stat-card-title">LỚP CHỦ NHIỆM KỲ 2_2024_2025</div>
+                    <div class="stat-card-header d-flex align-items-start">
+                        <div class="stat-card-title text-uppercase">LỚP CHỦ NHIỆM {{ $data['semester']['name'] }} - {{ $data['semester']['school_year'] }}</div>
                         <div class="stat-card-icon">
                             <i class="fas fa-book"></i>
                         </div>
                     </div>
-                    <div class="stat-card-value">100 lớp</div>
+                    <div class="stat-card-value">{{ $data['totalStudyClasses'] }} lớp</div>
                 </div>
             </div>
 
             <!-- Card 2 -->
             <div class="col-md-6 col-lg-3">
                 <div class="stat-card">
-                    <div class="stat-card-header">
-                        <div class="stat-card-title">SINH VIÊN ĐĂNG BÁO HỌC VỤ KỲ 2_2024_2025</div>
+                    <div class="stat-card-header d-flex align-items-start">
+                        <div class="stat-card-title text-uppercase">SINH VIÊN ĐĂNG BÁO HỌC VỤ {{ $data['semester']['name'] }} - {{ $data['semester']['school_year'] }}</div>
                         <div class="stat-card-icon">
                             <i class="fas fa-users"></i>
                         </div>
                     </div>
-                    <div class="stat-card-value">100 sinh viên</div>
+                    <div class="stat-card-value">{{ $data['totalAcademicWarnings'] ?? 0 }} sinh viên</div>
                 </div>
             </div>
 
             <!-- Card 3 -->
             <div class="col-md-6 col-lg-3">
                 <div class="stat-card">
-                    <div class="stat-card-header">
-                        <div class="stat-card-title">ĐIỂM ĐÁNH KỲ 2_2024_2025</div>
+                    <div class="stat-card-header d-flex align-items-start">
+                        <div class="stat-card-title text-uppercase">BÁO CÁO SINH HOẠT LỚP {{ $data['semester']['name'] }} - {{ $data['semester']['school_year'] }}</div>
                         <div class="stat-card-icon">
                             <i class="fas fa-file-alt"></i>
                         </div>
                     </div>
-                    <div class="stat-card-value">100% sinh viên đã điểm danh</div>
+                    <div class="stat-card-value">{{ $data['totalClassSessionReports'] ?? 0 }} báo cáo</div>
                 </div>
             </div>
 
             <!-- Card 4 -->
             <div class="col-md-6 col-lg-3">
                 <div class="stat-card">
-                    <div class="stat-card-header">
-                        <div class="stat-card-title">ĐIỂM RÈN LUYỆN KỲ 2_2024_2025</div>
+                    <div class="stat-card-header d-flex align-items-start">
+                        <div class="stat-card-title text-uppercase">ĐIỂM RÈN LUYỆN {{ $data['semester']['name'] }} - {{ $data['semester']['school_year'] }}</div>
                         <div class="stat-card-icon">
                             <i class="fas fa-clipboard-check"></i>
                         </div>
                     </div>
-                    <div class="stat-card-value">100% sinh viên đã đánh giá</div>
+                    <div class="stat-card-value">{{ $data['totalClassSessionReports'] ?? 0 }} sinh viên</div>
                 </div>
             </div>
         </div>

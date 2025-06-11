@@ -36,6 +36,11 @@ class ClassSessionReportService extends BaseService
         return $this->getRepository()->getListReports($params);
     }
 
+    public function countClassSessionReports($semesterId)
+    {
+        return $this->getRepository()->countClassSessionReports($semesterId);
+    }
+
     public function storeReport($params)
     {
 //        dd($params);

@@ -3,7 +3,7 @@
 @section('title', 'Thống kê')
 
 @section('breadcrumb')
-    <x-breadcrumb.breadcrumb :links="[['label' => 'Thống kê']]" />
+    <x-breadcrumb.breadcrumb :links="[['label' => 'Thống kê']]"/>
 @endsection
 
 @push('styles')
@@ -12,25 +12,32 @@
         .stat-card {
             transition: all 0.3s;
         }
+
         .stat-card:hover {
             transform: translateY(-5px);
-            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
         }
+
         .class-card {
             transition: all 0.2s;
         }
+
         .class-card:hover {
             border-color: #007bff;
         }
+
         .warning-card {
             border-left: 4px solid;
         }
+
         .warning-card.danger {
             border-left-color: #dc3545;
         }
+
         .warning-card.warning {
             border-left-color: #ffc107;
         }
+
         .warning-card.info {
             border-left-color: #17a2b8;
         }
@@ -41,15 +48,19 @@
                 width: 100% !important;
                 margin-bottom: 0.5rem;
             }
+
             .mobile-scroll {
                 overflow-x: auto;
             }
+
             .mobile-scroll table {
                 min-width: 800px;
             }
+
             .mobile-card {
                 margin-bottom: 1rem;
             }
+
             .mobile-tabs .nav-link {
                 padding: 0.5rem 0.75rem;
                 font-size: 0.875rem;
@@ -131,7 +142,8 @@
                                     <h6 class="text-muted mb-0">Buổi SHL</h6>
                                     <i class="fas fa-calendar text-info"></i>
                                 </div>
-                                <h2 class="mb-0">{{ $data['getTotalDoneSessionsByLecturer'] }}/{{ $data['getTotalSessionsByLecturer'] }}</h2>
+                                <h2 class="mb-0">{{ $data['getTotalDoneSessionsByLecturer'] }}
+                                    /{{ $data['getTotalSessionsByLecturer'] }}</h2>
                                 <small class="text-muted">Đã hoàn thành</small>
                             </div>
                         </div>
@@ -151,10 +163,12 @@
                 </div>
 
                 <div class="col-12 d-flex justify-content-end mb-4">
-                    <form method="GET" class="input-group" action="{{ route('teacher.statistical.index') }}" style="max-width: 280px;">
+                    <form method="GET" class="input-group" action="{{ route('teacher.statistical.index') }}"
+                          style="max-width: 280px;">
                         <select class="form-select" id="semesterSelect" name="semester_id">
                             @forelse($data['semesters'] ?? [] as $semester)
-                                <option value="{{ $semester['id'] }}" {{ request()->get('semester_id') == $semester['id'] ? 'selected' : '' }}>
+                                <option
+                                    value="{{ $semester['id'] }}" {{ request()->get('semester_id') == $semester['id'] ? 'selected' : '' }}>
                                     {{ $semester['name'] }} - {{ $semester['school_year'] }}
                                 </option>
                             @empty
@@ -169,16 +183,25 @@
                 <!-- Tabs -->
                 <ul class="nav nav-tabs mb-4 mobile-tabs gap-1" id="lecturerTabs" role="tablist">
                     <li class="nav-item" role="presentation">
-                        <button class="nav-link active" id="overview-tab" data-bs-toggle="tab" data-bs-target="#overview" type="button" role="tab" aria-controls="overview" aria-selected="true">Tổng quan</button>
+                        <button class="nav-link active" id="overview-tab" data-bs-toggle="tab"
+                                data-bs-target="#overview" type="button" role="tab" aria-controls="overview"
+                                aria-selected="true">Tổng quan
+                        </button>
                     </li>
                     <li class="nav-item" role="presentation">
-                        <button class="nav-link" id="classes-tab" data-bs-toggle="tab" data-bs-target="#classes" type="button" role="tab" aria-controls="classes" aria-selected="false">Danh sách lớp</button>
+                        <button class="nav-link" id="classes-tab" data-bs-toggle="tab" data-bs-target="#classes"
+                                type="button" role="tab" aria-controls="classes" aria-selected="false">Danh sách lớp
+                        </button>
                     </li>
                     <li class="nav-item" role="presentation">
-                        <button class="nav-link" id="activities-tab" data-bs-toggle="tab" data-bs-target="#activities" type="button" role="tab" aria-controls="activities" aria-selected="false">Hoạt động</button>
+                        <button class="nav-link" id="activities-tab" data-bs-toggle="tab" data-bs-target="#activities"
+                                type="button" role="tab" aria-controls="activities" aria-selected="false">Hoạt động
+                        </button>
                     </li>
                     <li class="nav-item" role="presentation">
-                        <button class="nav-link" id="tasks-tab" data-bs-toggle="tab" data-bs-target="#tasks" type="button" role="tab" aria-controls="tasks" aria-selected="false">Công việc</button>
+                        <button class="nav-link" id="tasks-tab" data-bs-toggle="tab" data-bs-target="#tasks"
+                                type="button" role="tab" aria-controls="tasks" aria-selected="false">Công việc
+                        </button>
                     </li>
                 </ul>
 
@@ -196,103 +219,50 @@
                                     <div class="card-body">
                                         <div class="row">
                                             <!-- Class Card 1 -->
-                                            <div class="col-12 mb-3">
-                                                <div class="card border class-card">
-                                                    <div class="card-body">
-                                                        <div class="d-flex justify-content-between align-items-start mb-3">
-                                                            <div>
-                                                                <h5 class="mb-1">CNTT2021A</h5>
-                                                                <p class="text-muted small mb-0">Công nghệ thông tin - 2021-2025</p>
+                                            @forelse($data['listStatisticsByLecturerId'] ?? [] as $item)
+                                                <div class="col-12 mb-3">
+                                                    <div class="card border class-card">
+                                                        <div class="card-body">
+                                                            <div
+                                                                class="d-flex justify-content-between align-items-start mb-3">
+                                                                <div>
+                                                                    <h5 class="mb-1">{{ $item['class_name'] }}</h5>
+                                                                    <p class="text-muted small mb-0">{{ $item['department_name'] }}</p>
+                                                                </div>
+                                                                <span class="badge bg-secondary">{{ $item['total_students'] }} sinh viên</span>
                                                             </div>
-                                                            <span class="badge bg-secondary">45 SV</span>
-                                                        </div>
-                                                        <div class="row">
-                                                            <div class="col-6 col-md-3 mb-2">
-                                                                <small class="text-muted d-block">SHL:</small>
-                                                                <span class="fw-medium">8/10</span>
-                                                            </div>
-                                                            <div class="col-6 col-md-3 mb-2">
-                                                                <small class="text-muted d-block">Tham gia:</small>
-                                                                <span class="fw-medium text-warning">87.5%</span>
-                                                            </div>
-                                                            <div class="col-6 col-md-3 mb-2">
-                                                                <small class="text-muted d-block">ĐRL xuất sắc:</small>
-                                                                <span class="fw-medium">12</span>
-                                                            </div>
-                                                            <div class="col-6 col-md-3 mb-2">
-                                                                <small class="text-muted d-block">Cảnh báo HV:</small>
-                                                                <span class="fw-medium text-danger">2</span>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-
-                                            <!-- Class Card 2 -->
-                                            <div class="col-12 mb-3">
-                                                <div class="card border class-card">
-                                                    <div class="card-body">
-                                                        <div class="d-flex justify-content-between align-items-start mb-3">
-                                                            <div>
-                                                                <h5 class="mb-1">CNTT2022B</h5>
-                                                                <p class="text-muted small mb-0">Công nghệ thông tin - 2022-2026</p>
-                                                            </div>
-                                                            <span class="badge bg-secondary">42 SV</span>
-                                                        </div>
-                                                        <div class="row">
-                                                            <div class="col-6 col-md-3 mb-2">
-                                                                <small class="text-muted d-block">SHL:</small>
-                                                                <span class="fw-medium">9/10</span>
-                                                            </div>
-                                                            <div class="col-6 col-md-3 mb-2">
-                                                                <small class="text-muted d-block">Tham gia:</small>
-                                                                <span class="fw-medium text-success">92.3%</span>
-                                                            </div>
-                                                            <div class="col-6 col-md-3 mb-2">
-                                                                <small class="text-muted d-block">ĐRL xuất sắc:</small>
-                                                                <span class="fw-medium">15</span>
-                                                            </div>
-                                                            <div class="col-6 col-md-3 mb-2">
-                                                                <small class="text-muted d-block">Cảnh báo HV:</small>
-                                                                <span class="fw-medium text-danger">1</span>
+                                                            <div class="row">
+                                                                <div class="col-6 col-md-3 mb-2">
+                                                                    <small class="text-muted d-block">SHL cố
+                                                                        định:</small>
+                                                                    <span class="fw-medium">{{ $item['fixed_sessions'] }}</span>
+                                                                </div>
+                                                                <div class="col-6 col-md-3 mb-2">
+                                                                    <small class="text-muted d-block">SHL linh
+                                                                        hoạt:</small>
+                                                                    <span class="fw-medium text-warning">{{ $item['flexible_sessions'] }}</span>
+                                                                </div>
+                                                                <div class="col-6 col-md-3 mb-2">
+                                                                    <small class="text-muted d-block">ĐRL xuất
+                                                                        sắc:</small>
+                                                                    <span class="fw-medium">{{ $item['high_conduct_students'] }}</span>
+                                                                </div>
+                                                                <div class="col-6 col-md-3 mb-2">
+                                                                    <small class="text-muted d-block">Cảnh báo
+                                                                        HV:</small>
+                                                                    <span class="fw-medium text-danger">{{ $item['warned_students'] }}</span>
+                                                                </div>
                                                             </div>
                                                         </div>
                                                     </div>
                                                 </div>
-                                            </div>
-
-                                            <!-- Class Card 3 -->
-                                            <div class="col-12">
-                                                <div class="card border class-card">
-                                                    <div class="card-body">
-                                                        <div class="d-flex justify-content-between align-items-start mb-3">
-                                                            <div>
-                                                                <h5 class="mb-1">KTPM2021C</h5>
-                                                                <p class="text-muted small mb-0">Kỹ thuật phần mềm - 2021-2025</p>
-                                                            </div>
-                                                            <span class="badge bg-secondary">38 SV</span>
-                                                        </div>
-                                                        <div class="row">
-                                                            <div class="col-6 col-md-3 mb-2">
-                                                                <small class="text-muted d-block">SHL:</small>
-                                                                <span class="fw-medium">7/10</span>
-                                                            </div>
-                                                            <div class="col-6 col-md-3 mb-2">
-                                                                <small class="text-muted d-block">Tham gia:</small>
-                                                                <span class="fw-medium text-warning">84.2%</span>
-                                                            </div>
-                                                            <div class="col-6 col-md-3 mb-2">
-                                                                <small class="text-muted d-block">ĐRL xuất sắc:</small>
-                                                                <span class="fw-medium">10</span>
-                                                            </div>
-                                                            <div class="col-6 col-md-3 mb-2">
-                                                                <small class="text-muted d-block">Cảnh báo HV:</small>
-                                                                <span class="fw-medium text-danger">3</span>
-                                                            </div>
-                                                        </div>
+                                            @empty
+                                                <div class="col-12">
+                                                    <div class="alert alert-info text-center" role="alert">
+                                                        <strong>Chưa có dữ liệu thống kê cho lớp nào.</strong>
                                                     </div>
                                                 </div>
-                                            </div>
+                                            @endforelse
                                         </div>
                                     </div>
                                 </div>
@@ -375,7 +345,9 @@
                                             <td class="fw-medium">8/10</td>
                                             <td><span class="fw-medium text-warning">87.5%</span></td>
                                             <td><span class="badge bg-danger">2</span></td>
-                                            <td><button class="btn btn-sm btn-outline-primary">Chi tiết</button></td>
+                                            <td>
+                                                <button class="btn btn-sm btn-outline-primary">Chi tiết</button>
+                                            </td>
                                         </tr>
                                         <tr>
                                             <td class="fw-medium">CNTT2022B</td>
@@ -385,7 +357,9 @@
                                             <td class="fw-medium">9/10</td>
                                             <td><span class="fw-medium text-success">92.3%</span></td>
                                             <td><span class="badge bg-danger">1</span></td>
-                                            <td><button class="btn btn-sm btn-outline-primary">Chi tiết</button></td>
+                                            <td>
+                                                <button class="btn btn-sm btn-outline-primary">Chi tiết</button>
+                                            </td>
                                         </tr>
                                         <tr>
                                             <td class="fw-medium">KTPM2021C</td>
@@ -395,7 +369,9 @@
                                             <td class="fw-medium">7/10</td>
                                             <td><span class="fw-medium text-warning">84.2%</span></td>
                                             <td><span class="badge bg-danger">3</span></td>
-                                            <td><button class="btn btn-sm btn-outline-primary">Chi tiết</button></td>
+                                            <td>
+                                                <button class="btn btn-sm btn-outline-primary">Chi tiết</button>
+                                            </td>
                                         </tr>
                                         </tbody>
                                     </table>
@@ -701,7 +677,7 @@
 
 @push('scripts')
     <script>
-        $(document).ready(function() {
+        $(document).ready(function () {
             // Handle tab switching
             $('#lecturerTabs button').on('click', function (e) {
                 e.preventDefault();

@@ -65,4 +65,9 @@ class StudyClassService extends BaseService
         return $this->getRepository()->participationRate($lecturerId);
     }
 
+    public function listStatisticsByLecturerId($lecturerId, $semesterId)
+    {
+        return $this->getRepository()->listStatisticsByLecturerId($lecturerId, $semesterId);
+    }
+
 }

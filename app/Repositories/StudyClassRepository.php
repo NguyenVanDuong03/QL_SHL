@@ -202,5 +202,51 @@ class StudyClassRepository extends BaseRepository
         return $result;
     }
 
+    public function listStatisticsByLecturerId($lecturerId, $semesterId)
+    {
+        $query = $this->getModel()
+            ->select(
+                'study_classes.id AS class_id',
+                'study_classes.name AS class_name',
+                'departments.name AS department_name',
+                DB::raw('COUNT(DISTINCT students.id) AS total_students'),
+                DB::raw('COUNT(DISTINCT CASE WHEN class_session_requests.type = 0 THEN class_session_requests.id END) AS fixed_sessions'),
+                DB::raw('COUNT(DISTINCT CASE WHEN class_session_requests.type = 1 THEN class_session_requests.id END) AS flexible_sessions'),
+                DB::raw('COUNT(DISTINCT CASE WHEN student_conduct_scores.final_score >= 90 THEN student_conduct_scores.student_id END) AS high_conduct_students'),
+                DB::raw('COUNT(DISTINCT academic_warnings.student_id) AS warned_students')
+            )
+            ->join('lecturers', 'study_classes.lecturer_id', '=', 'lecturers.id')
+            ->leftJoin('majors', 'study_classes.major_id', '=', 'majors.id')
+            ->leftJoin('faculties', 'majors.faculty_id', '=', 'faculties.id')
+            ->leftJoin('departments', 'faculties.department_id', '=', 'departments.id')
+            ->leftJoin('class_session_requests', function ($join) use ($semesterId) {
+                $join->on('study_classes.id', '=', 'class_session_requests.study_class_id')
+                    ->whereExists(function ($query) use ($semesterId) {
+                        $query->select(DB::raw(1))
+                            ->from('class_session_registrations')
+                            ->whereColumn('class_session_registrations.id', 'class_session_requests.class_session_registration_id')
+                            ->where('class_session_registrations.semester_id', '=', $semesterId);
+                    })
+                    ->where('class_session_requests.status', '=', Constant::CLASS_SESSION_STATUS['DONE']);
+            })
+            ->leftJoin('students', 'students.study_class_id', '=', 'study_classes.id')
+            ->leftJoin('student_conduct_scores', function ($join) use ($semesterId) {
+                $join->on('students.id', '=', 'student_conduct_scores.student_id')
+                    ->whereIn('student_conduct_scores.conduct_evaluation_period_id', function ($query) use ($semesterId) {
+                        $query->select('id')
+                            ->from('conduct_evaluation_periods')
+                            ->where('semester_id', '=', $semesterId);
+                    });
+            })
+            ->leftJoin('academic_warnings', function ($join) use ($semesterId) {
+                $join->on('students.id', '=', 'academic_warnings.student_id')
+                    ->where('academic_warnings.semester_id', '=', $semesterId);
+            })
+            ->where('lecturers.id', '=', $lecturerId)
+            ->groupBy('study_classes.id', 'study_classes.name');
+
+        return $query->get();
+    }
+
 
 }

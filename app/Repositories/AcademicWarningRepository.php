@@ -57,4 +57,12 @@ class AcademicWarningRepository extends BaseRepository
 
         return $query->paginate(Constant::DEFAULT_LIMIT_12);
     }
+
+    public function academicWarningBySemesterId($semesterId)
+    {
+        return $this->getModel()
+            ->where('semester_id', $semesterId)
+            ->with(['student', 'semester', 'student.user:id,name,email', 'student.studyClass:id,name'])
+            ->orderByDesc('id');
+    }
 }

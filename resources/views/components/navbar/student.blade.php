@@ -27,6 +27,12 @@
                         </a>
                     </li>
                     <li class="nav-item">
+                        <a class="nav-link {{ Route::currentRouteName() == 'student.class.index'
+                                              ? 'active' : '' }}" href="{{ route('student.class.index') }}">
+                            {{ __('Lớp học') }}
+                        </a>
+                    </li>
+                    <li class="nav-item">
                         <a class="nav-link" href="#">
                             {{ __('Điểm rèn luyện') }}
                         </a>

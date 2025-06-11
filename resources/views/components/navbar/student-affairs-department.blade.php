@@ -23,7 +23,9 @@
                                       ? 'active' : '' }}" href="{{ route('student-affairs-department.class-session.index') }}">
                     <i class="fas fa-bell"></i>
                     Sinh hoạt lớp
-{{--                    <span class="badge bg-danger ms-1">10</span>--}}
+                    @if($countClassSession > 0)
+                        <span class="badge bg-danger ms-1">{{ $countClassSession }}</span>
+                    @endif
                 </a>
             </li>
             <li class="nav-item">

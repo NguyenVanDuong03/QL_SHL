@@ -205,4 +205,20 @@ class ClassStaffController extends Controller
             'message' => 'Báo cáo đã được xóa thành công',
         ], 200);
     }
+
+    public function indexClass(Request $request)
+    {
+        $params = $request->all();
+        $params['class_id'] = auth()->user()->student?->studyClass?->id ?? null;
+        $studyClassName = auth()->user()->student?->studyClass?->name ?? null;
+        $students = $this->studentService->getListStudentByClassId($params)->toArray();
+//        dd($students);
+        $data = [
+            'students' => $students,
+            'studyClassName' => $studyClassName,
+        ];
+//         dd($data['students']);
+
+        return view('classStaff.class.index', compact('data'));
+    }
 }

@@ -254,6 +254,17 @@ Route::middleware(['auth'])->group(function () {
                     Route::delete('/report/{id}', [ClassStaffController::class, 'deleteReport'])->name('deleteReport');
                 }
             );
+
+            // Class
+            Route::group(
+                [
+                    'prefix' => 'class',
+                    'as' => 'class.',
+                ],
+                function () {
+                    Route::get('/', [ClassStaffController::class, 'indexClass'])->name('index');
+                }
+            );
         }
 
     );
@@ -280,6 +291,17 @@ Route::middleware(['auth'])->group(function () {
                     Route::post('/', [StudentController::class, 'confirmAttendance'])->name('confirmAttendance');
                     Route::patch('/', [StudentController::class, 'updateAbsence'])->name('updateAbsence');
                     Route::get('/history', [StudentController::class, 'history'])->name('history');
+                }
+            );
+
+            // Class
+            Route::group(
+                [
+                    'prefix' => 'class',
+                    'as' => 'class.',
+                ],
+                function () {
+                    Route::get('/', [StudentController::class, 'indexClass'])->name('index');
                 }
             );
         }

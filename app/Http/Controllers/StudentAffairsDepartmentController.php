@@ -20,12 +20,12 @@ use App\Services\FacultyService;
 use App\Services\LecturerService;
 use App\Services\MajorService;
 use App\Services\SemesterService;
+use App\Services\StudentConductScoreService;
 use App\Services\StudentService;
 use App\Services\RoomService;
 use App\Services\StudyClassService;
 use App\Services\UserService;
 use Carbon\Carbon;
-use http\Env\Response;
 use Illuminate\Http\Request;
 use Maatwebsite\Excel\Facades\Excel;
 
@@ -47,14 +47,27 @@ class StudentAffairsDepartmentController extends Controller
         protected ClassSessionReportService       $classSessionReportService,
         protected AttendanceService               $attendanceService,
         protected MajorService                    $majorService,
-        protected AcademicWarningService          $academicWarningService
+        protected AcademicWarningService          $academicWarningService,
+        protected StudentConductScoreService      $studentConductScoreService,
     )
     {
     }
 
     public function index()
     {
-        return view('StudentAffairsDepartment.index');
+        $totalStudyClasses = $this->studyClassService->get()->count();
+        $semester = $this->semesterService->get()->first();
+        $totalAcademicWarnings = $this->academicWarningService->academicWarningBySemesterId($semester->id)->get()->count();
+        $totalClassSessionReports = $this->classSessionReportService->countClassSessionReports($semester->id);
+
+        $data = [
+            'totalStudyClasses' => $totalStudyClasses,
+            'totalAcademicWarnings' => $totalAcademicWarnings,
+            'semester' => $semester,
+            'totalClassSessionReports' => $totalClassSessionReports,
+        ];
+//        dd($data['totalClassSessionReport']);
+        return view('StudentAffairsDepartment.index', compact('data'));
     }
 
     public function classSession(Request $request)

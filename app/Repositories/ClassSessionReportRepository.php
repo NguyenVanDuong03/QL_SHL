@@ -54,4 +54,13 @@ class ClassSessionReportRepository extends BaseRepository
         return $query->paginate(Constant::DEFAULT_LIMIT_12);
     }
 
+    public function countClassSessionReports($semesterId)
+    {
+        return $this->getModel()
+            ->whereHas('classSessionRequest.classSessionRegistration.semester', function ($query) use ($semesterId) {
+                $query->where('id', $semesterId);
+            })
+            ->count();
+    }
+
 }

@@ -62,4 +62,9 @@ class AcademicWarningService extends BaseService
         return $this->getRepository()->listStudyClassAcademicWarning($params);
     }
 
+    public function academicWarningBySemesterId($semesterId)
+    {
+        return $this->getRepository()->academicWarningBySemesterId($semesterId);
+    }
+
 }

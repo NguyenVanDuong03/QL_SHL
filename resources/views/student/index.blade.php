@@ -221,7 +221,7 @@
                                 Theo dõi thông tin và hoạt động của lớp học
                             </p>
                             <div class="text-center">
-                                <a href="#" class="btn btn-primary-custom">Quản lý</a>
+                                <a href="{{ route('student.class.index') }}" class="btn btn-primary-custom">Quản lý</a>
                             </div>
                         </div>
                     </div>

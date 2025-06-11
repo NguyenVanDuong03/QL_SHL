@@ -431,6 +431,7 @@ class LecturerController extends Controller
         $getTotalDoneSessionsByLecturer = $this->classSessionRequestService->getTotalDoneSessionsByLecturer($lecturerId);
         $getTotalSessionsByLecturer = $this->classSessionRequestService->getTotalSessionsByLecturer($lecturerId);
         $participationRate = $this->studyClassService->participationRate($lecturerId);
+        $listStatisticsByLecturerId = $this->studyClassService->listStatisticsByLecturerId($lecturerId, $params['semester_id'])->toArray();
 
         $data = [
             'semesters' => $semesters,
@@ -439,8 +440,9 @@ class LecturerController extends Controller
             'getTotalDoneSessionsByLecturer' => $getTotalDoneSessionsByLecturer,
             'getTotalSessionsByLecturer' => $getTotalSessionsByLecturer,
             'participationRate' => $participationRate,
+            'listStatisticsByLecturerId' => $listStatisticsByLecturerId,
         ];
-//        dd($data['participationRate']);
+//        dd($data['listStatisticsByLecturerId']);
 
         return view('teacher.statistical.index', compact('data'));
     }

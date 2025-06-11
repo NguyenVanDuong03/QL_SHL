@@ -65,10 +65,6 @@ class StudentRepository extends BaseRepository
             $search = $params['search'] ?? '';
             $classId = $params['class_id'] ?? null;
 
-//        if (empty($classId)) {
-//            return [];
-//        }
-
             $query = $this->getModel()
                 ->with(['studyClass', 'user'])
                 ->where('study_class_id', $classId);

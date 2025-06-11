@@ -146,4 +146,20 @@ class StudentController extends Controller
         ], 200);
     }
 
+    public function indexClass(Request $request)
+    {
+        $params = $request->all();
+        $params['class_id'] = auth()->user()->student?->studyClass?->id ?? null;
+        $studyClassName = auth()->user()->student?->studyClass?->name ?? null;
+        $students = $this->studentService->getListStudentByClassId($params)->toArray();
+//        dd($students);
+        $data = [
+            'students' => $students,
+            'studyClassName' => $studyClassName,
+        ];
+//         dd($data['students']);
+
+        return view('student.class.index', compact('data'));
+    }
+
 }

@@ -28,7 +28,8 @@
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">
+                        <a class="nav-link {{ Route::currentRouteName() == 'class-staff.class.index'
+                                              ? 'active' : '' }}" href="{{ route('class-staff.class.index') }}">
                             {{ __('Lớp học') }}
                         </a>
                     </li>

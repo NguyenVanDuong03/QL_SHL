@@ -121,7 +121,7 @@
                         <table class="table">
                             <thead>
                             <tr>
-                                <th>Sinh hoạt lớp</th>
+                                <th>STT</th>
                                 <th class="d-none d-md-table-cell">Giáo viên</th>
                                 <th>Thời gian</th>
                                 <th>Lớp</th>
@@ -131,13 +131,19 @@
                             </thead>
                             <tbody>
                             @if(isset($data['classSessionRequests']) && $data['classSessionRequests']['total'] == 0)
-                                <p>Không có yêu cầu nào.</p>
+                                <tr>
+                                    <td colspan="6" class="text-center">
+                                        <div class="alert alert-info mb-0">
+                                            <i class="fas fa-info-circle me-2"></i>Không có dữ liệu sinh hoạt lớp.
+                                        </div>
+                                    </td>
+                                </tr>
                             @else
                                 @foreach($data['classSessionRequests']['data'] as $item)
                                     <tr>
                                         <td>
                                             <div
-                                                class="fw-semibold">{{ $item['type'] == 0 ? 'Cố định' : 'Linh hoạt' }}</div>
+                                                class="fw-semibold">{{ $loop->iteration }}</div>
                                             <small
                                                 class="text-muted d-md-none">GV: {{ $item['lecturer']['user']['name'] }}</small>
                                         </td>
@@ -149,8 +155,7 @@
                                                 class="text-muted">{{ \Carbon\Carbon::parse($item['proposed_at'])->format('d/m/Y') }}</small>
                                         </td>
                                         <td>
-                                                <span
-                                                    class="badge bg-light">{{ $item['study_class']['name'] }}</span>
+                                            {{ $item['study_class']['name'] }}
                                         </td>
                                         <td>
                                             <span class="title_cut">
@@ -160,10 +165,13 @@
                                         <td>
                                             <div
                                                 class="action-buttons d-flex flex-column flex-md-row gap-2 justify-content-center">
-                                                <a href="{{ route('class-staff.class-session.detailClassSession', ['study-class-id' => $item['study_class_id'], 'session-request-id' => $item['id']]) }}" class="btn btn-action btn-details" title="Xem chi tiết">
+                                                <a href="{{ route('class-staff.class-session.detailClassSession', ['study-class-id' => $item['study_class_id'], 'session-request-id' => $item['id']]) }}"
+                                                   class="btn btn-action btn-details" title="Xem chi tiết">
                                                     <i class="fas fa-eye"></i>
                                                 </a>
-                                                <a href="{{ route('class-staff.class-session.report', ['class_session_request_id' => $item['id'], 'report_id' => $item['class_session_report']['id'] ?? null ]) }}" class="btn btn-success {{ $item['type'] == 0 ? '' : 'd-none' }}" title="{{ isset($item['class_session_report']) ? 'Xem báo cáo' : 'Tạo báo cáo' }}">
+                                                <a href="{{ route('class-staff.class-session.report', ['class_session_request_id' => $item['id'], 'report_id' => $item['class_session_report']['id'] ?? null ]) }}"
+                                                   class="btn btn-success {{ $item['type'] == 0 ? '' : 'd-none' }}"
+                                                   title="{{ isset($item['class_session_report']) ? 'Xem báo cáo' : 'Tạo báo cáo' }}">
                                                     <i class="fas fa-pager"></i>
                                                 </a>
                                             </div>
@@ -187,8 +195,8 @@
 
 @push('scripts')
     <script>
-        $(document).ready(function() {
-            $(".title_cut").each(function() {
+        $(document).ready(function () {
+            $(".title_cut").each(function () {
                 var text = $(this).text().trim();
                 if (text.length > 20) {
                     $(this).attr("title", text);

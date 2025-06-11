@@ -26,4 +26,9 @@ class StudentConductScore extends Model
     {
         return $this->belongsTo(ConductCriteria::class);
     }
+
+    public function conductEvaluationPeriod()
+    {
+        return $this->belongsTo(ConductEvaluationPeriod::class);
+    }
 }
