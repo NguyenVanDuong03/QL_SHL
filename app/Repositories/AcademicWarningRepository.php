@@ -2,6 +2,7 @@
 
 namespace App\Repositories;
 
+use App\Helpers\Constant;
 use App\Models\AcademicWarning;
 
 class AcademicWarningRepository extends BaseRepository
@@ -29,5 +30,31 @@ class AcademicWarningRepository extends BaseRepository
             ->paginate();
 
             return $getAllStudentWarning;
+    }
+
+    public function listStudyClassAcademicWarning($params)
+    {
+        $semester_id = $params['semester_id'] ?? null;
+        $search = $params['search'] ?? null;
+
+        $query = $this->getModel()
+                ->with(['student', 'semester', 'student.user:id,name,email', 'student.studyClass:id,name'])
+                ->orderByDesc('id');
+
+        if (!empty($semester_id)) {
+            $query->where('semester_id', $semester_id);
+        }
+
+        if (!empty($search)) {
+            $query->whereHas('student', function ($q) use ($search) {
+                $q->whereHas('user', function ($q2) use ($search) {
+                    $q2->where('name', 'LIKE', "%$search%");
+                })->orWhereHas('studyClass', function ($q2) use ($search) {
+                    $q2->where('name', 'LIKE', "%$search%");
+                });
+            });
+        }
+
+        return $query->paginate(Constant::DEFAULT_LIMIT_12);
     }
 }

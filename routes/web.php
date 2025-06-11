@@ -216,10 +216,10 @@ Route::middleware(['auth'])->group(function () {
                 ],
                 function () {
                     Route::get('/', [StudentAffairsDepartmentController::class, 'indexAcademicWarning'])->name('index');
-                    Route::post('/', [StudentAffairsDepartmentController::class, 'createAcademicWarning'])->name('create');
+                    Route::post('/', [StudentAffairsDepartmentController::class, 'createAcademicWarning'])->name('store');
                     Route::get('/{id?}', [StudentAffairsDepartmentController::class, 'infoAcademicWarning'])->name('infoAcademicWarning');
-                    // Route::put('/{id?}', [StudentAffairsDepartmentController::class, 'editAcademicWarning'])->name('edit');
-                    // Route::delete('/{id?}', [StudentAffairsDepartmentController::class, 'deleteAcademicWarning'])->name('delete');
+                     Route::put('/{id?}', [StudentAffairsDepartmentController::class, 'editAcademicWarning'])->name('update');
+                     Route::delete('/{id?}', [StudentAffairsDepartmentController::class, 'deleteAcademicWarning'])->name('delete');
                 }
             );
 
