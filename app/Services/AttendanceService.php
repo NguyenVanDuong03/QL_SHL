@@ -96,25 +96,4 @@ class AttendanceService extends BaseService
         return 0;
     }
 
-//    public function getAttendanceByClassSessionRequestId($classRequestId)
-//    {
-//        $studyClassId = auth()->user()->student?->study_class_id ?? null;
-//
-//        $attendanceStudentId = $this->getRepository()->getAttendanceByClassSessionRequestId($classRequestId, $studyClassId);
-//        if (isset($attendanceStudentId)) {
-//            return $attendanceStudentId;
-//        }
-//
-//        return [];
-//    }
-
-//    public function exportAttendanceReport($classRequestId, $studyClassId)
-//    {
-//        if (!$studyClassId || !$classRequestId) {
-//            return null;
-//        }
-//
-//        return Excel::download(new AttendancesExport($classRequestId, $studyClassId), 'attendance.xlsx');
-//    }
-
 }

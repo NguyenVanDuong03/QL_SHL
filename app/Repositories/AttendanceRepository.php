@@ -131,18 +131,4 @@ class AttendanceRepository extends BaseRepository
             ->count();
     }
 
-//    public function getAttendanceByClassSessionRequestId($studyClassId, $classSessionRequestId)
-//    {
-//        return $this->getModel()
-//            ->select('students.student_code', 'users.name as student_name', 'attendances.status as attendance_status', 'attendances.reason')
-//            ->join('students', 'attendances.student_id', '=', 'students.id')
-//            ->join('users', 'students.user_id', '=', 'users.id')
-//            ->join('class_session_requests', 'attendances.class_session_request_id', '=', 'class_session_requests.id')
-//            ->join('study_classes', 'class_session_requests.study_class_id', '=', 'study_classes.id')
-//            ->where('study_classes.id', $studyClassId)
-//            ->where('class_session_requests.id', $classSessionRequestId)
-//            ->whereIn('attendances.status', [Constant::ATTENDANCE_STATUS['CONFIRM'], Constant::ATTENDANCE_STATUS['EXCUSED'], Constant::ATTENDANCE_STATUS['PRESENT'], Constant::ATTENDANCE_STATUS['ABSENT']])
-//            ->get();
-//    }
-
 }
