@@ -57,12 +57,19 @@
                         @endif
                     @else
                         <li class="nav-item dropdown">
-                            <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button"
-                                data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
-                                {{ Auth::user()->name }}
-                            </a>
+{{--                            <div class="d-flex flex-column">--}}
+                                <a id="navbarDropdown" class="nav-link dropdown-toggle pb-0" href="#" role="button"
+                                   data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
+                                    {{ Auth::user()->name }}
+                                </a>
+                                <small class="text-muted text-end my-0 me-2 d-none d-md-block">{{ Auth::user()->student?->position == 1 ? 'Lớp trưởng' : (Auth::user()->student?->position == 2 ? 'Lớp Phó' : 'Bí thư') }}</small>
+{{--                            </div>--}}
 
                             <div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                                <a class="dropdown-item" href="{{ route('profile') }}">
+                                    {{ __('Thông tin cá nhân') }}
+                                </a>
+
                                 <a class="dropdown-item" href="{{ route('logout') }}"
                                     onclick="event.preventDefault();
                                      document.getElementById('logout-form').submit();">

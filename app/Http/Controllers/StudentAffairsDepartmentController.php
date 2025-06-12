@@ -390,6 +390,7 @@ class StudentAffairsDepartmentController extends Controller
     {
         $params = $request->all();
         $params['limit'] = Constant::DEFAULT_LIMIT_12;
+        $params['withSemester'] = true;
         $ConductEvaluationPeriods = $this->conductEvaluationPeriodService->paginate($params)->toArray();
         $semesters = $this->semesterService->getFourSemester();
         $data = [
@@ -433,12 +434,15 @@ class StudentAffairsDepartmentController extends Controller
     {
         $params = $request->all();
         $params['conduct_evaluation_period_id'] = $id;
+        $params['study_class_id'] = $request->get('study_class_id', null);
         $getStudyClassList = $this->studyClassService->getStudyClassListByConductEvaluationPeriodId($params)->toArray();
+//        $infoByStudyClassListAndConductEvaluationPeriodId = $this->studyClassService->infoByStudyClassListAndConductEvaluationPeriodId($params);
 
         $data = [
             'getStudyClassList' => $getStudyClassList,
+//            'infoByStudyClassListAndConductEvaluationPeriodId' => $infoByStudyClassListAndConductEvaluationPeriodId,
         ];
-//        dd($getStudyClassList);
+//        dd($data['infoByStudyClassListAndConductEvaluationPeriodId']);
 
         return view('StudentAffairsDepartment.conductScore.list', compact('data'));
     }

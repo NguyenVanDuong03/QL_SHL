@@ -23,13 +23,15 @@
                                       ? 'active' : '' }}" href="{{ route('student-affairs-department.class-session.index') }}">
                     <i class="fas fa-bell"></i>
                     Sinh hoạt lớp
-                    @if($countClassSession > 0)
-                        <span class="badge bg-danger ms-1">{{ $countClassSession }}</span>
-                    @endif
+{{--                    @if($countClassSession > 0)--}}
+{{--                        <span class="badge bg-danger ms-1">{{ $countClassSession }}</span>--}}
+{{--                    @endif--}}
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link {{ Route::currentRouteName() == 'student-affairs-department.conduct-score.index' ? 'active' : '' }}" href="{{ route('student-affairs-department.conduct-score.index') }}">
+                <a class="nav-link {{ Route::currentRouteName() == 'student-affairs-department.conduct-score.index' ||
+                                      Route::currentRouteName() == 'student-affairs-department.conduct-score.infoConductScore'
+                                      ? 'active' : '' }}" href="{{ route('student-affairs-department.conduct-score.index') }}">
                     <i class="fas fa-book"></i>
                     Điểm rèn luyện
                 </a>

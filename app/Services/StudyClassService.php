@@ -70,4 +70,19 @@ class StudyClassService extends BaseService
         return $this->getRepository()->listStatisticsByLecturerId($lecturerId, $semesterId);
     }
 
+    public function listStatisticsStudyClassByLecturerId($lecturerId, $semesterId)
+    {
+        return $this->getRepository()->listStatisticsStudyClassByLecturerId($lecturerId, $semesterId);
+    }
+
+    public function infoStudyClassListByConductEvaluationPeriodId($params)
+    {
+        return $this->getRepository()->infoStudyClassListByConductEvaluationPeriodId($params);
+    }
+
+    public function infoByStudyClassListAndConductEvaluationPeriodId($params)
+    {
+        return $this->getRepository()->infoByStudyClassListAndConductEvaluationPeriodId($params);
+    }
+
 }
