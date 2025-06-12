@@ -11,20 +11,12 @@ class StudentConductScore extends Model
     protected $fillable = [
         'conduct_evaluation_period_id',
         'student_id',
-        'conduct_criteria_id',
-        'self_score',
-        'class_score',
-        'final_score',
-        'note',
+        'status'
     ];
 
     public function student()
     {
         return $this->belongsTo(Student::class);
-    }
-    public function conductCriteria()
-    {
-        return $this->belongsTo(ConductCriteria::class);
     }
 
     public function conductEvaluationPeriod()

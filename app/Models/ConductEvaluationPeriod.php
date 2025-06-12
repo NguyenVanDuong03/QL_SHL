@@ -18,4 +18,9 @@ class ConductEvaluationPeriod extends Model
     {
         return $this->belongsTo(Semester::class);
     }
+
+    public function studentConductScores()
+    {
+        return $this->hasMany(StudentConductScore::class);
+    }
 }
