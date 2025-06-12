@@ -30,9 +30,9 @@
                    href="{{ route('teacher.class-session.index') }}">
                     <i class="fas fa-book"></i>
                     Sinh hoạt lớp
-                    @if($countClassSession > 0)
-                        <span class="badge bg-danger ms-1">{{ $countClassSession }}</span>
-                    @endif
+{{--                    @if($countClassSession > 0)--}}
+{{--                        <span class="badge bg-danger ms-1">{{ $countClassSession }}</span>--}}
+{{--                    @endif--}}
                 </a>
             </li>
             <li class="nav-item">

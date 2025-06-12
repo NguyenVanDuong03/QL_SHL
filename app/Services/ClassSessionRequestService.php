@@ -22,15 +22,10 @@ class ClassSessionRequestService extends BaseService
         $sort = Arr::get($params, 'sort', 'id:desc');
         $wheres = Arr::get($params, 'wheres', []);
         $relates = Arr::get($params, 'relates', ['lecturer', 'studyClass', 'room', 'lecturer.user', 'attendances']);
-
-//        $flexibleClassActivities = Arr::get($params, 'flexibleClassActivities', null);
-//        if ($flexibleClassActivities) {
-//            $wheres[] = [function ($q)  {
-//                $q->where('status', Constant::CLASS_SESSION_STATUS['ACTIVE']);
-//            }];
-//
-//            $relates[] = ['lecturer', 'studyClass', 'room', 'attendances'];
-//        }
+        $list_study_class_by_lecturer = Arr::get($params, 'list_study_class_by_lecturer', false);
+        if ($list_study_class_by_lecturer) {
+            $wheres[] = ['lecturer_id', 'in', auth()->user()->lecturer?->id];
+        }
 
         return [
             'sort' => $sort,
@@ -115,5 +110,10 @@ class ClassSessionRequestService extends BaseService
     {
         return $this->getRepository()->getListFlexibleClass();
     }
+
+//    public function StatisticalClassSessionRequests($params)
+//    {
+//        return $this->getRepository()->StatisticalClassSessionRequests($params);
+//    }
 
 }

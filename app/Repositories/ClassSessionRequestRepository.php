@@ -204,4 +204,12 @@ class ClassSessionRequestRepository extends BaseRepository
             ->paginate(Constant::DEFAULT_LIMIT_12);
     }
 
+//    public function StatisticalClassSessionRequests($params)
+//    {
+//        return $this->getModel()
+//            ->with('studyClass', 'room', 'lecturer', 'studyClass.major.faculty.department')
+//            ->where('lecturer_id', $params['lecturer_id'])
+//            ->paginate(Constant::DEFAULT_LIMIT_12);
+//    }
+
 }

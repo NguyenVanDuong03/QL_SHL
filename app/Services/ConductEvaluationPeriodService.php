@@ -21,10 +21,17 @@ class ConductEvaluationPeriodService extends BaseService
     {
         $wheres = Arr::get($params, 'wheres', []);
         $sort = Arr::get($params, 'sort', 'id:desc');
+        $relates = Arr::get($params, 'relates', []);
+        $withSemester = Arr::get($params, 'withSemester', null);
+        if ($withSemester) {
+            $relates = ['semester'];
+        }
+
 
         return [
             'sort' => $sort,
             'wheres' => $wheres,
+            'relates' => $relates,
         ];
     }
 }

@@ -26,6 +26,9 @@ Auth::routes();
 
 Route::middleware(['auth'])->group(function () {
 
+    Route::get('/profile', [UserController::class, 'profile'])->name('profile');
+    Route::put('/profile', [UserController::class, 'updateProfile'])->name('profile.update');
+
     // Route Teacher
     Route::group(
         [

@@ -124,7 +124,7 @@
 @section('content')
     <x-navbar.class-staff />
 
-    <main class="py-4 mt-5">
+    <main class="pt-5 pb-4 mt-5">
         @yield('main')
     </main>
 
