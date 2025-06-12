@@ -9,8 +9,7 @@ class ConductCriteria extends Model
 {
     use SoftDeletes;
     protected $fillable = [
-        'name',
-        'description',
+        'content',
         'max_score',
     ];
 

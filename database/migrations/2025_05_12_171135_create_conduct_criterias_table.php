@@ -13,9 +13,8 @@ return new class extends Migration
     {
         Schema::create('conduct_criterias', function (Blueprint $table) {
             $table->id();
-            $table->text('name');
-//            $table->string('description');
-            $table->float('max_score')->default(0);
+            $table->text('content');
+            $table->integer('max_score')->default(0)->comment('Điểm tối đa cho tiêu chí này');
             $table->softDeletes();
             $table->timestamps();
         });

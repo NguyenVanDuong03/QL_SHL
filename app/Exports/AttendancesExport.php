@@ -67,7 +67,7 @@ class AttendancesExport implements FromQuery, WithHeadings, WithMapping, WithSty
         $sheet->getColumnDimension('A')->setWidth(20);
         $sheet->getColumnDimension('B')->setWidth(30);
         $sheet->getColumnDimension('C')->setWidth(25);
-        $sheet->getColumnDimension('D')->setWidth(40);
+        $sheet->getColumnDimension('D')->setWidth(50);
 
         $sheet->setAutoFilter($sheet->calculateWorksheetDimension());
 
