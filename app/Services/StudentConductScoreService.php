@@ -30,4 +30,45 @@ class StudentConductScoreService extends BaseService
             'relates' => $relates,
         ];
     }
+
+    public function findStudentConductScore($conductEvaluationPeriodId, $studentId)
+    {
+        return $this->getRepository()->findStudentConductScore(
+            $conductEvaluationPeriodId,
+            $studentId
+        );
+    }
+
+//    public function createOrUpdateStudentConductScore($params)
+//    {
+//        $conductEvaluationPeriodId = $params['conduct_evaluation_period_id'];
+//        $studentId = $params['student_id'];
+//        $teacherScore = $params['class_score'] ?? null;
+//        $departmentScore = $params['final_score'] ?? null;
+//
+//        $attributes = [
+//            'conduct_evaluation_period_id' => $conductEvaluationPeriodId,
+//            'student_id' => $studentId,
+//        ];
+//
+//        $values = [
+//            'status' => Constant::STUDENT_CONDUCT_SCORE_STATUS['STUDENT'],
+//        ];
+//
+//        if ($teacherScore !== null) {
+//            $values['class_score'] = $teacherScore;
+//            $values['status'] = Constant::STUDENT_CONDUCT_SCORE_STATUS['TEACHER'];
+//        }
+//
+//        if ($departmentScore !== null) {
+//            $values['final_score'] = $departmentScore;
+//            $values['status'] = Constant::STUDENT_CONDUCT_SCORE_STATUS['DEPARTMENT'];
+//        }
+//
+//        return $this->getRepository()->createOrUpdate(
+//            $attributes,
+//            $values
+//        );
+//    }
+
 }

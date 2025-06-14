@@ -34,4 +34,31 @@ class ConductEvaluationPeriodService extends BaseService
             'relates' => $relates,
         ];
     }
+
+    public function currentConductEvaluationPeriod()
+    {
+        return $this->getRepository()->currentConductEvaluationPeriod();
+    }
+
+    public function checkConductEvaluationPeriod()
+    {
+        $currentConductEvaluationPeriod = $this->currentConductEvaluationPeriod();
+        if ($currentConductEvaluationPeriod) {
+            $openDate = $currentConductEvaluationPeriod->open_date;
+            $endDate = $currentConductEvaluationPeriod->end_date;
+            $now = now();
+
+            if ($now->isBetween($openDate, $endDate) || $now->lt($openDate)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public function findConductEvaluationPeriodBySemesterId($semesterId)
+    {
+        return $this->getRepository()->findConductEvaluationPeriodBySemesterId($semesterId);
+    }
+
 }

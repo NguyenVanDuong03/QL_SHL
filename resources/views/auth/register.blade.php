@@ -44,8 +44,13 @@
 
                 <div class="mb-3">
                     <label for="password" class="form-label">Mật khẩu</label>
-                    <input type="password" class="form-control @error('password') is-invalid @enderror" id="password"
-                        name="password" placeholder="Nhập mật khẩu" required>
+                    <div class="input-group">
+                        <input type="password" class="form-control @error('password') is-invalid @enderror" id="password"
+                               name="password" placeholder="Nhập mật khẩu" required>
+                        <button class="btn btn-outline-secondary password-toggle" type="button">
+                            <i class="fa fa-eye"></i>
+                        </button>
+                    </div>
                     @error('password')
                         <span class="invalid-feedback" role="alert">
                             <strong>{{ $message }}</strong>

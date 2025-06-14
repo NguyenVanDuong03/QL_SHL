@@ -2,23 +2,35 @@
     switch (Auth::user()->role ?? null) {
         case '0':
             $layout = 'layouts.teacher';
+            $breadcumb = 'Thông tin cá nhân';
             break;
         case '1':
             $layout = 'layouts.studentAffairsDepartment';
+            $breadcumb = 'Thông tin cá nhân';
             break;
         case '2':
             $layout = 'layouts.classStaff';
+            $breadcumb = '';
             break;
         case '3':
             $layout = 'layouts.student';
+            $breadcumb = '';
             break;
         default:
             $layout = 'layouts.app'; // layout mặc định
+            $breadcumb = '';
             break;
     }
 @endphp
 
 @extends($layout)
+
+@section('title', 'Thông tin cá nhân')
+
+@section('breadcrumb')
+    <x-breadcrumb.breadcrumb :links="[['label' => $breadcumb]]" />
+@endsection
+
 
 @push('styles')
     <style>
@@ -155,9 +167,9 @@
 @endpush
 
 @section('main')
-    <div class="container py-3 py-md-5">
+    <div class="container-fluid py-3 py-md-4">
         <div class="row justify-content-center">
-            <div class="col-12 col-lg-8 col-xl-7">
+            <div class="col-12 col-lg-11 col-xl-10">
                 <div class="card profile-card">
                     <div class="card-header text-white text-center">
                         <h3 class="mb-0">
@@ -169,137 +181,123 @@
                         <form id="profileForm" action="{{ route('profile.update') }}" method="POST" enctype="multipart/form-data">
                             @csrf
                             @method('PUT')
-                            <!-- Basic Information -->
-                            <div class="row mobile-stack">
-                                <div class="col-12">
-                                    <div class="mb-3">
-                                        <label for="name" class="form-label">
-                                            <i class="fa fa-person me-1"></i>
-                                            Họ và tên <span class="text-danger">*</span>
-                                        </label>
-                                        <input type="text"
-                                               class="form-control @error('name') is-invalid @enderror"
-                                               id="name"
-                                               name="name"
-                                               value="{{ old('name', Auth::user()->name) }}"
-                                               required
-                                               placeholder="Nhập họ và tên đầy đủ">
-                                        @error('name')
-                                        <div class="invalid-feedback">{{ $message }}</div>
-                                        @enderror
-                                    </div>
+                            <!-- First Row: Name, Email, Phone -->
+                            <div class="row mb-3">
+                                <div class="col-md-4 col-12 mb-3 mb-md-0">
+                                    <label for="name" class="form-label">
+                                        <i class="fa fa-person me-1"></i>
+                                        Họ và tên <span class="text-danger">*</span>
+                                    </label>
+                                    <input type="text"
+                                           class="form-control @error('name') is-invalid @enderror"
+                                           id="name"
+                                           name="name"
+                                           value="{{ old('name', Auth::user()->name) }}"
+                                           required
+                                           placeholder="Nhập họ và tên đầy đủ">
+                                    @error('name')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
+                                </div>
+                                <div class="col-md-4 col-12 mb-3 mb-md-0">
+                                    <label for="email" class="form-label">
+                                        <i class="fa fa-envelope me-1"></i>
+                                        Email <span class="text-danger">*</span>
+                                    </label>
+                                    <input type="email"
+                                           class="form-control"
+                                           id="email"
+                                           name="email"
+                                           value="{{ Auth::user()->email }}"
+                                           readonly>
+                                    <small class="text-muted">
+                                        <i class="fa fa-info-circle me-1"></i>
+                                        Email không thể thay đổi
+                                    </small>
+                                </div>
+                                <div class="col-md-4 col-12">
+                                    <label for="phone" class="form-label">
+                                        <i class="fa fa-telephone me-1"></i>
+                                        Số điện thoại
+                                    </label>
+                                    <input type="tel"
+                                           class="form-control @error('phone') is-invalid @enderror"
+                                           id="phone"
+                                           name="phone"
+                                           value="{{ old('phone', Auth::user()->phone) }}"
+                                           placeholder="Nhập số điện thoại">
+                                    @error('phone')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
                                 </div>
                             </div>
 
-                            <div class="row mobile-stack">
-                                <div class="col-md-6">
-                                    <div class="mb-3">
-                                        <label for="email" class="form-label">
-                                            <i class="fa fa-envelope me-1"></i>
-                                            Email <span class="text-danger">*</span>
-                                        </label>
-                                        <input type="email"
-                                               class="form-control"
-                                               id="email"
-                                               name="email"
-                                               value="{{ Auth::user()->email }}"
-                                               readonly>
-                                        <small class="text-muted">
-                                            <i class="fa fa-info-circle me-1"></i>
-                                            Email không thể thay đổi
-                                        </small>
-                                    </div>
+                            <!-- Second Row: Date of Birth, Gender, Role -->
+                            <div class="row mb-3">
+                                <div class="col-md-4 col-12 mb-3 mb-md-0">
+                                    <label for="date_of_birth" class="form-label">
+                                        <i class="fa fa-calendar me-1"></i>
+                                        Ngày sinh
+                                    </label>
+                                    <input type="date"
+                                           class="form-control @error('date_of_birth') is-invalid @enderror"
+                                           id="date_of_birth"
+                                           name="date_of_birth"
+                                           value="{{ old('date_of_birth', Auth::user()->date_of_birth ? \Carbon\Carbon::parse(Auth::user()->date_of_birth)->format('Y-m-d') : '') }}">
+                                    @error('date_of_birth')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
                                 </div>
-                                <div class="col-md-6">
-                                    <div class="mb-3">
-                                        <label for="phone" class="form-label">
-                                            <i class="fa fa-telephone me-1"></i>
-                                            Số điện thoại
-                                        </label>
-                                        <input type="tel"
-                                               class="form-control @error('phone') is-invalid @enderror"
-                                               id="phone"
-                                               name="phone"
-                                               value="{{ old('phone', Auth::user()->phone) }}"
-                                               placeholder="Nhập số điện thoại">
-                                        @error('phone')
-                                        <div class="invalid-feedback">{{ $message }}</div>
-                                        @enderror
-                                    </div>
+                                <div class="col-md-4 col-12 mb-3 mb-md-0">
+                                    <label for="gender" class="form-label">
+                                        <i class="fa fa-gender-ambiguous me-1"></i>
+                                        Giới tính
+                                    </label>
+                                    <select class="form-select @error('gender') is-invalid @enderror" id="gender" name="gender">
+                                        <option value="">-- Chọn giới tính --</option>
+                                        <option value="Nam" {{ old('gender', Auth::user()->gender) == 'Nam' ? 'selected' : '' }}>Nam</option>
+                                        <option value="Nữ" {{ old('gender', Auth::user()->gender) == 'Nữ' ? 'selected' : '' }}>Nữ</option>
+                                    </select>
+                                    @error('gender')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
                                 </div>
-                            </div>
-
-                            <div class="row mobile-stack">
-                                <div class="col-md-6">
-                                    <div class="mb-3">
-                                        <label for="date_of_birth" class="form-label">
-                                            <i class="fa fa-calendar me-1"></i>
-                                            Ngày sinh
-                                        </label>
-                                        <input type="date"
-                                               class="form-control @error('date_of_birth') is-invalid @enderror"
-                                               id="date_of_birth"
-                                               name="date_of_birth"
-                                               value="{{ old('date_of_birth', Auth::user()->date_of_birth ? \Carbon\Carbon::parse(Auth::user()->date_of_birth)->format('Y-m-d') : '') }}">
-                                        @error('date_of_birth')
-                                        <div class="invalid-feedback">{{ $message }}</div>
-                                        @enderror
+                                <div class="col-md-4 col-12">
+                                    <label for="role" class="form-label">
+                                        <i class="fa fa-shield-check me-1"></i>
+                                        Vai trò
+                                    </label>
+                                    <div>
+                                        @php
+                                            $roleClass = '';
+                                            $roleText = '';
+                                            switch(Auth::user()->role) {
+                                                case '0':
+                                                    $roleClass = 'role-teacher';
+                                                    $roleText = 'Giáo viên';
+                                                    break;
+                                                case '1':
+                                                    $roleClass = 'role-ctsv';
+                                                    $roleText = 'Cán bộ công tác sinh viên';
+                                                    break;
+                                                case '2':
+                                                    $roleClass = 'role-cbl';
+                                                    $roleText = Auth::user()->student?->position == 1 ? 'Lớp trưởng' : (Auth::user()->student?->position == 2 ? 'Lớp phó' : 'Bí thư');
+                                                    break;
+                                                case '3':
+                                                    $roleClass = 'role-student';
+                                                    $roleText = 'Sinh viên';
+                                                    break;
+                                                default:
+                                                    $roleClass = 'bg-secondary text-white';
+                                                    $roleText = 'Không xác định';
+                                            }
+                                        @endphp
+                                        <span class="role-badge {{ $roleClass }}">
+                                            <i class="fa fa-person-badge me-1"></i>
+                                            {{ $roleText }}
+                                        </span>
                                     </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="mb-3">
-                                        <label for="gender" class="form-label">
-                                            <i class="fa fa-gender-ambiguous me-1"></i>
-                                            Giới tính
-                                        </label>
-                                        <select class="form-select @error('gender') is-invalid @enderror" id="gender" name="gender">
-                                            <option value="">-- Chọn giới tính --</option>
-                                            <option value="Nam" {{ old('gender', Auth::user()->gender) == 'Nam' ? 'selected' : '' }}>Nam</option>
-                                            <option value="Nữ" {{ old('gender', Auth::user()->gender) == 'Nữ' ? 'selected' : '' }}>Nữ</option>
-                                        </select>
-                                        @error('gender')
-                                        <div class="invalid-feedback">{{ $message }}</div>
-                                        @enderror
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Role Information -->
-                            <div class="mb-3">
-                                <label for="role" class="form-label">
-                                    <i class="fa fa-shield-check me-1"></i>
-                                    Vai trò
-                                </label>
-                                <div>
-                                    @php
-                                        $roleClass = '';
-                                        $roleText = '';
-                                        switch(Auth::user()->role) {
-                                            case '0':
-                                                $roleClass = 'role-teacher';
-                                                $roleText = 'Giáo viên';
-                                                break;
-                                            case '1':
-                                                $roleClass = 'role-ctsv';
-                                                $roleText = 'Cán bộ công tác sinh viên';
-                                                break;
-                                            case '2':
-                                                $roleClass = 'role-cbl';
-                                                $roleText = 'Cán bộ lớp';
-                                                break;
-                                            case '3':
-                                                $roleClass = 'role-student';
-                                                $roleText = 'Sinh viên';
-                                                break;
-                                            default:
-                                                $roleClass = 'bg-secondary text-white';
-                                                $roleText = 'Không xác định';
-                                        }
-                                    @endphp
-                                    <span class="role-badge {{ $roleClass }}">
-                                    <i class="fa fa-person-badge me-1"></i>
-                                    {{ $roleText }}
-                                </span>
                                 </div>
                             </div>
 
@@ -309,71 +307,65 @@
                                 <i class="fa fa-key me-2"></i>
                                 Đổi mật khẩu
                             </h5>
-                            <p class="text-muted small mb-3">Để trống nếu không muốn thay đổi mật khẩu</p>
+                            <p class="text-muted small mb-2">Để trống nếu không muốn thay đổi mật khẩu</p>
 
-                            <div class="mb-3">
-                                <label for="current_password" class="form-label">Mật khẩu hiện tại</label>
-                                <div class="input-group">
-                                    <input type="password"
-                                           class="form-control @error('current_password') is-invalid @enderror"
-                                           id="current_password"
-                                           name="password"
-                                           placeholder="Nhập mật khẩu hiện tại">
-                                    <button class="btn btn-outline-secondary password-toggle" type="button" data-target="current_password">
-                                        <i class="fa fa-eye"></i>
-                                    </button>
-                                </div>
-                                @error('current_password')
-                                <div class="invalid-feedback d-block">{{ $message }}</div>
-                                @enderror
-                            </div>
-
-                            <div class="row mobile-stack">
-                                <div class="col-md-6">
-                                    <div class="mb-3">
-                                        <label for="new_password" class="form-label">Mật khẩu mới</label>
-                                        <div class="input-group">
-                                            <input type="password"
-                                                   class="form-control @error('new_password') is-invalid @enderror"
-                                                   id="new_password"
-                                                   name="new_password"
-                                                   placeholder="Nhập mật khẩu mới">
-                                            <button class="btn btn-outline-secondary password-toggle" type="button" data-target="new_password">
-                                                <i class="fa fa-eye"></i>
-                                            </button>
-                                        </div>
-                                        @error('new_password')
-                                        <div class="invalid-feedback d-block">{{ $message }}</div>
-                                        @enderror
+                            <!-- Password Row -->
+                            <div class="row mb-3">
+                                <div class="col-md-4 col-12 mb-3 mb-md-0">
+                                    <label for="current_password" class="form-label">Mật khẩu hiện tại</label>
+                                    <div class="input-group">
+                                        <input type="password"
+                                               class="form-control @error('current_password') is-invalid @enderror"
+                                               id="current_password"
+                                               name="password"
+                                               placeholder="Nhập mật khẩu hiện tại">
+                                        <button class="btn btn-outline-secondary password-toggle" type="button" data-target="current_password">
+                                            <i class="fa fa-eye"></i>
+                                        </button>
                                     </div>
+                                    @error('current_password')
+                                    <div class="invalid-feedback d-block">{{ $message }}</div>
+                                    @enderror
                                 </div>
-                                <div class="col-md-6">
-                                    <div class="mb-3">
-                                        <label for="new_password_confirmation" class="form-label">Xác nhận mật khẩu mới</label>
-                                        <div class="input-group">
-                                            <input type="password"
-                                                   class="form-control"
-                                                   id="new_password_confirmation"
-                                                   name="new_password_confirmation"
-                                                   placeholder="Nhập lại mật khẩu mới">
-                                            <button class="btn btn-outline-secondary password-toggle" type="button" data-target="new_password_confirmation">
-                                                <i class="fa fa-eye"></i>
-                                            </button>
-                                        </div>
+                                <div class="col-md-4 col-12 mb-3 mb-md-0">
+                                    <label for="new_password" class="form-label">Mật khẩu mới</label>
+                                    <div class="input-group">
+                                        <input type="password"
+                                               class="form-control @error('new_password') is-invalid @enderror"
+                                               id="new_password"
+                                               name="new_password"
+                                               placeholder="Nhập mật khẩu mới">
+                                        <button class="btn btn-outline-secondary password-toggle" type="button" data-target="new_password">
+                                            <i class="fa fa-eye"></i>
+                                        </button>
+                                    </div>
+                                    @error('new_password')
+                                    <div class="invalid-feedback d-block">{{ $message }}</div>
+                                    @enderror
+                                </div>
+                                <div class="col-md-4 col-12">
+                                    <label for="new_password_confirmation" class="form-label">Xác nhận mật khẩu mới</label>
+                                    <div class="input-group">
+                                        <input type="password"
+                                               class="form-control"
+                                               id="new_password_confirmation"
+                                               name="new_password_confirmation"
+                                               placeholder="Nhập lại mật khẩu mới">
+                                        <button class="btn btn-outline-secondary password-toggle" type="button" data-target="new_password_confirmation">
+                                            <i class="fa fa-eye"></i>
+                                        </button>
                                     </div>
                                 </div>
                             </div>
 
                             <!-- Action Buttons -->
-                            <div class="d-flex flex-column flex-md-row justify-content-end gap-2 mt-4">
-                                <a href="" class="btn btn-outline-secondary btn-custom btn-mobile-full">
-                                    <i class="fa fa-arrow-left me-1"></i>
-                                    Quay lại
-                                </a>
-                                <button type="submit" class="btn btn-primary btn-custom btn-mobile-full">
-                                    <i class="fa fa-save me-1"></i>
-                                    Lưu thay đổi
-                                </button>
+                            <div class="row">
+                                <div class="col-12 d-flex justify-content-end">
+                                    <button type="submit" class="btn btn-primary btn-custom">
+                                        <i class="fa fa-save me-1"></i>
+                                        Lưu thay đổi
+                                    </button>
+                                </div>
                             </div>
                         </form>
                     </div>

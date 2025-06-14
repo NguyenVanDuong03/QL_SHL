@@ -33,7 +33,8 @@
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">
+                        <a class="nav-link {{ Route::currentRouteName() == 'student.conduct-score.index'
+                                              ? 'active' : '' }}" href="{{ route('student.conduct-score.index') }}">
                             {{ __('Điểm rèn luyện') }}
                         </a>
                     </li>
@@ -57,7 +58,7 @@
                     @else
                         <li class="nav-item dropdown">
 {{--                            <div class="d-flex flex-column">--}}
-                                <a id="navbarDropdown" class="nav-link dropdown-toggle pb-0" href="#" role="button"
+                                <a id="navbarDropdown" class="nav-link dropdown-toggle pb-0 {{ Route::currentRouteName() == 'profile' ? 'active' : '' }}" href="#" role="button"
                                    data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
                                     {{ Auth::user()->name }}
                                 </a>
@@ -65,7 +66,7 @@
 {{--                            </div>--}}
 
                             <div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-                                <a class="dropdown-item" href="{{ route('profile') }}">
+                                <a class="dropdown-item {{ Route::currentRouteName() == 'profile' ? 'active' : '' }}" href="{{ route('profile') }}">
                                     {{ __('Thông tin cá nhân') }}
                                 </a>
 

@@ -18,6 +18,7 @@ return new class extends Migration
             $table->integer('self_score')->default(0);
             $table->integer('class_score')->default(0)->nullable();
             $table->integer('final_score')->default(0)->nullable();
+            $table->string('path')->nullable();
             $table->text('note')->nullable();
             $table->softDeletes();
             $table->timestamps();

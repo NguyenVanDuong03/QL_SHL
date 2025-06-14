@@ -14,16 +14,17 @@ class DetailConductScore extends Model
         'self_score',
         'class_score',
         'final_score',
+        'path',
         'note',
     ];
 
     public function conductCriteria()
     {
-        return $this->belongsTo(ConductCriteria::class);
+        return $this->belongsTo(ConductCriteria::class, 'conduct_criteria_id');
     }
 
     public function studentConductScore()
     {
-        return $this->belongsTo(StudentConductScore::class);
+        return $this->belongsTo(StudentConductScore::class, 'student_conduct_score_id');
     }
 }

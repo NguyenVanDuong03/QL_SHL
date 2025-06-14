@@ -274,19 +274,6 @@
                     }
                 }
             });
-
-            // Debug info (có thể xóa trong production)
-            // if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
-            //     $(document).keydown(function(e) {
-            //         if (e.key === 'F12' && e.ctrlKey && e.shiftKey) {
-            //             console.log('Back to Top Debug Info:');
-            //             console.log('Click times:', clickTimes);
-            //             console.log('Is scrolling:', isScrolling);
-            //             console.log('Last click time:', new Date(lastClickTime));
-            //             console.log('Clicks in last minute:', clickTimes.length);
-            //         }
-            //     });
-            // }
         });
     </script>
 @endpush

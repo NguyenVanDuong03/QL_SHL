@@ -62,4 +62,10 @@ class Constant
         'AVAILABLE' => 0,
         'UNAVAILABLE' => 1,
     ];
+
+    const STUDENT_CONDUCT_SCORE_STATUS = [
+        'STUDENT' => 0,
+        'TEACHER' => 1,
+        'DEPARTMENT' => 2,
+    ];
 }

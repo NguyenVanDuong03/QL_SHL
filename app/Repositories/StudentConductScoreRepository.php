@@ -15,4 +15,12 @@ class StudentConductScoreRepository extends BaseRepository
         return $this->model;
     }
 
+    public function findStudentConductScore($conductEvaluationPeriodId, $studentId)
+    {
+        return $this->getModel()
+            ->where('conduct_evaluation_period_id', $conductEvaluationPeriodId)
+            ->where('student_id', $studentId)
+            ->first();
+    }
+
 }

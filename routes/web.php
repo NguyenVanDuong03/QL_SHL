@@ -307,6 +307,18 @@ Route::middleware(['auth'])->group(function () {
                     Route::get('/', [StudentController::class, 'indexClass'])->name('index');
                 }
             );
+
+            // Conduct Score
+            Route::group(
+                [
+                    'prefix' => 'conduct-score',
+                    'as' => 'conduct-score.',
+                ],
+                function () {
+                    Route::get('/', [StudentController::class, 'indexConductScore'])->name('index');
+                    Route::post('/', [StudentController::class, 'SaveConductScore'])->name('save');
+                }
+            );
         }
     );
 });

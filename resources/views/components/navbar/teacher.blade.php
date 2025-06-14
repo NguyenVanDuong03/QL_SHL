@@ -54,6 +54,12 @@
                     Thống kê
                 </a>
             </li>
+            <li class="nav-item">
+                <a class="nav-link {{ Route::currentRouteName() == 'profile' ? 'active' : '' }}" href="{{ route('profile') }}">
+                    <i class="fas fa-chart-line"></i>
+                    Thông tin cá nhân
+                </a>
+            </li>
         </ul>
     </div>
 
