@@ -7,26 +7,36 @@ use App\Services\AcademicWarningService;
 use App\Services\AttendanceService;
 use App\Services\ClassSessionRegistrationService;
 use App\Services\ClassSessionRequestService;
+use App\Services\ConductCriteriaService;
+use App\Services\ConductEvaluationPeriodService;
+use App\Services\DetailConductScoreService;
 use App\Services\LecturerService;
 use App\Services\RoomService;
 use App\Services\SemesterService;
+use App\Services\StudentConductScoreService;
 use App\Services\StudentService;
 use App\Services\StudyClassService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 
 class LecturerController extends Controller
 {
     public function __construct(
-        protected ClassSessionRegistrationService $classSessionRegistrationService,
-        protected ClassSessionRequestService $classSessionRequestService,
-        protected StudyClassService $studyClassService,
-        protected StudentService $studentService,
-        protected RoomService $roomService,
-        protected SemesterService $SemesterService,
-        protected AcademicWarningService $academicWarningService,
-        protected AttendanceService $attendanceService,
-        protected SemesterService $semesterService,
-        protected LecturerService $lecturerService,
+        protected ClassSessionRegistrationService   $classSessionRegistrationService,
+        protected ClassSessionRequestService        $classSessionRequestService,
+        protected StudyClassService                 $studyClassService,
+        protected StudentService                    $studentService,
+        protected RoomService                       $roomService,
+        protected SemesterService                   $SemesterService,
+        protected AcademicWarningService            $academicWarningService,
+        protected AttendanceService                 $attendanceService,
+        protected SemesterService                   $semesterService,
+        protected LecturerService                   $lecturerService,
+        protected StudentConductScoreService        $studentConductScoreService,
+        protected ConductEvaluationPeriodService    $conductEvaluationPeriodService,
+        protected DetailConductScoreService         $detailConductScoreService,
+        protected ConductCriteriaService            $conductCriteriaService
         )
         {
         }
@@ -417,6 +427,44 @@ class LecturerController extends Controller
         }
 
         return view('teacher.classSession.flexibleDetail', compact('data'));
+    }
+
+    public function indexConductScore(Request $request)
+    {
+        $params = $request->all();
+        $params['limit'] = Constant::DEFAULT_LIMIT_12;
+        $params['withSemester'] = true;
+        $ConductEvaluationPeriods = $this->conductEvaluationPeriodService->paginate($params)->toArray();
+        $semesters = $this->semesterService->getFourSemester();
+        $data = [
+            'ConductEvaluationPeriods' => $ConductEvaluationPeriods,
+            'semesters' => $semesters,
+        ];
+//         dd($data['ConductEvaluationPeriods']);
+
+        return view('teacher.conductScore.index', compact('data'));
+    }
+
+    public function infoConductScore(Request $request, $id)
+    {
+        $params = $request->all();
+        $params['conduct_evaluation_period_id'] = $id;
+        $semesterId = $this->conductEvaluationPeriodService->find($id)->semester_id ?? null;
+        $findConductEvaluationPeriodBySemesterId = $this->conductEvaluationPeriodService->findConductEvaluationPeriodBySemesterId($semesterId);
+        $params['semester_id'] = $params['semester_id'] ?? $semesterId;
+        $params['lecturer_id'] = auth()->user()->lecturer?->id;
+//        dd($findConductEvaluationPeriodBySemesterId);
+        $params['study_class_id'] = $request->get('study_class_id', null);
+        $getStudyClassList = $this->studyClassService->getStudyClassListByConductEvaluationPeriodIdByLecturerId($params)->toArray();
+//        $infoByStudyClassListAndConductEvaluationPeriodId = $this->studyClassService->infoByStudyClassListAndConductEvaluationPeriodId($params);
+
+        $data = [
+            'getStudyClassList' => $getStudyClassList,
+            'conduct_evaluation_period_id' => $id
+        ];
+//        dd($data['getStudyClassList']);
+
+        return view('teacher.conductScore.list', compact('data'));
     }
 
     public function indexStatistical(Request $request)

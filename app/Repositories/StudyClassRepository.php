@@ -196,6 +196,40 @@ class StudyClassRepository extends BaseRepository
             throw new \Exception('Failed to retrieve study class list');
         }
     }
+    public function getStudyClassListByConductEvaluationPeriodIdByLecturerId($params)
+    {
+        $conductEvaluationPeriodId = $params['conduct_evaluation_period_id'];
+        $lecturerId = $params['lecturer_id'];
+
+        $query = $this->getModel()
+            ->select([
+                'study_classes.id as class_id',
+                'study_classes.name as study_class_name',
+                'majors.name as major_name',
+                'departments.name as department_name',
+                DB::raw('COUNT(DISTINCT students.id) as total_students'),
+                DB::raw('COUNT(DISTINCT student_conduct_scores.student_id) as has_evaluated'),
+                DB::raw('(COUNT(DISTINCT students.id) - COUNT(DISTINCT student_conduct_scores.student_id)) as not_evaluated')
+            ])
+            ->leftJoin('majors', 'study_classes.major_id', '=', 'majors.id')
+            ->leftJoin('faculties', 'majors.faculty_id', '=', 'faculties.id')
+            ->leftJoin('departments', 'faculties.department_id', '=', 'departments.id')
+            ->leftJoin('students', 'students.study_class_id', '=', 'study_classes.id')
+            ->leftJoin('student_conduct_scores', function ($join) use ($conductEvaluationPeriodId) {
+                $join->on('students.id', '=', 'student_conduct_scores.student_id')
+                    ->where('student_conduct_scores.conduct_evaluation_period_id', '=', $conductEvaluationPeriodId);
+            })
+            ->where('study_classes.lecturer_id', $lecturerId)
+            ->groupBy('study_classes.id', 'study_classes.name', 'majors.name', 'departments.name')
+            ->orderBy('study_classes.id');
+
+        try {
+            return $query->paginate(Constant::DEFAULT_LIMIT_12);
+        } catch (\Exception $e) {
+            \Log::error('Error in getStudyClassListByConductEvaluationPeriodId: ' . $e->getMessage());
+            throw new \Exception('Failed to retrieve study class list');
+        }
+    }
 
     public function participationRate($lecturerId)
     {

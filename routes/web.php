@@ -91,6 +91,18 @@ Route::middleware(['auth'])->group(function () {
                 }
             );
 
+            // Conduct Score
+            Route::group(
+                [
+                    'prefix' => 'conduct-score',
+                    'as' => 'conduct-score.',
+                ],
+                function () {
+                    Route::get('/', [LecturerController::class, 'indexConductScore'])->name('index');
+                    Route::get('/{id?}', [LecturerController::class, 'infoConductScore'])->name('infoConductScore');
+                }
+            );
+
             // Statistical
             Route::group(
                 [

@@ -60,6 +60,11 @@ class StudyClassService extends BaseService
         return $this->getRepository()->getStudyClassListByConductEvaluationPeriodId($params);
     }
 
+    public function getStudyClassListByConductEvaluationPeriodIdByLecturerId($params)
+    {
+        return $this->getRepository()->getStudyClassListByConductEvaluationPeriodIdByLecturerId($params);
+    }
+
     public function participationRate($lecturerId)
     {
         return $this->getRepository()->participationRate($lecturerId);

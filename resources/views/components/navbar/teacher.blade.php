@@ -43,7 +43,9 @@
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="#">
+                <a class="nav-link {{ Route::currentRouteName() == 'teacher.conduct-score.index' ||
+                                      Route::currentRouteName() == 'teacher.conduct-score.infoConductScore'
+                                      ? 'active' : '' }}" href="{{ route('teacher.conduct-score.index') }}">
                     <i class="fas fa-chart-bar"></i>
                     Điểm rèn luyện
                 </a>
