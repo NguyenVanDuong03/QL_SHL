@@ -92,25 +92,29 @@
                     <div class="row mb-4">
                         <div class="col-6 col-md-3">
                             <div class="stats-card bg-secondary">
-                                <div class="stats-number text-white" id="totalStudents">{{ $data['listConductScores']['total'] }}</div>
+                                <div class="stats-number text-white"
+                                     id="totalStudents">{{ $data['listConductScores']['total'] }}</div>
                                 <div class="stats-label text-white">Tổng sinh viên</div>
                             </div>
                         </div>
                         <div class="col-6 col-md-3">
                             <div class="stats-card bg-primary">
-                                <div class="stats-number text-white" id="studentEvaluated">{{ $data['countStudentsByConductStatus']['self_evaluated'] }}</div>
+                                <div class="stats-number text-white"
+                                     id="studentEvaluated">{{ $data['countStudentsByConductStatus']['self_evaluated'] }}</div>
                                 <div class="stats-label text-white">Sinh viên đã chấm</div>
                             </div>
                         </div>
                         <div class="col-6 col-md-3">
                             <div class="stats-card bg-success">
-                                <div class="stats-number text-white" id="teacherEvaluated">{{ $data['countStudentsByConductStatus']['class_teacher_evaluated'] }}</div>
+                                <div class="stats-number text-white"
+                                     id="teacherEvaluated">{{ $data['countStudentsByConductStatus']['class_teacher_evaluated'] }}</div>
                                 <div class="stats-label text-white">GVCN đã chấm</div>
                             </div>
                         </div>
                         <div class="col-6 col-md-3">
                             <div class="stats-card bg-danger">
-                                <div class="stats-number text-white" id="rejectedCount">{{ $data['countStudentsByConductStatus']['student_affairs_evaluated'] }}</div>
+                                <div class="stats-number text-white"
+                                     id="rejectedCount">{{ $data['countStudentsByConductStatus']['student_affairs_evaluated'] }}</div>
                                 <div class="stats-label text-white">VP Khoa dã chấm</div>
                             </div>
                         </div>
@@ -157,19 +161,10 @@
                                         <span class="fw-bold">{{ $item['total_self_score'] }} / {{ $item['total_class_score'] }} / {{ $item['total_final_score'] }}</span>
                                     </td>
                                     <td class="text-center">
-                                        @php
-                                            $status = $item['evaluation_status'];
-                                        @endphp
-
-                                        @if ($status === 0 || $status === 1)
-                                            <a href="{{ route('teacher.conduct-score.detail', ['student_id' => $item['student_id'], 'conduct_evaluation_period_id' => $data['conduct_evaluation_period_id'] ]) }}" class="action-btn btn-edit" title="Chỉnh sửa">
-                                                <i class="fas fa-edit"></i>
-                                            </a>
-                                        @elseif ($status === 2)
-                                            <button class="action-btn btn-view" onclick="viewDetail('{{ $item['student_id'] }}')" title="Xem chi tiết">
-                                                <i class="fas fa-eye"></i>
-                                            </button>
-                                        @endif
+                                        <a href="{{ route('teacher.conduct-score.detail', ['student_id' => $item['student_id'], 'conduct_evaluation_period_id' => $data['conduct_evaluation_period_id'] ]) }}"
+                                           class="action-btn btn-edit" title="Chỉnh sửa">
+                                            <i class="fas fa-edit"></i>
+                                        </a>
                                     </td>
                                 </tr>
                             @empty
@@ -183,7 +178,7 @@
                 </div>
 
                 <!-- Pagination -->
-               <x-pagination.pagination :paginate="$data['listConductScores']" class="mt-4"/>
+                <x-pagination.pagination :paginate="$data['listConductScores']" class="mt-4"/>
             </div>
         </div>
     </div>
