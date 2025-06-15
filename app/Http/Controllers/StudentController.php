@@ -22,6 +22,7 @@ use App\Services\StudyClassService;
 use App\Services\UserService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 
 class StudentController extends Controller
 {
@@ -191,115 +192,138 @@ class StudentController extends Controller
             'conductCriterias' => $conductCriterias,
             'checkConductEvaluationPeriod' => $checkConductEvaluationPeriod,
         ];
-//dd($data['getConductCriteriaData']);
+//dd($data['findConductEvaluationPeriodBySemesterId']);
         return view('student.conductScore.index', compact('data'));
     }
 
     public function SaveConductScore(Request $request)
     {
         try {
-            // Retrieve and validate input
             $params = $request->all();
             $studentId = auth()->user()->student?->id ?? null;
             $semesterId = $params['semester_id'] ?? null;
             $totalScore = $params['total_score'] ?? null;
             $classification = $params['classification'] ?? null;
 
-            // Log input params for debugging
-            \Log::info('Input Params:', ['params' => $params]);
-
-            // Decode the details JSON string
             $details = isset($params['details']) ? json_decode($params['details'], true) : null;
-dd($details);
-            // Log the decoded details for debugging
-            \Log::info('Decoded Details:', ['details' => $details]);
 
-            // Validate required fields
             if (!$studentId || !$semesterId || !$details || !is_array($details)) {
-                \Log::error('Invalid input data', [
-                    'studentId' => $studentId,
-                    'semesterId' => $semesterId,
-                    'details' => $details
-                ]);
                 return response()->json(['message' => 'Dữ liệu không hợp lệ'], 400);
             }
 
-            // Start a database transaction
             DB::beginTransaction();
 
-            // Find the conduct evaluation period
             $conductEvaluationPeriod = \App\Models\ConductEvaluationPeriod::where('semester_id', $semesterId)
                 ->where('open_date', '<=', now())
                 ->where('end_date', '>=', now())
                 ->first();
 
             if (!$conductEvaluationPeriod) {
-                \Log::error('No matching conduct evaluation period found', [
-                    'semesterId' => $semesterId,
-                    'currentTime' => now()->toDateTimeString()
-                ]);
                 return response()->json(['message' => 'Không tìm thấy đợt đánh giá phù hợp cho học kỳ này hoặc thời gian đánh giá đã đóng'], 400);
             }
 
-            // Create or update student_conduct_scores record
             $studentConductScore = \App\Models\StudentConductScore::updateOrCreate(
                 [
                     'conduct_evaluation_period_id' => $conductEvaluationPeriod->id,
                     'student_id' => $studentId,
                 ],
                 [
+                    'total_score' => $totalScore,
+                    'classification' => $classification,
                     'status' => 0, // SV chấm
                     'created_at' => now(),
                     'updated_at' => now(),
                 ]
             );
 
-            // Process each detail
+            $existingDetails = \App\Models\DetailConductScore::where('student_conduct_score_id', $studentConductScore->id)
+                ->pluck('conduct_criteria_id')
+                ->toArray();
+
             foreach ($details as $detail) {
-                // Validate detail fields
                 if (!isset($detail['conduct_criteria_id'], $detail['self_score'])) {
-                    \Log::error('Invalid detail data', ['detail' => $detail]);
                     DB::rollBack();
                     return response()->json(['message' => 'Dữ liệu tiêu chí không hợp lệ'], 400);
                 }
 
-                // Handle evidence (image)
                 $evidenceKey = "evidence.{$detail['conduct_criteria_id']}";
-                \Log::info('Checking for file', ['evidenceKey' => $evidenceKey, 'hasFile' => $request->hasFile($evidenceKey)]);
                 $path = null;
-                if ($request->hasFile($evidenceKey)) {
+
+                if (isset($detail['evidence_removed']) && $detail['evidence_removed']) {
+                    $existingRecord = \App\Models\DetailConductScore::where([
+                        'student_conduct_score_id' => $studentConductScore->id,
+                        'conduct_criteria_id' => $detail['conduct_criteria_id'],
+                    ])->first();
+
+                    if ($existingRecord && $existingRecord->path) {
+                        Storage::disk('public')->delete($existingRecord->path);
+                    }
+                } elseif ($request->hasFile($evidenceKey)) {
+                    // Delete old file if it exists
+                    $existingRecord = \App\Models\DetailConductScore::where([
+                        'student_conduct_score_id' => $studentConductScore->id,
+                        'conduct_criteria_id' => $detail['conduct_criteria_id'],
+                    ])->first();
+
+                    if ($existingRecord && $existingRecord->path) {
+                        Storage::disk('public')->delete($existingRecord->path);
+                    }
+
                     $file = $request->file($evidenceKey);
                     $fileName = 'evidence_' . time() . '_' . $detail['conduct_criteria_id'] . '_' . $studentId . '.' . $file->getClientOriginalExtension();
                     $path = $file->storeAs('evidences', $fileName, 'public');
-                    \Log::info('File stored', ['path' => $path, 'fileName' => $fileName]);
                 } else {
-                    \Log::info('No file uploaded, setting path to null', ['criteriaId' => $detail['conduct_criteria_id']]);
+                    $existingRecord = \App\Models\DetailConductScore::where([
+                        'student_conduct_score_id' => $studentConductScore->id,
+                        'conduct_criteria_id' => $detail['conduct_criteria_id'],
+                    ])->first();
+                    $path = $existingRecord->path ?? null;
                 }
 
-                // Update or create detail_conduct_scores
+                $data = [
+                    'self_score' => $detail['self_score'],
+                    'note' => $detail['note'] ?? null,
+                    'class_score' => null, // GVCN chấm later
+                    'final_score' => null, // CTSV chấm later
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ];
+
+                if ($path !== null || (isset($detail['evidence_removed']) && $detail['evidence_removed'])) {
+                    $data['path'] = $path;
+                }
+
                 \App\Models\DetailConductScore::updateOrCreate(
                     [
                         'student_conduct_score_id' => $studentConductScore->id,
                         'conduct_criteria_id' => $detail['conduct_criteria_id'],
                     ],
-                    [
-                        'self_score' => $detail['self_score'],
-                        'note' => $detail['note'] ?? null,
-                        'class_score' => null, // GVCN chấm later
-                        'final_score' => null, // CTSV chấm later
-                        'path' => $path,
-                        'created_at' => now(),
-                        'updated_at' => now(),
-                    ]
+                    $data
                 );
+
+                $index = array_search($detail['conduct_criteria_id'], $existingDetails);
+                if ($index !== false) {
+                    unset($existingDetails[$index]);
+                }
+            }
+
+            if (!empty($existingDetails)) {
+                \App\Models\DetailConductScore::where('student_conduct_score_id', $studentConductScore->id)
+                    ->whereIn('conduct_criteria_id', $existingDetails)
+                    ->get()
+                    ->each(function ($record) {
+                        if ($record->path) {
+                            Storage::disk('public')->delete($record->path);
+                        }
+                        $record->delete();
+                    });
             }
 
             DB::commit();
-            \Log::info('Conduct score saved successfully', ['studentId' => $studentId, 'semesterId' => $semesterId]);
+
             return response()->json(['message' => 'Lưu điểm rèn luyện thành công']);
         } catch (\Exception $e) {
             DB::rollBack();
-            \Log::error('Save Conduct Score Error: ' . $e->getMessage(), ['exception' => $e]);
             return response()->json(['message' => 'Lỗi khi lưu dữ liệu: ' . $e->getMessage()], 500);
         }
     }

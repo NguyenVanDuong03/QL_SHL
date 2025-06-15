@@ -1,4 +1,4 @@
-@extends('layouts.student')
+@extends('layouts.classStaff')
 
 @section('title', 'Điểm rèn luyện')
 
@@ -279,7 +279,7 @@
         <div class="row mb-4 form-controls-mobile">
             <div class="col-md-3 col-12">
                 <label for="semester_id" class="form-label">Học kỳ</label>
-                <form action="{{ route('student.conduct-score.index') }}" class="input-group">
+                <form action="{{ route('class-staff.conduct-score.index') }}" class="input-group">
                     <select class="form-select" id="semester_id" name="semester_id">
                         @forelse($data['semesters'] ?? [] as $semester)
                             <option
@@ -312,7 +312,16 @@
             </div>
         </div>
 
-        <!-- Table -->
+        @php
+            $sectionHeaders = [
+                0 => 'ĐÁNH GIÁ VỀ Ý THỨ THAM GIA HỌC TẬP',
+                5 => 'ĐÁNH GIÁ VỀ Ý THỨC VÀ KẾT QUẢ CHẤP HÀNH NỘI QUY, QUY CHẾ, QUY ĐỊNH CỦA NHÀ TRƯỜNG',
+                9 => 'ĐÁNH GIÁ Ý THỨC, KẾT QUẢ THAM GIA CÁC HOẠT ĐỘNG CHÍNH TRỊ, XÃ HỘI, VĂN HÓA, VĂN NGHỆ THỂ THAO, PHÒNG CHỐNG TỘI PHẠM VÀ CÁC TỆ NẠN XÃ HỘI',
+                13 => 'ĐÁNH GIÁ Ý THỨC CÔNG DÂN TRONG QUAN HỆ CỘNG ĐỒNG',
+                16 => 'ĐÁNH GIÁ Ý THỨC, KẾT QUẢ THAM GIA CÔNG TÁC CÁN BỘ LỚP, ĐOÀN THỂ, TỔ CHỨC TRONG TRƯỜNG HOẶC ĐẠT THÀNH TÍCH ĐẶC BIỆT TRONG HỌC TẬP, RÈN LUYỆN (SINH VIÊN ĐẠT ĐƯỢC NHIỀU TIÊU CHÍ THÌ CỘNG ĐIỂM KHÔNG ĐƯỢC VƯỢT QUÁ 10 ĐIỂM)',
+            ];
+        @endphp
+            <!-- Table -->
         <div class="table-container">
             <div class="table-responsive">
                 <table class="table table-bordered table-hover mb-0 table-responsive-mobile" id="diemRenLuyenTable">
@@ -327,7 +336,14 @@
                     </thead>
                     <tbody>
                     @if($data['checkConductEvaluationPeriod'])
-                        @forelse($data['getConductCriteriaData'] ?? [] as $item)
+                        @forelse($data['getConductCriteriaData'] ?? [] as $index => $item)
+                            @if (isset($sectionHeaders[$index]))
+                                <tr>
+                                    <td colspan="5" class="bg-secondary text-white">
+                                        <strong>{{ $sectionHeaders[$index] }}</strong>
+                                    </td>
+                                </tr>
+                            @endif
                             <tr class="criteria-row" data-criteria="{{ $item['criterion_id'] }}">
                                 <td>{{ $loop->iteration }}</td>
                                 <td>{{ $item['content'] }}</td>
@@ -773,7 +789,7 @@
                 formData.append('details', JSON.stringify(details));
 
                 $.ajax({
-                    url: '{{ route('student.conduct-score.save') }}',
+                    url: '{{ route('class-staff.conduct-score.save') }}',
                     method: 'POST',
                     data: formData,
                     processData: false,

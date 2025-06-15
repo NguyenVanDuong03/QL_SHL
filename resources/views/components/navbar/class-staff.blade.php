@@ -34,7 +34,8 @@
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">
+                        <a class="nav-link {{ Route::currentRouteName() == 'class-staff.conduct-score.index'
+                                              ? 'active' : '' }}" href="{{ route('class-staff.conduct-score.index') }}">
                             {{ __('Điểm rèn luyện') }}
                         </a>
                     </li>
