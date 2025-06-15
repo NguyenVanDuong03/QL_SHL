@@ -436,7 +436,7 @@ class LecturerController extends Controller
         $params['limit'] = Constant::DEFAULT_LIMIT_12;
         $params['withSemester'] = true;
         $ConductEvaluationPeriods = $this->conductEvaluationPeriodService->paginate($params)->toArray();
-        $semesters = $this->semesterService->getFourSemester();
+        $semesters = $this->semesterService->getFourSemester()->limit(4)->get();
         $data = [
             'ConductEvaluationPeriods' => $ConductEvaluationPeriods,
             'semesters' => $semesters,
@@ -513,7 +513,6 @@ class LecturerController extends Controller
     {
         try {
             $params = $request->all();
-//            dd($params);
             $details = $params['details'];
             $studentConductScoreId = $request->input('student_conduct_score_id');
             $conductEvaluationPeriodId = $params['conduct_evaluation_period_id'];

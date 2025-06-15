@@ -90,4 +90,14 @@ class StudyClassService extends BaseService
         return $this->getRepository()->infoByStudyClassListAndConductEvaluationPeriodId($params);
     }
 
+    public function getStudyClassListByConductEvaluationPeriodIdByFacultyOffice($params)
+    {
+        return $this->getRepository()->getStudyClassListByConductEvaluationPeriodIdByFacultyOffice($params);
+    }
+
+    public function getStudentListByConductEvaluationPeriodIdByFacultyOffice($params)
+    {
+        return $this->getRepository()->getStudentListByConductEvaluationPeriodIdByFacultyOffice($params);
+    }
+
 }

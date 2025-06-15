@@ -116,9 +116,7 @@
         </div>
 
         <!-- Pagination -->
-        <div class="d-flex justify-content-end mt-4">
-            <x-pagination.pagination :paginate="$data['students']"/>
-        </div>
+        <x-pagination.pagination :paginate="$data['students']"/>
     </div>
 @endsection
 

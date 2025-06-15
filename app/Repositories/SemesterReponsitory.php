@@ -21,9 +21,7 @@ class SemesterReponsitory extends BaseRepository
         return $this->getModel()
             ->newQuery()
             ->whereIn('name', [Constant::SEMESTER_TYPE['SEMESTER_1'], Constant::SEMESTER_TYPE['SEMESTER_2']])
-            ->orderByDesc('id')
-            ->limit(4)
-            ->get();
+            ->orderByDesc('id');
     }
 
 }

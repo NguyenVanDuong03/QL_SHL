@@ -49,6 +49,8 @@ class UserService extends BaseService
             return 'student-affairs-department.index';
         } else if (auth()->user()->role == Constant::ROLE_LIST['CLASS_STAFF']) {
             return 'class-staff.index';
+        } else if (auth()->user()->role == Constant::ROLE_LIST['FACULTY_OFFICE']) {
+            return 'faculty-office.index';
         }
 
         return 'student.index';

@@ -58,4 +58,9 @@ class User extends Authenticatable
         return $this->hasOne(Student::class);
     }
 
+    public function facultyOffice()
+    {
+        return $this->hasOne(FacultyOffice::class);
+    }
+
 }

@@ -16,6 +16,10 @@
             $layout = 'layouts.student';
             $breadcumb = '';
             break;
+        case '4':
+            $layout = 'layouts.facultyOffice';
+            $breadcumb = '';
+            break;
         default:
             $layout = 'layouts.app'; // layout mặc định
             $breadcumb = '';
@@ -287,6 +291,10 @@
                                                 case '3':
                                                     $roleClass = 'role-student';
                                                     $roleText = 'Sinh viên';
+                                                    break;
+                                                case '4':
+                                                    $roleClass = 'bg-info text-white';
+                                                    $roleText = 'Văn phòng khoa';
                                                     break;
                                                 default:
                                                     $roleClass = 'bg-secondary text-white';

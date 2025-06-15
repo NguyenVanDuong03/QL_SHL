@@ -1,12 +1,12 @@
-@extends('layouts.teacher')
+@extends('layouts.facultyOffice')
 
 @section('title', 'Chi tiết điểm rèn luyện')
 
 @section('breadcrumb')
     <x-breadcrumb.breadcrumb :links="[
-        ['label' => 'Điểm rèn luyện', 'url' => 'teacher.conduct-score.index'],
-        ['label' => 'Danh sách lớp học', 'url' => 'teacher.conduct-score.infoConductScore'],
-        ['label' => 'Danh sách sinh viên', 'url' => 'teacher.conduct-score.list'],
+        ['label' => 'Điểm rèn luyện', 'url' => 'faculty-office.conduct-score.index'],
+        ['label' => 'Danh sách lớp học', 'url' => 'faculty-office.conduct-score.infoConductScore'],
+        ['label' => 'Danh sách sinh viên', 'url' => 'faculty-office.conduct-score.list'],
         ['label' => 'Chi tiết sinh viên']
     ]"/>
 @endsection
@@ -288,7 +288,7 @@
         <!-- Form Controls -->
         <div class="row mb-4 form-controls-mobile">
             <div class="col-md-3 col-12">
-                <a href="{{ route('teacher.conduct-score.list') }}"
+                <a href="{{ route('faculty-office.conduct-score.list') }}"
                    class="btn btn-outline-secondary btn-sm">
                     <i class="fas fa-arrow-left me-2"></i>Quay lại
                 </a>
@@ -300,12 +300,15 @@
                             <span>Tổng điểm SV: <span id="tongDiemSV">0</span></span>
                         </div>
                         <div class="col-6">
+                            <span>Tổng điểm GVCN: <span id="tongDiemGVCN">0</span></span>
+                        </div>
+                        <div class="col-6">
                             <strong>Tổng điểm: <span id="tongDiem">0</span></strong>
                         </div>
                         <div class="col-6">
                             <strong>Điểm quy đổi: <span id="diemQuyDoi">0</span></strong>
                         </div>
-                        <div class="col-6">
+                        <div class="col-12 text-center text-md-end">
                             <strong>Xếp loại: <span id="xepLoai">Chưa có dữ liệu</span></strong>
                         </div>
                     </div>
@@ -322,7 +325,7 @@
                 16 => 'ĐÁNH GIÁ Ý THỨC, KẾT QUẢ THAM GIA CÔNG TÁC CÁN BỘ LỚP, ĐOÀN THỂ, TỔ CHỨC TRONG TRƯỜNG HOẶC ĐẠT THÀNH TÍCH ĐẶC BIỆT TRONG HỌC TẬP, RÈN LUYỆN (SINH VIÊN ĐẠT ĐƯỢC NHIỀU TIÊU CHÍ THÌ CỘNG ĐIỂM KHÔNG ĐƯỢC VƯỢT QUÁ 10 ĐIỂM)',
             ];
         @endphp
-        <!-- Table -->
+            <!-- Table -->
         <div class="table-container">
             <div class="table-responsive">
                 <table class="table table-bordered table-hover mb-0 table-responsive-mobile" id="diemRenLuyenTable">
@@ -333,14 +336,15 @@
                         <th style="min-width: 91px;">Điểm tối đa</th>
                         <th style="min-width: 70px;">Điểm SV</th>
                         <th style="min-width: 70px;">Điểm GVCN</th>
+                        <th style="min-width: 70px;">Điểm CTSV</th>
                         <th style="min-width: 250px;">Hành động & Ghi chú</th>
                     </tr>
                     </thead>
                     <tbody>
-                    @forelse($data['getConductCriteriaData'] ?? [] as $index => $item)
+                    @foreach($data['getConductCriteriaData'] ?? [] as $index => $item)
                         @if (isset($sectionHeaders[$index]))
                             <tr>
-                                <td colspan="6" class="bg-secondary text-white">
+                                <td colspan="7" class="bg-secondary text-white">
                                     <strong>{{ $sectionHeaders[$index] }}</strong>
                                 </td>
                             </tr>
@@ -356,9 +360,14 @@
                                        disabled>
                             </td>
                             <td class="text-center">
+                                <input type="number" class="form-control form-control-sm"
+                                       value="{{ $item['class_score'] ?? 0 }}"
+                                       disabled>
+                            </td>
+                            <td class="text-center">
                                 <input type="number" class="form-control form-control-sm score-input"
                                        min="0" max="{{ $item['max_score'] }}"
-                                       value="{{ $item['class_score'] ?? 0 }}"
+                                       value="{{ $item['final_score'] ?? 0 }}"
                                        data-max="{{ $item['max_score'] }}" {{ $data['checkConductEvaluationPeriodBySemesterId'] ? '' : 'disabled' }}>
                             </td>
                             <td>
@@ -384,11 +393,7 @@
                                 </div>
                             </td>
                         </tr>
-                    @empty
-                        <tr>
-                            <td colspan="6" class="text-center">Không có dữ liệu tiêu chí đánh giá</td>
-                        </tr>
-                    @endforelse
+                    @endforeach
                     </tbody>
                 </table>
             </div>
@@ -432,7 +437,7 @@
 
             // Populate criteriaData from backend data
             @if($data['checkConductEvaluationPeriod'])
-                    @foreach($data['getConductCriteriaData'] ?? [] as $item)
+                @foreach($data['getConductCriteriaData'] ?? [] as $item)
                 criteriaData[{{ $item['criterion_id'] }}] = {
                 scoreId: {{ $data['student_conduct_score_id'] }},
                 image: @if($item['evidence_path'])
@@ -446,7 +451,7 @@
                     null
                 @endif,
                 note: '{{ $item['note'] ?? '' }}',
-                class_score: {{ $item['class_score'] ?? 0 }}
+                final_score: {{ $item['final_score'] ?? 0 }}
             };
             @endforeach
             @endif
@@ -460,26 +465,29 @@
                         scoreId: scoreId,
                         image: null,
                         note: '',
-                        class_score: 0
+                        final_score: 0
                     };
                 } else {
                     criteriaData[criteriaId].scoreId = scoreId;
                 }
             });
 
-            // Function to calculate total score
+            // Function to calculate totals
             function calculateTotal() {
-                let total = 0;
-                let totalSV = 0;
+                let total = 0; // Total final score
+                let totalSV = 0; // Total student score
+                let totalGVCN = 0; // Total teacher score
                 let lastFourTotal = 0;
                 const rows = $('.criteria-row');
                 const lastFourRows = rows.slice(-4);
 
                 rows.each(function (index) {
-                    const score = parseInt($(this).find('.score-input').val()) || 0;
+                    const score = parseInt($(this).find('.score-input').val()) || 0; // Final score
                     const studentScore = parseInt($(this).find('td:eq(3) input').val()) || 0; // Student score
+                    const teacherScore = parseInt($(this).find('td:eq(4) input').val()) || 0; // Teacher score
                     total += score;
                     totalSV += studentScore;
+                    totalGVCN += teacherScore;
                     if (index >= rows.length - 4) {
                         lastFourTotal += score;
                     }
@@ -487,6 +495,7 @@
 
                 $('#tongDiem').text(total);
                 $('#tongDiemSV').text(totalSV);
+                $('#tongDiemGVCN').text(totalGVCN);
                 $('#diemQuyDoi').text((total / 100).toFixed(2));
                 let classification = '';
                 if (total >= 90) {
@@ -515,7 +524,7 @@
                 previewContainer.empty();
 
                 if (!criteriaData[criteriaId]) {
-                    criteriaData[criteriaId] = {image: null, note: '', class_score: 0, scoreId: null};
+                    criteriaData[criteriaId] = {image: null, note: '', final_score: 0, scoreId: null};
                 }
 
                 if (criteriaData[criteriaId].image) {
@@ -537,7 +546,7 @@
                 Object.keys(criteriaData).forEach(criteriaId => {
                     const row = $(`.criteria-row[data-criteria="${criteriaId}"]`);
                     if (row.length) {
-                        row.find('.score-input').val(criteriaData[criteriaId].class_score);
+                        row.find('.score-input').val(criteriaData[criteriaId].final_score);
                         row.find('.note-input').text(criteriaData[criteriaId].note || '---');
                         updateImagePreview(criteriaId);
                     }
@@ -552,7 +561,7 @@
                 modalBody.empty();
 
                 if (!criteriaData[criteriaId]) {
-                    criteriaData[criteriaId] = {image: null, note: '', class_score: 0, scoreId: null};
+                    criteriaData[criteriaId] = {image: null, note: '', final_score: 0, scoreId: null};
                 }
 
                 if (criteriaData[criteriaId].image) {
@@ -582,7 +591,7 @@
                 const rowIndex = $('.criteria-row').index($input.closest('.criteria-row'));
 
                 if (!criteriaData[criteriaId]) {
-                    criteriaData[criteriaId] = {image: null, note: '', class_score: 0, scoreId: null};
+                    criteriaData[criteriaId] = {image: null, note: '', final_score: 0, scoreId: null};
                 }
 
                 debounceTimer = setTimeout(function () {
@@ -618,7 +627,7 @@
                         currentValue = 0;
                     }
 
-                    criteriaData[criteriaId].class_score = currentValue;
+                    criteriaData[criteriaId].final_score = currentValue;
                     calculateTotal();
                 }, 300);
             });
@@ -628,11 +637,11 @@
 
                 $('.score-input').each(function () {
                     const criteriaId = $(this).closest('.criteria-row').data('criteria');
-                    $(this).val(criteriaData[criteriaId].class_score || 0);
+                    $(this).val(criteriaData[criteriaId].final_score || 0);
                 });
 
                 Object.keys(criteriaData).forEach(key => {
-                    criteriaData[key].class_score = criteriaData[key].class_score || 0;
+                    criteriaData[key].final_score = criteriaData[key].final_score || 0;
                 });
 
                 calculateTotal();
@@ -653,7 +662,7 @@
                 const details = Object.keys(criteriaData).map(criteriaId => ({
                     student_conduct_score_id: criteriaData[criteriaId].scoreId,
                     conduct_criteria_id: parseInt(criteriaId),
-                    class_score: criteriaData[criteriaId].class_score || 0
+                    final_score: criteriaData[criteriaId].final_score || 0
                 }));
 
                 if (!details.length) {
@@ -668,7 +677,7 @@
                 formData.append('conduct_evaluation_period_id', {{ $data['conduct_evaluation_period_id'] }});
 
                 $.ajax({
-                    url: '{{ route('teacher.conduct-score.save') }}',
+                    url: '{{ route('faculty-office.conduct-score.save') }}',
                     method: 'POST',
                     data: formData,
                     processData: false,

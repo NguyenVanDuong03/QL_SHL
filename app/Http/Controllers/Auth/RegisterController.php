@@ -40,6 +40,8 @@ class RegisterController extends Controller
             return route('student-affairs-department.index');
         else if ($user->role == Constant::ROLE_LIST['CLASS_STAFF'])
             return route('class-staff.index');
+        else if ($user->role == Constant::ROLE_LIST['FACULTY_OFFICE'])
+            return route('faculty-office.index');
 
         return route('student.index');
     }

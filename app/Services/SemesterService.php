@@ -40,13 +40,7 @@ class SemesterService extends BaseService
 
     public function getFourSemester()
     {
-       $semesters = $this->getRepository()->getFourSemester();
-
-       if ($semesters->isEmpty()) {
-           return [];
-       }
-
-        return $semesters;
+        return $this->getRepository()->getFourSemester();
     }
 
 }

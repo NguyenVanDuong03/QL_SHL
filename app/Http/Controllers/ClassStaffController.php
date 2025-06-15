@@ -236,7 +236,7 @@ class ClassStaffController extends Controller
         $params['student_id'] = auth()->user()->student?->id ?? null;
         $currentSemester = $this->semesterService->get()->first();
         $params['semester_id'] = $params['semester_id'] ?? $currentSemester->id;
-        $semesters = $this->semesterService->getFourSemester()->toArray();
+        $semesters = $this->semesterService->getFourSemester()->limit(4)->get()->toArray();
         $findConductEvaluationPeriodBySemesterId = $this->conductEvaluationPeriodService->findConductEvaluationPeriodBySemesterId($params['semester_id']);
 //        $detailConductScores = $this->detailConductScoreService->get($params)->toArray();
         $checkConductEvaluationPeriod = $this->conductEvaluationPeriodService->checkConductEvaluationPeriod();
@@ -274,8 +274,8 @@ class ClassStaffController extends Controller
             DB::beginTransaction();
 
             $conductEvaluationPeriod = \App\Models\ConductEvaluationPeriod::where('semester_id', $semesterId)
-                ->where('open_date', '<=', now())
-                ->where('end_date', '>=', now())
+                ->where('open_date', '<=', now('Asia/Ho_Chi_Minh'))
+                ->where('end_date', '>=', now('Asia/Ho_Chi_Minh'))
                 ->first();
 
             if (!$conductEvaluationPeriod) {

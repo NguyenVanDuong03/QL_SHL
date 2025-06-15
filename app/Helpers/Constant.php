@@ -12,6 +12,7 @@ class Constant
         'STUDENT_AFFAIRS_DEPARTMENT' => 1,
         'CLASS_STAFF' => 2,
         'STUDENT' => 3,
+        'FACULTY_OFFICE' => 4,
     ];
 
     const SEMESTER_TYPE = [

@@ -17,7 +17,7 @@ class CheckRole
     public function handle(Request $request, Closure $next, string $role = ''): Response
     {
         if (!Auth::check() || !in_array(Auth::user()->role, explode('|', $role))) {
-            $routeName = $this->userService->redirectAuthPath() ?? 'home';
+            $routeName = $this->userService->redirectAuthPath() ?? 'login';
 
             return redirect()->route($routeName);
         }

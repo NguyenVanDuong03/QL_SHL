@@ -239,7 +239,7 @@
                                 Chấm điểm và đánh giá kết quả rèn luyện
                             </p>
                             <div class="text-center">
-                                <a href="#" class="btn btn-primary-custom">Chấm điểm</a>
+                                <a href="{{ route('class-staff.conduct-score.index') }}" class="btn btn-primary-custom">Chấm điểm</a>
                             </div>
                         </div>
                     </div>

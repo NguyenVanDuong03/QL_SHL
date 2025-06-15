@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('lecturers', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('user_id');
+            $table->unsignedBigInteger('user_id')->unique();
             $table->unsignedBigInteger('faculty_id');
             $table->string('title');
             $table->string('position')->comment('Giảng viên; Phó trưởng bộ môn; Trưởng bộ môn; Phó trưởng khoa; Trưởng khoa');

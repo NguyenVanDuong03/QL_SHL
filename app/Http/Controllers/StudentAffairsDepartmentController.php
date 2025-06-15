@@ -74,7 +74,7 @@ class StudentAffairsDepartmentController extends Controller
     {
         $params = $request->all();
         $params['isEmptyRoom'] = true;
-        $semesters = $this->semesterService->getFourSemester();
+        $semesters = $this->semesterService->getFourSemester()->limit(4)->get();
         $checkClassSessionRegistration = $this->classSessionRegistrationService->checkClassSessionRegistration();
         $rooms = $this->roomService->get($params);
         $data = [
@@ -392,7 +392,7 @@ class StudentAffairsDepartmentController extends Controller
         $params['limit'] = Constant::DEFAULT_LIMIT_12;
         $params['withSemester'] = true;
         $ConductEvaluationPeriods = $this->conductEvaluationPeriodService->paginate($params)->toArray();
-        $semesters = $this->semesterService->getFourSemester();
+        $semesters = $this->semesterService->getFourSemester()->limit(4)->get();
         $data = [
             'ConductEvaluationPeriods' => $ConductEvaluationPeriods,
             'semesters' => $semesters,
