@@ -18,6 +18,7 @@ class StudentConductScoreRepository extends BaseRepository
     public function findStudentConductScore($conductEvaluationPeriodId, $studentId)
     {
         return $this->getModel()
+            ->newQuery()
             ->where('conduct_evaluation_period_id', $conductEvaluationPeriodId)
             ->where('student_id', $studentId)
             ->first();

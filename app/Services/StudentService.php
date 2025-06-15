@@ -139,4 +139,14 @@ class StudentService extends BaseService
         return $summary;
     }
 
+    public function listConductScores($params)
+    {
+        return $this->getRepository()->listConductScores($params);
+    }
+
+    public function countStudentsByConductStatus($params)
+    {
+        return $this->getRepository()->countStudentsByConductStatus($params);
+    }
+
 }

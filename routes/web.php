@@ -99,6 +99,9 @@ Route::middleware(['auth'])->group(function () {
                 ],
                 function () {
                     Route::get('/', [LecturerController::class, 'indexConductScore'])->name('index');
+                    Route::get('/list', [LecturerController::class, 'listConductScore'])->name('list');
+                    Route::get('/list/detail', [LecturerController::class, 'detailConductScore'])->name('detail');
+                    Route::put('/list/detail', [LecturerController::class, 'saveConductScore'])->name('save');
                     Route::get('/{id?}', [LecturerController::class, 'infoConductScore'])->name('infoConductScore');
                 }
             );

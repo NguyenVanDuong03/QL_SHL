@@ -40,6 +40,11 @@ class DetailConductScoreService extends BaseService
         return $this->getRepository()->calculateTotalScore($criteriaData);
     }
 
+    public function getConductCriteriaDataByLecturer($params)
+    {
+        return $this->getRepository()->getConductCriteriaDataByLecturer($params);
+    }
+
 //    public function saveDetailConductScores($params)
 //    {
 //        $details = $params['details'] ?? [];

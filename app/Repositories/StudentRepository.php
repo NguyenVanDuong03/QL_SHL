@@ -213,4 +213,83 @@ class StudentRepository extends BaseRepository
         return $updated;
     }
 
+    public function listConductScores($params)
+    {
+        $classId = $params['study_class_id'] ?? null;
+        $evaluationPeriodId = $params['conduct_evaluation_period_id'] ?? null;
+
+        $query = Student::query()
+            ->select([
+                'students.id as student_id',
+                'students.student_code',
+                'users.name as student_name',
+                'student_conduct_scores.status as evaluation_status',
+                DB::raw("
+                CASE
+                    WHEN student_conduct_scores.status = 0 THEN 'Đã đánh giá (SV chấm)'
+                    WHEN student_conduct_scores.status IS NULL THEN 'Chưa đánh giá'
+                    WHEN student_conduct_scores.status = 1 THEN 'Đã đánh giá (GVCN chấm)'
+                    WHEN student_conduct_scores.status = 2 THEN 'Đã đánh giá (CTSV chấm)'
+                    WHEN student_conduct_scores.status = 3 THEN 'Bị từ chối'
+                END AS status_description
+            "),
+                DB::raw("COALESCE(SUM(detail_conduct_scores.self_score), 0) as total_self_score"),
+                DB::raw("COALESCE(SUM(detail_conduct_scores.class_score), 0) as total_class_score"),
+                DB::raw("COALESCE(SUM(detail_conduct_scores.final_score), 0) as total_final_score")
+            ])
+            ->join('users', 'students.user_id', '=', 'users.id')
+            ->join('study_classes', 'students.study_class_id', '=', 'study_classes.id')
+            ->leftJoin('student_conduct_scores', function ($join) use ($evaluationPeriodId) {
+                $join->on('students.id', '=', 'student_conduct_scores.student_id')
+                    ->where('student_conduct_scores.conduct_evaluation_period_id', $evaluationPeriodId);
+            })
+            ->leftJoin('detail_conduct_scores', 'student_conduct_scores.id', '=', 'detail_conduct_scores.student_conduct_score_id')
+            ->where('study_classes.id', $classId)
+            ->groupBy(
+                'students.id',
+                'students.student_code',
+                'users.name',
+                'student_conduct_scores.status'
+            )
+            ->orderByRaw("
+            CASE
+                WHEN student_conduct_scores.status = 0 THEN 0
+                WHEN student_conduct_scores.status = 1 THEN 1
+                WHEN student_conduct_scores.status = 2 THEN 2
+                WHEN student_conduct_scores.status = 3 THEN 3
+                WHEN student_conduct_scores.status IS NULL THEN 4
+                ELSE 5
+            END ASC
+        ")
+            ->orderBy('students.student_code');
+
+        return $query->paginate(Constant::DEFAULT_LIMIT_12);
+    }
+
+    public function countStudentsByConductStatus($params)
+    {
+        $classId = $params['study_class_id'] ?? null;
+        $evaluationPeriodId = $params['conduct_evaluation_period_id'] ?? null;
+
+        $query = DB::table('students')
+            ->join('study_classes', 'students.study_class_id', '=', 'study_classes.id')
+            ->leftJoin('student_conduct_scores', function ($join) use ($evaluationPeriodId) {
+                $join->on('students.id', '=', 'student_conduct_scores.student_id')
+                    ->where('student_conduct_scores.conduct_evaluation_period_id', $evaluationPeriodId);
+            })
+            ->where('study_classes.id', $classId)
+            ->select([
+                DB::raw("SUM(CASE WHEN student_conduct_scores.status = 0 THEN 1 ELSE 0 END) as count_self_evaluated"),
+                DB::raw("SUM(CASE WHEN student_conduct_scores.status = 1 THEN 1 ELSE 0 END) as count_class_teacher_evaluated"),
+                DB::raw("SUM(CASE WHEN student_conduct_scores.status = 2 THEN 1 ELSE 0 END) as count_student_affairs_evaluated")
+            ])
+            ->first();
+
+        return [
+            'self_evaluated' => $query->count_self_evaluated ?? 0,
+            'class_teacher_evaluated' => $query->count_class_teacher_evaluated ?? 0,
+            'student_affairs_evaluated' => $query->count_student_affairs_evaluated ?? 0,
+        ];
+    }
+
 }

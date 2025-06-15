@@ -76,7 +76,7 @@
                                         </td>
                                         <td class="text-center">
                                             <div class="btn-group gap-2" role="group">
-                                                <a href="#" class="btn btn-outline-primary btn-sm" title="Xem chi tiết">
+                                                <a href="{{ route('teacher.conduct-score.list', ['study_class_id' =>$item['class_id'], 'conduct_evaluation_period_id' => $data['conduct_evaluation_period_id']]) }}" class="btn btn-outline-primary btn-sm" title="Xem chi tiết">
                                                     <i class="fas fa-eye"></i>
                                                 </a>
 {{--                                                <a href="#" class="btn btn-outline-success btn-sm" title="Xuất Excel">--}}
