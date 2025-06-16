@@ -19,6 +19,7 @@ use App\Services\StudyClassService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
 
 class FacultyOfficeController extends Controller
 {
@@ -66,7 +67,7 @@ class FacultyOfficeController extends Controller
     {
         $params = $request->all();
         $semesterId = $this->conductEvaluationPeriodService->find($params['conduct_evaluation_period_id'])->semester_id ?? null;
-//        $findConductEvaluationPeriodBySemesterId = $this->conductEvaluationPeriodService->findConductEvaluationPeriodBySemesterId($semesterId);
+        $findConductEvaluationPeriodBySemesterId = $this->conductEvaluationPeriodService->findConductEvaluationPeriodBySemesterId($semesterId);
         $params['semester_id'] = $params['semester_id'] ?? $semesterId;
         $params['department_id'] = auth()->user()->facultyOffice?->department_id;
 //        dd($params['department_id']);
@@ -78,6 +79,7 @@ class FacultyOfficeController extends Controller
         $data = [
             'getStudyClassList' => $getStudyClassList,
             'conduct_evaluation_period_id' => $params['conduct_evaluation_period_id'] ?? null,
+            'findConductEvaluationPeriodBySemesterId' => $findConductEvaluationPeriodBySemesterId,
         ];
 //        dd($data['getStudyClassList']);
 
@@ -104,6 +106,7 @@ class FacultyOfficeController extends Controller
         $params = $request->all();
 //        $detailConductScores = $this->detailConductScoreService->get($params)->toArray();
         $studentId = $params['student_id'] ?? null;
+        $student = $this->studentService->infoStudent($studentId)->toArray();
         $conductEvaluationPeriodId = $params['conduct_evaluation_period_id'] ?? null;
         $conductEvaluationPeriod = $this->conductEvaluationPeriodService->find($conductEvaluationPeriodId);
         $checkConductEvaluationPeriodBySemesterId = $this->conductEvaluationPeriodService->findConductEvaluationPeriodBySemesterId($conductEvaluationPeriod?->semester_id);
@@ -112,7 +115,7 @@ class FacultyOfficeController extends Controller
         $checkConductEvaluationPeriod = $this->conductEvaluationPeriodService->checkConductEvaluationPeriod();
         $getConductCriteriaData = $this->detailConductScoreService->getConductCriteriaDataByLecturer($params);
         $calculateTotalScore = $this->detailConductScoreService->calculateTotalScore($getConductCriteriaData);
-
+        $conductCriterias = $this->conductCriteriaService->get()->toArray();
         $data = [
             'getConductCriteriaData' => $getConductCriteriaData->toArray(),
             'calculateTotalScore' => $calculateTotalScore,
@@ -120,6 +123,8 @@ class FacultyOfficeController extends Controller
             'student_conduct_score_id' => $params['student_conduct_score_id'],
             'conduct_evaluation_period_id' => $conductEvaluationPeriodId,
             'checkConductEvaluationPeriodBySemesterId' => $checkConductEvaluationPeriodBySemesterId,
+            'student' => $student,
+            'conductCriterias' => $conductCriterias,
         ];
 //dd($data['getConductCriteriaData']);
         return view('facultyOffice.conductScore.detail', compact('data'));
@@ -131,35 +136,45 @@ class FacultyOfficeController extends Controller
             $params = $request->all();
             $details = $params['details'];
             $studentConductScoreId = $request->input('student_conduct_score_id');
+            $studentId = $params['student_id'];
             $conductEvaluationPeriodId = $params['conduct_evaluation_period_id'];
             // Decode the details JSON string
             $details = json_decode($details, true);
 
-            if (!is_array($details) || empty($details) || !$studentConductScoreId || !$conductEvaluationPeriodId) {
+            if (!is_array($details) || empty($details) || !$conductEvaluationPeriodId) {
                 return response()->json(['message' => 'Dữ liệu không hợp lệ'], 400);
             }
 
             DB::beginTransaction();
 
-            $studentConductScore = \App\Models\StudentConductScore::where('id', $studentConductScoreId)
-                ->update([
+            $studentConductScore = \App\Models\StudentConductScore::updateOrCreate(
+                [
+                    'conduct_evaluation_period_id' => $conductEvaluationPeriodId,
+                    'student_id' => $studentId,
+                ],
+                [
                     'status' => 2,
                     'updated_at' => now(),
-                ]);
+                ]
+            );
 
             // Update only final_score for each detail, preserving other fields
             foreach ($details as $detail) {
-                if (!isset($detail['student_conduct_score_id'], $detail['conduct_criteria_id'], $detail['final_score'])) {
+                if (!isset($detail['conduct_criteria_id'], $detail['final_score'])) {
                     DB::rollBack();
                     return response()->json(['message' => 'Dữ liệu tiêu chí không hợp lệ'], 400);
                 }
 
-                \App\Models\DetailConductScore::where('student_conduct_score_id', $detail['student_conduct_score_id'])
-                    ->where('conduct_criteria_id', $detail['conduct_criteria_id'])
-                    ->update([
+                \App\Models\DetailConductScore::updateOrCreate(
+                    [
+                        'student_conduct_score_id' => $studentConductScore->id,
+                        'conduct_criteria_id' => $detail['conduct_criteria_id'],
+                    ],
+                    [
                         'final_score' => $detail['final_score'],
                         'updated_at' => now(),
-                    ]);
+                    ]
+                );
             }
 
             DB::commit();
@@ -169,32 +184,6 @@ class FacultyOfficeController extends Controller
             DB::rollBack();
             return response()->json(['message' => 'Lỗi khi lưu dữ liệu: ' . $e->getMessage()], 500);
         }
-    }
-
-    public function showDetailConductScore(Request $request)
-    {
-        $params = $request->all();
-//        $detailConductScores = $this->detailConductScoreService->get($params)->toArray();
-        $studentId = $params['student_id'] ?? null;
-        $conductEvaluationPeriodId = $params['conduct_evaluation_period_id'] ?? null;
-        $conductEvaluationPeriod = $this->conductEvaluationPeriodService->find($conductEvaluationPeriodId);
-        $checkConductEvaluationPeriodBySemesterId = $this->conductEvaluationPeriodService->findConductEvaluationPeriodBySemesterId($conductEvaluationPeriod?->semester_id);
-        $studentConductScore = $this->studentConductScoreService->findStudentConductScore($conductEvaluationPeriodId, $studentId);
-        $params['student_conduct_score_id'] = $studentConductScore?->id ?? null;
-        $checkConductEvaluationPeriod = $this->conductEvaluationPeriodService->checkConductEvaluationPeriod();
-        $getConductCriteriaData = $this->detailConductScoreService->getConductCriteriaDataByLecturer($params);
-        $calculateTotalScore = $this->detailConductScoreService->calculateTotalScore($getConductCriteriaData);
-
-        $data = [
-            'getConductCriteriaData' => $getConductCriteriaData->toArray(),
-            'calculateTotalScore' => $calculateTotalScore,
-            'checkConductEvaluationPeriod' => $checkConductEvaluationPeriod,
-            'student_conduct_score_id' => $params['student_conduct_score_id'],
-            'conduct_evaluation_period_id' => $conductEvaluationPeriodId,
-            'checkConductEvaluationPeriodBySemesterId' => $checkConductEvaluationPeriodBySemesterId,
-        ];
-
-        return view('facultyOffice.conductScore.showDetail', compact('data'));
     }
 
 }

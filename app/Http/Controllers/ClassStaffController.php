@@ -288,8 +288,6 @@ class ClassStaffController extends Controller
                     'student_id' => $studentId,
                 ],
                 [
-                    'total_score' => $totalScore,
-                    'classification' => $classification,
                     'status' => 0, // SV chấm
                     'created_at' => now(),
                     'updated_at' => now(),

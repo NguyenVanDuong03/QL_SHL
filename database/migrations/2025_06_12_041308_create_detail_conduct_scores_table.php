@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('conduct_criteria_id');
             $table->unsignedBigInteger('student_conduct_score_id');
-            $table->integer('self_score')->default(0);
+            $table->integer('self_score')->default(0)->nullable();
             $table->integer('class_score')->default(0)->nullable();
             $table->integer('final_score')->default(0)->nullable();
             $table->string('path')->nullable();

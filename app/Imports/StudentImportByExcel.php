@@ -129,7 +129,6 @@ class StudentImportByExcel implements ToCollection, WithStartRow, SkipsEmptyRows
             DB::commit();
         } catch (\Throwable $e) {
             DB::rollBack();
-            dd($e->getMessage());
             throw new \Exception('Import failed');
         }
     }

@@ -298,8 +298,16 @@
             <div class="col-md-9 col-12">
                 <div class="score-summary">
                     <div class="row text-end">
+                        @if ($data['findConductEvaluationPeriodBySemesterId'])
+                            <div class="col-6">
+                                <span>Tổng điểm SV: <span id="tongDiem">0</span></span>
+                            </div>
+                            <div class="col-6">
+                                <span>Tổng điểm Khoa: <span id="">{{ $data['calculateTotalScore'] }}</span></span>
+                            </div>
+                        @endif
                         <div class="col-6">
-                            <strong>Tổng điểm: <span id="tongDiem">0</span></strong>
+                            <strong>Điểm cuối cùng: <span id="">{{ $data['calculateTotalScore'] }}</span></strong>
                         </div>
                         <div class="col-6">
                             <strong>Điểm quy đổi: <span id="diemQuyDoi">0</span></strong>
@@ -526,20 +534,21 @@
                     }
                 });
 
-                $('#tongDiem').text(total);
-                $('#diemQuyDoi').text((total / 100).toFixed(2)); // Convert to 0-1 scale with 2 decimal places
+                const diemQuyDoi = @json($data['calculateTotalScore']);
 
+                $('#tongDiem').text(total);
+                $('#diemQuyDoi').text((diemQuyDoi / 100).toFixed(2));
                 // Determine classification
                 let classification = '';
-                if (total >= 90) {
+                if (diemQuyDoi >= 90) {
                     classification = 'Xuất sắc';
-                } else if (total >= 80) {
+                } else if (diemQuyDoi >= 80) {
                     classification = 'Tốt';
-                } else if (total >= 65) {
+                } else if (diemQuyDoi >= 65) {
                     classification = 'Khá';
-                } else if (total >= 50) {
+                } else if (diemQuyDoi >= 50) {
                     classification = 'Trung bình';
-                } else if (total >= 35) {
+                } else if (diemQuyDoi >= 35) {
                     classification = 'Yếu';
                 } else {
                     classification = 'Kém';

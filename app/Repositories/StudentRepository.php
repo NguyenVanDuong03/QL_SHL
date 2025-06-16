@@ -17,6 +17,13 @@ class StudentRepository extends BaseRepository
         return $this->model;
     }
 
+    public function infoStudent($studentId)
+    {
+        return $this->getModel()
+            ->with(['user', 'studyClass'])
+            ->find($studentId);
+    }
+
     public function getStudentListByClassId($params)
     {
         $search = $params['search'] ?? '';

@@ -17,6 +17,11 @@ class StudentService extends BaseService
         return $this->repository;
     }
 
+    public function infoStudent($studentId)
+    {
+        return $this->getRepository()->infoStudent($studentId);
+    }
+
     protected function buildFilterParams(array $params): array
     {
         $sort = Arr::get($params, 'sort', 'id:desc');

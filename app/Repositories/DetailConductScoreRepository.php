@@ -82,7 +82,7 @@ class DetailConductScoreRepository extends BaseRepository
     public function calculateTotalScore($criteriaData)
     {
         return $criteriaData->sum(function ($record) {
-            return $record->final_score ?? $record->self_score ?? 0;
+            return $record->final_score ?? $record->class_score ?? $record->self_score ?? 0;
         });
     }
 

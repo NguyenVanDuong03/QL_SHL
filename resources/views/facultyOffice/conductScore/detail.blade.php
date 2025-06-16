@@ -297,18 +297,35 @@
                 <div class="score-summary">
                     <div class="row text-end">
                         <div class="col-6">
-                            <span>Tổng điểm SV: <span id="tongDiemSV">0</span></span>
+                            <span>Sinh viên: <span>{{ $data['student']['user']['name'] }}</span></span>
                         </div>
                         <div class="col-6">
-                            <span>Tổng điểm GVCN: <span id="tongDiemGVCN">0</span></span>
+                            <span>Mã sinh viên: <span>{{ $data['student']['student_code'] }}</span></span>
                         </div>
                         <div class="col-6">
-                            <strong>Tổng điểm: <span id="tongDiem">0</span></strong>
+                            <span>Email: <span>{{ $data['student']['user']['email'] }}</span></span>
+                        </div>
+                        <div class="col-6">
+                            <span>Lớp học: <span>{{ $data['student']['study_class']['name'] }}</span></span>
+                        </div>
+                        @if ($data['checkConductEvaluationPeriodBySemesterId'])
+                            <div class="col-6">
+                                <span>Tổng điểm SV: <span id="tongDiemSV">0</span></span>
+                            </div>
+                            <div class="col-6">
+                                <span>Tổng điểm GVCN: <span id="tongDiemGVCN">0</span></span>
+                            </div>
+                            <div class="col-6">
+                                <span>Tổng điểm: <span class="tongDiem">0</span></span>
+                            </div>
+                        @endif
+                        <div class="col-6">
+                            <strong>Điểm cuối cùng: <span class="tongDiem">0</span></strong>
                         </div>
                         <div class="col-6">
                             <strong>Điểm quy đổi: <span id="diemQuyDoi">0</span></strong>
                         </div>
-                        <div class="col-12 text-center text-md-end">
+                        <div class="col-6 text-center text-md-end">
                             <strong>Xếp loại: <span id="xepLoai">Chưa có dữ liệu</span></strong>
                         </div>
                     </div>
@@ -316,6 +333,7 @@
             </div>
         </div>
 
+        <h4 class="text-center">Đánh giá điểm rèn luyện</h4>
         @php
             $sectionHeaders = [
                 0 => 'ĐÁNH GIÁ VỀ Ý THỨ THAM GIA HỌC TẬP',
@@ -341,7 +359,7 @@
                     </tr>
                     </thead>
                     <tbody>
-                    @foreach($data['getConductCriteriaData'] ?? [] as $index => $item)
+                    @forelse($data['getConductCriteriaData'] ?? [] as $index => $item)
                         @if (isset($sectionHeaders[$index]))
                             <tr>
                                 <td colspan="7" class="bg-secondary text-white">
@@ -368,7 +386,8 @@
                                 <input type="number" class="form-control form-control-sm score-input"
                                        min="0" max="{{ $item['max_score'] }}"
                                        value="{{ $item['final_score'] ?? 0 }}"
-                                       data-max="{{ $item['max_score'] }}" {{ $data['checkConductEvaluationPeriodBySemesterId'] ? '' : 'disabled' }}>
+                                       data-max="{{ $item['max_score'] }}"
+                                    {{ $data['checkConductEvaluationPeriodBySemesterId'] ? '' : 'disabled' }}>
                             </td>
                             <td>
                                 <div class="criteria-actions">
@@ -388,12 +407,55 @@
                                         </div>
                                     </div>
                                     <div>Ghi chú:
-                                        <p class="note-input">{{ isset($item['note']) && !empty($item['note']) ? $item['note'] : '---' }}</p>
+                                        <p class="note-input">{{ isset($item['note']) && !empty($item['note']) ? $item['note'] : '' }}</p>
                                     </div>
                                 </div>
                             </td>
                         </tr>
-                    @endforeach
+                    @empty
+                        @php
+                            $currentSection = -1;
+                        @endphp
+                        @foreach($data['conductCriterias'] ?? [] as $index2 => $criteria)
+                            @if (isset($sectionHeaders[$index2]) && $currentSection !== $index2)
+                                @php
+                                    $currentSection = $index2;
+                                @endphp
+                                <tr>
+                                    <td colspan="7" class="bg-secondary text-white">
+                                        <strong>{{ $sectionHeaders[$index2] }}</strong>
+                                    </td>
+                                </tr>
+                            @endif
+                            <tr class="criteria-row" data-criteria="{{ $criteria['id'] }}">
+                                <td>{{ $loop->iteration }}</td>
+                                <td>{{ $criteria['content'] }}</td>
+                                <td class="text-center">{{ $criteria['max_score'] }}</td>
+                                <td class="text-center">
+                                    <input type="number" class="form-control form-control-sm"
+                                           value="0" disabled>
+                                </td>
+                                <td class="text-center">
+                                    <input type="number" class="form-control form-control-sm"
+                                           value="0" disabled>
+                                </td>
+                                <td class="text-center">
+                                    <input type="number" class="form-control form-control-sm score-input"
+                                           min="0" max="{{ $criteria['max_score'] }}"
+                                           value="{{ $criteria['final_score'] ?? 0 }}"
+                                           data-max="{{ $criteria['max_score'] }}"
+                                        {{ $data['checkConductEvaluationPeriodBySemesterId'] ? '' : 'disabled' }}>
+                                </td>
+                                <td>
+                                    <div class="criteria-actions">
+                                        <div>Ghi chú:
+                                            <p class="note-input">{{ isset($criteria['note']) && !empty($criteria['note']) ? $criteria['note'] : '' }}</p>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                        @endforeach
+                    @endforelse
                     </tbody>
                 </table>
             </div>
@@ -437,9 +499,8 @@
 
             // Populate criteriaData from backend data
             @if($data['checkConductEvaluationPeriod'])
-                @foreach($data['getConductCriteriaData'] ?? [] as $item)
+                @forelse($data['getConductCriteriaData'] ?? [] as $item)
                 criteriaData[{{ $item['criterion_id'] }}] = {
-                scoreId: {{ $data['student_conduct_score_id'] }},
                 image: @if($item['evidence_path'])
                 {
                     name: '{{ basename($item['evidence_path']) }}',
@@ -451,9 +512,19 @@
                     null
                 @endif,
                 note: '{{ $item['note'] ?? '' }}',
-                final_score: {{ $item['final_score'] ?? 0 }}
+                final_score: {{ $item['final_score'] ?? 0 }},
+                scoreId: '{{ $data['student_conduct_score_id'] }}'
+            };
+            @empty
+                @foreach($data['conductCriterias'] ?? [] as $criteria)
+                criteriaData[{{ $criteria['id'] }}] = {
+                image: null,
+                note: '{{ $criteria['note'] ?? '' }}',
+                final_score: {{ $criteria['final_score'] ?? 0 }},
+                scoreId: null
             };
             @endforeach
+            @endforelse
             @endif
 
             // Ensure all table rows have corresponding criteriaData entries
@@ -462,10 +533,10 @@
                 const scoreId = $(this).data('score-id');
                 if (!criteriaData[criteriaId]) {
                     criteriaData[criteriaId] = {
-                        scoreId: scoreId,
                         image: null,
                         note: '',
-                        final_score: 0
+                        final_score: 0,
+                        scoreId: scoreId
                     };
                 } else {
                     criteriaData[criteriaId].scoreId = scoreId;
@@ -493,7 +564,7 @@
                     }
                 });
 
-                $('#tongDiem').text(total);
+                $('.tongDiem').text(total);
                 $('#tongDiemSV').text(totalSV);
                 $('#tongDiemGVCN').text(totalGVCN);
                 $('#diemQuyDoi').text((total / 100).toFixed(2));
@@ -546,9 +617,12 @@
                 Object.keys(criteriaData).forEach(criteriaId => {
                     const row = $(`.criteria-row[data-criteria="${criteriaId}"]`);
                     if (row.length) {
-                        row.find('.score-input').val(criteriaData[criteriaId].final_score);
-                        row.find('.note-input').text(criteriaData[criteriaId].note || '---');
+                        const scoreInput = row.find('.score-input');
+                        scoreInput.val(criteriaData[criteriaId].final_score || 0);
+                        row.find('.note-input').text(criteriaData[criteriaId].note || '');
                         updateImagePreview(criteriaId);
+                    } else {
+                        console.log(`Criteria ${criteriaId}: Row not found`);
                     }
                 });
                 calculateTotal();
@@ -673,8 +747,8 @@
 
                 const formData = new FormData();
                 formData.append('details', JSON.stringify(details));
-                formData.append('student_conduct_score_id', '{{ $data['student_conduct_score_id'] }}');
                 formData.append('conduct_evaluation_period_id', {{ $data['conduct_evaluation_period_id'] }});
+                formData.append('student_id', '{{ $data['student']['id'] }}');
 
                 $.ajax({
                     url: '{{ route('faculty-office.conduct-score.save') }}',
