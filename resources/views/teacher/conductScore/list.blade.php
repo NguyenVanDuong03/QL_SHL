@@ -6,7 +6,7 @@
     <x-breadcrumb.breadcrumb :links="[
         ['label' => 'Điểm rèn luyện', 'url' => 'teacher.conduct-score.index'],
         ['label' => 'Danh sách lớp học'],
-    ]" />
+    ]"/>
 @endsection
 
 @push('styles')
@@ -76,12 +76,16 @@
                                         </td>
                                         <td class="text-center">
                                             <div class="btn-group gap-2" role="group">
-                                                <a href="{{ route('teacher.conduct-score.list', ['study_class_id' =>$item['class_id'], 'conduct_evaluation_period_id' => $data['conduct_evaluation_period_id']]) }}" class="btn btn-outline-primary btn-sm" title="Xem chi tiết">
+                                                <a href="{{ route('teacher.conduct-score.list', ['study_class_id' =>$item['class_id'], 'conduct_evaluation_period_id' => $data['conduct_evaluation_period_id']]) }}"
+                                                   class="btn btn-outline-primary btn-sm" title="Xem chi tiết">
                                                     <i class="fas fa-eye"></i>
                                                 </a>
-{{--                                                <a href="#" class="btn btn-outline-success btn-sm" title="Xuất Excel">--}}
-{{--                                                    <i class="fas fa-file-excel"></i>--}}
-{{--                                                </a>--}}
+                                                @if (!isset($data['findConductEvaluationPeriodBySemesterId']))
+                                                    <a href="{{ route('teacher.conduct-score.exportConductScore', ['semester_id' => $data['semester_id'], 'study_class_id' => $item['class_id'], 'study_class_name' => $item['study_class_name']]) }}" class="btn btn-outline-success btn-sm"
+                                                       title="Xuất Excel" target="_blank">
+                                                        <i class="fas fa-file-excel"></i>
+                                                    </a>
+                                                @endif
                                             </div>
                                         </td>
                                     </tr>
@@ -99,14 +103,14 @@
         </div>
 
         <!-- Pagination -->
-        <x-pagination.pagination :paginate="$data['getStudyClassList']" />
-@endsection
+        <x-pagination.pagination :paginate="$data['getStudyClassList']"/>
+        @endsection
 
-@push('scripts')
-    <script>
-        $(document).ready(function() {
+        @push('scripts')
+            <script>
+                $(document).ready(function () {
 
-        });
-    </script>
-@endpush
+                });
+            </script>
+    @endpush
 

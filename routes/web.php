@@ -105,6 +105,7 @@ Route::middleware(['auth'])->group(function () {
                     Route::get('/list', [LecturerController::class, 'listConductScore'])->name('list');
                     Route::get('/list/detail', [LecturerController::class, 'detailConductScore'])->name('detail');
                     Route::post('/list/detail', [LecturerController::class, 'saveConductScore'])->name('save');
+                    Route::get('/export-conduct-score', [LecturerController::class, 'exportConductScore'])->name('exportConductScore');
                     Route::get('/{id?}', [LecturerController::class, 'infoConductScore'])->name('infoConductScore');
                 }
             );
@@ -117,7 +118,7 @@ Route::middleware(['auth'])->group(function () {
                 ],
                 function () {
                     Route::get('/', [LecturerController::class, 'indexStatistical'])->name('index');
-//                    Route::get('/{id?}', [LecturerController::class, 'infoStatistical'])->name('infoStatistical');
+                    Route::get('/export-attendance', [LecturerController::class, 'exportAttendance'])->name('exportAttendance');
                 }
             );
         }

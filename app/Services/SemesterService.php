@@ -43,4 +43,9 @@ class SemesterService extends BaseService
         return $this->getRepository()->getFourSemester();
     }
 
+    public function statisticalSemester($lecturerId)
+    {
+        return $this->getRepository()->statisticalSemester($lecturerId);
+    }
+
 }

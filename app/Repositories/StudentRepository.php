@@ -351,4 +351,32 @@ class StudentRepository extends BaseRepository
         ];
     }
 
+    public function statisticalAttendance($semesterId, $studyClassId)
+    {
+        return $this->getModel()
+            ->select([
+                'students.student_code',
+                'users.name',
+                DB::raw('COALESCE(attendances.status, 3) as attendance_status')
+            ])
+            ->join('users', 'students.user_id', '=', 'users.id')
+            ->join('study_classes', 'students.study_class_id', '=', 'study_classes.id')
+            ->leftJoin('attendances', function ($join) use ($semesterId, $studyClassId) {
+                $join->on('students.id', '=', 'attendances.student_id')
+                    ->whereIn('attendances.class_session_request_id', function ($query) use ($semesterId, $studyClassId) {
+                        $query->select('class_session_requests.id')
+                            ->from('class_session_requests')
+                            ->join('class_session_registrations', 'class_session_requests.class_session_registration_id', '=', 'class_session_registrations.id')
+                            ->where('class_session_registrations.semester_id', $semesterId)
+                            ->where('class_session_requests.study_class_id', $studyClassId)
+                            ->where('class_session_requests.type', 0)
+                            ->where('class_session_requests.status', 3);
+                    });
+            })
+            ->where('study_classes.id', $studyClassId)
+            ->groupBy('students.id', 'students.student_code', 'users.name', 'attendances.status')
+            ->orderBy('students.student_code')
+            ->get();
+    }
+
 }

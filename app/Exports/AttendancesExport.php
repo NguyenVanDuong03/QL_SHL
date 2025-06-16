@@ -3,6 +3,7 @@
 namespace App\Exports;
 
 use App\Models\Attendance;
+use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Concerns\FromQuery;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithMapping;
@@ -26,13 +27,19 @@ class AttendancesExport implements FromQuery, WithHeadings, WithMapping, WithSty
     public function query()
     {
         return Attendance::query()
-            ->select('students.student_code', 'users.name', 'attendances.status', 'attendances.reason')
-            ->join('students', 'attendances.student_id', '=', 'students.id')
+            ->select('students.student_code', 'users.name', DB::raw('COALESCE(attendances.status, 0) as status'), 'attendances.reason')
+            ->rightJoin('students', 'attendances.student_id', '=', 'students.id')
             ->join('users', 'students.user_id', '=', 'users.id')
-            ->join('class_session_requests', 'attendances.class_session_request_id', '=', 'class_session_requests.id')
-            ->join('study_classes', 'class_session_requests.study_class_id', '=', 'study_classes.id')
+            ->join('study_classes', 'students.study_class_id', '=', 'study_classes.id')
+            ->leftJoin('class_session_requests', function ($join) {
+                $join->on('attendances.class_session_request_id', '=', 'class_session_requests.id')
+                    ->where('class_session_requests.id', '=', $this->classRequestId)
+                    ->where('class_session_requests.type', '=', 0)
+                    ->where('class_session_requests.status', '=', 3);
+            })
             ->where('study_classes.id', $this->studyClassId)
-            ->where('class_session_requests.id', $this->classRequestId);
+            ->groupBy('students.id', 'students.student_code', 'users.name', 'attendances.status', 'attendances.reason')
+            ->orderBy('students.student_code');
     }
 
     public function headings(): array

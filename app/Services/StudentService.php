@@ -154,4 +154,9 @@ class StudentService extends BaseService
         return $this->getRepository()->countStudentsByConductStatus($params);
     }
 
+    public function statisticalAttendance($semesterId, $studyClassId)
+    {
+        return $this->getRepository()->statisticalAttendance($semesterId, $studyClassId);
+    }
+
 }

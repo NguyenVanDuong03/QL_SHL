@@ -95,627 +95,238 @@
 @endpush
 
 @section('main')
-    <div class="bg-light min-vh-100">
+    <div class="m-4">
         <!-- Header -->
-        <div class="bg-white shadow-sm border-bottom">
-            <div class="container py-3">
-                <div class="row align-items-center">
-                    <div class="col-12 mb-3 mb-md-0">
-                        <h4 class="h3 mb-1">Thống kê</h4>
+        <h4 class="mb-0">Thống Kê</h4>
+
+        <div class="py-4">
+            <!-- Summary Cards -->
+            <div class="row g-3 mb-4">
+                <div class="col-6 col-md-3">
+                    <div class="card h-100 bg-white shadow-sm">
+                        <div class="card-body text-center">
+                            <i class="fas fa-book text-primary mb-2"></i>
+                            <h6 class="text-muted">Tổng lớp</h6>
+                            <h4 class="mb-0">{{ $data['countStudyClassBySemester'] }}</h4>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6 col-md-3">
+                    <div class="card h-100 bg-white shadow-sm">
+                        <div class="card-body text-center">
+                            <i class="fas fa-users text-success mb-2"></i>
+                            <h6 class="text-muted">Tổng SV</h6>
+                            <h4 class="mb-0">{{ $data['getTotalStudentsByLecturer'] }}</h4>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6 col-md-3">
+                    <div class="card h-100 bg-white shadow-sm">
+                        <div class="card-body text-center">
+                            <i class="fas fa-calendar text-info mb-2"></i>
+                            <h6 class="text-muted">Buổi SHL</h6>
+                            <h4 class="mb-0">{{ $data['getTotalDoneSessionsByLecturer'] }}
+                                /{{ $data['getTotalSessionsByLecturer'] }}</h4>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6 col-md-3">
+                    <div class="card h-100 bg-white shadow-sm">
+                        <div class="card-body text-center">
+                            <i class="fas fa-chart-line text-warning mb-2"></i>
+                            <h6 class="text-muted">Tỷ lệ tham gia</h6>
+                            <h4 class="mb-0">{{ $data['participationRate']->attendance_rate }}%</h4>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tabs -->
+            <ul class="nav nav-tabs mb-4" id="lecturerTabs" role="tablist">
+                <li class="nav-item">
+                    <button class="nav-link active" id="activities-tab" data-bs-toggle="tab"
+                            data-bs-target="#activities" type="button">Buổi SHL
+                    </button>
+                </li>
+                <li class="nav-item">
+                    <button class="nav-link" id="conduct-tab" data-bs-toggle="tab" data-bs-target="#conduct"
+                            type="button">Điểm rèn luyện
+                    </button>
+                </li>
+            </ul>
+
+            <div class="tab-content" id="lecturerTabsContent">
+                <!-- Activities Tab -->
+                <div class="tab-pane fade show active" id="activities" role="tabpanel">
+                    <div class="card shadow-sm">
+                        <div class="card-header bg-white">
+                            <h5 class="mb-0">Danh sách Sinh hoạt lớp cố định</h5>
+                        </div>
+                        <div class="card-body p-0" style="height: 300px; overflow-y: auto;">
+                            <div class="table-responsive">
+                                <table class="table table-hover mb-0" id="activitiesTable">
+                                    <thead>
+                                    <tr>
+                                        <th>Học kỳ</th>
+                                        <th>Lớp</th>
+                                        <th>Ngày</th>
+                                        <th>Tham gia</th>
+                                        <th>Trạng thái</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody id="activitiesBody">
+                                    @foreach(array_slice($data['statisticalSemester'] ?? [], 0, 5) as $activity)
+                                        <tr>
+                                            <td>{{ $activity['semester_name'] }} - {{ $activity['school_year'] }}</td>
+                                            <td>{{ $activity['class_name'] }}</td>
+                                            <td>{{ $activity['proposed_at'] }}</td>
+                                            <td>{{ $activity['attendance_count'] }}
+                                                /{{ $activity['total_students'] }}</td>
+                                            <td>
+                                                <a href="{{ route('teacher.statistical.exportAttendance', ['class_request_id' => $activity['class_session_requests_id'], 'study_class_id' => $activity['class_id'], 'study_class_name' => $activity['class_name']]) }}"
+                                                   class="btn btn-success btn-sm" target="_blank">
+                                                    <i class="fas fa-file-excel me-2"></i> Xuất file
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    @endforeach
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Conduct Tab -->
+                <div class="tab-pane fade" id="conduct" role="tabpanel">
+                    <div class="card shadow-sm">
+                        <div class="card-header bg-white">
+                            <h5 class="mb-0">Điểm rèn luyện</h5>
+                        </div>
+                        <div class="card-body p-0" style="height: 300px; overflow-y: auto;">
+                            <div class="table-responsive">
+                                <table class="table table-hover mb-0" id="conductTable">
+                                    <thead>
+                                    <tr>
+                                        <th>Lớp</th>
+                                        <th>Số SV</th>
+                                        <th>Xuất sắc</th>
+                                        <th>Tốt</th>
+                                        <th>Khá</th>
+                                        <th>TB</th>
+                                        <th>Yếu</th>
+                                        <th>Trạng thái</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody id="conductBody">
+                                    {{--                                    @foreach(array_slice($data['conducts'] ?? [], 0, 5) as $conduct)--}}
+                                    {{--                                        <tr>--}}
+                                    {{--                                            <td>{{ $conduct['class'] }}</td>--}}
+                                    {{--                                            <td>{{ $conduct['total_students'] }}</td>--}}
+                                    {{--                                            <td>{{ $conduct['excellent'] }}</td>--}}
+                                    {{--                                            <td>{{ $conduct['good'] }}</td>--}}
+                                    {{--                                            <td>{{ $conduct['fair'] }}</td>--}}
+                                    {{--                                            <td>{{ $conduct['average'] }}</td>--}}
+                                    {{--                                            <td>{{ $conduct['poor'] }}</td>--}}
+                                    {{--                                            <td><span class="badge bg-danger">{{ $conduct['warning'] }}</span></td>--}}
+                                    {{--                                        </tr>--}}
+                                    {{--                                    @endforeach--}}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-
-        @if (isset($data['semesters']))
-            <div class="container py-4">
-                <!-- Overall Statistics Cards -->
-                <div class="row mb-4">
-                    <div class="col-6 col-md-3 mb-3 mb-md-0">
-                        <div class="card h-100 stat-card">
-                            <div class="card-body">
-                                <div class="d-flex justify-content-between align-items-center mb-2">
-                                    <h6 class="text-muted mb-0">Tổng số lớp</h6>
-                                    <i class="fas fa-book text-primary"></i>
-                                </div>
-                                <h2 class="mb-0">{{ $data['countStudyClassBySemester'] }}</h2>
-                                <small class="text-muted">Lớp chủ nhiệm</small>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-6 col-md-3 mb-3 mb-md-0">
-                        <div class="card h-100 stat-card">
-                            <div class="card-body">
-                                <div class="d-flex justify-content-between align-items-center mb-2">
-                                    <h6 class="text-muted mb-0">Tổng sinh viên</h6>
-                                    <i class="fas fa-users text-success"></i>
-                                </div>
-                                <h2 class="mb-0">{{ $data['getTotalStudentsByLecturer'] }}</h2>
-                                <small class="text-muted">Tất cả các lớp</small>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-6 col-md-3 mb-3 mb-md-0">
-                        <div class="card h-100 stat-card">
-                            <div class="card-body">
-                                <div class="d-flex justify-content-between align-items-center mb-2">
-                                    <h6 class="text-muted mb-0">Buổi SHL</h6>
-                                    <i class="fas fa-calendar text-info"></i>
-                                </div>
-                                <h2 class="mb-0">{{ $data['getTotalDoneSessionsByLecturer'] }}
-                                    /{{ $data['getTotalSessionsByLecturer'] }}</h2>
-                                <small class="text-muted">Đã hoàn thành</small>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-6 col-md-3 mb-3 mb-md-0">
-                        <div class="card h-100 stat-card">
-                            <div class="card-body">
-                                <div class="d-flex justify-content-between align-items-center mb-2">
-                                    <h6 class="text-muted mb-0">Tỷ lệ tham gia TB</h6>
-                                    <i class="fas fa-chart-line text-warning"></i>
-                                </div>
-                                <h2 class="mb-0">{{ $data['participationRate']->attendance_rate }}%</h2>
-                                <small class="text-muted">Trung bình tất cả lớp</small>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-12 d-flex justify-content-end mb-4">
-                    <form method="GET" class="input-group" action="{{ route('teacher.statistical.index') }}"
-                          style="max-width: 280px;">
-                        <select class="form-select" id="semesterSelect" name="semester_id">
-                            @forelse($data['semesters'] ?? [] as $semester)
-                                <option
-                                    value="{{ $semester['id'] }}" {{ request()->get('semester_id') == $semester['id'] ? 'selected' : '' }}>
-                                    {{ $semester['name'] }} - {{ $semester['school_year'] }}
-                                </option>
-                            @empty
-                                <option value="" disabled>Không có học kỳ nào</option>
-                            @endforelse
-                        </select>
-                        <button class="btn btn-primary" id="filterButton" type="submit">
-                            <i class="fas fa-filter"></i> Lọc
-                        </button>
-                    </form>
-                </div>
-                <!-- Tabs -->
-                <ul class="nav nav-tabs mb-4 mobile-tabs gap-1" id="lecturerTabs" role="tablist">
-                    <li class="nav-item" role="presentation">
-                        <button class="nav-link active" id="overview-tab" data-bs-toggle="tab"
-                                data-bs-target="#overview" type="button" role="tab" aria-controls="overview"
-                                aria-selected="true">Tổng quan
-                        </button>
-                    </li>
-                    <li class="nav-item" role="presentation">
-                        <button class="nav-link" id="classes-tab" data-bs-toggle="tab" data-bs-target="#classes"
-                                type="button" role="tab" aria-controls="classes" aria-selected="false">Danh sách lớp
-                        </button>
-                    </li>
-                    <li class="nav-item" role="presentation">
-                        <button class="nav-link" id="activities-tab" data-bs-toggle="tab" data-bs-target="#activities"
-                                type="button" role="tab" aria-controls="activities" aria-selected="false">Hoạt động
-                        </button>
-                    </li>
-                    <li class="nav-item" role="presentation">
-                        <button class="nav-link" id="tasks-tab" data-bs-toggle="tab" data-bs-target="#tasks"
-                                type="button" role="tab" aria-controls="tasks" aria-selected="false">Công việc
-                        </button>
-                    </li>
-                </ul>
-
-                <div class="tab-content" id="lecturerTabsContent">
-                    <!-- Overview Tab -->
-                    <div class="tab-pane fade show active" id="overview" role="tabpanel" aria-labelledby="overview-tab">
-                        <div class="row">
-                            <!-- Class Overview Cards -->
-                            <div class="col-lg-7 mb-4">
-                                <div class="card h-100">
-                                    <div class="card-header bg-white">
-                                        <h5 class="mb-0">Tình hình các lớp</h5>
-                                        <small class="text-muted">Thống kê nhanh từng lớp chủ nhiệm</small>
-                                    </div>
-                                    <div class="card-body">
-                                        <div class="row">
-                                            <!-- Class Card 1 -->
-                                            @forelse($data['listStatisticsByLecturerId'] ?? [] as $item)
-                                                <div class="col-12 mb-3">
-                                                    <div class="card border class-card">
-                                                        <div class="card-body">
-                                                            <div
-                                                                class="d-flex justify-content-between align-items-start mb-3">
-                                                                <div>
-                                                                    <h5 class="mb-1">{{ $item['class_name'] }}</h5>
-                                                                    <p class="text-muted small mb-0">{{ $item['department_name'] }}</p>
-                                                                </div>
-                                                                <span class="badge bg-secondary">{{ $item['total_students'] }} sinh viên</span>
-                                                            </div>
-                                                            <div class="row">
-                                                                <div class="col-6 col-md-3 mb-2">
-                                                                    <small class="text-muted d-block">SHL cố
-                                                                        định:</small>
-                                                                    <span class="fw-medium">{{ $item['fixed_sessions'] }}</span>
-                                                                </div>
-                                                                <div class="col-6 col-md-3 mb-2">
-                                                                    <small class="text-muted d-block">SHL linh
-                                                                        hoạt:</small>
-                                                                    <span class="fw-medium text-warning">{{ $item['flexible_sessions'] }}</span>
-                                                                </div>
-                                                                <div class="col-6 col-md-3 mb-2">
-                                                                    <small class="text-muted d-block">ĐRL xuất
-                                                                        sắc:</small>
-                                                                    <span class="fw-medium">{{ $item['high_conduct_students'] }}</span>
-                                                                </div>
-                                                                <div class="col-6 col-md-3 mb-2">
-                                                                    <small class="text-muted d-block">Cảnh báo
-                                                                        HV:</small>
-                                                                    <span class="fw-medium text-danger">{{ $item['warned_students'] }}</span>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            @empty
-                                                <div class="col-12">
-                                                    <div class="alert alert-info text-center" role="alert">
-                                                        <strong>Chưa có dữ liệu thống kê cho lớp nào.</strong>
-                                                    </div>
-                                                </div>
-                                            @endforelse
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Warnings Summary -->
-                            <div class="col-lg-5 mb-4">
-                                <div class="card h-100">
-                                    <div class="card-header bg-white d-flex align-items-center">
-                                        <i class="fas fa-exclamation-triangle text-warning me-2"></i>
-                                        <div>
-                                            <h5 class="mb-0">Cảnh báo và vấn đề cần chú ý</h5>
-                                        </div>
-                                    </div>
-                                    <div class="card-body">
-                                        <div class="mb-3 p-3 bg-danger bg-opacity-10 rounded warning-card danger">
-                                            <div class="d-flex justify-content-between align-items-center">
-                                                <div>
-                                                    <h6 class="text-danger mb-1">Cảnh báo học vụ</h6>
-                                                    <p class="text-danger small mb-0">Tổng cộng 6 sinh viên</p>
-                                                </div>
-                                                <span class="badge bg-danger">6</span>
-                                            </div>
-                                        </div>
-
-                                        <div class="mb-3 p-3 bg-warning bg-opacity-10 rounded warning-card warning">
-                                            <div class="d-flex justify-content-between align-items-center">
-                                                <div>
-                                                    <h6 class="text-warning mb-1">Tỷ lệ tham gia thấp</h6>
-                                                    <p class="text-warning small mb-0">KTPM2021C (84.2%)</p>
-                                                </div>
-                                                <span class="badge bg-warning text-dark">Cần cải thiện</span>
-                                            </div>
-                                        </div>
-
-                                        <div class="p-3 bg-info bg-opacity-10 rounded warning-card info">
-                                            <div class="d-flex justify-content-between align-items-center">
-                                                <div>
-                                                    <h6 class="text-info mb-1">Buổi SHL chưa hoàn thành</h6>
-                                                    <p class="text-info small mb-0">6 buổi còn lại trong kỳ</p>
-                                                </div>
-                                                <span class="badge bg-info">6</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Classes Tab -->
-                    <div class="tab-pane fade" id="classes" role="tabpanel" aria-labelledby="classes-tab">
-                        <div class="card">
-                            <div class="card-header bg-white">
-                                <h5 class="mb-0">Danh sách lớp chủ nhiệm</h5>
-                                <small class="text-muted">Chi tiết thông tin các lớp đang quản lý</small>
-                            </div>
-                            <div class="card-body">
-                                <!-- Desktop Table View -->
-                                <div class="d-none d-md-block mobile-scroll">
-                                    <table class="table table-hover">
-                                        <thead>
-                                        <tr>
-                                            <th>Tên lớp</th>
-                                            <th>Ngành học</th>
-                                            <th>Niên khóa</th>
-                                            <th>Số SV</th>
-                                            <th>SHL</th>
-                                            <th>Tỷ lệ tham gia</th>
-                                            <th>Cảnh báo HV</th>
-                                            <th>Hành động</th>
-                                        </tr>
-                                        </thead>
-                                        <tbody>
-                                        <tr>
-                                            <td class="fw-medium">CNTT2021A</td>
-                                            <td>Công nghệ thông tin</td>
-                                            <td>2021-2025</td>
-                                            <td>45</td>
-                                            <td class="fw-medium">8/10</td>
-                                            <td><span class="fw-medium text-warning">87.5%</span></td>
-                                            <td><span class="badge bg-danger">2</span></td>
-                                            <td>
-                                                <button class="btn btn-sm btn-outline-primary">Chi tiết</button>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td class="fw-medium">CNTT2022B</td>
-                                            <td>Công nghệ thông tin</td>
-                                            <td>2022-2026</td>
-                                            <td>42</td>
-                                            <td class="fw-medium">9/10</td>
-                                            <td><span class="fw-medium text-success">92.3%</span></td>
-                                            <td><span class="badge bg-danger">1</span></td>
-                                            <td>
-                                                <button class="btn btn-sm btn-outline-primary">Chi tiết</button>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td class="fw-medium">KTPM2021C</td>
-                                            <td>Kỹ thuật phần mềm</td>
-                                            <td>2021-2025</td>
-                                            <td>38</td>
-                                            <td class="fw-medium">7/10</td>
-                                            <td><span class="fw-medium text-warning">84.2%</span></td>
-                                            <td><span class="badge bg-danger">3</span></td>
-                                            <td>
-                                                <button class="btn btn-sm btn-outline-primary">Chi tiết</button>
-                                            </td>
-                                        </tr>
-                                        </tbody>
-                                    </table>
-                                </div>
-
-                                <!-- Mobile Card View -->
-                                <div class="d-md-none">
-                                    <!-- Class Card 1 -->
-                                    <div class="card mb-3 mobile-card">
-                                        <div class="card-body">
-                                            <div class="d-flex justify-content-between mb-2">
-                                                <h5 class="mb-0">CNTT2021A</h5>
-                                                <span class="badge bg-secondary">45 SV</span>
-                                            </div>
-                                            <p class="text-muted small mb-3">Công nghệ thông tin - 2021-2025</p>
-
-                                            <div class="row mb-3">
-                                                <div class="col-6">
-                                                    <small class="text-muted d-block">SHL:</small>
-                                                    <span class="fw-medium">8/10</span>
-                                                </div>
-                                                <div class="col-6">
-                                                    <small class="text-muted d-block">Tham gia:</small>
-                                                    <span class="fw-medium text-warning">87.5%</span>
-                                                </div>
-                                            </div>
-
-                                            <div class="row mb-3">
-                                                <div class="col-6">
-                                                    <small class="text-muted d-block">Cảnh báo HV:</small>
-                                                    <span class="badge bg-danger">2</span>
-                                                </div>
-                                            </div>
-
-                                            <button class="btn btn-outline-primary btn-sm w-100">Chi tiết</button>
-                                        </div>
-                                    </div>
-
-                                    <!-- Class Card 2 -->
-                                    <div class="card mb-3 mobile-card">
-                                        <div class="card-body">
-                                            <div class="d-flex justify-content-between mb-2">
-                                                <h5 class="mb-0">CNTT2022B</h5>
-                                                <span class="badge bg-secondary">42 SV</span>
-                                            </div>
-                                            <p class="text-muted small mb-3">Công nghệ thông tin - 2022-2026</p>
-
-                                            <div class="row mb-3">
-                                                <div class="col-6">
-                                                    <small class="text-muted d-block">SHL:</small>
-                                                    <span class="fw-medium">9/10</span>
-                                                </div>
-                                                <div class="col-6">
-                                                    <small class="text-muted d-block">Tham gia:</small>
-                                                    <span class="fw-medium text-success">92.3%</span>
-                                                </div>
-                                            </div>
-
-                                            <div class="row mb-3">
-                                                <div class="col-6">
-                                                    <small class="text-muted d-block">Cảnh báo HV:</small>
-                                                    <span class="badge bg-danger">1</span>
-                                                </div>
-                                            </div>
-
-                                            <button class="btn btn-outline-primary btn-sm w-100">Chi tiết</button>
-                                        </div>
-                                    </div>
-
-                                    <!-- Class Card 3 -->
-                                    <div class="card mobile-card">
-                                        <div class="card-body">
-                                            <div class="d-flex justify-content-between mb-2">
-                                                <h5 class="mb-0">KTPM2021C</h5>
-                                                <span class="badge bg-secondary">38 SV</span>
-                                            </div>
-                                            <p class="text-muted small mb-3">Kỹ thuật phần mềm - 2021-2025</p>
-
-                                            <div class="row mb-3">
-                                                <div class="col-6">
-                                                    <small class="text-muted d-block">SHL:</small>
-                                                    <span class="fw-medium">7/10</span>
-                                                </div>
-                                                <div class="col-6">
-                                                    <small class="text-muted d-block">Tham gia:</small>
-                                                    <span class="fw-medium text-warning">84.2%</span>
-                                                </div>
-                                            </div>
-
-                                            <div class="row mb-3">
-                                                <div class="col-6">
-                                                    <small class="text-muted d-block">Cảnh báo HV:</small>
-                                                    <span class="badge bg-danger">3</span>
-                                                </div>
-                                            </div>
-
-                                            <button class="btn btn-outline-primary btn-sm w-100">Chi tiết</button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Activities Tab -->
-                    <div class="tab-pane fade" id="activities" role="tabpanel" aria-labelledby="activities-tab">
-                        <div class="card">
-                            <div class="card-header bg-white">
-                                <h5 class="mb-0">Hoạt động gần đây</h5>
-                                <small class="text-muted">Các buổi sinh hoạt lớp và hoạt động mới nhất</small>
-                            </div>
-                            <div class="card-body">
-                                <!-- Desktop Table View -->
-                                <div class="d-none d-md-block mobile-scroll">
-                                    <table class="table table-hover">
-                                        <thead>
-                                        <tr>
-                                            <th>Lớp</th>
-                                            <th>Hoạt động</th>
-                                            <th>Ngày</th>
-                                            <th>Hình thức</th>
-                                            <th>Tỷ lệ tham gia</th>
-                                            <th>Trạng thái</th>
-                                        </tr>
-                                        </thead>
-                                        <tbody>
-                                        <tr>
-                                            <td><span class="badge bg-light text-dark">CNTT2021A</span></td>
-                                            <td class="fw-medium">Sinh hoạt lớp tháng 11</td>
-                                            <td>15/11/2024</td>
-                                            <td><span class="badge bg-primary">Trực tiếp</span></td>
-                                            <td class="fw-medium">40/45</td>
-                                            <td><span class="badge bg-success">Đã hoàn thành</span></td>
-                                        </tr>
-                                        <tr>
-                                            <td><span class="badge bg-light text-dark">CNTT2022B</span></td>
-                                            <td class="fw-medium">Họp lớp giữa kỳ</td>
-                                            <td>10/11/2024</td>
-                                            <td><span class="badge bg-info text-white">Trực tuyến</span></td>
-                                            <td class="fw-medium">39/42</td>
-                                            <td><span class="badge bg-success">Đã hoàn thành</span></td>
-                                        </tr>
-                                        <tr>
-                                            <td><span class="badge bg-light text-dark">KTPM2021C</span></td>
-                                            <td class="fw-medium">Sinh hoạt đầu tháng</td>
-                                            <td>05/11/2024</td>
-                                            <td><span class="badge bg-primary">Trực tiếp</span></td>
-                                            <td class="fw-medium">32/38</td>
-                                            <td><span class="badge bg-success">Đã hoàn thành</span></td>
-                                        </tr>
-                                        </tbody>
-                                    </table>
-                                </div>
-
-                                <!-- Mobile Card View -->
-                                <div class="d-md-none">
-                                    <!-- Activity Card 1 -->
-                                    <div class="card mb-3 mobile-card">
-                                        <div class="card-body">
-                                            <div class="d-flex justify-content-between mb-2">
-                                                <span class="badge bg-light text-dark">CNTT2021A</span>
-                                                <span class="badge bg-primary">Trực tiếp</span>
-                                            </div>
-                                            <h5 class="mb-3">Sinh hoạt lớp tháng 11</h5>
-                                            <div class="d-flex justify-content-between mb-3">
-                                                <small class="text-muted">15/11/2024</small>
-                                                <span class="fw-medium">40/45</span>
-                                            </div>
-                                            <div class="text-center">
-                                                <span class="badge bg-success">Đã hoàn thành</span>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <!-- Activity Card 2 -->
-                                    <div class="card mb-3 mobile-card">
-                                        <div class="card-body">
-                                            <div class="d-flex justify-content-between mb-2">
-                                                <span class="badge bg-light text-dark">CNTT2022B</span>
-                                                <span class="badge bg-info text-white">Trực tuyến</span>
-                                            </div>
-                                            <h5 class="mb-3">Họp lớp giữa kỳ</h5>
-                                            <div class="d-flex justify-content-between mb-3">
-                                                <small class="text-muted">10/11/2024</small>
-                                                <span class="fw-medium">39/42</span>
-                                            </div>
-                                            <div class="text-center">
-                                                <span class="badge bg-success">Đã hoàn thành</span>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <!-- Activity Card 3 -->
-                                    <div class="card mobile-card">
-                                        <div class="card-body">
-                                            <div class="d-flex justify-content-between mb-2">
-                                                <span class="badge bg-light text-dark">KTPM2021C</span>
-                                                <span class="badge bg-primary">Trực tiếp</span>
-                                            </div>
-                                            <h5 class="mb-3">Sinh hoạt đầu tháng</h5>
-                                            <div class="d-flex justify-content-between mb-3">
-                                                <small class="text-muted">05/11/2024</small>
-                                                <span class="fw-medium">32/38</span>
-                                            </div>
-                                            <div class="text-center">
-                                                <span class="badge bg-success">Đã hoàn thành</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Tasks Tab -->
-                    <div class="tab-pane fade" id="tasks" role="tabpanel" aria-labelledby="tasks-tab">
-                        <div class="card">
-                            <div class="card-header bg-white">
-                                <h5 class="mb-0">Công việc cần hoàn thành</h5>
-                                <small class="text-muted">Danh sách nhiệm vụ và deadline quan trọng</small>
-                            </div>
-                            <div class="card-body">
-                                <div class="list-group">
-                                    <!-- Task 1 -->
-                                    <div class="list-group-item border rounded mb-3">
-                                        <div class="d-flex justify-content-between align-items-start mb-2">
-                                            <div>
-                                                <h5 class="mb-1">Đánh giá điểm rèn luyện học kỳ 1</h5>
-                                                <p class="text-muted small mb-0">Hạn: 15/12/2024</p>
-                                            </div>
-                                            <span class="badge bg-danger">Cao</span>
-                                        </div>
-                                        <div class="mt-3">
-                                            <span class="badge bg-secondary me-1">CNTT2021A</span>
-                                            <span class="badge bg-secondary me-1">CNTT2022B</span>
-                                            <span class="badge bg-secondary">KTPM2021C</span>
-                                        </div>
-                                    </div>
-
-                                    <!-- Task 2 -->
-                                    <div class="list-group-item border rounded mb-3">
-                                        <div class="d-flex justify-content-between align-items-start mb-2">
-                                            <div>
-                                                <h5 class="mb-1">Lập kế hoạch sinh hoạt lớp tháng 12</h5>
-                                                <p class="text-muted small mb-0">Hạn: 30/11/2024</p>
-                                            </div>
-                                            <span class="badge bg-warning text-dark">Trung bình</span>
-                                        </div>
-                                        <div class="mt-3">
-                                            <span class="badge bg-secondary me-1">CNTT2021A</span>
-                                            <span class="badge bg-secondary">CNTT2022B</span>
-                                        </div>
-                                    </div>
-
-                                    <!-- Task 3 -->
-                                    <div class="list-group-item border rounded">
-                                        <div class="d-flex justify-content-between align-items-start mb-2">
-                                            <div>
-                                                <h5 class="mb-1">Báo cáo tình hình học tập cuối kỳ</h5>
-                                                <p class="text-muted small mb-0">Hạn: 20/12/2024</p>
-                                            </div>
-                                            <span class="badge bg-danger">Cao</span>
-                                        </div>
-                                        <div class="mt-3">
-                                            <span class="badge bg-secondary">KTPM2021C</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Quick Actions -->
-                <div class="mt-4">
-                    <button class="btn btn-primary mobile-full mb-2 mb-sm-0">
-                        <i class="fas fa-file-export me-2"></i>Xuất báo cáo tổng hợp
-                    </button>
-                    <button class="btn btn-outline-primary mobile-full mb-2 mb-sm-0">
-                        <i class="fas fa-calendar-plus me-2"></i>Lên lịch sinh hoạt lớp
-                    </button>
-                    <button class="btn btn-outline-primary mobile-full mb-2 mb-sm-0">
-                        <i class="fas fa-award me-2"></i>Đánh giá rèn luyện
-                    </button>
-                    <button class="btn btn-outline-primary mobile-full">
-                        <i class="fas fa-user-graduate me-2"></i>Quản lý sinh viên
-                    </button>
-                </div>
-            </div>
-        @else
-            <div class="container my-5">
-                <div class="alert alert-warning text-center" role="alert">
-                    <h4 class="alert-heading">Chưa có dữ liệu</h4>
-                    <p>Vui lòng chọn học kỳ hoặc quay lại sau.</p>
-                    <hr>
-                    <p class="mb-0">Nếu bạn cần trợ giúp, hãy liên hệ với quản trị viên.</p>
-                </div>
-            </div>
-        @endif
-
     </div>
 @endsection
 
 @push('scripts')
     <script>
         $(document).ready(function () {
-            // Handle tab switching
-            $('#lecturerTabs button').on('click', function (e) {
-                e.preventDefault();
-                $(this).tab('show');
-            });
+            let activityPage = 1;
+            let conductPage = 1;
+            const pageSize = 5;
 
-            // Handle semester change
-            // $('#semesterSelect').change(function() {
-            //     // Add AJAX request to reload data based on selected semester
-            //     const selectedSemester = $(this).val();
-            //     // Example: window.location.href = `/lecturer/dashboard?semester=${selectedSemester}`;
-            //
-            //     // For demo purposes, just show a loading indicator
-            //     // showLoading();
-            //
-            //     // Simulate loading delay
-            //     setTimeout(function() {
-            //         hideLoading();
-            //     }, 800);
-            // });
-
-            // Initialize tooltips
-            $('[data-bs-toggle="tooltip"]').tooltip();
-
-            // Mobile optimizations
-            if (window.innerWidth < 576) {
-                // Collapse some sections by default on mobile
+            function loadMoreActivities() {
+                $.ajax({
+                    url: '{{ route("teacher.statistical.index") }}',
+                    method: 'GET',
+                    data: {
+                        page: activityPage + 1,
+                        semester_id: $('#semesterSelect').val()
+                    },
+                    success: function (response) {
+                        if (response.activities && response.activities.length > 0) {
+                            activityPage++;
+                            response.activities.forEach(activity => {
+                                $('#activitiesBody').append(`
+                            <tr>
+                                <td>${activity.semester_name} - ${activity.school_year}</td>
+                                <td>${activity.class_name}</td>
+                                <td>${activity.proposed_at}</td>
+                                <td>${activity.attendance_count}/${activity.total_students}</td>
+                                <td>
+                                    <a href="{{ route('teacher.statistical.exportAttendance', ['class_request_id' => ':class_request_id', 'study_class_id' => ':study_class_id', 'study_class_name' => ':study_class_name']) }}"
+                                       class="btn btn-success btn-sm" target="_blank">
+                                        <i class="fas fa-file-excel me-2"></i> Xuất file
+                                    </a>
+                                </td>
+                            </tr>
+                        `.replace(':class_request_id', activity.class_session_requests_id)
+                                    .replace(':study_class_id', activity.class_id)
+                                    .replace(':study_class_name', activity.class_name));
+                            });
+                        }
+                    },
+                    error: function (xhr) {
+                        console.error('Lỗi khi tải hoạt động:', xhr);
+                    }
+                });
             }
 
-            // Function to show loading state
-            // function showLoading() {
-            //     $('body').append('<div class="position-fixed top-0 start-0 w-100 h-100 d-flex justify-content-center align-items-center bg-white bg-opacity-75" style="z-index: 9999;" id="loadingOverlay"><div class="spinner-border text-primary" role="status"><span class="visually-hidden">Loading...</span></div></div>');
-            // }
-            //
-            // // Function to hide loading state
-            // function hideLoading() {
-            //     $('#loadingOverlay').remove();
-            // }
+            function loadMoreConducts() {
+                {{--$.ajax({--}}
+                {{--    url: '{{ route("teacher.statistical.conducts") }}',--}}
+                {{--    method: 'GET',--}}
+                {{--    data: {--}}
+                {{--        page: conductPage + 1,--}}
+                {{--        semester_id: $('#semesterSelect').val()--}}
+                {{--    },--}}
+                {{--    success: function (response) {--}}
+                {{--        if (response.conducts.length > 0) {--}}
+                {{--            conductPage++;--}}
+                {{--            response.conducts.forEach(conduct => {--}}
+                {{--                $('#conductBody').append(`--}}
+                {{--                <tr>--}}
+                {{--                    <td>${conduct.class}</td>--}}
+                {{--                    <td>${conduct.total_students}</td>--}}
+                {{--                    <td>${conduct.excellent}</td>--}}
+                {{--                    <td>${conduct.good}</td>--}}
+                {{--                    <td>${conduct.fair}</td>--}}
+                {{--                    <td>${conduct.average}</td>--}}
+                {{--                    <td>${conduct.poor}</td>--}}
+                {{--                    <td><span class="badge bg-danger">${conduct.warning}</span></td>--}}
+                {{--                </tr>--}}
+                {{--            `);--}}
+                {{--            });--}}
+                {{--        }--}}
+                {{--    }--}}
+                {{--});--}}
+            }
+
+            $('#activitiesTable').on('scroll', function () {
+                if ($(this).scrollTop() + $(this).innerHeight() >= $(this)[0].scrollHeight) {
+                    loadMoreActivities();
+                }
+            });
+
+            $('#conductTable').on('scroll', function () {
+                if ($(this).scrollTop() + $(this).innerHeight() >= $(this)[0].scrollHeight) {
+                    loadMoreConducts();
+                }
+            });
         });
     </script>
 @endpush

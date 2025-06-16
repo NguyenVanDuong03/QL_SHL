@@ -42,4 +42,9 @@ class LecturerService extends BaseService
         return $this->getRepository()->getTotalStudentsByLecturer($lecturerId);
     }
 
+    public function getAverageConductScoreByLecturer($lecturerId)
+    {
+        return $this->getRepository()->getAverageConductScoreByLecturer($lecturerId);
+    }
+
 }

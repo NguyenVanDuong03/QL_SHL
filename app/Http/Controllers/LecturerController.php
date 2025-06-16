@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\AttendancesExport;
+use App\Exports\StudentConductScoresExport;
 use App\Helpers\Constant;
 use App\Services\AcademicWarningService;
 use App\Services\AttendanceService;
@@ -19,6 +21,7 @@ use App\Services\StudyClassService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
+use Maatwebsite\Excel\Facades\Excel;
 
 class LecturerController extends Controller
 {
@@ -454,18 +457,33 @@ class LecturerController extends Controller
         $findConductEvaluationPeriodBySemesterId = $this->conductEvaluationPeriodService->findConductEvaluationPeriodBySemesterId($semesterId);
         $params['semester_id'] = $params['semester_id'] ?? $semesterId;
         $params['lecturer_id'] = auth()->user()->lecturer?->id;
-//        dd($findConductEvaluationPeriodBySemesterId);
         $params['study_class_id'] = $request->get('study_class_id', null);
         $getStudyClassList = $this->studyClassService->getStudyClassListByConductEvaluationPeriodIdByLecturerId($params)->toArray();
 //        $infoByStudyClassListAndConductEvaluationPeriodId = $this->studyClassService->infoByStudyClassListAndConductEvaluationPeriodId($params);
 
         $data = [
             'getStudyClassList' => $getStudyClassList,
-            'conduct_evaluation_period_id' => $id
+            'conduct_evaluation_period_id' => $id,
+            'semester_id' => $params['semester_id'],
+            'findConductEvaluationPeriodBySemesterId' => $findConductEvaluationPeriodBySemesterId,
         ];
 //        dd($data['getStudyClassList']);
 
         return view('teacher.conductScore.list', compact('data'));
+    }
+
+    public function exportConductScore(Request $request)
+    {
+        $semesterId = $request->query('semester_id');
+        $studyClassId = $request->query('study_class_id');
+        $studyClassName = $request->query('study_class_name');
+
+        try {
+            $fileName = $studyClassName. '_' . now()->format('Ymd_His') . '.xlsx';
+            return Excel::download(new StudentConductScoresExport($studyClassId, $semesterId), $fileName);
+        } catch (\Exception $e) {
+            return back()->withErrors(['export_error' => 'Xuất file thất bại: ' . $e->getMessage()]);
+        }
     }
 
     public function listConductScore(Request $request)
@@ -574,31 +592,45 @@ class LecturerController extends Controller
         $semesterId = $this->semesterService->get()->first()->id;
         $lecturerId = auth()->user()->lecturer?->id;
         $params['semester_id'] = $request->query('semester_id') ?? $semesterId;
-        $params['list_study_class_by_lecturer'] = true;
-        $semesters = $this->SemesterService->get()->toArray();
-        $countStudyClassBySemester = $this->studyClassService->getStudyClassListByLecturerId($lecturerId)->count();
-        $getTotalStudentsByLecturer = $this->lecturerService->getTotalStudentsByLecturer($lecturerId);
-        $getTotalDoneSessionsByLecturer = $this->classSessionRequestService->getTotalDoneSessionsByLecturer($lecturerId);
-        $getTotalSessionsByLecturer = $this->classSessionRequestService->getTotalSessionsByLecturer($lecturerId);
-        $participationRate = $this->studyClassService->participationRate($lecturerId);
-        $listStatisticsByLecturerId = $this->studyClassService->listStatisticsByLecturerId($lecturerId, $params['semester_id'])->toArray();
-        $listStatisticsStudyClassByLecturerId = $this->studyClassService->listStatisticsStudyClassByLecturerId($lecturerId, $params['semester_id'])->toArray();
-        $listStudyClassByLecturer = $this->classSessionRequestService->get($params)->toArray();
+        $page = $request->query('page', 1);
+        $pageSize = 5;
+
+        $statisticalSemester = $this->semesterService->statisticalSemester($lecturerId)
+            ->when($request->has('page'), function ($query) use ($page, $pageSize) {
+                return $query->skip(($page - 1) * $pageSize)->take($pageSize);
+            })
+            ->toArray();
+
+        if ($request->ajax()) {
+            return response()->json(['activities' => $statisticalSemester]);
+        }
 
         $data = [
-            'semesters' => $semesters,
-            'countStudyClassBySemester' => $countStudyClassBySemester,
-            'getTotalStudentsByLecturer' => $getTotalStudentsByLecturer,
-            'getTotalDoneSessionsByLecturer' => $getTotalDoneSessionsByLecturer,
-            'getTotalSessionsByLecturer' => $getTotalSessionsByLecturer,
-            'participationRate' => $participationRate,
-            'listStatisticsByLecturerId' => $listStatisticsByLecturerId,
-            'listStatisticsStudyClassByLecturerId' => $listStatisticsStudyClassByLecturerId,
-            'listStudyClassByLecturer' => $listStudyClassByLecturer,
+            'semesters' => $this->SemesterService->getFourSemester()->get()->toArray(),
+            'countStudyClassBySemester' => $this->studyClassService->getStudyClassListByLecturerId($lecturerId)->count(),
+            'getTotalStudentsByLecturer' => $this->lecturerService->getTotalStudentsByLecturer($lecturerId),
+            'getTotalDoneSessionsByLecturer' => $this->classSessionRequestService->getTotalDoneSessionsByLecturer($lecturerId),
+            'getTotalSessionsByLecturer' => $this->classSessionRequestService->getTotalSessionsByLecturer($lecturerId),
+            'participationRate' => $this->studyClassService->participationRate($lecturerId),
+            'statisticalSemester' => $statisticalSemester,
+            'statisticalAttendance' => $this->studentService->statisticalAttendance($lecturerId, $params['semester_id'])->toArray(),
         ];
-//        dd($data['listStudyClassByLecturer']);
 
         return view('teacher.statistical.index', compact('data'));
+    }
+
+    public function exportAttendance(Request $request)
+    {
+        $classRequestId = $request->query('class_request_id');
+        $studyClassId = $request->query('study_class_id');
+        $studyClassName = $request->query('study_class_name');
+//        dd($classRequestId, $studyClassId);
+        try {
+            $fileName = $studyClassName. '_' . now()->format('Ymd_His') . '.xlsx';
+            return Excel::download(new AttendancesExport($classRequestId, $studyClassId), $fileName);
+        } catch (\Exception $e) {
+            return back()->withErrors(['export_error' => 'Xuất file thất bại: ' . $e->getMessage()]);
+        }
     }
 
 }
