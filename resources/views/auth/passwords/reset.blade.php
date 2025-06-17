@@ -26,9 +26,10 @@
                     <div class="mb-3">
                         <label for="email" class="form-label">Địa chỉ Email</label>
                         <input id="email" type="email" class="form-control @error('email') is-invalid @enderror"
-                            name="email" value="{{ $email ?? old('email') }}" required autocomplete="email" autofocus>
+                               name="email" value="{{ $email ?? old('email') }}" required autocomplete="email"
+                               autofocus>
                         @error('email')
-                            <span class="invalid-feedback" role="alert">
+                        <span class="invalid-feedback" role="alert">
                                 <strong>{{ $message }}</strong>
                             </span>
                         @enderror
@@ -36,8 +37,15 @@
 
                     <div class="mb-3">
                         <label for="password" class="form-label">Mật khẩu mới</label>
-                        <input id="password" type="password" class="form-control @error('password') is-invalid @enderror"
-                            name="password" required autocomplete="new-password">
+                        <div class="input-group">
+                            <input id="password" type="password"
+                                   class="form-control @error('password') is-invalid @enderror"
+                                   name="password" placeholder="Nhập mật khẩu" required autocomplete="new-password">
+                            <button class="btn btn-outline-secondary password-toggle" type="button"
+                                    data-target="password">
+                                <i class="fa fa-eye"></i>
+                            </button>
+                        </div>
                         @error('password')
                             <span class="invalid-feedback" role="alert">
                                 <strong>{{ $message }}</strong>
@@ -47,10 +55,16 @@
 
                     <div class="mb-3">
                         <label for="password-confirm" class="form-label">Xác nhận mật khẩu</label>
-                        <input id="password-confirm" type="password" class="form-control" name="password_confirmation"
-                            required autocomplete="new-password">
+                        <div class="input-group">
+                            <input id="password-confirm" type="password" class="form-control" placeholder="Nhập mật khẩu"
+                                   name="password_confirmation"
+                                   required autocomplete="new-password">
+                            <button class="btn btn-outline-secondary password-toggle" type="button"
+                                    data-target="password-confirm">
+                                <i class="fa fa-eye"></i>
+                            </button>
+                        </div>
                     </div>
-
                     <button type="submit" class="btn btn-primary btn-password-reset">Đặt lại mật khẩu</button>
                 </form>
             </div>

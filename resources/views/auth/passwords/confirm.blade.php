@@ -23,11 +23,17 @@
 
                     <div class="mb-3">
                         <label for="password" class="form-label">Mật khẩu</label>
-                        <input id="password" type="password" class="form-control @error('password') is-invalid @enderror"
-                            name="password" required autocomplete="current-password">
-
+                        <div class="input-group">
+                            <input id="password" type="password"
+                                   class="form-control @error('password') is-invalid @enderror"
+                                   name="password" placeholder="Nhập mật khẩu" required autocomplete="new-password">
+                            <button class="btn btn-outline-secondary password-toggle" type="button"
+                                    data-target="password">
+                                <i class="fa fa-eye"></i>
+                            </button>
+                        </div>
                         @error('password')
-                            <span class="invalid-feedback" role="alert">
+                        <span class="invalid-feedback" role="alert">
                                 <strong>{{ $message }}</strong>
                             </span>
                         @enderror
