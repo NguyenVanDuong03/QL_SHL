@@ -11,24 +11,8 @@ use Illuminate\Support\Facades\Validator;
 
 class RegisterController extends Controller
 {
-    /*
-    |--------------------------------------------------------------------------
-    | Register Controller
-    |--------------------------------------------------------------------------
-    |
-    | This controller handles the registration of new users as well as their
-    | validation and creation. By default this controller uses a trait to
-    | provide this functionality without requiring any additional code.
-    |
-    */
-
     use RegistersUsers;
 
-    /**
-     * Where to redirect users after registration.
-     *
-     * @var string
-     */
     // protected $redirectTo = '/home';
     protected function redirectTo()
     {
@@ -46,44 +30,80 @@ class RegisterController extends Controller
         return route('student.index');
     }
 
-    /**
-     * Create a new controller instance.
-     *
-     * @return void
-     */
     public function __construct()
     {
         $this->middleware('guest');
     }
 
-    /**
-     * Get a validator for an incoming registration request.
-     *
-     * @param  array  $data
-     * @return \Illuminate\Contracts\Validation\Validator
-     */
     protected function validator(array $data)
     {
+        $departmentEmails = [
+            'vpkcntt@tlu.edu.vn',
+            'khoak@tlu.edu.vn',
+            'vpkhoacongtrinh@tlu.edu.vn',
+            'vpkhoamt@tlu.edu.vn',
+            'khoam@tlu.edu.vn',
+            'sie@tlu.edu.vn',
+        ];
+
+        $ctsvEmail = 'p7@tlu.edu.vn';
+
         return Validator::make($data, [
             'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
+            'email' => [
+                'required',
+                'string',
+                'email',
+                'max:255',
+                'unique:users',
+                function ($attribute, $value, $fail) use ($departmentEmails, $ctsvEmail) {
+                    $email = strtolower($value);
+
+                    $isStudent = preg_match('/^[0-9]{10}@e\.tlu\.edu\.vn$/', $email);
+                    $isFacultyOffice = in_array($email, array_map('strtolower', $departmentEmails));
+                    $isCTSV = $email === strtolower($ctsvEmail);
+                    $isTeacher = str_ends_with($email, '@tlu.edu.vn') && !$isFacultyOffice && !$isCTSV;
+
+                    if (!($isStudent || $isFacultyOffice || $isCTSV || $isTeacher)) {
+                        $fail('Email không hợp lệ. Vui lòng dùng email Trường Đại học Thủy Lợi cung cấp.');
+                    }
+                }
+            ],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
         ]);
     }
 
-    /**
-     * Create a new user instance after a valid registration.
-     *
-     * @param  array  $data
-     * @return \App\Models\User
-     */
     protected function create(array $data)
     {
+        $email = $data['email'];
+        $role = Constant::ROLE_LIST['STUDENT'];
+
+        $departmentEmails = [
+            'vpkcntt@tlu.edu.vn',
+            'KhoaK@tlu.edu.vn',
+            'vpkhoacongtrinh@tlu.edu.vn',
+            'vpkhoamt@tlu.edu.vn',
+            'KhoaM@tlu.edu.vn',
+            'sie@tlu.edu.vn',
+        ];
+
+        $ctsv = 'p7@tlu.edu.vn';
+
+        if (in_array(strtolower($email), array_map('strtolower', $departmentEmails))) {
+            $role = Constant::ROLE_LIST['FACULTY_OFFICE'];
+        } elseif (preg_match('/^[0-9]{10}@e\.tlu\.edu\.vn$/', $email)) {
+            $role = Constant::ROLE_LIST['STUDENT'];
+        } elseif ($email === $ctsv) {
+            $role = Constant::ROLE_LIST['STUDENT_AFFAIRS_DEPARTMENT'];
+        } elseif (str_ends_with($email, '@tlu.edu.vn')) {
+            $role = Constant::ROLE_LIST['TEACHER'];
+        }
+
         return User::create([
             'name' => $data['name'],
-            'email' => $data['email'],
+            'email' => $email,
             'password' => Hash::make($data['password']),
-            'role' => Constant::ROLE_LIST['STUDENT'],
+            'role' => $role,
         ]);
     }
 }
