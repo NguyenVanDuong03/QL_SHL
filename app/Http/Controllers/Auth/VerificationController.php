@@ -29,18 +29,7 @@ class VerificationController extends Controller
     // protected $redirectTo = '/home';
     protected function redirectTo()
     {
-        $user = auth()->user();
-
-        if ($user->role == Constant::ROLE_LIST['TEACHER'])
-            return route('teacher.index');
-        else if ($user->role == Constant::ROLE_LIST['STUDENT_AFFAIRS_DEPARTMENT'])
-            return route('student-affairs-department.index');
-        else if ($user->role == Constant::ROLE_LIST['CLASS_STAFF'])
-            return route('class-staff.index');
-        else if ($user->role == Constant::ROLE_LIST['FACULTY_OFFICE'])
-            return route('faculty-office.index');
-
-        return route('student.index');
+        return route('login');
     }
 
     /**
@@ -50,7 +39,7 @@ class VerificationController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('auth');
+        $this->middleware('auth')->only('resend');
         $this->middleware('signed')->only('verify');
         $this->middleware('throttle:6,1')->only('verify', 'resend');
     }

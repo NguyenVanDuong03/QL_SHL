@@ -165,19 +165,24 @@
 
     <script>
         $(document).ready(function() {
-        $(".password-toggle").on("click", function() {
-            const targetId = $(this).data("target");
-            const passwordInput = $('#password');
-            const icon = $(this).find("i");
-
-            if (passwordInput.attr("type") === "password") {
-                passwordInput.attr("type", "text");
-                icon.removeClass("fa-eye").addClass("fa-eye-slash");
-            } else {
-                passwordInput.attr("type", "password");
-                icon.removeClass("fa-eye-slash").addClass("fa-eye");
+            function togglePasswordVisibility(targetId, icon) {
+                const passwordInput = $('#' + targetId);
+                if (passwordInput.length) {
+                    if (passwordInput.attr("type") === "password") {
+                        passwordInput.attr("type", "text");
+                        icon.removeClass("fa-eye").addClass("fa-eye-slash");
+                    } else {
+                        passwordInput.attr("type", "password");
+                        icon.removeClass("fa-eye-slash").addClass("fa-eye");
+                    }
+                }
             }
-        });
+
+            $(".password-toggle").on("click", function() {
+                const targetId = $(this).data("target");
+                const icon = $(this).find("i");
+                togglePasswordVisibility(targetId, icon);
+            });
         });
     </script>
 

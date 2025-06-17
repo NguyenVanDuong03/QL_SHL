@@ -13,7 +13,7 @@ return [
     |
     */
 
-    'name' => env('APP_NAME', 'Laravel'),
+    'name' => env('APP_NAME', 'Hệ thống Quản lý Sinh hoạt lớp - Trường Đại học Thủy Lợi'),
 
     /*
     |--------------------------------------------------------------------------

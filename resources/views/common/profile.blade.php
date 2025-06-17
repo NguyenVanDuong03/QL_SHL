@@ -325,8 +325,8 @@
                                         <input type="password"
                                                class="form-control @error('current_password') is-invalid @enderror"
                                                id="current_password"
-                                               name="password"
-                                               placeholder="Nhập mật khẩu hiện tại">
+                                               name="current_password"
+                                        placeholder="Nhập mật khẩu hiện tại">
                                         <button class="btn btn-outline-secondary password-toggle" type="button" data-target="current_password">
                                             <i class="fa fa-eye"></i>
                                         </button>
@@ -355,14 +355,17 @@
                                     <label for="new_password_confirmation" class="form-label">Xác nhận mật khẩu mới</label>
                                     <div class="input-group">
                                         <input type="password"
-                                               class="form-control"
-                                               id="new_password_confirmation"
-                                               name="new_password_confirmation"
-                                               placeholder="Nhập lại mật khẩu mới">
+                                               class="form-control @error('new_password_confirmation') is-invalid @enderror"
+                                        id="new_password_confirmation"
+                                        name="new_password_confirmation"
+                                        placeholder="Nhập lại mật khẩu mới">
                                         <button class="btn btn-outline-secondary password-toggle" type="button" data-target="new_password_confirmation">
                                             <i class="fa fa-eye"></i>
                                         </button>
                                     </div>
+                                    @error('new_password_confirmation')
+                                    <div class="invalid-feedback d-block">{{ $message }}</div>
+                                    @enderror
                                 </div>
                             </div>
 
@@ -386,21 +389,6 @@
 @push('scripts')
     <script>
         $(document).ready(function() {
-            // Password toggle functionality
-            $(".password-toggle").on("click", function() {
-                const targetId = $(this).data("target");
-                const passwordInput = $(`#${targetId}`);
-                const icon = $(this).find("i");
-
-                if (passwordInput.attr("type") === "password") {
-                    passwordInput.attr("type", "text");
-                    icon.removeClass("fa-eye").addClass("fa-eye-slash");
-                } else {
-                    passwordInput.attr("type", "password");
-                    icon.removeClass("fa-eye-slash").addClass("fa-eye");
-                }
-            });
-
             // Form validation
             $("#profileForm").on("submit", function(e) {
                 let isValid = true;
