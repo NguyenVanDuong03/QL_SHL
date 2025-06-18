@@ -8,6 +8,8 @@ use App\Http\Requests\ClassSessionRegistrationRequest;
 use App\Http\Requests\SemesterRequest;
 use App\Imports\LecturerImportByExcel;
 use App\Imports\StudentImportByExcel;
+use App\Notifications\DeleteAccount;
+use App\Notifications\RestoreAccount;
 use App\Services\AcademicWarningService;
 use App\Services\AttendanceService;
 use App\Services\ClassSessionRegistrationService;
@@ -215,12 +217,14 @@ class StudentAffairsDepartmentController extends Controller
         $lecturers = $this->lecturerService->paginate($params)->toArray();
         $faculties = $this->facultyService->get()->toArray();
         $departments = $this->titleService->get();
+        $getAllWithTrashed = $this->lecturerService->getAllWithTrashed($params)->paginate(Constant::DEFAULT_LIMIT_12)->toArray();
         $data = [
             'lecturers' => $lecturers ?? [],
             'faculties' => $faculties ?? [],
             'departments' => $departments ?? [],
+            'getAllWithTrashed' => $getAllWithTrashed ?? [],
         ];
-        // dd($data['lecturers']['data']);
+//         dd($data['getAllWithTrashed']['data']);
 
         return view('StudentAffairsDepartment.account.index', compact('data'));
     }
@@ -265,6 +269,10 @@ class StudentAffairsDepartmentController extends Controller
     public function deleteAccount(Request $request, $id)
     {
         $params = $request->all();
+        $user = $this->userService->find($params['user_id']);
+        if (!$user) {
+            return redirect()->back()->with('error', 'Không tìm thấy người dùng');
+        }
 
         $deleteLecturer = $this->lecturerService->delete($id);
         $deleteUser = $this->userService->delete($params['user_id']);
@@ -272,9 +280,36 @@ class StudentAffairsDepartmentController extends Controller
         if (!$deleteLecturer || !$deleteUser) {
             return redirect()->back()->with('error', 'Xóa thất bại');
         }
+
+        $user->notify(new DeleteAccount($user->email));
         $targetPage = $this->lecturerService->targetPage($params);
 
         return redirect()->route('student-affairs-department.account.index', $targetPage)->with('success', 'Xóa thành công');
+    }
+
+    public function restoreAccount(Request $request, $id)
+    {
+        $params = $request->all();
+
+        $restoredLecturerCount = $this->lecturerService->restore($id);
+        $restoredUserCount = $this->userService->restore($params['user_id']);
+        if ($restoredLecturerCount === 0 || $restoredUserCount === 0) {
+            return response()->json(['success' => false, 'message' => 'Khôi phục thất bại'], 400);
+        }
+
+        $user = $this->userService->find($params['user_id']);
+        if (!$user) {
+            return response()->json(['success' => false, 'message' => 'Không tìm thấy người dùng'], 404);
+        }
+
+        $user->notify(new RestoreAccount($user->email));
+        $targetPage = $this->lecturerService->targetPage($params);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Khôi phục tài khoản thành công!',
+            'redirect' => route('student-affairs-department.account.index', $targetPage)
+        ]);
     }
 
     public function accountStudent(Request $request)
@@ -312,12 +347,18 @@ class StudentAffairsDepartmentController extends Controller
     public function deleteAccountStudent(Request $request, $id)
     {
         $params = $request->all();
+        $user = $this->userService->find($params['user_id']);
+        if (!$user) {
+            return redirect()->back()->with('error', 'Không tìm thấy người dùng');
+        }
 
         $deleteStudent = $this->studentService->delete($id);
         $deleteUser = $this->userService->delete($params['user_id']);
         if (!$deleteStudent || !$deleteUser) {
             return redirect()->back()->with('error', 'Xóa thất bại');
         }
+
+        $user->notify(new DeleteAccount($user->email));
         $targetPage = $this->studentService->targetPage($params);
 
         return redirect()->route('student-affairs-department.account.student', $targetPage)->with('success', 'Xóa thành công');

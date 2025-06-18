@@ -3,7 +3,7 @@
 @section('title', 'Tài khoản GV & SV')
 
 @section('breadcrumb')
-    <x-breadcrumb.breadcrumb :links="[['label' => 'Tài khoản GV & SV']]" />
+    <x-breadcrumb.breadcrumb :links="[['label' => 'Tài khoản GV & SV']]"/>
 @endsection
 
 @push('styles')
@@ -32,22 +32,25 @@
                         <div class="d-flex justify-content-between align-items-center">
                             <span class="text-primary fw-bold d-none d-md-block">Tài khoản giáo viên</span>
                             <div class="d-flex align-items-end">
-                                <form method="GET" action="{{ route('student-affairs-department.account.index') }}" class="input-group me-2" style="width: 250px;">
-                                    <input type="text" class="form-control" placeholder="Tìm kiếm giáo viên..." name="search" value="{{ request('search') }}"
-                                        id="teacherSearch">
+                                <form method="GET" action="{{ route('student-affairs-department.account.index') }}"
+                                      class="input-group me-2" style="width: 250px;">
+                                    <input type="text" class="form-control" placeholder="Tìm kiếm giáo viên..."
+                                           name="search" value="{{ request('search') }}"
+                                           id="teacherSearch">
                                     <button class="btn btn-outline-secondary btn-search-lecturer" type="submit">
                                         <i class="fas fa-search"></i>
                                     </button>
                                 </form>
                                 <form method="POST"
-                                    action="{{ route('student-affairs-department.account.importLecturer') }}"
-                                    enctype="multipart/form-data" class="d-inline">
+                                      action="{{ route('student-affairs-department.account.importLecturer') }}"
+                                      enctype="multipart/form-data" class="d-inline">
                                     @csrf
                                     @method('POST')
-                                    <label for="teacherExcelFile" class="btn btn-sm btn-success me-2 mb-0" title="Tạo tài khoản từ Excel">
+                                    <label for="teacherExcelFile" class="btn btn-sm btn-success me-2 mb-0"
+                                           title="Tạo tài khoản từ Excel">
                                         <i class="fas fa-file-excel me-1"></i> Import Excel
                                         <input type="file" id="teacherExcelFile" name="teacherExcelFile" class="d-none"
-                                            accept=".xlsx, .xls">
+                                               accept=".xlsx, .xls">
                                     </label>
                                 </form>
                                 <button class="btn btn-sm btn-primary mb-0" data-bs-toggle="modal"
@@ -61,33 +64,46 @@
                         <div class="table-responsive">
                             <table class="table table-hover table-striped mb-0 columns-acctount">
                                 <thead class="table-light">
-                                    <tr>
-                                        <th style="width: 50px;">STT</th>
-                                        <th>Họ và tên</th>
-                                        <th class="d-none d-md-table-cell">Ngày sinh</th>
-                                        <th class="d-none d-md-table-cell">Giới tính</th>
-                                        <th>Email</th>
-                                        <th style="width: 150px;">Thao tác</th>
-                                    </tr>
+                                <tr>
+                                    <th style="width: 50px;">STT</th>
+                                    <th>Họ và tên</th>
+                                    {{--                                        <th class="d-none d-md-table-cell">Ngày sinh</th>--}}
+                                    {{--                                        <th class="d-none d-md-table-cell">Giới tính</th>--}}
+                                    <th>Email</th>
+                                    <th>Trạng thái</th>
+                                    <th style="width: 150px;">Thao tác</th>
+                                </tr>
                                 </thead>
                                 <tbody id="teacherTableBody">
-                                    @if ($data['lecturers']['total'] == 0)
+                                @if ($data['lecturers']['total'] == 0)
+                                    <tr>
+                                        <td colspan="6" class="text-center">Không có dữ liệu</td>
+                                    </tr>
+                                @else
+                                    @foreach ($data['getAllWithTrashed']['data'] as $lecturer)
                                         <tr>
-                                            <td colspan="6" class="text-center">Không có dữ liệu</td>
-                                        </tr>
-                                    @else
-                                        @foreach ($data['lecturers']['data'] as $lecturer)
-                                            <tr>
-                                                <td>{{ $loop->iteration }}</td>
-                                                <td>{{ $lecturer['user']['name'] }}</td>
-                                                <td class="d-none d-md-table-cell">
-                                                    {{ \Carbon\Carbon::parse($lecturer['user']['date_of_birth'])->format('d/m/Y') }}
-                                                </td>
-                                                <td class="d-none d-md-table-cell">{{ $lecturer['user']['gender'] }}</td>
-                                                <td>{{ $lecturer['user']['email'] }}</td>
-                                                <td>
-                                                    <button class="btn btn-sm btn-info btn-show-lecturer"
-                                                        title="Xem chi tiết" data-email="{{ $lecturer['user']['email'] }}"
+                                            <td>{{ $loop->iteration }}</td>
+                                            <td>{{ $lecturer['user']['name'] }}</td>
+                                            {{--                                                <td class="d-none d-md-table-cell">--}}
+                                            {{--                                                    {{ \Carbon\Carbon::parse($lecturer['user']['date_of_birth'])->format('d/m/Y') }}--}}
+                                            {{--                                                </td>--}}
+                                            {{--                                                <td class="d-none d-md-table-cell">{{ $lecturer['user']['gender'] }}</td>--}}
+                                            <td>{{ $lecturer['user']['email'] }}</td>
+                                            @php
+                                                // Check if user exists and is soft-deleted
+                                                $deleted = isset($lecturer['user']) && $lecturer['user']['deleted_at'] !== null;
+                                            @endphp
+                                            <td>
+                                                @if ($deleted)
+                                                    <span class="badge bg-danger">Đã xóa</span>
+                                                @else
+                                                    <span class="badge bg-success">Hoạt động</span>
+                                                @endif
+                                            </td>
+                                            <td>
+                                                <button class="btn btn-sm btn-info btn-show-lecturer"
+                                                        title="Xem chi tiết"
+                                                        data-email="{{ $lecturer['user']['email'] }}"
                                                         data-name="{{ $lecturer['user']['name'] }}"
                                                         data-birth="{{ \Carbon\Carbon::parse($lecturer['user']['date_of_birth'])->format('d/m/Y') }}"
                                                         data-phone="{{ $lecturer['user']['phone'] }}"
@@ -99,43 +115,53 @@
                                                         data-current-page="{{ $data['lecturers']['current_page'] }}"
                                                         data-search="{{ request('search') }}"
                                                         data-bs-target="#showModal" data-bs-toggle="modal">
-                                                        <i class="fas fa-eye"></i>
-                                                    </button>
+                                                    <i class="fas fa-eye"></i>
+                                                </button>
+                                                @if (!$deleted)
                                                     <button class="btn btn-sm btn-warning" title="Chỉnh sửa"
-                                                        data-id="{{ $lecturer['id'] }}"
-                                                        data-user-id="{{ $lecturer['user_id'] }}"
-                                                        data-email="{{ $lecturer['user']['email'] }}"
-                                                        data-name="{{ $lecturer['user']['name'] }}"
-                                                        data-birth="{{ $lecturer['user']['date_of_birth'] }}"
-                                                        data-phone="{{ $lecturer['user']['phone'] }}"
-                                                        data-gender="{{ $lecturer['user']['gender'] }}"
-                                                        data-faculty="{{ $lecturer['faculty']['id'] }}"
-                                                        data-department="{{ $lecturer['faculty']['department']['id'] }}"
-                                                        data-title="{{ $lecturer['title'] }}"
-                                                        data-position="{{ $lecturer['position'] }}"
-                                                        data-current-page="{{ $data['lecturers']['current_page'] }}"
-                                                        data-search="{{ request('search') }}"
-                                                        data-bs-target="#editModal" data-bs-toggle="modal">
+                                                            data-id="{{ $lecturer['id'] }}"
+                                                            data-user-id="{{ $lecturer['user_id'] }}"
+                                                            data-email="{{ $lecturer['user']['email'] }}"
+                                                            data-name="{{ $lecturer['user']['name'] }}"
+                                                            data-birth="{{ $lecturer['user']['date_of_birth'] }}"
+                                                            data-phone="{{ $lecturer['user']['phone'] }}"
+                                                            data-gender="{{ $lecturer['user']['gender'] }}"
+                                                            data-faculty="{{ $lecturer['faculty']['id'] }}"
+                                                            data-department="{{ $lecturer['faculty']['department']['id'] }}"
+                                                            data-title="{{ $lecturer['title'] }}"
+                                                            data-position="{{ $lecturer['position'] }}"
+                                                            data-current-page="{{ $data['lecturers']['current_page'] }}"
+                                                            data-search="{{ request('search') }}"
+                                                            data-bs-target="#editModal" data-bs-toggle="modal">
                                                         <i class="fas fa-edit"></i>
                                                     </button>
 
                                                     <button class="btn btn-sm btn-danger" title="Xóa"
-                                                        data-id="{{ $lecturer['id'] }}"
-                                                        data-user-id="{{ $lecturer['user_id'] }}"
-                                                        data-current-page="{{ $data['lecturers']['current_page'] }}"
-                                                        data-bs-toggle="modal" data-bs-target="#deleteModal">
+                                                            data-id="{{ $lecturer['id'] }}"
+                                                            data-user-id="{{ $lecturer['user_id'] }}"
+                                                            data-current-page="{{ $data['lecturers']['current_page'] }}"
+                                                            data-bs-toggle="modal" data-bs-target="#deleteModal">
                                                         <i class="fas fa-trash"></i>
                                                     </button>
-                                                </td>
-                                            </tr>
-                                        @endforeach
-                                    @endif
+                                                @else
+                                                    <button class="btn btn-sm btn-secondary" title="Khôi phục"
+                                                            data-id="{{ $lecturer['id'] }}"
+                                                            data-user-id="{{ $lecturer['user_id'] }}"
+                                                            data-current-page="{{ $data['lecturers']['current_page'] }}"
+                                                            data-bs-toggle="modal" data-bs-target="#restoreModal">
+                                                        <i class="fas fa-undo"></i>
+                                                    </button>
+                                                @endif
+                                            </td>
+                                        </tr>
+                                    @endforeach
+                                @endif
                                 </tbody>
                             </table>
                         </div>
                     </div>
                     <div class="card-footer bg-light">
-                        <x-pagination.pagination :paginate="$data['lecturers']" />
+                        <x-pagination.pagination :paginate="$data['lecturers']"/>
                     </div>
                 </div>
             </div>
@@ -143,14 +169,16 @@
     </div>
 
     {{-- Add Teacher Modal --}}
-    <div class="modal fade auto-reset-modal" id="addTeacherModal" tabindex="-1" aria-labelledby="addTeacherModalLabel" aria-hidden="true">
+    <div class="modal fade auto-reset-modal" id="addTeacherModal" tabindex="-1" aria-labelledby="addTeacherModalLabel"
+         aria-hidden="true">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="addTeacherModalLabel">Thêm giáo viên mới</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <form id="addTeacherForm" method="POST" action="{{ route('student-affairs-department.account.createAccount') }}">
+                <form id="addTeacherForm" method="POST"
+                      action="{{ route('student-affairs-department.account.createAccount') }}">
                     @csrf
                     @method('POST')
                     <input type="hidden" name="type" value="1">
@@ -252,38 +280,38 @@
                             <div class="col-12 col-md-6">
                                 <label for="editLecturerName" class="form-label">Họ và tên</label>
                                 <input type="text" class="form-control" id="editLecturerName" name="name"
-                                    required>
+                                       required>
                                 <div class="text-danger text-danger-error"></div>
                                 @error('name')
-                                    <div class="text-danger text-danger-error">{{ $message }}</div>
+                                <div class="text-danger text-danger-error">{{ $message }}</div>
                                 @enderror
                             </div>
                             <div class="col-12 col-md-6">
                                 <label for="editLecturerEmail" class="form-label">Email</label>
                                 <input type="email" class="form-control" id="editLecturerEmail" name="email"
-                                    required>
+                                       required>
                                 <div class="text-danger text-danger-error"></div>
                                 @error('email')
-                                    <div class="text-danger text-danger-error">{{ $message }}</div>
+                                <div class="text-danger text-danger-error">{{ $message }}</div>
                                 @enderror
                             </div>
 
                             <div class="col-12 col-md-6">
                                 <label for="editLecturerBirth" class="form-label">Ngày sinh</label>
                                 <input type="date" class="form-control" id="editLecturerBirth" name="date_of_birth"
-                                    required>
+                                       required>
                                 <div class="text-danger text-danger-error"></div>
                                 @error('date_of_birth')
-                                    <div class="text-danger text-danger-error">{{ $message }}</div>
+                                <div class="text-danger text-danger-error">{{ $message }}</div>
                                 @enderror
                             </div>
                             <div class="col-12 col-md-6">
                                 <label for="editLecturerPhone" class="form-label">Số điện thoại</label>
                                 <input type="number" class="form-control" id="editLecturerPhone" name="phone"
-                                    required>
+                                       required>
                                 <div class="text-danger text-danger-error"></div>
                                 @error('phone')
-                                    <div class="text-danger text-danger-error">{{ $message }}</div>
+                                <div class="text-danger text-danger-error">{{ $message }}</div>
                                 @enderror
                             </div>
 
@@ -298,7 +326,7 @@
                             <div class="col-12 col-md-6">
                                 <label for="editLecturerTitle" class="form-label">Trình độ</label>
                                 <select class="form-select" id="editLecturerTitle" name="title" required>
-                                    <option  value="" disabled>-- Chọn trình độ --</option>
+                                    <option value="" disabled>-- Chọn trình độ --</option>
                                     <option value="Giáo sư">Giáo sư</option>
                                     <option value="Phó Giáo sư">Phó Giáo sư</option>
                                     <option value="Tiến sĩ">Tiến sĩ</option>
@@ -322,12 +350,12 @@
                             <div class="col-12 col-md-6">
                                 <label for="editLecturerFaculty" class="form-label">Bộ môn</label>
                                 <select class="form-select" id="editLecturerFaculty" name="faculty_id"
-                                    data-selected="{{ $lecturer['faculty_id'] ?? '' }}" required>
+                                        data-selected="{{ $lecturer['faculty_id'] ?? '' }}" required>
                                     <option value="" disabled>-- Chọn bộ môn --</option>
                                 </select>
                                 <div class="text-danger text-danger-error"></div>
                                 @error('faculty_id')
-                                    <div class="text-danger text-danger-error">{{ $message }}</div>
+                                <div class="text-danger text-danger-error">{{ $message }}</div>
                                 @enderror
                             </div>
 
@@ -365,8 +393,9 @@
                 <form method="POST" id="deleteForm">
                     @csrf
                     @method('DELETE')
-                    <input type="hidden" name="user_id" class="edituserId">
+                    <input type="hidden" name="user_id" class="deleteUserId">
                     <input type="hidden" name="current_page" class="current_page">
+                    <input type="hidden" name="email" class="deleteEmail">
                     <input type="hidden" name="search" class="search_keyword">
                     <div class="modal-body">
                         <p>Bạn có chắc chắn muốn xóa tài khoản giáo viên này không?</p>
@@ -381,23 +410,40 @@
         </div>
     </div>
 
+    <div class="modal fade" id="restoreModal" tabindex="-1" aria-labelledby="restoreModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="restoreModalLabel">Xác nhận khôi phục</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    Bạn có chắc chắn muốn khôi phục giảng viên này?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                    <button type="button" class="btn btn-primary" id="confirmRestoreBtn">Khôi phục</button>
+                </div>
+            </div>
+        </div>
+    </div>
 @endsection
 
 @push('scripts')
     <script>
-        $(document).ready(function() {
-            $('.auto-reset-modal').on('hidden.bs.modal', function() {
+        $(document).ready(function () {
+            $('.auto-reset-modal').on('hidden.bs.modal', function () {
                 $(this).find('form')[0].reset();
                 $(this).find('.faculty-info').addClass('d-none');
             });
 
-            $('#teacherExcelFile').on('change', function() {
+            $('#teacherExcelFile').on('change', function () {
                 if (this.files.length > 0) {
                     $(this).closest('form').submit();
                 }
             });
 
-            $('.btn-show-lecturer').on('click', function() {
+            $('.btn-show-lecturer').on('click', function () {
                 let lecturerData = $(this).data();
                 $('.lecturer-name').text(lecturerData.name ?? "---");
                 $('.lecturer-email').text(lecturerData.email ?? "---");
@@ -417,7 +463,7 @@
                 facultySelect.empty();
                 facultySelect.append('<option disabled selected>-- Chọn bộ môn --</option>');
 
-                faculties.forEach(function(faculty) {
+                faculties.forEach(function (faculty) {
                     if (faculty.department_id == departmentId) {
                         const selected = faculty.id == selectedFacultyId ? 'selected' : '';
                         facultySelect.append(
@@ -429,7 +475,7 @@
                 facultySelect.prop('disabled', facultySelect.find('option').length <= 1);
             }
 
-            $('#editModal').on('show.bs.modal', function(event) {
+            $('#editModal').on('show.bs.modal', function (event) {
                 const button = $(event.relatedTarget);
                 const modal = $(this);
 
@@ -466,12 +512,12 @@
                 updateFacultySelect(departmentId, facultyId);
             });
 
-            $('#editLecturerDepartment').on('change', function() {
+            $('#editLecturerDepartment').on('change', function () {
                 const departmentId = $(this).val();
                 updateFacultySelect(departmentId);
             });
 
-            $('.btn-lecturer-edit').on('click', function(e) {
+            $('.btn-lecturer-edit').on('click', function (e) {
                 let userId = $('.edituserId').val();
                 let name = $('#editLecturerName').val().trim();
                 let email = $('#editLecturerEmail').val().trim();
@@ -503,7 +549,7 @@
 
             })
 
-            $('#deleteModal').on('show.bs.modal', function(event) {
+            $('#deleteModal').on('show.bs.modal', function (event) {
                 let button = $(event.relatedTarget);
                 let id = button.data('id');
                 let userId = button.data('user-id');
@@ -512,11 +558,46 @@
 
                 $('#deleteForm').attr('action', `/student-affairs-department/account/lecturer/${id}`);
                 $('#deleteLecturerId').val(id);
-                $('#deleteUserId').val(userId);
+                $('.deleteUserId').val(userId);
                 $('#deleteCurrentPage').val(currentPage);
                 $('.search_keyword').val(searchKeyword);
             });
 
+            $('#restoreModal').on('show.bs.modal', function (event) {
+                let button = $(event.relatedTarget);
+                let id = button.data('id');
+                let userId = button.data('user-id');
+                let currentPage = button.data('current-page');
+
+                $('#confirmRestoreBtn').off('click').on('click', function () {
+                    $.ajax({
+                        url: `/student-affairs-department/account/lecturer/${id}/restore`,
+                        type: 'POST',
+                        data: {
+                            _token: '{{ csrf_token() }}',
+                            user_id: userId,
+                            current_page: currentPage
+                        },
+                        success: function (response) {
+                            $('#restoreModal').modal('hide');
+                            if (response.success) {
+                                toastr.success(response.message);
+                                // window.location.href = response.redirect;
+                                setTimeout(function () {
+                                    location.reload();
+                                }, 5000);
+                            } else {
+                                toastr.error(response.message);
+                            }
+                        },
+                        error: function (xhr) {
+                            console.error(xhr);
+                            let errorMessage = xhr.responseJSON?.message || 'Lỗi khi khôi phục tài khoản. Vui lòng thử lại sau.';
+                            toastr.error(errorMessage);
+                        }
+                    });
+                });
+            });
         });
     </script>
 @endpush

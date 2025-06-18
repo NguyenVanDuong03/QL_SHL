@@ -54,7 +54,7 @@ class UserService extends BaseService
         $user = $this->create($params);
 
         try {
-            $user->notify(new \App\Notifications\CreateAccount($params['email'], $params['password']));
+            $user->notify(new CreateAccount($params['email'], $params['password']));
         } catch (\Exception $e) {
             \Log::error('Failed to send account creation notification: ' . $e->getMessage());
             return false;
@@ -75,7 +75,7 @@ class UserService extends BaseService
         $user = $this->create($params);
 
         try {
-            $user->notify(new \App\Notifications\CreateAccount($params['email'], $params['password']));
+            $user->notify(new CreateAccount($params['email'], $params['password']));
         } catch (\Exception $e) {
             \Log::error('Failed to send account creation notification: ' . $e->getMessage());
             return false;
