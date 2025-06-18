@@ -131,7 +131,11 @@
                             </thead>
                             <tbody>
                             @if(isset($data['classSessionRequests']) && $data['classSessionRequests']['total'] == 0)
-                                <p>Không có yêu cầu nào.</p>
+                                <tr>
+                                    <td colspan="6" class="text-center text-muted py-4">
+                                        Không có yêu cầu nào.
+                                    </td>
+                                </tr>
                             @else
                                 @foreach($data['classSessionRequests']['data'] as $item)
                                     <tr>

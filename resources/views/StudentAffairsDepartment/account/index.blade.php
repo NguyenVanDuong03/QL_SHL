@@ -44,12 +44,16 @@
                                     enctype="multipart/form-data" class="d-inline">
                                     @csrf
                                     @method('POST')
-                                    <label for="teacherExcelFile" class="btn btn-sm btn-success me-2 mb-0">
+                                    <label for="teacherExcelFile" class="btn btn-sm btn-success me-2 mb-0" title="Tạo tài khoản từ Excel">
                                         <i class="fas fa-file-excel me-1"></i> Import Excel
                                         <input type="file" id="teacherExcelFile" name="teacherExcelFile" class="d-none"
                                             accept=".xlsx, .xls">
                                     </label>
                                 </form>
+                                <button class="btn btn-sm btn-primary mb-0" data-bs-toggle="modal"
+                                        data-bs-target="#addTeacherModal" title="Thêm giáo viên mới">
+                                    <i class="fas fa-plus"></i> Thêm mới
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -134,6 +138,40 @@
                         <x-pagination.pagination :paginate="$data['lecturers']" />
                     </div>
                 </div>
+            </div>
+        </div>
+    </div>
+
+    {{-- Add Teacher Modal --}}
+    <div class="modal fade auto-reset-modal" id="addTeacherModal" tabindex="-1" aria-labelledby="addTeacherModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addTeacherModalLabel">Thêm giáo viên mới</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form id="addTeacherForm" method="POST" action="{{ route('student-affairs-department.account.createAccount') }}">
+                    @csrf
+                    @method('POST')
+                    <input type="hidden" name="type" value="1">
+                    <div class="modal-body">
+                        <div class="row g-3">
+                            <!-- Email -->
+                            <div class="col-12 col-md-6">
+                                <label for="email" class="form-label">Email</label>
+                                <input type="email" class="form-control" id="email" name="email" required>
+                                <div class="text-danger text-danger-error"></div>
+                                @error('email')
+                                <div class="text-danger text-danger-error">{{ $message }}</div>
+                                @enderror
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                        <button type="submit" class="btn btn-success btn-add-Teacher">Thêm</button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>

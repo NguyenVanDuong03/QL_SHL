@@ -60,7 +60,7 @@
 {{--                            <div class="d-flex flex-column">--}}
                                 <a id="navbarDropdown" class="nav-link dropdown-toggle pb-0 {{ Route::currentRouteName() == 'profile' ? 'active' : '' }}" href="#" role="button"
                                    data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
-                                    {{ Auth::user()->name }}
+                                    {{ Auth::user()->name ?? 'Sinh viên' }}
                                 </a>
                                 <small class="text-muted text-end my-0 me-2 d-none d-md-block">Sinh viên</small>
 {{--                            </div>--}}

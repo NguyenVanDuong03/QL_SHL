@@ -140,7 +140,7 @@
                         </h1>
                     </div>
 
-                    <div class="text-white">Giáo viên: {{ Auth::user()->name }}</div>
+                    <div class="text-white">Giáo viên: {{ Auth::user()->name ?? 'Giáo viên' }}</div>
                 </header>
 
                 <main>

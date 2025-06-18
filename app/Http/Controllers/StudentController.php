@@ -57,12 +57,34 @@ class StudentController extends Controller
         $params['student_id'] = auth()->user()->student?->id ?? null;
         $classSessionRequests = $this->classSessionRequestService->ClassSessionRequests($params)->limit(Constant::DEFAULT_LIMIT)->get();
         $attendanceStatus = $classSessionRequests->first()?->attendances->first() ?? null;
+        $studyClasses = $this->studyClassService->get()->toArray();
+        $cohorts = $this->cohortService->get()->toArray();
+        $user = auth()->user();
 
         $data = [
             'classSessionRequests' => $classSessionRequests,
             'attendanceStatus' => $attendanceStatus,
+            'studyClasses' => $studyClasses,
+            'cohorts' => $cohorts,
+            'user' => $user,
         ];
         return view('student.index', compact('data'));
+    }
+
+    public function createOrUpdateStudent(Request $request)
+    {
+        $params = $request->all();
+        $params['user_id'] = auth()->user()->id;
+        $params['position'] = $params['position'] ?? Constant::STUDENT_POSITION['STUDENT'];
+//        dd($params);
+        $student = $this->studentService->createOrUpdate($params);
+        $user = $this->userService->update($params['user_id'], $params);
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Cập nhật thông tin sinh viên thành công',
+            'data' => $student,
+        ], 200);
     }
 
     public function indexClassSession(Request $request)
@@ -160,12 +182,12 @@ class StudentController extends Controller
         $params['class_id'] = auth()->user()->student?->studyClass?->id ?? null;
         $studyClassName = auth()->user()->student?->studyClass?->name ?? null;
         $students = $this->studentService->getListStudentByClassId($params)->toArray();
-//        dd($students);
+//        dd($params['class_id']);
         $data = [
             'students' => $students,
             'studyClassName' => $studyClassName,
         ];
-//         dd($data['students']);
+//         dd($data['studyClassId']);
 
         return view('student.class.index', compact('data'));
     }

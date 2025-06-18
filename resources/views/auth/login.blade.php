@@ -42,7 +42,7 @@
                     </div>
 
                     <div class="mb-3">
-                        <label for="password" class="form-label">Mật khẩu mới</label>
+                        <label for="password" class="form-label">Mật khẩu</label>
                         <div class="input-group">
                             <input id="password" type="password"
                                    class="form-control @error('password') is-invalid @enderror"

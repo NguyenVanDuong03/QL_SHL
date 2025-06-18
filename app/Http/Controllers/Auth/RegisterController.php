@@ -99,11 +99,21 @@ class RegisterController extends Controller
             $role = Constant::ROLE_LIST['TEACHER'];
         }
 
-        return User::create([
+        $user = User::create([
             'name' => $data['name'],
             'email' => $email,
             'password' => Hash::make($data['password']),
             'role' => $role,
         ]);
+
+//        if ($user->role === Constant::ROLE_LIST['STUDENT']) {
+//            $user->student()->create();
+//        } elseif ($user->role === Constant::ROLE_LIST['TEACHER']) {
+//            $user->lecturer()->create();
+//        } elseif ($user->role === Constant::ROLE_LIST['FACULTY_OFFICE']) {
+//            $user->facultyOffice()->create();
+//        }
+        \Log::info('User created', ['user' => $user]);
+        return $user;
     }
 }
