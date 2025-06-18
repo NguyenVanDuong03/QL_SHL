@@ -379,4 +379,21 @@ class StudentRepository extends BaseRepository
             ->get();
     }
 
+    public function getAllWithTrashed($params)
+    {
+        $search = $params['search'] ?? '';
+        $query = $this->getModel()
+            ->with([
+                'studyClass',
+                'user' => function ($query) {
+                    $query->withTrashed();
+                },
+                'cohort'
+            ])
+            ->orderByDesc('id')
+            ->withTrashed();
+
+            return $query;
+    }
+
 }

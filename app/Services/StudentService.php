@@ -159,4 +159,9 @@ class StudentService extends BaseService
         return $this->getRepository()->statisticalAttendance($semesterId, $studyClassId);
     }
 
+    public function getAllWithTrashed($params)
+    {
+        return $this->getRepository()->getAllWithTrashed($params);
+    }
+
 }

@@ -39,17 +39,17 @@
                                         <i class="fas fa-search"></i>
                                     </button>
                                 </div>
-                                <form method="POST"
-                                    action="{{ route('student-affairs-department.account.importStudent') }}"
-                                    enctype="multipart/form-data" class="d-inline">
-                                    @csrf
-                                    @method('POST')
-                                    <label for="studentExcelFile" class="btn btn-sm btn-success me-2 mb-0"  title="Tạo tài khoản từ Excel">
-                                        <i class="fas fa-file-excel"></i> Thêm từ Excel
-                                        <input type="file" id="studentExcelFile" class="d-none" name="studentExcelFile"
-                                            accept=".xlsx, .xls">
-                                    </label>
-                                </form>
+{{--                                <form method="POST"--}}
+{{--                                    action="{{ route('student-affairs-department.account.importStudent') }}"--}}
+{{--                                    enctype="multipart/form-data" class="d-inline">--}}
+{{--                                    @csrf--}}
+{{--                                    @method('POST')--}}
+{{--                                    <label for="studentExcelFile" class="btn btn-sm btn-success me-2 mb-0"  title="Tạo tài khoản từ Excel">--}}
+{{--                                        <i class="fas fa-file-excel"></i> Thêm từ Excel--}}
+{{--                                        <input type="file" id="studentExcelFile" class="d-none" name="studentExcelFile"--}}
+{{--                                            accept=".xlsx, .xls">--}}
+{{--                                    </label>--}}
+{{--                                </form>--}}
                                 <button class="btn btn-sm btn-primary mb-0" data-bs-toggle="modal"
                                     data-bs-target="#addStudentModal" title="Thêm sinh viên mới">
                                     <i class="fas fa-plus"></i> Thêm mới
@@ -62,30 +62,38 @@
                             <table class="table table-hover table-striped mb-0 columns-acctount">
                                 <thead class="table-light">
                                     <tr>
-                                        <th style="width: 50px;">STT</th>
+                                        <th>STT</th>
                                         <th>MSSV</th>
                                         <th>Họ và tên</th>
-                                        <th class="d-none d-md-table-cell">ngày sinh</th>
-                                        <th>Giới tính</th>
                                         <th>Email</th>
+                                        <th>Trạng thái</th>
                                         <th style="width: 150px;">Thao tác</th>
                                     </tr>
                                 </thead>
                                 <tbody id="studentTableBody">
-                                    @if ($data['students']['total'] == 0)
+                                    @if ($data['getAllWithTrashed']['total'] == 0)
                                         <tr>
                                             <td colspan="7" class="text-center">Không có dữ liệu sinh viên</td>
                                         </tr>
                                     @else
-                                        @foreach ($data['students']['data'] as $student)
+                                        @foreach ($data['getAllWithTrashed']['data'] as $student)
                                             <tr>
                                                 <td>{{ $loop->iteration }}</td>
                                                 <td>{{ $student['student_code'] }}</td>
                                                 <td>{{ $student['user']['name'] }}</td>
-                                                <td class="d-none d-md-table-cell">{{ \Carbon\Carbon::parse($student['user']['date_of_birth'])->format('d/m/Y') }}
-                                                </td>
-                                                <td>{{ $student['user']['gender'] }}</td>
+{{--                                                <td class="d-none d-md-table-cell">{{ \Carbon\Carbon::parse($student['user']['date_of_birth'])->format('d/m/Y') }}--}}
+{{--                                                </td>--}}
                                                 <td>{{ $student['user']['email'] }}</td>
+                                                @php
+                                                    $deleted = isset($student['user']) && $student['user']['deleted_at'] !== null;
+                                                @endphp
+                                                <td>
+                                                    @if ($deleted)
+                                                        <span class="badge bg-danger">Đã xóa</span>
+                                                    @else
+                                                        <span class="badge bg-success">Hoạt động</span>
+                                                    @endif
+                                                </td>
                                                 <td>
                                                     <button class="btn btn-sm btn-info btn-show-student mb-1"
                                                         title="Xem chi tiết" data-id="{{ $student['id'] }}"
@@ -101,6 +109,7 @@
                                                         data-bs-target="#showModal">
                                                         <i class="fas fa-eye"></i>
                                                     </button>
+                                                    @if (!$deleted)
                                                     <button class="btn btn-sm btn-warning mb-1" title="Chỉnh sửa"
                                                         data-id="{{ $student['id'] }}"
                                                         data-userid="{{ $student['user']['id'] }}"
@@ -123,6 +132,15 @@
                                                         data-bs-toggle="modal" data-bs-target="#deleteModal">
                                                         <i class="fas fa-trash"></i>
                                                     </button>
+                                                    @else
+                                                        <button class="btn btn-sm btn-secondary" title="Khôi phục"
+                                                                data-id="{{ $student['id'] }}"
+                                                                data-user-id="{{ $student['user_id'] }}"
+                                                                data-current-page="{{ $data['students']['current_page'] }}"
+                                                                data-bs-toggle="modal" data-bs-target="#restoreModal">
+                                                            <i class="fas fa-undo"></i>
+                                                        </button>
+                                                    @endif
                                                 </td>
                                             </tr>
                                         @endforeach
@@ -356,6 +374,24 @@
             </div>
         </div>
     </div>
+
+    <div class="modal fade" id="restoreModal" tabindex="-1" aria-labelledby="restoreModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="restoreModalLabel">Xác nhận khôi phục</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    Bạn có chắc chắn muốn khôi phục sinh viên này?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                    <button type="button" class="btn btn-primary" id="confirmRestoreBtn">Khôi phục</button>
+                </div>
+            </div>
+        </div>
+    </div>
 @endsection
 
 @push('scripts')
@@ -487,6 +523,42 @@
                 $('#deleteLecturerId').val(id);
                 $('#deleteUserId').val(userId);
                 $('#deleteCurrentPage').val(currentPage);
+            });
+
+            $('#restoreModal').on('show.bs.modal', function (event) {
+                let button = $(event.relatedTarget);
+                let id = button.data('id');
+                let userId = button.data('user-id');
+                let currentPage = button.data('current-page');
+
+                $('#confirmRestoreBtn').off('click').on('click', function () {
+                    $.ajax({
+                        url: `/student-affairs-department/account/student/${id}/restore`,
+                        type: 'POST',
+                        data: {
+                            _token: '{{ csrf_token() }}',
+                            user_id: userId,
+                            current_page: currentPage
+                        },
+                        success: function (response) {
+                            $('#restoreModal').modal('hide');
+                            if (response.success) {
+                                toastr.success(response.message);
+                                // window.location.href = response.redirect;
+                                setTimeout(function () {
+                                    location.reload();
+                                }, 5000);
+                            } else {
+                                toastr.error(response.message);
+                            }
+                        },
+                        error: function (xhr) {
+                            console.error(xhr);
+                            let errorMessage = xhr.responseJSON?.message || 'Lỗi khi khôi phục tài khoản. Vui lòng thử lại sau.';
+                            toastr.error(errorMessage);
+                        }
+                    });
+                });
             });
 
         });

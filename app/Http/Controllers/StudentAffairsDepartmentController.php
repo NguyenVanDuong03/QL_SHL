@@ -319,12 +319,14 @@ class StudentAffairsDepartmentController extends Controller
         $students = $this->studentService->paginate($params)->toArray();
         $cohorts = $this->cohortService->get();
         $studyClasses = $this->studyClassService->get();
+        $getAllWithTrashed = $this->studentService->getAllWithTrashed($params)->paginate(Constant::DEFAULT_LIMIT_12)->toArray();
         $data = [
             'students' => $students ?? [],
             'cohorts' => $cohorts ?? [],
             'studyClasses' => $studyClasses ?? [],
+            'getAllWithTrashed' => $getAllWithTrashed ?? [],
         ];
-//         dd($data['students']);
+//         dd($data['getAllWithTrashed']);
 
         return view('StudentAffairsDepartment.account.student', compact('data'));
     }
@@ -362,6 +364,31 @@ class StudentAffairsDepartmentController extends Controller
         $targetPage = $this->studentService->targetPage($params);
 
         return redirect()->route('student-affairs-department.account.student', $targetPage)->with('success', 'Xóa thành công');
+    }
+
+    public function restoreAccountStudent(Request $request, $id)
+    {
+        $params = $request->all();
+
+        $restoredStudentCount = $this->studentService->restore($id);
+        $restoredUserCount = $this->userService->restore($params['user_id']);
+        if ($restoredStudentCount === 0 || $restoredUserCount === 0) {
+            return response()->json(['success' => false, 'message' => 'Khôi phục thất bại'], 400);
+        }
+
+        $user = $this->userService->find($params['user_id']);
+        if (!$user) {
+            return response()->json(['success' => false, 'message' => 'Không tìm thấy người dùng'], 404);
+        }
+
+        $user->notify(new RestoreAccount($user->email));
+        $targetPage = $this->lecturerService->targetPage($params);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Khôi phục tài khoản thành công!',
+            'redirect' => route('student-affairs-department.account.index', $targetPage)
+        ]);
     }
 
     public function lecturerImportByExcel(Request $request)

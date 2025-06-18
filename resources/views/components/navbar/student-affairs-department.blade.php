@@ -43,7 +43,9 @@
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link {{ Route::currentRouteName() == 'student-affairs-department.account.index' ? 'active' : '' }}" href="{{ route('student-affairs-department.account.index') }}">
+                <a class="nav-link {{ Route::currentRouteName() == 'student-affairs-department.account.index' ||
+                                        Route::currentRouteName() == 'student-affairs-department.account.student'
+                                      ? 'active' : '' }}" href="{{ route('student-affairs-department.account.index') }}">
                     <i class="fas fa-user-plus"></i>
                     Tài khoản GV & SV
                 </a>

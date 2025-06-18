@@ -41,18 +41,18 @@
                                         <i class="fas fa-search"></i>
                                     </button>
                                 </form>
-                                <form method="POST"
-                                      action="{{ route('student-affairs-department.account.importLecturer') }}"
-                                      enctype="multipart/form-data" class="d-inline">
-                                    @csrf
-                                    @method('POST')
-                                    <label for="teacherExcelFile" class="btn btn-sm btn-success me-2 mb-0"
-                                           title="Tạo tài khoản từ Excel">
-                                        <i class="fas fa-file-excel me-1"></i> Import Excel
-                                        <input type="file" id="teacherExcelFile" name="teacherExcelFile" class="d-none"
-                                               accept=".xlsx, .xls">
-                                    </label>
-                                </form>
+{{--                                <form method="POST"--}}
+{{--                                      action="{{ route('student-affairs-department.account.importLecturer') }}"--}}
+{{--                                      enctype="multipart/form-data" class="d-inline">--}}
+{{--                                    @csrf--}}
+{{--                                    @method('POST')--}}
+{{--                                    <label for="teacherExcelFile" class="btn btn-sm btn-success me-2 mb-0"--}}
+{{--                                           title="Tạo tài khoản từ Excel">--}}
+{{--                                        <i class="fas fa-file-excel me-1"></i> Import Excel--}}
+{{--                                        <input type="file" id="teacherExcelFile" name="teacherExcelFile" class="d-none"--}}
+{{--                                               accept=".xlsx, .xls">--}}
+{{--                                    </label>--}}
+{{--                                </form>--}}
                                 <button class="btn btn-sm btn-primary mb-0" data-bs-toggle="modal"
                                         data-bs-target="#addTeacherModal" title="Thêm giáo viên mới">
                                     <i class="fas fa-plus"></i> Thêm mới
@@ -65,7 +65,7 @@
                             <table class="table table-hover table-striped mb-0 columns-acctount">
                                 <thead class="table-light">
                                 <tr>
-                                    <th style="width: 50px;">STT</th>
+                                    <th>STT</th>
                                     <th>Họ và tên</th>
                                     {{--                                        <th class="d-none d-md-table-cell">Ngày sinh</th>--}}
                                     {{--                                        <th class="d-none d-md-table-cell">Giới tính</th>--}}
@@ -75,7 +75,7 @@
                                 </tr>
                                 </thead>
                                 <tbody id="teacherTableBody">
-                                @if ($data['lecturers']['total'] == 0)
+                                @if ($data['getAllWithTrashed']['total'] == 0)
                                     <tr>
                                         <td colspan="6" class="text-center">Không có dữ liệu</td>
                                     </tr>
@@ -90,7 +90,6 @@
                                             {{--                                                <td class="d-none d-md-table-cell">{{ $lecturer['user']['gender'] }}</td>--}}
                                             <td>{{ $lecturer['user']['email'] }}</td>
                                             @php
-                                                // Check if user exists and is soft-deleted
                                                 $deleted = isset($lecturer['user']) && $lecturer['user']['deleted_at'] !== null;
                                             @endphp
                                             <td>

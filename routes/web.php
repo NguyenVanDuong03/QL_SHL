@@ -186,6 +186,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
                     Route::post('/student/create', [StudentAffairsDepartmentController::class, 'createAccount'])->name('createAccount');
                     Route::put('/student/{id?}', [StudentAffairsDepartmentController::class, 'editAccountStudent'])->name('editStudent');
                     Route::delete('/student/{id?}', [StudentAffairsDepartmentController::class, 'deleteAccountStudent'])->name('deleteStudent');
+                    Route::post('/student/{id}/restore', [StudentAffairsDepartmentController::class, 'restoreAccountStudent'])->name('restoreAccountStudent');
                 }
             );
 
