@@ -23,12 +23,6 @@ class LecturerService extends BaseService
         $wheres = Arr::get($params, 'wheres', []);
         $relates = Arr::get($params, 'relates', []);
         $relates = ['user', 'faculty', 'faculty.department'];
-        $keyword = Arr::get($params, 'search', null);
-        // if ($keyword) {
-        //     $wheres[] = fn($query) => $query->whereHas('user', function ($q) use ($keyword) {
-        //         $q->where('name', 'like', "%{$keyword}%")->orWhere('email', 'like', "%{$keyword}%");
-        //     });
-        // }
 
         return [
             'sort' => $sort,
@@ -45,6 +39,11 @@ class LecturerService extends BaseService
     public function getAverageConductScoreByLecturer($lecturerId)
     {
         return $this->getRepository()->getAverageConductScoreByLecturer($lecturerId);
+    }
+
+    public function getAllWithTrashed($params)
+    {
+        return $this->getRepository()->getAllWithTrashed($params);
     }
 
 }

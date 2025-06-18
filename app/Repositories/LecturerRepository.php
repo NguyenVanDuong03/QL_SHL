@@ -58,5 +58,21 @@ class LecturerRepository extends BaseRepository
             ->get();
     }
 
+    public function getAllWithTrashed($params)
+    {
+        $query = $this->getModel()
+            ->newQuery()
+            ->with([
+                'user' => function ($query) {
+                    $query->withTrashed();
+                },
+                'faculty',
+                'faculty.department'
+            ])
+            ->orderByDesc('id')
+            ->withTrashed();
+
+        return $query;
+    }
 
 }

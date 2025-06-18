@@ -256,4 +256,15 @@ abstract class BaseRepository
     {
         return $this->model->upsert($params, $uniqueByColumns, $updatedColumns);
     }
+
+    public function restore($ids, string $column = 'id'): int
+    {
+        $query = $this->newQuery()->onlyTrashed();
+
+        if (is_array($ids)) {
+            return $query->whereIn($column, $ids)->restore();
+        }
+
+        return $query->where($column, $ids)->restore();
+    }
 }

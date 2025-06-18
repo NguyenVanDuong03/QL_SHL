@@ -157,4 +157,9 @@ abstract class BaseService
 
         return $result;
     }
+
+    public function restore($ids, string $column = 'id'): int
+    {
+        return $this->getRepository()->restore($ids, $column);
+    }
 }
