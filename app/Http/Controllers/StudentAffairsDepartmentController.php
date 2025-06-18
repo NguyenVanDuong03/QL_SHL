@@ -225,6 +225,27 @@ class StudentAffairsDepartmentController extends Controller
         return view('StudentAffairsDepartment.account.index', compact('data'));
     }
 
+    public function createAccount(Request $request)
+    {
+        $params = $request->all();
+        if ($params['type'] == 0) {
+            $studentUser = $this->userService->createStudentUser($params);
+            if (!$studentUser) {
+                return redirect()->back()->with('error', 'Thêm mới thất bại, vui lòng kiểm tra lại thông tin email');
+            }
+
+            return redirect()->route('student-affairs-department.account.student')->with('success', 'Thêm mới thành công');
+        }
+
+        $lecturerUser = $this->userService->createTeacherUser($params);
+
+        if (!$lecturerUser) {
+            return redirect()->back()->with('error', 'Thêm mới thất bại, vui lòng kiểm tra lại thông tin email');
+        }
+
+        return redirect()->route('student-affairs-department.account.index')->with('success', 'Thêm mới thành công');
+    }
+
     public function editAccount(Request $request, $id)
     {
         $params = $request->all();

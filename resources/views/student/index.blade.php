@@ -334,6 +334,8 @@
             </div>
         </div>
     </div>
+
+    @include('common.updateStudent')
 @endsection
 
 @push('scripts')

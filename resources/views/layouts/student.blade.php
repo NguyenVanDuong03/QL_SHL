@@ -146,12 +146,11 @@
             let isScrolling = false;
             let lastClickTime = 0;
             let clickCount = 0;
-            const clickCooldown = 1000; // 1 giây cooldown
-            const maxClicksPerMinute = 10; // Tối đa 10 clicks/phút
-            const clickTimeWindow = 60000; // 1 phút
+            const clickCooldown = 1000;
+            const maxClicksPerMinute = 10;
+            const clickTimeWindow = 60000;
             let clickTimes = [];
 
-            // Hiện/ẩn button khi cuộn
             $(window).scroll(function() {
                 const scrollTop = $(this).scrollTop();
 

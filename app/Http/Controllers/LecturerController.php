@@ -12,12 +12,14 @@ use App\Services\ClassSessionRequestService;
 use App\Services\ConductCriteriaService;
 use App\Services\ConductEvaluationPeriodService;
 use App\Services\DetailConductScoreService;
+use App\Services\FacultyService;
 use App\Services\LecturerService;
 use App\Services\RoomService;
 use App\Services\SemesterService;
 use App\Services\StudentConductScoreService;
 use App\Services\StudentService;
 use App\Services\StudyClassService;
+use App\Services\UserService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
@@ -39,7 +41,9 @@ class LecturerController extends Controller
         protected StudentConductScoreService      $studentConductScoreService,
         protected ConductEvaluationPeriodService  $conductEvaluationPeriodService,
         protected DetailConductScoreService       $detailConductScoreService,
-        protected ConductCriteriaService          $conductCriteriaService
+        protected ConductCriteriaService          $conductCriteriaService,
+        protected FacultyService                   $facultyService,
+        protected UserService                      $userService,
     )
     {
     }
@@ -49,13 +53,31 @@ class LecturerController extends Controller
         $lecturerId = auth()->user()->lecturer?->id;
         $totalClasses = $this->studyClassService->coutStudyClassListByLecturerId($lecturerId);
         $totalStudentWarning = $this->academicWarningService->getStudentWarningByStudyClassId($lecturerId)->count();
+        $faculties = $this->facultyService->get()->toArray();
+        $user = auth()->user();
         $data = [
             'totalClasses' => $totalClasses,
             'totalStudentWarning' => $totalStudentWarning,
+            'faculties' => $faculties,
+            'user' => $user,
         ];
-        // dd($data['totalStudentWarning']);
+//         dd($data['user']);
 
         return view('teacher.index', compact('data'));
+    }
+
+    public function createOrUpdateLecturer(Request $request) {
+        $params = $request->all();
+        $params['user_id'] = auth()->user()->id;
+
+        $lecturer = $this->lecturerService->createOrUpdate($params);
+        $user = $this->userService->update($params['user_id'], $params);
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Cập nhật thông tin giáo viên thành công',
+            'data' => $lecturer,
+        ], 200);
     }
 
     public function indexClassSession()

@@ -146,4 +146,6 @@
             </div>
         </div>
     </div>
+
+    @include('common.updateLecturer')
 @endsection

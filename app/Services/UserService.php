@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Helpers\Constant;
+use App\Notifications\CreateAccount;
 use App\Repositories\UserRepository;
 use Illuminate\Support\Arr;
 
@@ -39,6 +40,48 @@ class UserService extends BaseService
             'wheres' => $wheres,
             'sort' => $sort,
         ];
+    }
+
+    public function createStudentUser($params)
+    {
+        if (!preg_match('/^[0-9]{10}@e\.tlu\.edu\.vn$/', $params['email'])) {
+            return false;
+        }
+
+        $params['role'] = Constant::ROLE_LIST['STUDENT'];
+        $params['password'] = str_pad(rand(0, 99999999), 8, '0', STR_PAD_LEFT);
+
+        $user = $this->create($params);
+
+        try {
+            $user->notify(new \App\Notifications\CreateAccount($params['email'], $params['password']));
+        } catch (\Exception $e) {
+            \Log::error('Failed to send account creation notification: ' . $e->getMessage());
+            return false;
+        }
+
+        return true;
+    }
+
+    public function createTeacherUser($params)
+    {
+        if (!str_ends_with($params['email'], '@tlu.edu.vn')) {
+            return false;
+        }
+
+        $params['role'] = Constant::ROLE_LIST['TEACHER'];
+        $params['password'] = str_pad(rand(0, 99999999), 8, '0', STR_PAD_LEFT);
+
+        $user = $this->create($params);
+
+        try {
+            $user->notify(new \App\Notifications\CreateAccount($params['email'], $params['password']));
+        } catch (\Exception $e) {
+            \Log::error('Failed to send account creation notification: ' . $e->getMessage());
+            return false;
+        }
+
+        return true;
     }
 
     public function redirectAuthPath()

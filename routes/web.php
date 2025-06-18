@@ -41,6 +41,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         ],
         function () {
             Route::get('/', [LecturerController::class, 'index'])->name('index');
+            Route::post('/', [LecturerController::class, 'createOrUpdateLecturer'])->name('createOrUpdateLecturer');
 
             // class session
             Route::group(
@@ -181,6 +182,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
                     // crud student
                     Route::post('/student', [StudentAffairsDepartmentController::class, 'studentImportByExcel'])->name('importStudent');
+                    Route::post('/student/create', [StudentAffairsDepartmentController::class, 'createAccount'])->name('createAccount');
                     Route::put('/student/{id?}', [StudentAffairsDepartmentController::class, 'editAccountStudent'])->name('editStudent');
                     Route::delete('/student/{id?}', [StudentAffairsDepartmentController::class, 'deleteAccountStudent'])->name('deleteStudent');
                 }
@@ -312,6 +314,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         ],
         function () {
             Route::get('/', [StudentController::class, 'index'])->name('index');
+            Route::post('/', [StudentController::class, 'createOrUpdateStudent'])->name('createOrUpdateStudent');
 
 //            Class session
             Route::group(
