@@ -11,12 +11,6 @@
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="#">
-                    <i class="fas fa-bell"></i>
-                    Thông báo
-                </a>
-            </li>
-            <li class="nav-item">
                 <a class="nav-link {{ Route::currentRouteName() == 'teacher.class-session.index' ||
                                         Route::currentRouteName() == 'teacher.class-session.fixed-class-activitie' ||
                                         Route::currentRouteName() == 'teacher.class-session.flexible-class-activitie' ||

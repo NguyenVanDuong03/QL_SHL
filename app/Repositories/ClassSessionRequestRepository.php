@@ -204,6 +204,80 @@ class ClassSessionRequestRepository extends BaseRepository
             ->paginate(Constant::DEFAULT_LIMIT_12);
     }
 
+    public function getAllClassSession()
+    {
+        return $this->getModel()
+            ->with('studyClass', 'room', 'lecturer', 'lecturer.user', 'studyClass.major.faculty.department')
+            ->whereIn('status', [
+                Constant::CLASS_SESSION_STATUS['ACTIVE'],
+                Constant::CLASS_SESSION_STATUS['REJECTED'],
+            ])
+            ->orderByRaw('
+            CASE status
+                WHEN ? THEN 1
+                WHEN ? THEN 2
+                ELSE 3
+            END', [
+                Constant::CLASS_SESSION_STATUS['ACTIVE'],
+                Constant::CLASS_SESSION_STATUS['REJECTED'],
+            ])
+            ->limit(5)
+            ->get();
+    }
+
+    public function getAllClassSessionByLecturer($lecturerId)
+    {
+        return $this->getModel()
+            ->with('studyClass', 'room', 'lecturer', 'lecturer.user', 'studyClass.major.faculty.department')
+            ->where('lecturer_id', $lecturerId)
+            ->whereIn('status', [
+                Constant::CLASS_SESSION_STATUS['ACTIVE'],
+                Constant::CLASS_SESSION_STATUS['REJECTED'],
+            ])
+            ->orderByRaw('
+            CASE status
+                WHEN ? THEN 1
+                WHEN ? THEN 2
+                ELSE 3
+            END', [
+                Constant::CLASS_SESSION_STATUS['ACTIVE'],
+                Constant::CLASS_SESSION_STATUS['REJECTED'],
+            ])
+            ->limit(5)
+            ->get();
+    }
+
+    public function countClassSession()
+    {
+        return [
+            'fixed' => $this->getModel()
+                ->where('type', Constant::CLASS_SESSION_TYPE['FIXED'])
+                ->count(),
+            'flexible' => $this->getModel()
+                ->where('type', Constant::CLASS_SESSION_TYPE['FLEXIBLE'])
+                ->count(),
+            'total' => $this->getModel()
+                ->count()
+        ];
+    }
+
+    public function countClassSessionById($lecturerId)
+    {
+        return [
+            'fixed' => $this->getModel()
+                ->where('type', Constant::CLASS_SESSION_TYPE['FIXED'])
+                ->where('lecturer_id', $lecturerId)
+                ->count(),
+            'flexible' => $this->getModel()
+                ->where('type', Constant::CLASS_SESSION_TYPE['FLEXIBLE'])
+                ->where('lecturer_id', $lecturerId)
+                ->count(),
+            'total' => $this->getModel()
+                ->where('lecturer_id', $lecturerId)
+                ->count()
+        ];
+    }
+
 //    public function StatisticalClassSessionRequests($params)
 //    {
 //        return $this->getModel()

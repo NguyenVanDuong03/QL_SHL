@@ -61,14 +61,18 @@ class StudentAffairsDepartmentController extends Controller
         $semester = $this->semesterService->get()->first();
         $totalAcademicWarnings = $this->academicWarningService->academicWarningBySemesterId($semester->id)->get()->count();
         $totalClassSessionReports = $this->classSessionReportService->countClassSessionReports($semester->id);
+        $getAllClassSession = $this->classSessionRequestService->getAllClassSession()->toArray();
+        $countClassSession = $this->classSessionRequestService->countClassSession();
 
         $data = [
             'totalStudyClasses' => $totalStudyClasses,
             'totalAcademicWarnings' => $totalAcademicWarnings,
             'semester' => $semester,
             'totalClassSessionReports' => $totalClassSessionReports,
+            'getAllClassSession' => $getAllClassSession,
+            'countClassSession' => $countClassSession,
         ];
-//        dd($data['totalClassSessionReport']);
+//        dd($data['countClassSession']);
         return view('StudentAffairsDepartment.index', compact('data'));
     }
 

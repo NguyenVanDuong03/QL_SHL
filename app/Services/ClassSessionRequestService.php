@@ -111,6 +111,26 @@ class ClassSessionRequestService extends BaseService
         return $this->getRepository()->getListFlexibleClass();
     }
 
+    public function getAllClassSession()
+    {
+        return $this->getRepository()->getAllClassSession();
+    }
+
+    public function countClassSession()
+    {
+        return $this->getRepository()->countClassSession();
+    }
+
+    public function getAllClassSessionByLecturer($lecturerId)
+    {
+        return $this->getRepository()->getAllClassSessionByLecturer($lecturerId);
+    }
+
+    public function countClassSessionById($lecturerId)
+    {
+        return $this->getRepository()->countClassSessionById($lecturerId);
+    }
+
 //    public function StatisticalClassSessionRequests($params)
 //    {
 //        return $this->getRepository()->StatisticalClassSessionRequests($params);

@@ -55,13 +55,17 @@ class LecturerController extends Controller
         $totalStudentWarning = $this->academicWarningService->getStudentWarningByStudyClassId($lecturerId)->count();
         $faculties = $this->facultyService->get()->toArray();
         $user = auth()->user();
+        $getAllClassSessionByLecturer = $this->classSessionRequestService->getAllClassSessionByLecturer($lecturerId)->toArray();
+        $countClassSessionById = $this->classSessionRequestService->countClassSessionById($lecturerId);
         $data = [
             'totalClasses' => $totalClasses,
             'totalStudentWarning' => $totalStudentWarning,
             'faculties' => $faculties,
             'user' => $user,
+            'countClassSessionById' => $countClassSessionById,
+            'getAllClassSessionByLecturer' => $getAllClassSessionByLecturer,
         ];
-//         dd($data['user']);
+//         dd($data['getAllClassSessionByLecturer']);
 
         return view('teacher.index', compact('data'));
     }
@@ -360,7 +364,7 @@ class LecturerController extends Controller
         $params = $request->all();
         $lecturerId = auth()->user()->lecturer?->id;
         $params['lecturer_id'] = $lecturerId;
-        $getStudyClassByIds = $this->classSessionRequestService->getListFlexibleClass($params)->toArray();
+        $getStudyClassByIds = $this->classSessionRequestService->getListFlexibleClass()->toArray();
         $totalClasses = $this->studyClassService->coutStudyClassListByLecturerId($lecturerId);
         $countFlexibleClassSessionRequestByLecturer = $this->classSessionRequestService->countFlexibleClassSessionRequestByLecturer($lecturerId);
         $countFlexibleRejectedByLecturer = $this->classSessionRequestService->countFlexibleRejectedByLecturer($lecturerId);
