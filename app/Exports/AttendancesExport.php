@@ -2,7 +2,7 @@
 
 namespace App\Exports;
 
-use App\Models\Attendance;
+use App\Models\Student;
 use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Concerns\FromQuery;
 use Maatwebsite\Excel\Concerns\WithHeadings;
@@ -26,19 +26,32 @@ class AttendancesExport implements FromQuery, WithHeadings, WithMapping, WithSty
 
     public function query()
     {
-        return Attendance::query()
-            ->select('students.student_code', 'users.name', DB::raw('COALESCE(attendances.status, 0) as status'), 'attendances.reason')
-            ->rightJoin('students', 'attendances.student_id', '=', 'students.id')
+        return Student::query()
+            ->select([
+                'students.student_code',
+                'users.name',
+                DB::raw('COALESCE(attendances.status, 0) as status'),
+                'attendances.reason',
+            ])
             ->join('users', 'students.user_id', '=', 'users.id')
             ->join('study_classes', 'students.study_class_id', '=', 'study_classes.id')
+            ->leftJoin('attendances', function ($join) {
+                $join->on('attendances.student_id', '=', 'students.id')
+                    ->where('attendances.class_session_request_id', '=', $this->classRequestId);
+            })
             ->leftJoin('class_session_requests', function ($join) {
-                $join->on('attendances.class_session_request_id', '=', 'class_session_requests.id')
-                    ->where('class_session_requests.id', '=', $this->classRequestId)
-                    ->where('class_session_requests.type', '=', 0)
-                    ->where('class_session_requests.status', '=', 3);
+                $join->on('class_session_requests.id', '=', DB::raw($this->classRequestId))
+                    ->where('class_session_requests.type', 0)
+                    ->where('class_session_requests.status', 3);
             })
             ->where('study_classes.id', $this->studyClassId)
-            ->groupBy('students.id', 'students.student_code', 'users.name', 'attendances.status', 'attendances.reason')
+            ->groupBy(
+                'students.id',
+                'students.student_code',
+                'users.name',
+                'attendances.status',
+                'attendances.reason'
+            )
             ->orderBy('students.student_code');
     }
 

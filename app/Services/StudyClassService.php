@@ -21,7 +21,30 @@ class StudyClassService extends BaseService
     {
         $wheres = Arr::get($params, 'wheres', []);
         $sort = Arr::get($params, 'sort', 'id:desc');
-        $relates = Arr::get($params, 'relates', []);
+        $relates = [
+            'lecturer',
+            'lecturer.user',
+            'major',
+            'major.faculty',
+            'major.faculty.department',
+            'cohort',
+            'students',
+        ];
+        $search = Arr::get($params, 'search', null);
+        $cohortId = Arr::get($params, 'cohort_id', null);
+        $majorId = Arr::get($params, 'major_id', null);
+        if ($search) {
+            $search = trim($search);
+            $wheres[] = [function ($query) use ($search) {
+                $query->where('name', 'LIKE', "%$search%");
+            }];
+        }
+        if ($cohortId) {
+            $wheres[] = ['cohort_id', '=', $cohortId];
+        }
+        if ($majorId) {
+            $wheres[] = ['major_id', '=', $majorId];
+        }
 
         return [
             'sort' => $sort,
@@ -30,14 +53,14 @@ class StudyClassService extends BaseService
         ];
     }
 
-    public function getStudyClassListByLecturerId($lecturerId)
+    public function getStudyClassListByLecturerId($params)
     {
-        return $this->getRepository()->getStudyClassListByLecturerId($lecturerId);
+        return $this->getRepository()->getStudyClassListByLecturerId($params);
     }
 
-    public function coutStudyClassListByLecturerId($lecturerId)
+    public function coutStudyClassListByLecturerId($params)
     {
-        return $this->getRepository()->getStudyClassListByLecturerId($lecturerId)->get()->count();
+        return $this->getRepository()->getStudyClassListByLecturerId($params)->get()->count();
     }
 
     public function getStudyClassById($params)
@@ -98,6 +121,11 @@ class StudyClassService extends BaseService
     public function getStudentListByConductEvaluationPeriodIdByFacultyOffice($params)
     {
         return $this->getRepository()->getStudentListByConductEvaluationPeriodIdByFacultyOffice($params);
+    }
+
+    public function statisticalClassByDepartment()
+    {
+        return $this->getRepository()->statisticalClassByDepartment();
     }
 
 }

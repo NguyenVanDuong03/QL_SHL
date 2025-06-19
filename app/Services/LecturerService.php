@@ -21,8 +21,16 @@ class LecturerService extends BaseService
     {
         $sort = Arr::get($params, 'sort', 'id:desc');
         $wheres = Arr::get($params, 'wheres', []);
-        $relates = Arr::get($params, 'relates', []);
         $relates = ['user', 'faculty', 'faculty.department'];
+        $whereHas = Arr::get($params, 'where_has', []);
+        $search = Arr::get($params, 'search', null);
+//        if (trim($search)) {
+//            $search = trim($search);
+//            $whereHas['user'] = function ($query) use ($search) {
+//                $query->where('name', 'LIKE', "%{$search}%")
+//                    ->orWhere('email', 'LIKE', "%{$search}%");
+//            };
+//        }
 
         return [
             'sort' => $sort,

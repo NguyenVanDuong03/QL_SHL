@@ -215,7 +215,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
-                    <a href="{{ route('student-affairs-department.class-session.exportReport') }}" target="_blank"
+                    <a href="" target="_blank"
                        id="export-excel-btn" class="btn btn-success" title="Xuất Excel danh sách điểm danh">
                         <i class="fa fa-file-excel-o me-2"></i>Xuất Excel
                     </a>

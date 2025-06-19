@@ -428,7 +428,6 @@
 
             // Initialize charts
             initializeActivityChart();
-            initializeTrainingScoreChart();
         });
 
         function initializeActivityChart() {
@@ -480,74 +479,6 @@
                 }
             });
         }
-
-        // function initializeTrainingScoreChart() {
-        //     const ctx = document.getElementById('trainingScoreChart').getContext('2d');
-        //
-        //     new Chart(ctx, {
-        //         type: 'bar',
-        //         data: {
-        //             labels: ['HK1 2023-24', 'HK2 2023-24', 'HK1 2024-25', 'HK2 2024-25'],
-        //             datasets: [{
-        //                 label: 'Điểm trung bình',
-        //                 data: [82.5, 84.2, 83.8, 85.1],
-        //                 backgroundColor: 'rgba(67, 233, 123, 0.8)',
-        //                 borderColor: 'rgba(67, 233, 123, 1)',
-        //                 borderWidth: 2,
-        //                 borderRadius: 8
-        //             }, {
-        //                 label: 'Số sinh viên tham gia',
-        //                 data: [1180, 1205, 1220, 1200],
-        //                 type: 'line',
-        //                 borderColor: 'rgba(79, 172, 254, 1)',
-        //                 backgroundColor: 'rgba(79, 172, 254, 0.1)',
-        //                 borderWidth: 3,
-        //                 fill: false,
-        //                 tension: 0.4,
-        //                 yAxisID: 'y1'
-        //             }]
-        //         },
-        //         options: {
-        //             responsive: true,
-        //             maintainAspectRatio: false,
-        //             plugins: {
-        //                 legend: {
-        //                     position: 'top',
-        //                     labels: {
-        //                         usePointStyle: true,
-        //                         padding: 20
-        //                     }
-        //                 }
-        //             },
-        //             scales: {
-        //                 y: {
-        //                     beginAtZero: false,
-        //                     min: 75,
-        //                     max: 90,
-        //                     position: 'left',
-        //                     title: {
-        //                         display: true,
-        //                         text: 'Điểm trung bình'
-        //                     }
-        //                 },
-        //                 y1: {
-        //                     type: 'linear',
-        //                     display: true,
-        //                     position: 'right',
-        //                     min: 1100,
-        //                     max: 1300,
-        //                     title: {
-        //                         display: true,
-        //                         text: 'Số sinh viên'
-        //                     },
-        //                     grid: {
-        //                         drawOnChartArea: false,
-        //                     },
-        //                 }
-        //             }
-        //         }
-        //     });
-        // }
 
         // Event handlers
         function approveActivity(id) {

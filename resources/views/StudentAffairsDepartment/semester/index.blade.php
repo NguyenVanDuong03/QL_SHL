@@ -3,7 +3,7 @@
 @section('title', 'Học kỳ')
 
 @section('breadcrumb')
-    <x-breadcrumb.breadcrumb :links="[['label' => 'Học kỳ']]" />
+    <x-breadcrumb.breadcrumb :links="[['label' => 'Học kỳ']]"/>
 @endsection
 
 @section('main')
@@ -11,7 +11,7 @@
         <div class="d-flex justify-content-between align-items-center mb-4">
             <h4 class="h3 mb-0 text-gray-800">Quản lý học kỳ</h4>
             <button type="button" class="btn btn-primary" data-bs-toggle="modal"
-                data-bs-target="#addSemesterModal
+                    data-bs-target="#addSemesterModal
             ">
                 <i class="fas fa-plus"></i> Thêm học kỳ mới
             </button>
@@ -21,85 +21,74 @@
             <div class="card-header py-3 d-flex justify-content-between align-items-center">
                 <h6 class="m-0 font-weight-bold text-primary">Danh sách học kỳ</h6>
                 <div class="d-flex">
-                    <form method="GET" action="{{ route('student-affairs-department.semester.index') }}" class="input-group" style="width: 300px;">
-                        <input type="text" class="form-control" name="search" id="search-semester" placeholder="Tìm kiếm học kỳ..." value="{{ request('search') }}"
-                            >
+                    <form method="GET" action="{{ route('student-affairs-department.semester.index') }}"
+                          class="input-group" style="width: 300px;">
+                        <input type="text" class="form-control" name="search" id="search-semester"
+                               placeholder="Tìm kiếm học kỳ..." value="{{ request('search') }}"
+                        >
                         <button class="btn btn-outline-secondary btn-search-semester" type="submit">
                             <i class="fas fa-search"></i>
                         </button>
                     </form>
-                    {{-- <div class="dropdown ms-2">
-                        <button class="btn btn-outline-secondary dropdown-toggle" type="button" id="filterDropdown"
-                            data-bs-toggle="dropdown" aria-expanded="false">
-                            Lọc
-                        </button>
-                        <ul class="dropdown-menu" aria-labelledby="filterDropdown">
-                            <li><a class="dropdown-item" href="#">Tất cả</a></li>
-                            <li><a class="dropdown-item" href="#">Đang hoạt động</a></li>
-                            <li><a class="dropdown-item" href="#">Đã kết thúc</a></li>
-                            <li><a class="dropdown-item" href="#">Sắp tới</a></li>
-                        </ul>
-                    </div> --}}
                 </div>
             </div>
             <div class="card-body">
                 <div class="table-responsive">
                     <table class="table table-bordered table-hover" width="100%" cellspacing="0">
                         <thead class="table-light">
-                            <tr>
-                                <th style="width: 50px;">STT</th>
-                                <th>Tên học kỳ</th>
-                                <th>Năm học</th>
-                                <th>Ngày bắt đầu</th>
-                                <th>Ngày kết thúc</th>
-                                <th style="width: 150px;">Thao tác</th>
-                            </tr>
+                        <tr>
+                            <th style="width: 50px;">STT</th>
+                            <th>Tên học kỳ</th>
+                            <th>Năm học</th>
+                            <th>Ngày bắt đầu</th>
+                            <th>Ngày kết thúc</th>
+                            <th style="width: 150px;">Thao tác</th>
+                        </tr>
                         </thead>
                         <tbody>
-                            @if (!empty($data['$semesters']['data']))
-                                <tr>
-                                    <td colspan="6" class="text-center">Không có học kỳ nào.</td>
-                                </tr>
-                            @else
-                                @foreach ($data['semesters']['data'] as $semester)
-                                    <tr>
-                                        <td>{{ $loop->iteration }}</td>
-                                        <td>{{ $semester['name'] }}</td>
-                                        <td>{{ $semester['school_year'] }}</td>
-                                        <td>{{ $semester['start_date'] }}</td>
-                                        <td>{{ $semester['end_date'] }}</td>
-                                        <td>
-                                            <button class="btn btn-sm btn-warning editSemesterBtn"
-                                                data-id="{{ $semester['id'] }}" data-name="{{ $semester['name'] }}"
-                                                data-school_year="{{ $semester['school_year'] }}"
-                                                data-start_date="{{ $semester['start_date'] }}"
-                                                data-end_date="{{ $semester['end_date'] }}"
-                                                data-current-page="{{ $data['semesters']['current_page'] }}"
-                                                data-search="{{ request('search') }}"
-                                                data-bs-toggle="modal" data-bs-target="#editSemesterModal">
-                                                <i class="fas fa-edit"></i>
-                                            </button>
-                                            <button class="btn btn-sm btn-danger deleteSemster" data-bs-toggle="modal"
-                                                data-bs-target="#deleteSemesterModal"
-                                                data-current-page="{{ $data['semesters']['current_page'] }}"
-                                                data-search="{{ request('search') }}"
-                                                data-id={{ $semester['id'] }}>
-                                                <i class="fas fa-trash"></i>
-                                            </button>
-                                        </td>
-                                    </tr>
-                                @endforeach
-                            @endif
+                        @forelse ($data['semesters']['data'] ?? [] as $semester)
+                            <tr>
+                                <td>{{ $loop->iteration }}</td>
+                                <td>{{ $semester['name'] }}</td>
+                                <td>{{ $semester['school_year'] }}</td>
+                                <td>{{ $semester['start_date'] }}</td>
+                                <td>{{ $semester['end_date'] }}</td>
+                                <td>
+                                    <button class="btn btn-sm btn-warning editSemesterBtn"
+                                            data-id="{{ $semester['id'] }}" data-name="{{ $semester['name'] }}"
+                                            data-school_year="{{ $semester['school_year'] }}"
+                                            data-start_date="{{ $semester['start_date'] }}"
+                                            data-end_date="{{ $semester['end_date'] }}"
+                                            data-current-page="{{ $data['semesters']['current_page'] }}"
+                                            data-search="{{ request('search') }}"
+                                            data-bs-toggle="modal" data-bs-target="#editSemesterModal">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button class="btn btn-sm btn-danger deleteSemster" data-bs-toggle="modal"
+                                            data-bs-target="#deleteSemesterModal"
+                                            data-current-page="{{ $data['semesters']['current_page'] }}"
+                                            data-search="{{ request('search') }}"
+                                            data-id={{ $semester['id'] }}>
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                        @empty
+                            <tr>
+                                <td colspan="6" class="text-center">Không có học kỳ nào.</td>
+                            </tr>
+                        @endforelse
                         </tbody>
                     </table>
                 </div>
-                <x-pagination.pagination :paginate="$data['semesters']" />
+                <x-pagination.pagination :paginate="$data['semesters']"/>
             </div>
         </div>
     </div>
 
     <!-- Add Semester Modal -->
-    <div class="modal fade auto-reset-modal" id="addSemesterModal" tabindex="-1" aria-labelledby="addSemesterModalLabel">
+    <div class="modal fade auto-reset-modal" id="addSemesterModal" tabindex="-1"
+         aria-labelledby="addSemesterModalLabel">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
@@ -107,7 +96,7 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <form method="POST" id="createSemesterForm"
-                    action="{{ route('student-affairs-department.semester.create') }}">
+                      action="{{ route('student-affairs-department.semester.create') }}">
                     <div class="modal-body">
                         @csrf
                         @method('POST')
@@ -123,33 +112,33 @@
                         <div class="mb-3">
                             <label for="semesterSchoolYear1" class="form-label">Năm học</label>
                             <input type="text" class="form-control" id="semesterSchoolYear1" name="school_year"
-                                placeholder="Ví dụ: 2023-2024" required>
+                                   placeholder="Ví dụ: 2023-2024" required>
                             <div id="school_year_error1" class="text-danger text-danger-error"></div>
                             @error('school_year')
-                                <div class="text-danger text-danger-error">{{ $message }}</div>
+                            <div class="text-danger text-danger-error">{{ $message }}</div>
                             @enderror
                         </div>
                         <div class="row">
                             <div class="col-md-6 mb-3">
                                 <label for="createStartDate1" class="form-label">Ngày bắt đầu</label>
                                 <input type="text" class="form-control" id="createStartDate1" name="start_date"
-                                    placeholder="Chọn thời gian bắt đầu" onfocus="(this.type='datetime-local')"
-                                    onblur="if(!this.value)this.type='text'" required value=""
-                                    min="{{ now()->addMinutes(30)->format('Y-m-d\TH:i') }}">
+                                       placeholder="Chọn thời gian bắt đầu" onfocus="(this.type='datetime-local')"
+                                       onblur="if(!this.value)this.type='text'" required value=""
+                                       min="{{ now()->addMinutes(30)->format('Y-m-d\TH:i') }}">
                                 <div id="start_date1" class="text-danger text-danger-error"></div>
                                 @error('start_date')
-                                    <div class="text-danger text-danger-error">{{ $message }}</div>
+                                <div class="text-danger text-danger-error">{{ $message }}</div>
                                 @enderror
                             </div>
                             <div class="col-md-6 mb-3">
                                 <label for="createEndDate1" class="form-label">Ngày kết thúc</label>
                                 <input type="text" class="form-control" id="createEndDate1" name="end_date"
-                                    placeholder="Chọn thời gian kết thúc" onfocus="(this.type='datetime-local')"
-                                    onblur="if(!this.value)this.type='text'" required value=""
-                                    min="{{ now()->addMinutes(30)->format('Y-m-d\TH:i') }}">
+                                       placeholder="Chọn thời gian kết thúc" onfocus="(this.type='datetime-local')"
+                                       onblur="if(!this.value)this.type='text'" required value=""
+                                       min="{{ now()->addMinutes(30)->format('Y-m-d\TH:i') }}">
                                 <div id="end_date1" class="text-danger text-danger-error"></div>
                                 @error('end_date')
-                                    <div class="text-danger text-danger-error">{{ $message }}</div>
+                                <div class="text-danger text-danger-error">{{ $message }}</div>
                                 @enderror
                             </div>
                         </div>
@@ -165,7 +154,7 @@
 
     <!-- Edit Semester Modal -->
     <div class="modal fade auto-reset-modal" id="editSemesterModal" tabindex="-1"
-        aria-labelledby="editSemesterModalLabel">
+         aria-labelledby="editSemesterModalLabel">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
@@ -190,29 +179,29 @@
                         <div class="mb-3">
                             <label for="editSemesterSchoolYear2" class="form-label">Năm học</label>
                             <input type="text" class="form-control" id="editSemesterSchoolYear2" name="school_year"
-                                value="">
+                                   value="">
                         </div>
                         <div class="row">
                             <div class="col-md-6 mb-3">
                                 <label for="editStartDate2" class="form-label">Thời gian bắt đầu</label>
                                 <input type="text" class="form-control" id="editStartDate2" name="start_date"
-                                    placeholder="Chọn thời gian bắt đầu" onfocus="(this.type='datetime-local')"
-                                    onblur="if(!this.value)this.type='text'" required
-                                    min="{{ now()->addMinutes(30)->format('Y-m-d\TH:i') }}">
+                                       placeholder="Chọn thời gian bắt đầu" onfocus="(this.type='datetime-local')"
+                                       onblur="if(!this.value)this.type='text'" required
+                                       min="{{ now()->addMinutes(30)->format('Y-m-d\TH:i') }}">
                                 <div id="start_date2" class="text-danger text-danger-error"></div>
                                 @error('start_date')
-                                    <div class="text-danger text-danger-error">{{ $message }}</div>
+                                <div class="text-danger text-danger-error">{{ $message }}</div>
                                 @enderror
                             </div>
                             <div class="col-md-6 mb-3">
                                 <label for="editEndDate2" class="form-label">Thời gian kết thúc</label>
                                 <input type="text" class="form-control" id="editEndDate2" name="end_date"
-                                    placeholder="Chọn thời gian bắt đầu" onfocus="(this.type='datetime-local')"
-                                    onblur="if(!this.value)this.type='text'" required
-                                    min="{{ now()->addMinutes(30)->format('Y-m-d\TH:i') }}">
+                                       placeholder="Chọn thời gian bắt đầu" onfocus="(this.type='datetime-local')"
+                                       onblur="if(!this.value)this.type='text'" required
+                                       min="{{ now()->addMinutes(30)->format('Y-m-d\TH:i') }}">
                                 <div id="end_date2" class="text-danger text-danger-error"></div>
                                 @error('end_date')
-                                    <div class="text-danger text-danger-error">{{ $message }}</div>
+                                <div class="text-danger text-danger-error">{{ $message }}</div>
                                 @enderror
                             </div>
                         </div>
@@ -256,14 +245,14 @@
 
 @push('scripts')
     <script>
-        $(document).ready(function() {
+        $(document).ready(function () {
             // Reset form when modal is closed
-            $('.auto-reset-modal').on('hidden.bs.modal', function() {
+            $('.auto-reset-modal').on('hidden.bs.modal', function () {
                 $('.text-danger-error').text('');
                 $('.form-control').removeClass('is-invalid');
             });
 
-            $('#createSemesterBtn').on('click', function(e) {
+            $('#createSemesterBtn').on('click', function (e) {
                 let isValid = true;
 
                 $('.text-danger-error').text('');
@@ -319,7 +308,7 @@
                 $('#createSemesterForm').submit();
             });
 
-            $('tbody').on('click', '.editSemesterBtn', function() {
+            $('tbody').on('click', '.editSemesterBtn', function () {
                 const id = $(this).data('id');
                 const name = $(this).data('name');
                 const schoolYear = $(this).data('school_year');
@@ -341,7 +330,7 @@
                 $('.search_keyword').val(search);
             });
 
-            $('.editSemesterBtnSubmit').on('click', function(e) {
+            $('.editSemesterBtnSubmit').on('click', function (e) {
                 let isValid = true;
 
                 $('.text-danger-error').text('');
@@ -383,7 +372,7 @@
                 $('#editSemesterForm').submit();
             });
 
-            $('.deleteSemster').on('click', function(e) {
+            $('.deleteSemster').on('click', function (e) {
                 e.preventDefault();
                 const semesterId = $(this).data('id');
                 const currentPage = $(this).data('current-page');

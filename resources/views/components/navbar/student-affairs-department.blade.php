@@ -63,7 +63,7 @@
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="#">
+                <a class="nav-link {{ Route::currentRouteName() == 'student-affairs-department.statistical.index' ? 'active' : '' }}" href="{{ route('student-affairs-department.statistical.index') }}">
                     <i class="fas fa-chart-line"></i>
                     Thống kê
                 </a>

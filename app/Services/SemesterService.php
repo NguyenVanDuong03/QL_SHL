@@ -48,4 +48,14 @@ class SemesterService extends BaseService
         return $this->getRepository()->statisticalSemester($lecturerId);
     }
 
+    public function statisticalAllSemester()
+    {
+        return $this->getRepository()->statisticalAllSemester();
+    }
+
+    public function staticalAcademicWarningBySemester()
+    {
+        return $this->getRepository()->staticalAcademicWarningBySemester();
+    }
+
 }

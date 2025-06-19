@@ -40,7 +40,7 @@ class StudentAffairsDepartmentController extends Controller
         protected StudentService                  $studentService,
         protected LecturerService                 $lecturerService,
         protected RoomService                     $roomService,
-        protected DepartmentService               $titleService,
+        protected DepartmentService               $departmentService,
         protected FacultyService                  $facultyService,
         protected UserService                     $userService,
         protected CohortService                   $cohortService,
@@ -217,10 +217,10 @@ class StudentAffairsDepartmentController extends Controller
     public function account(Request $request)
     {
         $params = $request->all();
-        $params['relates'] = ['user', 'faculty'];
+//        $params['relates'] = ['user', 'faculty'];
         $lecturers = $this->lecturerService->paginate($params)->toArray();
         $faculties = $this->facultyService->get()->toArray();
-        $departments = $this->titleService->get();
+        $departments = $this->departmentService->get();
         $getAllWithTrashed = $this->lecturerService->getAllWithTrashed($params)->paginate(Constant::DEFAULT_LIMIT_12)->toArray();
         $data = [
             'lecturers' => $lecturers ?? [],
@@ -471,12 +471,56 @@ class StudentAffairsDepartmentController extends Controller
     public function indexClass(Request $request)
     {
         $params = $request->all();
+        $params['limit'] = Constant::DEFAULT_LIMIT_12;
         $studyClasses = $this->studyClassService->paginate($params)->toArray();
+        $totalStudents = $this->studentService->get()->count();
+        $majors = $this->majorService->get()->toArray();
+        $cohorts = $this->cohortService->get()->toArray();
+        $lecturers = $this->lecturerService->get()->toArray();
+        $totalDepartments = $this->departmentService->get()->count();
         $data = [
             'studyClasses' => $studyClasses,
+            'totalStudents' => $totalStudents,
+            'majors' => $majors,
+            'cohorts' => $cohorts,
+            'lecturers' => $lecturers,
+            'totalDepartments' => $totalDepartments,
         ];
 
         return view('StudentAffairsDepartment.class.index', compact('data'));
+    }
+
+    public function createClass(Request $request)
+    {
+        $params = $request->all();
+        $params['name'] = strtoupper($params['name']);
+
+        $this->studyClassService->create($params);
+
+        return redirect()->route('student-affairs-department.class.index')->with('success', 'Thêm mới thành công');
+    }
+
+    public function editClass(Request $request, $id)
+    {
+        $params = $request->all();
+        $params['name'] = strtoupper($params['name']);
+
+        $this->studyClassService->update($id, $params);
+
+        $targetPage = $this->studyClassService->targetPage($params);
+
+        return redirect()->route('student-affairs-department.class.index', $targetPage)->with('success', 'Cập nhật thành công');
+    }
+
+    public function deleteClass(Request $request, $id)
+    {
+        $params = $request->all();
+
+        $this->studyClassService->delete($id);
+
+        $targetPage = $this->studyClassService->targetPage($params);
+
+        return redirect()->route('student-affairs-department.class.index', $targetPage)->with('success', 'Xóa thành công');
     }
 
     public function indexConductScore(Request $request)
@@ -611,7 +655,6 @@ class StudentAffairsDepartmentController extends Controller
 
     public function exportReport($classRequestId, $studyClassId)
     {
-//        $report = $this->attendanceService->exportAttendanceReport($classRequestId, $studyClassId);
         $studyClass = $this->studyClassService->find($studyClassId);
 
         if (!$studyClassId || !$classRequestId) {
@@ -619,6 +662,75 @@ class StudentAffairsDepartmentController extends Controller
         }
 
         return Excel::download(new AttendancesExport($classRequestId, $studyClassId), 'attendance_' . $studyClass->name . '_' . Carbon::now()->format('Y_m_d_H_i_s') . '.xlsx');
+    }
 
+    public function indexStatistical(Request $request)
+    {
+        $params = $request->all();
+        $semesterId = $this->semesterService->getFourSemester()->get()->first()->id;
+        $lecturerId = auth()->user()->lecturer?->id;
+        $params['lecturer_id'] = $lecturerId;
+        $params['semester_id'] = $request->query('semester_id') ?? $semesterId;
+        $page = $request->query('page', 1);
+        $pageSize = 5;
+        $getAcademicWarningsCountByLecturerAndSemester = $this->academicWarningService->getAcademicWarningsCountByLecturerAndSemester($lecturerId, $params['semester_id']);
+        $semesters = $this->semesterService->getFourSemester()->get()->toArray();
+        $countStudyClassBySemester = $this->studyClassService->getStudyClassListByLecturerId($params)->count();
+        $getTotalStudentsByLecturer = $this->lecturerService->getTotalStudentsByLecturer($lecturerId);
+        $getTotalDoneSessionsByLecturer = $this->classSessionRequestService->getTotalDoneSessionsByLecturer($lecturerId);
+        $getTotalSessionsByLecturer = $this->classSessionRequestService->getTotalSessionsByLecturer($lecturerId);
+        $participationRate = $this->studyClassService->participationRate($lecturerId);
+        $statisticalAttendance = $this->studentService->statisticalAttendance($lecturerId, $params['semester_id'])->toArray();
+        //
+        $statisticalClassByDepartment = $this->studyClassService->statisticalClassByDepartment()->toArray();
+        $statisticalUserByRole = $this->userService->statisticalUserByRole()->toArray();
+        $staticalAcademicWarningBySemester = $this->semesterService->staticalAcademicWarningBySemester()->toArray();
+        $statisticalAllSemester = $this->semesterService->statisticalAllSemester($lecturerId)
+            ->when($request->has('page'), function ($query) use ($page, $pageSize) {
+                return $query->skip(($page - 1) * $pageSize)->take($pageSize);
+            })
+            ->toArray();
+
+        $statisticalSemester = $this->semesterService->statisticalSemester($lecturerId)
+            ->when($request->has('page'), function ($query) use ($page, $pageSize) {
+                return $query->skip(($page - 1) * $pageSize)->take($pageSize);
+            })
+            ->toArray();
+
+        if ($request->ajax()) {
+            return response()->json(['activities' => $statisticalSemester]);
+        }
+
+        $data = [
+            'semesters' => $semesters,
+            'countStudyClassBySemester' => $countStudyClassBySemester,
+            'getTotalStudentsByLecturer' => $getTotalStudentsByLecturer,
+            'getTotalDoneSessionsByLecturer' => $getTotalDoneSessionsByLecturer,
+            'getTotalSessionsByLecturer' => $getTotalSessionsByLecturer,
+            'participationRate' => $participationRate,
+            'statisticalSemester' => $statisticalAllSemester,
+            'statisticalAttendance' => $statisticalAttendance,
+            'getAcademicWarningsCountByLecturerAndSemester' => $getAcademicWarningsCountByLecturerAndSemester,
+            //
+            'statisticalClassByDepartment' => $statisticalClassByDepartment,
+            'statisticalUserByRole' => $statisticalUserByRole,
+            'staticalAcademicWarningBySemester' => $staticalAcademicWarningBySemester,
+        ];
+//        dd($data['staticalAcademicWarningBySemester']);
+
+        return view('StudentAffairsDepartment.statistical.index', compact('data'));
+    }
+
+    public function exportAttendance(Request $request)
+    {
+        $classRequestId = $request->query('class_request_id');
+        $studyClassId = $request->query('study_class_id');
+        $studyClassName = $request->query('study_class_name');
+        try {
+            $fileName = $studyClassName. '_' . now()->format('Ymd_His') . '.xlsx';
+            return Excel::download(new AttendancesExport($classRequestId, $studyClassId), $fileName);
+        } catch (\Exception $e) {
+            return back()->withErrors(['export_error' => 'Xuất file thất bại: ' . $e->getMessage()]);
+        }
     }
 }

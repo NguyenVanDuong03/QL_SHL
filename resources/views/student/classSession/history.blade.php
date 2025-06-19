@@ -122,10 +122,10 @@
                             <thead>
                             <tr>
                                 <th>Sinh hoạt lớp</th>
-                                <th class="d-none d-md-table-cell">Giáo viên</th>
-                                <th>Thời gian</th>
-                                <th>Lớp</th>
                                 <th>Tiều đề</th>
+                                <th>Thời gian</th>
+                                <th class="d-none d-md-table-cell">Hình thức</th>
+{{--                                <th>Lớp</th>--}}
                                 <th class="text-center">Thao tác</th>
                             </tr>
                             </thead>
@@ -143,24 +143,24 @@
                                             <div
                                                 class="fw-semibold">{{ $item['type'] == 0 ? 'Cố định' : 'Linh hoạt' }}</div>
                                             <small
-                                                class="text-muted d-md-none">GV: {{ $item['lecturer']['user']['name'] }}</small>
-                                        </td>
-                                        <td class="d-none d-md-table-cell">{{ $item['lecturer']['user']['name'] }}</td>
-                                        <td>
-                                            <div
-                                                class="fw-semibold">{{ \Carbon\Carbon::parse($item['proposed_at'])->format('H:i') }}</div>
-                                            <small
-                                                class="text-muted">{{ \Carbon\Carbon::parse($item['proposed_at'])->format('d/m/Y') }}</small>
-                                        </td>
-                                        <td>
-                                                <span
-                                                    class="badge bg-light text-dark">{{ $item['study_class']['name'] }}</span>
+                                                class="text-muted d-md-none {{ $item['type'] == 0 ? 'text-success' : ($item['type'] == 1 ? 'text-primary' : 'text-warning') }}">{{ $item['type'] == 0 ? 'Trực tiếp' : ($item['type'] == 1 ? 'Trực tuyến' : 'Dã ngoại')}}</small>
                                         </td>
                                         <td>
                                             <span class="title_cut">
                                                 {{ $item['title'] }}
                                             </span>
                                         </td>
+                                        <td>
+                                            <div
+                                                class="fw-semibold">{{ \Carbon\Carbon::parse($item['proposed_at'])->format('H:i') }}</div>
+                                            <small
+                                                class="text-muted">{{ \Carbon\Carbon::parse($item['proposed_at'])->format('d/m/Y') }}</small>
+                                        </td>
+                                        <td class="d-none d-md-table-cell {{ $item['type'] == 0 ? 'text-success' : ($item['type'] == 1 ? 'text-primary' : 'text-warning') }}">{{ $item['type'] == 0 ? 'Trực tiếp' : ($item['type'] == 1 ? 'Trực tuyến' : 'Dã ngoại') }}</td>
+{{--                                        <td>--}}
+{{--                                                <span--}}
+{{--                                                    class="badge bg-light text-dark">{{ $item['study_class']['name'] }}</span>--}}
+{{--                                        </td>--}}
                                         <td>
                                             <div
                                                 class="action-buttons d-flex flex-column flex-md-row gap-2 justify-content-center">

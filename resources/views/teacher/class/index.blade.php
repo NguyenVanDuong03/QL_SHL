@@ -11,13 +11,13 @@
         <!-- Header with search -->
         <div class="d-flex justify-content-between mb-4">
             <h4>Lớp học</h4>
-            <div class="input-group" style="max-width: 300px;">
+            <form method="GET" action="{{ route('teacher.class.index') }}" class="input-group" style="max-width: 300px;">
                 <div class="input-group mb-3">
-                    <input type="text" class="form-control" placeholder="Tìm kiếm lớp học" aria-label="Recipient's username"
+                    <input type="text" class="form-control" name="search" value="{{ request('search') }}" placeholder="Tìm kiếm lớp học" aria-label="Recipient's username"
                            aria-describedby="basic-addon2">
-                    <button class="input-group-text btn btn-outline-secondary" id="basic-addon2"><i class="fas fa-magnifying-glass"></i></button>
+                    <button type="submit" class="input-group-text btn btn-outline-secondary" id="basic-addon2"><i class="fas fa-magnifying-glass"></i></button>
                 </div>
-            </div>
+            </form>
         </div>
 
         <!-- Class table -->

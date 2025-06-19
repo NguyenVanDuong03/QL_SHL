@@ -110,10 +110,11 @@ class LecturerController extends Controller
         return view('teacher.classSession.index', compact('data'));
     }
 
-    public function indexClass()
+    public function indexClass(Request $request)
     {
-        $lecturerId = auth()->user()->lecturer?->id;
-        $classes = $this->studyClassService->getStudyClassListByLecturerId($lecturerId)->paginate(Constant::DEFAULT_LIMIT_12)->toArray();
+        $params = $request->all();
+        $params['lecturer_id'] = auth()->user()->lecturer?->id;
+        $classes = $this->studyClassService->getStudyClassListByLecturerId($params)->paginate(Constant::DEFAULT_LIMIT_12)->toArray();
         $data = [
             'classes' => $classes,
         ];
@@ -409,7 +410,8 @@ class LecturerController extends Controller
     public function flexibleCreateRequest()
     {
         $lecturerId = auth()->user()->lecturer?->id;
-        $studyClasses = $this->studyClassService->getStudyClassListByLecturerId($lecturerId)->get();
+        $params['lecturer_id'] = $lecturerId;
+        $studyClasses = $this->studyClassService->getStudyClassListByLecturerId($params)->get();
 //        dd(($studyClasses));
         return view('teacher.classSession.flexibleCreateRequest', compact('studyClasses'));
     }
@@ -621,11 +623,19 @@ class LecturerController extends Controller
         $params = $request->all();
         $semesterId = $this->semesterService->getFourSemester()->get()->first()->id;
         $lecturerId = auth()->user()->lecturer?->id;
+        $params['lecturer_id'] = $lecturerId;
         $params['semester_id'] = $request->query('semester_id') ?? $semesterId;
         $page = $request->query('page', 1);
         $pageSize = 5;
-//        $getAcademicWarningsCountByLecturerAndSemester = $this->academicWarningService->getAcademicWarningsCountByLecturerAndSemester($lecturerId, $params['semester_id']);
-        $getAcademicWarningsCountByLecturerAndSemester = $this->academicWarningService->getAcademicWarningsCountByLecturerAndSemester(7, 2);
+        $getAcademicWarningsCountByLecturerAndSemester = $this->academicWarningService->getAcademicWarningsCountByLecturerAndSemester($lecturerId, $params['semester_id']);
+        $semesters = $this->semesterService->getFourSemester()->get()->toArray();
+        $countStudyClassBySemester = $this->studyClassService->getStudyClassListByLecturerId($params)->count();
+        $getTotalStudentsByLecturer = $this->lecturerService->getTotalStudentsByLecturer($lecturerId);
+        $getTotalDoneSessionsByLecturer = $this->classSessionRequestService->getTotalDoneSessionsByLecturer($lecturerId);
+        $getTotalSessionsByLecturer = $this->classSessionRequestService->getTotalSessionsByLecturer($lecturerId);
+        $participationRate = $this->studyClassService->participationRate($lecturerId);
+        $statisticalAttendance = $this->studentService->statisticalAttendance($lecturerId, $params['semester_id'])->toArray();
+
         $statisticalSemester = $this->semesterService->statisticalSemester($lecturerId)
             ->when($request->has('page'), function ($query) use ($page, $pageSize) {
                 return $query->skip(($page - 1) * $pageSize)->take($pageSize);
@@ -637,14 +647,14 @@ class LecturerController extends Controller
         }
 
         $data = [
-            'semesters' => $this->SemesterService->getFourSemester()->get()->toArray(),
-            'countStudyClassBySemester' => $this->studyClassService->getStudyClassListByLecturerId($lecturerId)->count(),
-            'getTotalStudentsByLecturer' => $this->lecturerService->getTotalStudentsByLecturer($lecturerId),
-            'getTotalDoneSessionsByLecturer' => $this->classSessionRequestService->getTotalDoneSessionsByLecturer($lecturerId),
-            'getTotalSessionsByLecturer' => $this->classSessionRequestService->getTotalSessionsByLecturer($lecturerId),
-            'participationRate' => $this->studyClassService->participationRate($lecturerId),
+            'semesters' => $semesters,
+            'countStudyClassBySemester' => $countStudyClassBySemester,
+            'getTotalStudentsByLecturer' => $getTotalStudentsByLecturer,
+            'getTotalDoneSessionsByLecturer' => $getTotalDoneSessionsByLecturer,
+            'getTotalSessionsByLecturer' => $getTotalSessionsByLecturer,
+            'participationRate' => $participationRate,
             'statisticalSemester' => $statisticalSemester,
-            'statisticalAttendance' => $this->studentService->statisticalAttendance($lecturerId, $params['semester_id'])->toArray(),
+            'statisticalAttendance' => $statisticalAttendance,
             'getAcademicWarningsCountByLecturerAndSemester' => $getAcademicWarningsCountByLecturerAndSemester,
         ];
 //        dd($data['getAcademicWarningsCountByLecturerAndSemester']);

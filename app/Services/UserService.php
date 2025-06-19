@@ -84,6 +84,11 @@ class UserService extends BaseService
         return true;
     }
 
+    public function statisticalUserByRole()
+    {
+        return $this->getRepository()->statisticalUserByRole();
+    }
+
     public function redirectAuthPath()
     {
         if (auth()->user()->role == Constant::ROLE_LIST['TEACHER']) {
