@@ -225,12 +225,12 @@
             <div class="col-md-6 col-lg-3">
                 <div class="stat-card">
                     <div class="stat-card-header">
-                        <div class="stat-card-title">ĐIỂM ĐÁNH KỲ 2_2024_2025</div>
+                        <div class="stat-card-title">LỊCH SINH HOẠT LỚP</div>
                         <div class="stat-card-icon">
                             <i class="fas fa-file-alt"></i>
                         </div>
                     </div>
-                    <div class="stat-card-value">100% sinh viên đã điểm danh</div>
+                    <div class="stat-card-value">{{ count($data['getAllClassSessionByLecturer'] ?? 0) }} buổi họp</div>
                 </div>
             </div>
 
@@ -238,12 +238,12 @@
             <div class="col-md-6 col-lg-3">
                 <div class="stat-card">
                     <div class="stat-card-header">
-                        <div class="stat-card-title">ĐIỂM RÈN LUYỆN KỲ 2_2024_2025</div>
+                        <div class="stat-card-title">ĐIỂM RÈN LUYỆN TRUNG BÌNH</div>
                         <div class="stat-card-icon">
                             <i class="fas fa-clipboard-check"></i>
                         </div>
                     </div>
-                    <div class="stat-card-value">100% sinh viên đã đánh giá</div>
+                    <div class="stat-card-value">{{ $data['getOverallAverageConductScoreWithTotalStudents']->average_conduct_score ?? 0 }} điểm</div>
                 </div>
             </div>
         </div>
@@ -258,14 +258,14 @@
                             <i class="fas fa-clock text-blue me-2"></i>
                             Sinh hoạt lớp cần duyệt
                         </h5>
-                        <span class="badge bg-danger">{{ count($data['getAllClassSessionByLecturer'] ?? []) }}</span>
+                        <span class="badge bg-danger">{{ count($data['getAllClassSessionByLecturer'] ?? 0) }}</span>
                     </div>
 
                     <div class="pending-list">
                         @forelse($data['getAllClassSessionByLecturer'] ?? [] as $item)
                             <div class="pending-item">
                                 <div class="pending-item-header">
-                                    <div class="pending-class-name">Lớp {{ $item['study_class']['name'] ?? 'CNTT01' }}</div>
+                                    <div class="pending-class-name">Lớp {{ $item['study_class']['name'] ?? '' }}</div>
                                     @php
                                         $typeClass = ($item['type'] ?? 0) == 0 ? 'bg-primary' : 'bg-success';
                                         $typeLabel = ($item['type'] ?? 0) == 0 ? 'Cố định' : 'Linh hoạt';
@@ -281,10 +281,7 @@
                                 <div class="pending-content">
                                     <p class="mb-1">
                                         <strong>Chủ đề:</strong>
-                                        @php
-                                            $title = $item['title'] ?? 'Sinh hoạt lớp tháng 1';
-                                            echo strlen($title) > 30 ? substr($title, 0, 30) . '...' : $title;
-                                        @endphp
+                                        <span class="title_cut">{{ $item['title'] ?? '' }}</span>
                                     </p>
                                     <p class="mb-1">
                                         <strong>Hình thức:</strong>
@@ -370,13 +367,13 @@
                                     <div class="row">
                                         <div class="col-6">
                                             <div class="summary-item">
-                                                <div class="summary-number text-green">85.2</div>
+                                                <div class="summary-number text-green">{{ $data['getOverallAverageConductScoreWithTotalStudents']->average_conduct_score ?? 0 }}</div>
                                                 <div class="summary-label">Điểm TB</div>
                                             </div>
                                         </div>
                                         <div class="col-6">
                                             <div class="summary-item">
-                                                <div class="summary-number text-blue">1,200</div>
+                                                <div class="summary-number text-blue">{{ $data['getOverallAverageConductScoreWithTotalStudents']->total_students ?? 0 }}</div>
                                                 <div class="summary-label">Sinh viên</div>
                                             </div>
                                         </div>
@@ -395,6 +392,14 @@
 @push('scripts')
     <script>
         $(document).ready(function() {
+            $(".title_cut").each(function () {
+                var text = $(this).text().trim();
+                if (text.length > 20) {
+                    $(this).attr("title", text);
+                    $(this).text(text.substring(0, 20) + '...');
+                }
+            });
+
             // Initialize all charts
             initializeActivityChart();
             initializeTrainingChart();
@@ -421,7 +426,7 @@
         // Chart 1: Activity Types (Doughnut Chart)
         function initializeActivityChart() {
             const ctx = document.getElementById('activityChart').getContext('2d');
-            const data = @json($data['countClassSessionById'] ?? ['fixed' => 25, 'flexible' => 18]);
+            const data = @json($data['countClassSessionById'] ?? [0, 0]);
 
             new Chart(ctx, {
                 type: 'doughnut',
@@ -472,14 +477,20 @@
         // Chart 2: Training Scores (Bar Chart)
         function initializeTrainingChart() {
             const ctx = document.getElementById('trainingChart').getContext('2d');
+            const rawData = @json($data['getAverageConductScores'] ?? []);
+            const labels = rawData.map(item => {
+                const semester = item.semester_name === 'Học kỳ 1' ? 'HK1' : 'HK2';
+                return `${semester} ${item.school_year}`;
+            });
+            const scores = rawData.map(item => parseFloat(item.average_conduct_score) || 0);
 
             new Chart(ctx, {
                 type: 'bar',
                 data: {
-                    labels: ['HK1 23-24', 'HK2 23-24', 'HK1 24-25', 'HK2 24-25'],
+                    labels: labels,
                     datasets: [{
                         label: 'Điểm trung bình',
-                        data: [82.5, 84.2, 83.8, 85.2],
+                        data: scores,
                         backgroundColor: 'rgba(25, 135, 84, 0.8)',
                         borderColor: 'rgba(25, 135, 84, 1)',
                         borderWidth: 2,
@@ -497,8 +508,8 @@
                     scales: {
                         y: {
                             beginAtZero: false,
-                            min: 75,
-                            max: 90,
+                            min: 0,
+                            max: 100,
                             ticks: {
                                 font: {
                                     size: 10
@@ -515,26 +526,6 @@
                     }
                 }
             });
-        }
-
-        // Utility functions
-        function approveActivity(id) {
-            if (confirm('Bạn có chắc chắn muốn duyệt buổi sinh hoạt này?')) {
-                // AJAX call to approve activity
-                $.ajax({
-                    url: '/approve-activity/' + id,
-                    method: 'POST',
-                    data: {
-                        _token: '{{ csrf_token() }}'
-                    },
-                    success: function(response) {
-                        location.reload();
-                    },
-                    error: function(xhr) {
-                        alert('Có lỗi xảy ra. Vui lòng thử lại.');
-                    }
-                });
-            }
         }
 
         function viewDetail(id) {

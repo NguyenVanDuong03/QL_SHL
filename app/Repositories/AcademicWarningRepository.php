@@ -4,6 +4,7 @@ namespace App\Repositories;
 
 use App\Helpers\Constant;
 use App\Models\AcademicWarning;
+use Illuminate\Support\Facades\DB;
 
 class AcademicWarningRepository extends BaseRepository
 {
@@ -27,7 +28,7 @@ class AcademicWarningRepository extends BaseRepository
                     $q->select('id', 'user_id', 'student_code', 'study_class_id')->with(['user:id,name,email', 'studyClass:id,name']);
                 },
             ])
-            ->paginate();
+            ->get();
 
             return $getAllStudentWarning;
     }
@@ -65,4 +66,19 @@ class AcademicWarningRepository extends BaseRepository
             ->with(['student', 'semester', 'student.user:id,name,email', 'student.studyClass:id,name'])
             ->orderByDesc('id');
     }
+
+    public function getAcademicWarningsCountByLecturerAndSemester($lecturerId, $semesterId)
+    {
+        return DB::table('students as s')
+            ->join('academic_warnings as aw', 's.id', '=', 'aw.student_id')
+            ->join('study_classes as sc', 's.study_class_id', '=', 'sc.id')
+            ->join('lecturers as l', 'sc.lecturer_id', '=', 'l.id')
+            ->join('semesters as sem', 'aw.semester_id', '=', 'sem.id')
+            ->selectRaw('sem.id as semester_id, sem.name as semester_name, sem.school_year, COUNT(DISTINCT s.id) as total_students')
+            ->where('l.id', $lecturerId)
+            ->where('sem.id', $semesterId)
+            ->groupBy('sem.id', 'sem.name', 'sem.school_year')
+            ->first();
+    }
+
 }

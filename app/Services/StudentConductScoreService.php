@@ -39,6 +39,16 @@ class StudentConductScoreService extends BaseService
         );
     }
 
+    public function getAverageConductScores()
+    {
+        return $this->getRepository()->getAverageConductScores();
+    }
+
+    public function getOverallAverageConductScoreWithTotalStudents()
+    {
+        return $this->getRepository()->getOverallAverageConductScoreWithTotalStudents();
+    }
+
 //    public function createOrUpdateStudentConductScore($params)
 //    {
 //        $conductEvaluationPeriodId = $params['conduct_evaluation_period_id'];

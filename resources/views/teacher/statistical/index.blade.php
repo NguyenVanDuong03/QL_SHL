@@ -8,65 +8,6 @@
 
 @push('styles')
     <style>
-        /* Custom styles */
-        .stat-card {
-            transition: all 0.3s;
-        }
-
-        .stat-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
-        }
-
-        .class-card {
-            transition: all 0.2s;
-        }
-
-        .class-card:hover {
-            border-color: #007bff;
-        }
-
-        .warning-card {
-            border-left: 4px solid;
-        }
-
-        .warning-card.danger {
-            border-left-color: #dc3545;
-        }
-
-        .warning-card.warning {
-            border-left-color: #ffc107;
-        }
-
-        .warning-card.info {
-            border-left-color: #17a2b8;
-        }
-
-        /* Mobile optimizations */
-        @media (max-width: 576px) {
-            .mobile-full {
-                width: 100% !important;
-                margin-bottom: 0.5rem;
-            }
-
-            .mobile-scroll {
-                overflow-x: auto;
-            }
-
-            .mobile-scroll table {
-                min-width: 800px;
-            }
-
-            .mobile-card {
-                margin-bottom: 1rem;
-            }
-
-            .mobile-tabs .nav-link {
-                padding: 0.5rem 0.75rem;
-                font-size: 0.875rem;
-            }
-        }
-
         .nav-tabs .nav-link {
             color: #000;
             background-color: #fff;
@@ -150,7 +91,7 @@
                 </li>
                 <li class="nav-item">
                     <button class="nav-link" id="conduct-tab" data-bs-toggle="tab" data-bs-target="#conduct"
-                            type="button">Điểm rèn luyện
+                            type="button">Cảnh báo học vụ
                     </button>
                 </li>
             </ul>
@@ -175,7 +116,7 @@
                                     </tr>
                                     </thead>
                                     <tbody id="activitiesBody">
-                                    @foreach(array_slice($data['statisticalSemester'] ?? [], 0, 5) as $activity)
+                                    @forelse(array_slice($data['statisticalSemester'] ?? [], 0, 5) as $activity)
                                         <tr>
                                             <td>{{ $activity['semester_name'] }} - {{ $activity['school_year'] }}</td>
                                             <td>{{ $activity['class_name'] }}</td>
@@ -189,7 +130,11 @@
                                                 </a>
                                             </td>
                                         </tr>
-                                    @endforeach
+                                    @empty
+                                        <tr>
+                                            <td colspan="5" class="text-center">Không có dữ liệu</td>
+                                        </tr>
+                                    @endforelse
                                     </tbody>
                                 </table>
                             </div>
@@ -201,39 +146,10 @@
                 <div class="tab-pane fade" id="conduct" role="tabpanel">
                     <div class="card shadow-sm">
                         <div class="card-header bg-white">
-                            <h5 class="mb-0">Điểm rèn luyện</h5>
+                            <h5 class="mb-0">Cảnh báo học vụ</h5>
                         </div>
                         <div class="card-body p-0" style="height: 300px; overflow-y: auto;">
-                            <div class="table-responsive">
-                                <table class="table table-hover mb-0" id="conductTable">
-                                    <thead>
-                                    <tr>
-                                        <th>Lớp</th>
-                                        <th>Số SV</th>
-                                        <th>Xuất sắc</th>
-                                        <th>Tốt</th>
-                                        <th>Khá</th>
-                                        <th>TB</th>
-                                        <th>Yếu</th>
-                                        <th>Trạng thái</th>
-                                    </tr>
-                                    </thead>
-                                    <tbody id="conductBody">
-                                    {{--                                    @foreach(array_slice($data['conducts'] ?? [], 0, 5) as $conduct)--}}
-                                    {{--                                        <tr>--}}
-                                    {{--                                            <td>{{ $conduct['class'] }}</td>--}}
-                                    {{--                                            <td>{{ $conduct['total_students'] }}</td>--}}
-                                    {{--                                            <td>{{ $conduct['excellent'] }}</td>--}}
-                                    {{--                                            <td>{{ $conduct['good'] }}</td>--}}
-                                    {{--                                            <td>{{ $conduct['fair'] }}</td>--}}
-                                    {{--                                            <td>{{ $conduct['average'] }}</td>--}}
-                                    {{--                                            <td>{{ $conduct['poor'] }}</td>--}}
-                                    {{--                                            <td><span class="badge bg-danger">{{ $conduct['warning'] }}</span></td>--}}
-                                    {{--                                        </tr>--}}
-                                    {{--                                    @endforeach--}}
-                                    </tbody>
-                                </table>
-                            </div>
+                            <canvas id="warningChart"></canvas>
                         </div>
                     </div>
                 </div>
@@ -248,6 +164,8 @@
             let activityPage = 1;
             let conductPage = 1;
             const pageSize = 5;
+
+            initializeWarningChart();
 
             function loadMoreActivities() {
                 $.ajax({
@@ -286,36 +204,6 @@
                 });
             }
 
-            function loadMoreConducts() {
-                {{--$.ajax({--}}
-                {{--    url: '{{ route("teacher.statistical.conducts") }}',--}}
-                {{--    method: 'GET',--}}
-                {{--    data: {--}}
-                {{--        page: conductPage + 1,--}}
-                {{--        semester_id: $('#semesterSelect').val()--}}
-                {{--    },--}}
-                {{--    success: function (response) {--}}
-                {{--        if (response.conducts.length > 0) {--}}
-                {{--            conductPage++;--}}
-                {{--            response.conducts.forEach(conduct => {--}}
-                {{--                $('#conductBody').append(`--}}
-                {{--                <tr>--}}
-                {{--                    <td>${conduct.class}</td>--}}
-                {{--                    <td>${conduct.total_students}</td>--}}
-                {{--                    <td>${conduct.excellent}</td>--}}
-                {{--                    <td>${conduct.good}</td>--}}
-                {{--                    <td>${conduct.fair}</td>--}}
-                {{--                    <td>${conduct.average}</td>--}}
-                {{--                    <td>${conduct.poor}</td>--}}
-                {{--                    <td><span class="badge bg-danger">${conduct.warning}</span></td>--}}
-                {{--                </tr>--}}
-                {{--            `);--}}
-                {{--            });--}}
-                {{--        }--}}
-                {{--    }--}}
-                {{--});--}}
-            }
-
             $('#activitiesTable').on('scroll', function () {
                 if ($(this).scrollTop() + $(this).innerHeight() >= $(this)[0].scrollHeight) {
                     loadMoreActivities();
@@ -328,5 +216,48 @@
                 }
             });
         });
+
+        function initializeWarningChart() {
+            const ctx = document.getElementById('warningChart').getContext('2d');
+            const rawData = @json($data['getAcademicWarningsCountByLecturerAndSemester'] ?? []);
+
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: [`${rawData.semester_name} ${rawData.school_year}`],
+                    datasets: [{
+                        label: 'Số sinh viên bị cảnh báo',
+                        data: [rawData.total_students],
+                        backgroundColor: 'rgba(220, 53, 69, 0.8)',
+                        borderColor: 'rgba(220, 53, 69, 1)',
+                        borderWidth: 2,
+                        borderRadius: 6
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return `Số sinh viên: ${context.raw}`;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: { font: { size: 10 } }
+                        },
+                        x: {
+                            ticks: { font: { size: 10 } }
+                        }
+                    }
+                }
+            });
+        }
     </script>
 @endpush
