@@ -42,8 +42,8 @@ class LecturerController extends Controller
         protected ConductEvaluationPeriodService  $conductEvaluationPeriodService,
         protected DetailConductScoreService       $detailConductScoreService,
         protected ConductCriteriaService          $conductCriteriaService,
-        protected FacultyService                   $facultyService,
-        protected UserService                      $userService,
+        protected FacultyService                  $facultyService,
+        protected UserService                     $userService,
     )
     {
     }
@@ -57,6 +57,8 @@ class LecturerController extends Controller
         $user = auth()->user();
         $getAllClassSessionByLecturer = $this->classSessionRequestService->getAllClassSessionByLecturer($lecturerId)->toArray();
         $countClassSessionById = $this->classSessionRequestService->countClassSessionById($lecturerId);
+        $getAverageConductScores = $this->studentConductScoreService->getAverageConductScores()->toArray();
+        $getOverallAverageConductScoreWithTotalStudents = $this->studentConductScoreService->getOverallAverageConductScoreWithTotalStudents();
         $data = [
             'totalClasses' => $totalClasses,
             'totalStudentWarning' => $totalStudentWarning,
@@ -64,8 +66,10 @@ class LecturerController extends Controller
             'user' => $user,
             'countClassSessionById' => $countClassSessionById,
             'getAllClassSessionByLecturer' => $getAllClassSessionByLecturer,
+            'getAverageConductScores' => $getAverageConductScores,
+            'getOverallAverageConductScoreWithTotalStudents' => $getOverallAverageConductScoreWithTotalStudents,
         ];
-//         dd($data['getAllClassSessionByLecturer']);
+//         dd($data['getOverallAverageConductScoreWithTotalStudents']);
 
         return view('teacher.index', compact('data'));
     }
@@ -615,12 +619,13 @@ class LecturerController extends Controller
     public function indexStatistical(Request $request)
     {
         $params = $request->all();
-        $semesterId = $this->semesterService->get()->first()->id;
+        $semesterId = $this->semesterService->getFourSemester()->get()->first()->id;
         $lecturerId = auth()->user()->lecturer?->id;
         $params['semester_id'] = $request->query('semester_id') ?? $semesterId;
         $page = $request->query('page', 1);
         $pageSize = 5;
-
+//        $getAcademicWarningsCountByLecturerAndSemester = $this->academicWarningService->getAcademicWarningsCountByLecturerAndSemester($lecturerId, $params['semester_id']);
+        $getAcademicWarningsCountByLecturerAndSemester = $this->academicWarningService->getAcademicWarningsCountByLecturerAndSemester(7, 2);
         $statisticalSemester = $this->semesterService->statisticalSemester($lecturerId)
             ->when($request->has('page'), function ($query) use ($page, $pageSize) {
                 return $query->skip(($page - 1) * $pageSize)->take($pageSize);
@@ -640,7 +645,9 @@ class LecturerController extends Controller
             'participationRate' => $this->studyClassService->participationRate($lecturerId),
             'statisticalSemester' => $statisticalSemester,
             'statisticalAttendance' => $this->studentService->statisticalAttendance($lecturerId, $params['semester_id'])->toArray(),
+            'getAcademicWarningsCountByLecturerAndSemester' => $getAcademicWarningsCountByLecturerAndSemester,
         ];
+//        dd($data['getAcademicWarningsCountByLecturerAndSemester']);
 
         return view('teacher.statistical.index', compact('data'));
     }

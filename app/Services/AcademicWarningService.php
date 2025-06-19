@@ -21,34 +21,12 @@ class AcademicWarningService extends BaseService
     {
         $wheres = Arr::get($params, 'wheres', []);
         $sort = Arr::get($params, 'sort', 'id:desc');
-//        $relates = [
-//            'student',
-//            'student.user:id,name,email',
-//            'student.studyClass:id,name',
-//            'semester:id,name,school_year',
-//        ];
-//        $semester = Arr::get($params, 'semester_id', '');
-//        if ($semester) {
-//            $wheres[] = ['semester_id', '=', $semester];
-//        }
-//
-//        $search = Arr::get($params, 'search', null);
-//        if ($search) {
-//            $wheres[] = function ($query) use ($search) {
-//                $query->whereHas('student', function ($q) use ($search) {
-//                    $q->whereHas('user', function ($q2) use ($search) {
-//                        $q2->where('name', 'LIKE', "%$search%")
-//                            ->orWhere('email', 'LIKE', "%$search%");
-//                    })->orWhereHas('studyClass', function ($q2) use ($search) {
-//                        $q2->where('name', 'LIKE', "%$search%");
-//                    });
-//                });
-//            };
-//        }
+        $relates = Arr::get($params, 'relates', []);
 
         return [
             'wheres' => $wheres,
             'sort' => $sort,
+            'relates' => $relates,
         ];
     }
 
@@ -65,6 +43,11 @@ class AcademicWarningService extends BaseService
     public function academicWarningBySemesterId($semesterId)
     {
         return $this->getRepository()->academicWarningBySemesterId($semesterId);
+    }
+
+    public function getAcademicWarningsCountByLecturerAndSemester($lecturerId, $semesterId)
+    {
+        return $this->getRepository()->getAcademicWarningsCountByLecturerAndSemester($lecturerId, $semesterId);
     }
 
 }
