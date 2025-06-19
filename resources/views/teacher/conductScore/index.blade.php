@@ -70,7 +70,7 @@
                                         </td>
                                         <td class="text-center">
                                             <div class="btn-group gap-2" role="group">
-                                                <a href="{{ route('teacher.conduct-score.infoConductScore', $conductEvaluationPeriod['id']) }}"
+                                                <a href="{{ route('teacher.conduct-score.infoConductScore', ['conduct_evaluation_period_id' => $conductEvaluationPeriod['id']]) }}"
                                                    class="btn btn-primary btn-sm"
                                                    title="Xem chi tiết">
                                                     <i class="fas fa-eye"></i>

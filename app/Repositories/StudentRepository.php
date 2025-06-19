@@ -224,6 +224,7 @@ class StudentRepository extends BaseRepository
     {
         $classId = $params['study_class_id'] ?? null;
         $evaluationPeriodId = $params['conduct_evaluation_period_id'] ?? null;
+        $search = $params['search'] ?? '';
 
         $query = Student::query()
             ->select([
@@ -269,6 +270,13 @@ class StudentRepository extends BaseRepository
             END ASC
         ")
             ->orderBy('students.student_code');
+
+        if (!empty($search)) {
+            $query->where(function ($q) use ($search) {
+                $q->where('students.student_code', 'like', '%' . $search . '%')
+                    ->orWhere('users.name', 'like', '%' . $search . '%');
+            });
+        }
 
         return $query->paginate(Constant::DEFAULT_LIMIT_12);
     }

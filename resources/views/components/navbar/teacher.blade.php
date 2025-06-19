@@ -38,7 +38,9 @@
             </li>
             <li class="nav-item">
                 <a class="nav-link {{ Route::currentRouteName() == 'teacher.conduct-score.index' ||
-                                      Route::currentRouteName() == 'teacher.conduct-score.infoConductScore'
+                                      Route::currentRouteName() == 'teacher.conduct-score.infoConductScore' ||
+                                      Route::currentRouteName() == 'teacher.conduct-score.list' ||
+                                      Route::currentRouteName() == 'teacher.conduct-score.detail'
                                       ? 'active' : '' }}" href="{{ route('teacher.conduct-score.index') }}">
                     <i class="fas fa-chart-bar"></i>
                     Điểm rèn luyện

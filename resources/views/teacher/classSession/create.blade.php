@@ -165,8 +165,8 @@
 @push('scripts')
     <script>
         $(document).ready(function () {
-            const $activityType = $('#activityType');
-            const $formRight = $('.form-class-session .col-md-4');
+            const activityType = $('#activityType');
+            const formRight = $('.form-class-session .col-md-4');
 
             function isValidURL(str) {
                 const pattern = /^(https?:\/\/)[^\s$.?#].[^\s]*$/i;
@@ -174,16 +174,16 @@
             }
 
             $('#resetBtn').click(function () {
-                $formRight.find('input[type="text"], input[type="datetime-local"], textarea').val('');
-                $activityType.val('0').trigger('change');
-                $formRight.find('select').not('#activityType').prop('selectedIndex', 0);
+                formRight.find('input[type="text"], input[type="datetime-local"], textarea').val('');
+                activityType.val('0').trigger('change');
+                formRight.find('select').not('#activityType').prop('selectedIndex', 0);
             });
 
-            $activityType.change(function () {
+            activityType.change(function () {
                 const selectedValue = $(this).val();
 
-                $formRight.find('input[type="text"], input[type="datetime-local"], textarea').val('');
-                $formRight.find('select').not('#activityType').prop('selectedIndex', 0);
+                formRight.find('input[type="text"], input[type="datetime-local"], textarea').val('');
+                formRight.find('select').not('#activityType').prop('selectedIndex', 0);
 
                 $('.class-meeting input, .class-meeting select').removeAttr('required');
                 $('.class-location input').removeAttr('required');
@@ -231,20 +231,20 @@
             });
 
 
-            $activityType.trigger('change');
+            activityType.trigger('change');
 
             const getClassSessionRequest = @json($data['getClassSessionRequest']);
             if (getClassSessionRequest) {
                 if (getClassSessionRequest['position'] === 0) {
-                    $activityType.val('0').trigger('change');
+                    activityType.val('0').trigger('change');
                 } else if (getClassSessionRequest['position'] === 1) {
-                    $activityType.val('1').trigger('change');
+                    activityType.val('1').trigger('change');
                     $('#meeting_id').val(getClassSessionRequest['meeting_id']);
                     $('#meeting_password').val(getClassSessionRequest['meeting_password']);
                     $('#meeting_link').val(getClassSessionRequest['meeting_url']);
                     $('#meeting_type').val(getClassSessionRequest['meeting_type']);
                 } else if (getClassSessionRequest['position'] === 2) {
-                    $activityType.val('2').trigger('change');
+                    activityType.val('2').trigger('change');
                     $('#location').val(getClassSessionRequest['location']);
                 }
 

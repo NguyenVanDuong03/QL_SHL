@@ -26,11 +26,12 @@
                         <i class="fas fa-arrow-left me-2"></i>Quay lại
                     </a>
                     <div class="d-flex gap-2">
-                        <form class="position-relative">
+                        <form method="GET" action="{{ route('teacher.conduct-score.infoConductScore') }}" class="position-relative">
+                            <input type="hidden" name="conduct_evaluation_period_id" value="{{ $data['conduct_evaluation_period_id'] }}">
                             <div class="input-group me-2" style="width: 250px;">
-                                <input type="text" class="form-control" placeholder="Tìm kiếm..."
+                                <input type="text" class="form-control" name="search" value="{{ request('search') }}" placeholder="Tìm kiếm..."
                                        id="search">
-                                <button class="btn btn-secondary" type="button">
+                                <button class="btn btn-secondary" type="submit">
                                     <i class="fas fa-search"></i>
                                 </button>
                             </div>

@@ -51,7 +51,8 @@ class LecturerController extends Controller
     public function index()
     {
         $lecturerId = auth()->user()->lecturer?->id;
-        $totalClasses = $this->studyClassService->coutStudyClassListByLecturerId($lecturerId);
+        $params['lecturer_id'] = $lecturerId;
+        $totalClasses = $this->studyClassService->coutStudyClassListByLecturerId($params);
         $totalStudentWarning = $this->academicWarningService->getStudentWarningByStudyClassId($lecturerId)->count();
         $faculties = $this->facultyService->get()->toArray();
         $user = auth()->user();
@@ -171,7 +172,7 @@ class LecturerController extends Controller
         $params['lecturer_id'] = $lecturerId;
         $params['semester_id'] = $getSemesterInfo?->id;
         $getStudyClassByIds = $this->studyClassService->getStudyClassById($params)->toArray();
-        $totalClasses = $this->studyClassService->coutStudyClassListByLecturerId($lecturerId);
+        $totalClasses = $this->studyClassService->coutStudyClassListByLecturerId($params);
         $countApprovedByLecturerAndSemester = $this->classSessionRequestService->countApprovedByLecturerAndSemester($lecturerId, $getSemesterInfo?->id);
         $countRejectedByLecturerAndSemester = $this->classSessionRequestService->countRejectedByLecturerAndSemester($lecturerId, $getSemesterInfo?->id);
         $checkClassSessionRegistration = $this->classSessionRegistrationService->checkClassSessionRegistration();
@@ -279,7 +280,7 @@ class LecturerController extends Controller
         $params['lecturer_id'] = $lecturerId;
         $params['semester_id'] = $getSemesterInfo?->id;
         $getStudyClassByIds = $this->studyClassService->getStudyClassWithApprovedRequests($params)->toArray();
-        $totalClasses = $this->studyClassService->coutStudyClassListByLecturerId($lecturerId);
+        $totalClasses = $this->studyClassService->coutStudyClassListByLecturerId($params);
         $countApprovedByLecturerAndSemester = $this->classSessionRequestService->countApprovedByLecturerAndSemester($lecturerId, $getSemesterInfo?->id);
         $countRejectedByLecturerAndSemester = $this->classSessionRequestService->countRejectedByLecturerAndSemester($lecturerId, $getSemesterInfo?->id);
         $checkClassSessionRegistration = $this->classSessionRegistrationService->checkClassSessionRegistration();
@@ -370,7 +371,7 @@ class LecturerController extends Controller
         $lecturerId = auth()->user()->lecturer?->id;
         $params['lecturer_id'] = $lecturerId;
         $getStudyClassByIds = $this->classSessionRequestService->getListFlexibleClass()->toArray();
-        $totalClasses = $this->studyClassService->coutStudyClassListByLecturerId($lecturerId);
+        $totalClasses = $this->studyClassService->coutStudyClassListByLecturerId($params);
         $countFlexibleClassSessionRequestByLecturer = $this->classSessionRequestService->countFlexibleClassSessionRequestByLecturer($lecturerId);
         $countFlexibleRejectedByLecturer = $this->classSessionRequestService->countFlexibleRejectedByLecturer($lecturerId);
 //        dd($getStudyClassByIds);
@@ -481,11 +482,10 @@ class LecturerController extends Controller
         return view('teacher.conductScore.index', compact('data'));
     }
 
-    public function infoConductScore(Request $request, $id)
+    public function infoConductScore(Request $request)
     {
         $params = $request->all();
-        $params['conduct_evaluation_period_id'] = $id;
-        $semesterId = $this->conductEvaluationPeriodService->find($id)->semester_id ?? null;
+        $semesterId = $this->conductEvaluationPeriodService->find($params['conduct_evaluation_period_id'])->semester_id ?? null;
         $findConductEvaluationPeriodBySemesterId = $this->conductEvaluationPeriodService->findConductEvaluationPeriodBySemesterId($semesterId);
         $params['semester_id'] = $params['semester_id'] ?? $semesterId;
         $params['lecturer_id'] = auth()->user()->lecturer?->id;
@@ -495,11 +495,11 @@ class LecturerController extends Controller
 
         $data = [
             'getStudyClassList' => $getStudyClassList,
-            'conduct_evaluation_period_id' => $id,
+            'conduct_evaluation_period_id' => $params['conduct_evaluation_period_id'],
             'semester_id' => $params['semester_id'],
             'findConductEvaluationPeriodBySemesterId' => $findConductEvaluationPeriodBySemesterId,
         ];
-//        dd($data['getStudyClassList']);
+//        dd($data['conduct_evaluation_period_id']);
 
         return view('teacher.conductScore.list', compact('data'));
     }
@@ -528,6 +528,7 @@ class LecturerController extends Controller
             'listConductScores' => $listConductScores,
             'countStudentsByConductStatus' => $countStudentsByConductStatus,
             'conduct_evaluation_period_id' => $params['conduct_evaluation_period_id'] ?? null,
+            'study_class_id' => $params['study_class_id'] ?? null,
         ];
 
         return view('teacher.conductScore.listClass', compact('data'));
@@ -557,6 +558,7 @@ class LecturerController extends Controller
             'checkConductEvaluationPeriodBySemesterId' => $checkConductEvaluationPeriodBySemesterId,
             'student' => $student,
             'conductCriterias' => $conductCriterias,
+            'study_class_id' => $params['study_class_id'] ?? null,
         ];
 //dd($data['calculateTotalScore']);
         return view('teacher.conductScore.detail', compact('data'));
@@ -621,7 +623,7 @@ class LecturerController extends Controller
     public function indexStatistical(Request $request)
     {
         $params = $request->all();
-        $semesterId = $this->semesterService->getFourSemester()->get()->first()->id;
+        $semesterId = $this->semesterService->getFourSemester()->get()->first()->id ?? null;
         $lecturerId = auth()->user()->lecturer?->id;
         $params['lecturer_id'] = $lecturerId;
         $params['semester_id'] = $request->query('semester_id') ?? $semesterId;

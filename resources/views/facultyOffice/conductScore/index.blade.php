@@ -20,11 +20,11 @@
                 <div class="d-flex justify-content-end justify-content-md-between align-items-center">
                     <h4 class="flex-grow-1 mb-0 d-none d-md-block">Danh sách điểm rèn luyện</h4>
                     <div class="d-flex gap-2">
-                        <form class="position-relative">
+                        <form method="GET" action="{{ route('faculty-office.conduct-score.index') }}" class="position-relative">
                             <div class="input-group me-2" style="width: 250px;">
-                                <input type="text" class="form-control" placeholder="Tìm kiếm..."
+                                <input type="text" class="form-control" name="search" value="{{ request('search') }}" placeholder="Tìm kiếm..."
                                        id="search">
-                                <button class="btn btn-secondary" type="button">
+                                <button class="btn btn-secondary" type="submit">
                                     <i class="fas fa-search"></i>
                                 </button>
                             </div>

@@ -226,13 +226,13 @@
             <div class="col-md-6 col-lg-3">
                 <div class="stat-card">
                     <div class="stat-card-header d-flex align-items-start">
-                        <div class="stat-card-title text-uppercase">LỚP CHỦ NHIỆM {{ $data['semester']['name'] }}
-                            - {{ $data['semester']['school_year'] }}</div>
+                        <div class="stat-card-title text-uppercase">LỚP CHỦ NHIỆM {{ $data['semester']['name'] ?? '---' }}
+                            - {{ $data['semester']['school_year'] ?? '---' }}</div>
                         <div class="stat-card-icon">
                             <i class="fas fa-book"></i>
                         </div>
                     </div>
-                    <div class="stat-card-value">{{ $data['totalStudyClasses'] }} lớp</div>
+                    <div class="stat-card-value">{{ $data['totalStudyClasses'] ?? 0 }} lớp</div>
                 </div>
             </div>
 
@@ -241,7 +241,7 @@
                 <div class="stat-card">
                     <div class="stat-card-header d-flex align-items-start">
                         <div class="stat-card-title text-uppercase">SINH VIÊN ĐĂNG BÁO HỌC
-                            VỤ {{ $data['semester']['name'] }} - {{ $data['semester']['school_year'] }}</div>
+                            VỤ {{ $data['semester']['name'] ?? '---' }} - {{ $data['semester']['school_year'] ?? '---' }}</div>
                         <div class="stat-card-icon">
                             <i class="fas fa-users"></i>
                         </div>
@@ -255,7 +255,7 @@
                 <div class="stat-card">
                     <div class="stat-card-header d-flex align-items-start">
                         <div class="stat-card-title text-uppercase">BÁO CÁO SINH HOẠT
-                            LỚP {{ $data['semester']['name'] }} - {{ $data['semester']['school_year'] }}</div>
+                            LỚP {{ $data['semester']['name'] ?? '---' }} - {{ $data['semester']['school_year'] ?? '---' }}</div>
                         <div class="stat-card-icon">
                             <i class="fas fa-file-alt"></i>
                         </div>
@@ -268,8 +268,8 @@
             <div class="col-md-6 col-lg-3">
                 <div class="stat-card">
                     <div class="stat-card-header d-flex align-items-start">
-                        <div class="stat-card-title text-uppercase">ĐIỂM RÈN LUYỆN {{ $data['semester']['name'] }}
-                            - {{ $data['semester']['school_year'] }}</div>
+                        <div class="stat-card-title text-uppercase">ĐIỂM RÈN LUYỆN {{ $data['semester']['name'] ?? '---' }}
+                            - {{ $data['semester']['school_year'] ?? '---' }}</div>
                         <div class="stat-card-icon">
                             <i class="fas fa-clipboard-check"></i>
                         </div>

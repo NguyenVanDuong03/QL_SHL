@@ -175,7 +175,10 @@ class StudyClassRepository extends BaseRepository
 
     public function getStudyClassListByConductEvaluationPeriodId($params)
     {
-        $conductEvaluationPeriodId = $params['conduct_evaluation_period_id'];
+        $periodId = $params['conduct_evaluation_period_id'];
+        $search = $params['search'] ?? '';
+        $departmentId = $params['department_id'] ?? null;
+        $cohortId = $params['cohort_id'] ?? null;
 
         $query = $this->getModel()
             ->select([
@@ -183,20 +186,48 @@ class StudyClassRepository extends BaseRepository
                 'study_classes.name as study_class_name',
                 'majors.name as major_name',
                 'departments.name as department_name',
+                'users.name as lecturer_name',
+                'cohorts.name as cohort_name',
                 DB::raw('COUNT(DISTINCT students.id) as total_students'),
                 DB::raw('COUNT(DISTINCT student_conduct_scores.student_id) as has_evaluated'),
-                DB::raw('(COUNT(DISTINCT students.id) - COUNT(DISTINCT student_conduct_scores.student_id)) as not_evaluated')
+                DB::raw('(COUNT(DISTINCT students.id) - COUNT(DISTINCT student_conduct_scores.student_id)) as not_evaluated'),
+                DB::raw('SUM(CASE WHEN total_score >= 90 THEN 1 ELSE 0 END) as outstanding'),
+                DB::raw('SUM(CASE WHEN total_score >= 80 AND total_score < 90 THEN 1 ELSE 0 END) as good'),
+                DB::raw('SUM(CASE WHEN total_score >= 70 AND total_score < 80 THEN 1 ELSE 0 END) as fair'),
+                DB::raw('SUM(CASE WHEN total_score >= 50 AND total_score < 70 THEN 1 ELSE 0 END) as average'),
+                DB::raw('SUM(CASE WHEN total_score < 50 THEN 1 ELSE 0 END) as poor')
             ])
             ->leftJoin('majors', 'study_classes.major_id', '=', 'majors.id')
             ->leftJoin('faculties', 'majors.faculty_id', '=', 'faculties.id')
             ->leftJoin('departments', 'faculties.department_id', '=', 'departments.id')
-            ->leftJoin('students', 'students.study_class_id', '=', 'study_classes.id')
-            ->leftJoin('student_conduct_scores', function ($join) use ($conductEvaluationPeriodId) {
+            ->leftJoin('lecturers', 'study_classes.lecturer_id', '=', 'lecturers.id')
+            ->leftJoin('users', 'lecturers.user_id', '=', 'users.id')
+            ->leftJoin('cohorts', 'study_classes.cohort_id', '=', 'cohorts.id')
+            ->leftJoin('students', 'study_classes.id', '=', 'students.study_class_id')
+            ->leftJoin('student_conduct_scores', function ($join) use ($periodId) {
                 $join->on('students.id', '=', 'student_conduct_scores.student_id')
-                    ->where('student_conduct_scores.conduct_evaluation_period_id', '=', $conductEvaluationPeriodId);
+                    ->where('student_conduct_scores.conduct_evaluation_period_id', '=', $periodId);
             })
-            ->groupBy('study_classes.id', 'study_classes.name', 'majors.name', 'departments.name')
+            ->leftJoin(DB::raw('(SELECT student_conduct_score_id, SUM(final_score) as total_score
+                            FROM detail_conduct_scores
+                            GROUP BY student_conduct_score_id) as scores'),
+                'student_conduct_scores.id', '=', 'scores.student_conduct_score_id')
+            ->groupBy('study_classes.id', 'study_classes.name', 'majors.name', 'departments.name', 'users.name', 'cohorts.name')
             ->orderBy('study_classes.id');
+
+        if (!empty($search)) {
+            $query->where(function ($q) use ($search) {
+                $q->where('study_classes.name', 'like', "%$search%");
+            });
+        }
+
+        if (!empty($departmentId)) {
+            $query->where('departments.id', $departmentId);
+        }
+
+        if (!empty($cohortId)) {
+            $query->where('study_classes.cohort_id', $cohortId);
+        }
 
         try {
             return $query->paginate(Constant::DEFAULT_LIMIT_12);
@@ -205,10 +236,12 @@ class StudyClassRepository extends BaseRepository
             throw new \Exception('Failed to retrieve study class list');
         }
     }
+
     public function getStudyClassListByConductEvaluationPeriodIdByLecturerId($params)
     {
         $conductEvaluationPeriodId = $params['conduct_evaluation_period_id'];
         $lecturerId = $params['lecturer_id'];
+        $search = $params['search'] ?? '';
 
         $query = $this->getModel()
             ->select([
@@ -231,6 +264,13 @@ class StudyClassRepository extends BaseRepository
             ->where('study_classes.lecturer_id', $lecturerId)
             ->groupBy('study_classes.id', 'study_classes.name', 'majors.name', 'departments.name')
             ->orderBy('study_classes.id');
+
+        if (!empty($search)) {
+            $query->where(function ($q) use ($search) {
+                $q->where('study_classes.name', 'like', "%$search%")
+                    ->orWhere('majors.name', 'like', "%$search%");
+            });
+        }
 
         try {
             return $query->paginate(Constant::DEFAULT_LIMIT_12);
@@ -277,6 +317,7 @@ class StudyClassRepository extends BaseRepository
     {
         $conductEvaluationPeriodId = $params['conduct_evaluation_period_id'];
         $departmentId = $params['department_id'];
+        $search = $params['search'] ?? '';
 
         $query = $this->getModel()
             ->select([
@@ -300,6 +341,13 @@ class StudyClassRepository extends BaseRepository
             ->where('departments.id', $departmentId)
             ->groupBy('study_classes.id', 'study_classes.name', 'majors.name', 'faculties.name', 'departments.name') // Thêm faculties.name vào groupBy
             ->orderBy('study_classes.id');
+
+        if (!empty($search)) {
+            $query->where(function ($q) use ($search) {
+                $q->where('study_classes.name', 'like', "%$search%")
+                    ->orWhere('majors.name', 'like', "%$search%");
+            });
+        }
 
         try {
             return $query->paginate(Constant::DEFAULT_LIMIT_12);

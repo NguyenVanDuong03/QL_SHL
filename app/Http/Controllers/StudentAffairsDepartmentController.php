@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Exports\AttendancesExport;
+use App\Exports\StudentConductScoresExport;
 use App\Helpers\Constant;
 use App\Http\Requests\ClassSessionRegistrationRequest;
 use App\Http\Requests\SemesterRequest;
@@ -58,9 +59,9 @@ class StudentAffairsDepartmentController extends Controller
     public function index()
     {
         $totalStudyClasses = $this->studyClassService->get()->count();
-        $semester = $this->semesterService->get()->first();
-        $totalAcademicWarnings = $this->academicWarningService->academicWarningBySemesterId($semester->id)->get()->count();
-        $totalClassSessionReports = $this->classSessionReportService->countClassSessionReports($semester->id);
+        $semester = $this->semesterService->get()->first() ?? null;
+        $totalAcademicWarnings = $this->academicWarningService->academicWarningBySemesterId($semester->id ?? 0)->get()->count() ?? 0;
+        $totalClassSessionReports = $this->classSessionReportService->countClassSessionReports($semester->id ?? 0);
         $getAllClassSession = $this->classSessionRequestService->getAllClassSession()->toArray();
         $countClassSession = $this->classSessionRequestService->countClassSession();
 
@@ -567,21 +568,39 @@ class StudentAffairsDepartmentController extends Controller
         return redirect()->route('student-affairs-department.conduct-score.index')->with('success', 'Xóa thành công');
     }
 
-    public function infoConductScore(Request $request, $id)
+    public function infoConductScore(Request $request)
     {
         $params = $request->all();
-        $params['conduct_evaluation_period_id'] = $id;
-        $params['study_class_id'] = $request->get('study_class_id', null);
+        $semesterId = $this->conductEvaluationPeriodService->find($params['conduct_evaluation_period_id'])->semester_id;
         $getStudyClassList = $this->studyClassService->getStudyClassListByConductEvaluationPeriodId($params)->toArray();
-//        $infoByStudyClassListAndConductEvaluationPeriodId = $this->studyClassService->infoByStudyClassListAndConductEvaluationPeriodId($params);
+        $majors = $this->majorService->get()->toArray();
+        $cohorts = $this->cohortService->get()->toArray();
+        $departments = $this->departmentService->get()->toArray();
 
         $data = [
             'getStudyClassList' => $getStudyClassList,
-//            'infoByStudyClassListAndConductEvaluationPeriodId' => $infoByStudyClassListAndConductEvaluationPeriodId,
+            'majors' => $majors,
+            'cohorts' => $cohorts,
+            'departments' => $departments,
+            'semesterId' => $semesterId,
         ];
-//        dd($data['infoByStudyClassListAndConductEvaluationPeriodId']);
+//        dd($data['getStudyClassList']);
 
         return view('StudentAffairsDepartment.conductScore.list', compact('data'));
+    }
+
+    public function exportConductScore(Request $request)
+    {
+        $semesterId = $request->query('semester_id');
+        $studyClassId = $request->query('study_class_id');
+        $studyClassName = $request->query('study_class_name');
+
+        try {
+            $fileName = $studyClassName. '_' . now()->format('Ymd_His') . '.xlsx';
+            return Excel::download(new StudentConductScoresExport($studyClassId, $semesterId), $fileName);
+        } catch (\Exception $e) {
+            return back()->withErrors(['export_error' => 'Xuất file thất bại: ' . $e->getMessage()]);
+        }
     }
 
     public function indexAcademicWarning(Request $request)
@@ -664,54 +683,13 @@ class StudentAffairsDepartmentController extends Controller
         return Excel::download(new AttendancesExport($classRequestId, $studyClassId), 'attendance_' . $studyClass->name . '_' . Carbon::now()->format('Y_m_d_H_i_s') . '.xlsx');
     }
 
-    public function indexStatistical(Request $request)
+    public function indexStatistical()
     {
-        $params = $request->all();
-        $semesterId = $this->semesterService->getFourSemester()->get()->first()->id;
-        $lecturerId = auth()->user()->lecturer?->id;
-        $params['lecturer_id'] = $lecturerId;
-        $params['semester_id'] = $request->query('semester_id') ?? $semesterId;
-        $page = $request->query('page', 1);
-        $pageSize = 5;
-        $getAcademicWarningsCountByLecturerAndSemester = $this->academicWarningService->getAcademicWarningsCountByLecturerAndSemester($lecturerId, $params['semester_id']);
-        $semesters = $this->semesterService->getFourSemester()->get()->toArray();
-        $countStudyClassBySemester = $this->studyClassService->getStudyClassListByLecturerId($params)->count();
-        $getTotalStudentsByLecturer = $this->lecturerService->getTotalStudentsByLecturer($lecturerId);
-        $getTotalDoneSessionsByLecturer = $this->classSessionRequestService->getTotalDoneSessionsByLecturer($lecturerId);
-        $getTotalSessionsByLecturer = $this->classSessionRequestService->getTotalSessionsByLecturer($lecturerId);
-        $participationRate = $this->studyClassService->participationRate($lecturerId);
-        $statisticalAttendance = $this->studentService->statisticalAttendance($lecturerId, $params['semester_id'])->toArray();
-        //
         $statisticalClassByDepartment = $this->studyClassService->statisticalClassByDepartment()->toArray();
         $statisticalUserByRole = $this->userService->statisticalUserByRole()->toArray();
         $staticalAcademicWarningBySemester = $this->semesterService->staticalAcademicWarningBySemester()->toArray();
-        $statisticalAllSemester = $this->semesterService->statisticalAllSemester($lecturerId)
-            ->when($request->has('page'), function ($query) use ($page, $pageSize) {
-                return $query->skip(($page - 1) * $pageSize)->take($pageSize);
-            })
-            ->toArray();
-
-        $statisticalSemester = $this->semesterService->statisticalSemester($lecturerId)
-            ->when($request->has('page'), function ($query) use ($page, $pageSize) {
-                return $query->skip(($page - 1) * $pageSize)->take($pageSize);
-            })
-            ->toArray();
-
-        if ($request->ajax()) {
-            return response()->json(['activities' => $statisticalSemester]);
-        }
 
         $data = [
-            'semesters' => $semesters,
-            'countStudyClassBySemester' => $countStudyClassBySemester,
-            'getTotalStudentsByLecturer' => $getTotalStudentsByLecturer,
-            'getTotalDoneSessionsByLecturer' => $getTotalDoneSessionsByLecturer,
-            'getTotalSessionsByLecturer' => $getTotalSessionsByLecturer,
-            'participationRate' => $participationRate,
-            'statisticalSemester' => $statisticalAllSemester,
-            'statisticalAttendance' => $statisticalAttendance,
-            'getAcademicWarningsCountByLecturerAndSemester' => $getAcademicWarningsCountByLecturerAndSemester,
-            //
             'statisticalClassByDepartment' => $statisticalClassByDepartment,
             'statisticalUserByRole' => $statisticalUserByRole,
             'staticalAcademicWarningBySemester' => $staticalAcademicWarningBySemester,

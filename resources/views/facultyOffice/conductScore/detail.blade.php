@@ -5,8 +5,13 @@
 @section('breadcrumb')
     <x-breadcrumb.breadcrumb :links="[
         ['label' => 'Điểm rèn luyện', 'url' => 'faculty-office.conduct-score.index'],
-        ['label' => 'Danh sách lớp học', 'url' => 'faculty-office.conduct-score.infoConductScore'],
-        ['label' => 'Danh sách sinh viên', 'url' => 'faculty-office.conduct-score.list'],
+        ['label' => 'Danh sách lớp học', 'url' => 'faculty-office.conduct-score.infoConductScore',  'params' => [
+            'conduct_evaluation_period_id' => $data['conduct_evaluation_period_id']
+        ]],
+        ['label' => 'Danh sách sinh viên', 'url' => 'faculty-office.conduct-score.list', 'params' => [
+            'study_class_id' => $data['study_class_id'],
+            'conduct_evaluation_period_id' => $data['conduct_evaluation_period_id']
+        ]],
         ['label' => 'Chi tiết sinh viên']
     ]"/>
 @endsection
@@ -278,17 +283,10 @@
 @section('main')
     <!-- Previous HTML content remains unchanged -->
     <div class="m-4">
-        <!-- Alert Banner -->
-        @if(!$data['checkConductEvaluationPeriod'])
-            <div class="alert alert-warning-custom" role="alert">
-                ĐÃ HẾT THỜI GIAN NHẬP ĐIỂM RÈN LUYỆN
-            </div>
-        @endif
-
         <!-- Form Controls -->
-        <div class="row mb-4 form-controls-mobile">
+        <div class="row form-controls-mobile">
             <div class="col-md-3 col-12">
-                <a href="{{ route('faculty-office.conduct-score.list') }}"
+                <a href="{{ route('faculty-office.conduct-score.list', ['study_class_id' => $data['study_class_id'], 'conduct_evaluation_period_id' => $data['conduct_evaluation_period_id']]) }}"
                    class="btn btn-outline-secondary btn-sm">
                     <i class="fas fa-arrow-left me-2"></i>Quay lại
                 </a>
@@ -332,6 +330,13 @@
                 </div>
             </div>
         </div>
+
+        <!-- Alert Banner -->
+        @if(!$data['checkConductEvaluationPeriod'])
+            <div class="alert alert-warning-custom" role="alert">
+                ĐÃ HẾT THỜI GIAN NHẬP ĐIỂM RÈN LUYỆN
+            </div>
+        @endif
 
         <h4 class="text-center">Đánh giá điểm rèn luyện</h4>
         @php

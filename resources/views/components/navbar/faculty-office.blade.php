@@ -11,15 +11,13 @@
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link {{ Route::currentRouteName() == 'faculty-office.conduct-score.index' ? 'active' : '' }}" href="{{ route('faculty-office.conduct-score.index') }}">
+                <a class="nav-link {{ Route::currentRouteName() == 'faculty-office.conduct-score.index' ||
+                                      Route::currentRouteName() == 'faculty-office.conduct-score.infoConductScore' ||
+                                      Route::currentRouteName() == 'faculty-office.conduct-score.list' ||
+                                      Route::currentRouteName() == 'faculty-office.conduct-score.detail'
+                                      ? 'active' : '' }}" href="{{ route('faculty-office.conduct-score.index') }}">
                     <i class="fas fa-book"></i>
                     Điểm rèn luyện
-                </a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="#">
-                    <i class="fas fa-chart-line"></i>
-                    Thống kê
                 </a>
             </li>
             <li class="nav-item">

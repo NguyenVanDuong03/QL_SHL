@@ -20,7 +20,6 @@ use App\Services\StudentConductScoreService;
 use App\Services\StudentService;
 use App\Services\StudyClassService;
 use App\Services\UserService;
-use http\Env\Response;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
@@ -235,7 +234,7 @@ class ClassStaffController extends Controller
         $params = $request->all();
         $params['student_id'] = auth()->user()->student?->id ?? null;
         $currentSemester = $this->semesterService->get()->first();
-        $params['semester_id'] = $params['semester_id'] ?? $currentSemester->id;
+        $params['semester_id'] = $params['semester_id'] ?? $currentSemester->id ?? null;
         $semesters = $this->semesterService->getFourSemester()->limit(4)->get()->toArray();
         $findConductEvaluationPeriodBySemesterId = $this->conductEvaluationPeriodService->findConductEvaluationPeriodBySemesterId($params['semester_id']);
 //        $detailConductScores = $this->detailConductScoreService->get($params)->toArray();

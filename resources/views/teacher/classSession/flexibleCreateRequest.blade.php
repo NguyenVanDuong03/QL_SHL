@@ -43,10 +43,12 @@
                                 <div class="mb-4">
                                     <div class="d-flex justify-content-between align-items-end mb-2">
                                         <label for="title" class="form-label fw-bold mb-0">Tiêu đề</label>
-                                        <select class="form-select" id="study_class_id" name="study_class_id" style="max-width: 180px;">
-                                            @foreach($studyClasses as $item)
+                                        <select class="form-select" id="study_class_id" name="study_class_id" style="max-width: 200px;" required>
+                                            @forelse($studyClasses as $item)
                                                 <option value="{{ $item->id }}">{{ $item->name }}</option>
-                                            @endforeach
+                                            @empty
+                                                <option value="" disabled selected>Không có lớp học nào</option>
+                                            @endforelse
                                         </select>
                                     </div>
                                     <input type="text" class="form-control" id="title" name="title"
@@ -146,8 +148,15 @@
 @push('scripts')
     <script>
         $(document).ready(function () {
-            const $activityType = $('#activityType');
-            const $formRight = $('.form-class-session .col-md-4');
+            const activityType = $('#activityType');
+            const formRight = $('.form-class-session .col-md-4');
+            const study_class_id = $('#study_class_id').val();
+
+            if (!study_class_id) {
+                $('.btn-session-submit').addClass('disabled').prop('disabled', true);
+            } else {
+                $('.btn-session-submit').removeClass('disabled').prop('disabled', false);
+            }
 
             function isValidURL(str) {
                 const pattern = /^(https?:\/\/)[^\s$.?#].[^\s]*$/i;
@@ -155,16 +164,16 @@
             }
 
             $('#resetBtn').click(function () {
-                $formRight.find('input[type="text"], input[type="datetime-local"], textarea').val('');
-                $activityType.val('0').trigger('change');
-                $formRight.find('select').not('#activityType').prop('selectedIndex', 0);
+                formRight.find('input[type="text"], input[type="datetime-local"], textarea').val('');
+                activityType.val('0').trigger('change');
+                formRight.find('select').not('#activityType').prop('selectedIndex', 0);
             });
 
-            $activityType.change(function () {
+            activityType.change(function () {
                 const selectedValue = $(this).val();
 
-                $formRight.find('input[type="text"], input[type="datetime-local"], textarea').val('');
-                $formRight.find('select').not('#activityType').prop('selectedIndex', 0);
+                formRight.find('input[type="text"], input[type="datetime-local"], textarea').val('');
+                formRight.find('select').not('#activityType').prop('selectedIndex', 0);
 
                 $('.class-meeting input, .class-meeting select').removeAttr('required');
                 $('.class-location input').removeAttr('required');
@@ -212,7 +221,7 @@
             });
 
 
-            $activityType.trigger('change');
+            activityType.trigger('change');
         });
     </script>
 @endpush

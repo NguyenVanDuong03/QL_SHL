@@ -27,11 +27,18 @@ class StudentConductScoresExport implements FromQuery, WithHeadings, WithMapping
     public function query()
     {
         return Student::query()
-            ->select(
+            ->select([
                 'students.student_code',
                 'users.name',
-                DB::raw('COALESCE(SUM(detail_conduct_scores.final_score), 0) as total_conduct_score')
-            )
+                DB::raw('COALESCE(SUM(detail_conduct_scores.final_score), 0) as total_conduct_score'),
+                DB::raw('CASE
+                    WHEN COALESCE(SUM(detail_conduct_scores.final_score), 0) >= 90 THEN "Xuất sắc"
+                    WHEN COALESCE(SUM(detail_conduct_scores.final_score), 0) >= 80 THEN "Giỏi"
+                    WHEN COALESCE(SUM(detail_conduct_scores.final_score), 0) >= 70 THEN "Khá"
+                    WHEN COALESCE(SUM(detail_conduct_scores.final_score), 0) >= 50 THEN "Trung bình"
+                    ELSE "Kém"
+                END as ranking')
+            ])
             ->join('users', 'students.user_id', '=', 'users.id')
             ->join('study_classes', 'students.study_class_id', '=', 'study_classes.id')
             ->leftJoin('student_conduct_scores', function ($join) {
@@ -45,7 +52,7 @@ class StudentConductScoresExport implements FromQuery, WithHeadings, WithMapping
             ->leftJoin('detail_conduct_scores', 'student_conduct_scores.id', '=', 'detail_conduct_scores.student_conduct_score_id')
             ->where('study_classes.id', $this->studyClassId)
             ->groupBy('students.id', 'students.student_code', 'users.name')
-            ->orderBy('students.student_code');
+            ->orderBy('users.name', 'desc');
     }
 
     public function headings(): array
@@ -54,6 +61,7 @@ class StudentConductScoresExport implements FromQuery, WithHeadings, WithMapping
             'Mã sinh viên',
             'Họ và tên',
             'Tổng điểm rèn luyện',
+            'Xếp hạng',
         ];
     }
 
@@ -63,6 +71,7 @@ class StudentConductScoresExport implements FromQuery, WithHeadings, WithMapping
             $row->student_code,
             $row->name,
             $row->total_conduct_score,
+            $row->ranking,
         ];
     }
 
@@ -71,11 +80,11 @@ class StudentConductScoresExport implements FromQuery, WithHeadings, WithMapping
         $sheet->getColumnDimension('A')->setWidth(20);
         $sheet->getColumnDimension('B')->setWidth(30);
         $sheet->getColumnDimension('C')->setWidth(25);
+        $sheet->getColumnDimension('D')->setWidth(20);
 
         $sheet->setAutoFilter($sheet->calculateWorksheetDimension());
 
         return [
-            // Định dạng tiêu đề
             1 => [
                 'font' => ['bold' => true],
                 'fill' => [
@@ -91,9 +100,8 @@ class StudentConductScoresExport implements FromQuery, WithHeadings, WithMapping
     {
         return [
             AfterSheet::class => function (AfterSheet $event) {
-                // Thêm viền cho toàn bộ bảng
                 $event->sheet->getStyle(
-                    'A1:C' . $event->sheet->getHighestRow()
+                    'A1:D' . $event->sheet->getHighestRow()
                 )->applyFromArray([
                     'borders' => [
                         'allBorders' => [

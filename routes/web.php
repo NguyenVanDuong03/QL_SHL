@@ -107,7 +107,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
                     Route::get('/list/detail', [LecturerController::class, 'detailConductScore'])->name('detail');
                     Route::post('/list/detail', [LecturerController::class, 'saveConductScore'])->name('save');
                     Route::get('/export-conduct-score', [LecturerController::class, 'exportConductScore'])->name('exportConductScore');
-                    Route::get('/{id?}', [LecturerController::class, 'infoConductScore'])->name('infoConductScore');
+                    Route::get('/information', [LecturerController::class, 'infoConductScore'])->name('infoConductScore');
                 }
             );
 
@@ -227,9 +227,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
                 ],
                 function () {
                     Route::get('/', [StudentAffairsDepartmentController::class, 'indexConductScore'])->name('index');
+                    Route::get('/information', [StudentAffairsDepartmentController::class, 'infoConductScore'])->name('infoConductScore');
+                    Route::get('/export-conduct-score', [StudentAffairsDepartmentController::class, 'exportConductScore'])->name('exportConductScore');
                     Route::post('/', [StudentAffairsDepartmentController::class, 'createConductScore'])->name('create');
                      Route::put('/{id?}', [StudentAffairsDepartmentController::class, 'editConductScore'])->name('update');
-                    Route::get('/{id?}', [StudentAffairsDepartmentController::class, 'infoConductScore'])->name('infoConductScore');
                      Route::delete('/{id?}', [StudentAffairsDepartmentController::class, 'deleteConductScore'])->name('delete');
                 }
             );
@@ -389,7 +390,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
                 Route::get('/list', [FacultyOfficeController::class, 'listConductScore'])->name('list');
                 Route::get('/list/detail', [FacultyOfficeController::class, 'detailConductScore'])->name('detail');
                 Route::post('/list/detail', [FacultyOfficeController::class, 'saveConductScore'])->name('save');
-                Route::get('/info', [FacultyOfficeController::class, 'infoConductScore'])->name('infoConductScore');
+                Route::get('/information', [FacultyOfficeController::class, 'infoConductScore'])->name('infoConductScore');
             }
         );
     });

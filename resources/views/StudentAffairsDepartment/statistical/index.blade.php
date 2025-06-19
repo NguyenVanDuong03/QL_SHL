@@ -8,29 +8,6 @@
 
 @push('styles')
     <style>
-        .gradient-card-blue {
-            background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
-        }
-        .gradient-card-green {
-            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-        }
-        .gradient-card-purple {
-            background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
-        }
-        .gradient-card-orange {
-            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
-        }
-        .dashboard-bg {
-            background-color: #f8f9fa;
-            min-height: 100vh;
-        }
-        .card-hover {
-            transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
-        }
-        .card-hover:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-        }
         .progress-custom {
             height: 8px;
             border-radius: 4px;

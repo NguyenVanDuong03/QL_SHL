@@ -28,7 +28,7 @@ class ClassSessionRegistrationRepository extends BaseRepository
         $latestRegistration = $this->getModel()->newQuery()->orderByDesc('id')->first();
 
         $count = DB::table('class_session_requests')
-        ->where('class_session_registration_id', $latestRegistration->id)
+        ->where('class_session_registration_id', $latestRegistration->id ?? null)
         ->count();
 
         return $this->getModel()
@@ -36,7 +36,7 @@ class ClassSessionRegistrationRepository extends BaseRepository
         ->join('semesters', 'class_session_registrations.semester_id', '=', 'semesters.id')
         ->leftJoin('class_session_requests', 'class_session_requests.class_session_registration_id', '=', 'class_session_registrations.id')
         ->select(['class_session_registrations.id', 'semesters.name', 'school_year', 'class_session_registrations.open_date', 'class_session_registrations.end_date', DB::raw($count . ' as total_registered_classes')])
-        ->where('class_session_registrations.id', $latestRegistration->id)
+        ->where('class_session_registrations.id', $latestRegistration->id ?? null)
         ->first();
     }
 

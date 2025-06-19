@@ -6,16 +6,22 @@ use App\Helpers\Constant;
 use App\Services\AcademicWarningService;
 use App\Services\AttendanceService;
 use App\Services\ClassSessionRegistrationService;
+use App\Services\ClassSessionReportService;
 use App\Services\ClassSessionRequestService;
+use App\Services\CohortService;
 use App\Services\ConductCriteriaService;
 use App\Services\ConductEvaluationPeriodService;
+use App\Services\DepartmentService;
 use App\Services\DetailConductScoreService;
+use App\Services\FacultyService;
 use App\Services\LecturerService;
+use App\Services\MajorService;
 use App\Services\RoomService;
 use App\Services\SemesterService;
 use App\Services\StudentConductScoreService;
 use App\Services\StudentService;
 use App\Services\StudyClassService;
+use App\Services\UserService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
@@ -24,27 +30,48 @@ use Illuminate\Support\Facades\Storage;
 class FacultyOfficeController extends Controller
 {
     public function __construct(
+        protected SemesterService                 $semesterService,
         protected ClassSessionRegistrationService $classSessionRegistrationService,
         protected ClassSessionRequestService      $classSessionRequestService,
-        protected StudyClassService               $studyClassService,
         protected StudentService                  $studentService,
-        protected RoomService                     $roomService,
-        protected SemesterService                 $SemesterService,
-        protected AcademicWarningService          $academicWarningService,
-        protected AttendanceService               $attendanceService,
-        protected SemesterService                 $semesterService,
         protected LecturerService                 $lecturerService,
-        protected StudentConductScoreService      $studentConductScoreService,
+        protected RoomService                     $roomService,
+        protected DepartmentService               $departmentService,
+        protected FacultyService                  $facultyService,
+        protected UserService                     $userService,
+        protected CohortService                   $cohortService,
+        protected StudyClassService               $studyClassService,
         protected ConductEvaluationPeriodService  $conductEvaluationPeriodService,
-        protected DetailConductScoreService       $detailConductScoreService,
-        protected ConductCriteriaService          $conductCriteriaService
+        protected ClassSessionReportService       $classSessionReportService,
+        protected AttendanceService               $attendanceService,
+        protected MajorService                    $majorService,
+        protected AcademicWarningService          $academicWarningService,
+        protected StudentConductScoreService      $studentConductScoreService,
     )
     {
     }
 
     public function index()
     {
-        return view('facultyOffice.index');
+        $totalStudyClasses = $this->studyClassService->get()->count();
+        $semester = $this->semesterService->get()->first() ?? null;
+        $totalAcademicWarnings = $this->academicWarningService->academicWarningBySemesterId($semester->id ?? null)->get()->count();
+        $totalClassSessionReports = $this->classSessionReportService->countClassSessionReports($semester->id ?? null);
+        $getAllClassSession = $this->classSessionRequestService->getAllClassSession()->toArray();
+        $countClassSession = $this->classSessionRequestService->countClassSession();
+        $statisticalUserByRole = $this->userService->statisticalUserByRole()->toArray();
+
+        $data = [
+            'totalStudyClasses' => $totalStudyClasses,
+            'totalAcademicWarnings' => $totalAcademicWarnings,
+            'semester' => $semester,
+            'totalClassSessionReports' => $totalClassSessionReports,
+            'getAllClassSession' => $getAllClassSession,
+            'countClassSession' => $countClassSession,
+            'statisticalUserByRole' => $statisticalUserByRole,
+        ];
+//        dd($data['countClassSession']);
+        return view('facultyOffice.index', compact('data'));
     }
 
     public function indexConductScore(Request $request)
@@ -96,6 +123,7 @@ class FacultyOfficeController extends Controller
             'listConductScores' => $listConductScores,
             'countStudentsByConductStatus' => $countStudentsByConductStatus,
             'conduct_evaluation_period_id' => $params['conduct_evaluation_period_id'] ?? null,
+            'study_class_id' => $params['study_class_id'] ?? null,
         ];
 
         return view('facultyOffice.conductScore.listClass', compact('data'));
@@ -125,6 +153,7 @@ class FacultyOfficeController extends Controller
             'checkConductEvaluationPeriodBySemesterId' => $checkConductEvaluationPeriodBySemesterId,
             'student' => $student,
             'conductCriterias' => $conductCriterias,
+            'study_class_id' => $params['study_class_id'] ?? null,
         ];
 //dd($data['getConductCriteriaData']);
         return view('facultyOffice.conductScore.detail', compact('data'));

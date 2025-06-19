@@ -5,7 +5,7 @@
 @section('breadcrumb')
     <x-breadcrumb.breadcrumb :links="[
         ['label' => 'Điểm rèn luyện', 'url' => 'teacher.conduct-score.index'],
-        ['label' => 'Danh sách lớp học', 'url' => 'teacher.conduct-score.infoConductScore'],
+        ['label' => 'Danh sách lớp học', 'url' => 'teacher.conduct-score.infoConductScore', 'params' => ['conduct_evaluation_period_id' => $data['conduct_evaluation_period_id']]],
         ['label' => 'Danh sách sinh viên'],
     ]"/>
 @endsection
@@ -60,32 +60,11 @@
             <div class="col-12">
                 <div class="mb-4">
                     <div class="d-md-flex justify-content-between align-items-center mb-3">
-                        <a href="{{ route('teacher.conduct-score.index') }}"
+                        <a href="{{ route('teacher.conduct-score.infoConductScore', ['conduct_evaluation_period_id' => $data['conduct_evaluation_period_id']]) }}"
                            class="btn btn-outline-secondary btn-sm">
                             <i class="fas fa-arrow-left me-2"></i>Quay lại
                         </a>
 
-                    </div>
-
-                    <!-- Filters -->
-                    <div class="row mb-4">
-                        <div class="col-md-8 mb-3">
-                            <div class="position-relative">
-                                <i class="fas fa-search position-absolute"
-                                   style="left: 12px; top: 50%; transform: translateY(-50%); color: #6b7280;"></i>
-                                <input type="text" id="searchInput" class="form-control ps-5"
-                                       placeholder="Tìm kiếm theo tên hoặc mã sinh viên...">
-                            </div>
-                        </div>
-                        <div class="col-md-4 mb-3">
-                            <select id="statusFilter" class="form-select">
-                                <option value="all">Tất cả trạng thái</option>
-                                <option value="not_evaluated">Chưa đánh giá</option>
-                                <option value="student_evaluated">SV đã chấm</option>
-                                <option value="teacher_evaluated">GVCN đã chấm</option>
-                                <option value="rejected">Bị từ chối</option>
-                            </select>
-                        </div>
                     </div>
 
                     <!-- Statistics -->
@@ -119,6 +98,21 @@
                             </div>
                         </div>
                     </div>
+                </div>
+
+                <!-- Filters -->
+                <div class="d-flex justify-content-end mb-4">
+                    <form method="GET" action="{{ route('teacher.conduct-score.list') }}" class="position-relative">
+                        <input type="hidden" name="conduct_evaluation_period_id" value="{{ $data['conduct_evaluation_period_id'] }}">
+                        <input type="hidden" name="study_class_id" value="{{ $data['study_class_id'] }}">
+                        <div class="input-group me-2" style="width: 250px;">
+                            <input type="text" class="form-control" name="search" value="{{ request('search') }}" placeholder="Tìm kiếm..."
+                                   id="search">
+                            <button class="btn btn-secondary" type="submit">
+                                <i class="fas fa-search"></i>
+                            </button>
+                        </div>
+                    </form>
                 </div>
 
                 <h4 class="text-center mb-4">Quản lý đánh giá điểm rèn luyện</h4>
@@ -161,7 +155,7 @@
                                         <span class="fw-bold">{{ $item['total_self_score'] }} / {{ $item['total_class_score'] }} / {{ $item['total_final_score'] }}</span>
                                     </td>
                                     <td class="text-center">
-                                        <a href="{{ route('teacher.conduct-score.detail', ['student_id' => $item['student_id'], 'conduct_evaluation_period_id' => $data['conduct_evaluation_period_id'] ]) }}"
+                                        <a href="{{ route('teacher.conduct-score.detail', ['student_id' => $item['student_id'], 'conduct_evaluation_period_id' => $data['conduct_evaluation_period_id'], 'study_class_id' => $data['study_class_id'] ]) }}"
                                            class="action-btn btn-edit" title="Chỉnh sửa">
                                             <i class="fas fa-edit"></i>
                                         </a>

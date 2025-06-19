@@ -197,7 +197,7 @@ class StudentController extends Controller
         $params = $request->all();
         $params['student_id'] = auth()->user()->student?->id ?? null;
         $currentSemester = $this->semesterService->get()->first();
-        $params['semester_id'] = $params['semester_id'] ?? $currentSemester->id;
+        $params['semester_id'] = $params['semester_id'] ?? $currentSemester->id ?? null;
         $semesters = $this->semesterService->getFourSemester()->limit(4)->get()->toArray();
         $findConductEvaluationPeriodBySemesterId = $this->conductEvaluationPeriodService->findConductEvaluationPeriodBySemesterId($params['semester_id']);
 //        $detailConductScores = $this->detailConductScoreService->get($params)->toArray();
