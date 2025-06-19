@@ -17,12 +17,21 @@ class StudyClassRepository extends BaseRepository
         return $this->model;
     }
 
-    public function getStudyClassListByLecturerId($lecturerId)
+    public function getStudyClassListByLecturerId($params)
     {
+        $lecturerId = $params['lecturer_id'];
+        $search = $params['search'] ?? '';
+
         $query = $this->getModel()
             ->with(['students'])
             ->where('lecturer_id', $lecturerId)
             ->orderBy('id', 'desc');
+
+        if (!empty($search)) {
+            $query->where(function ($q) use ($search) {
+                $q->where('name', 'like', "%$search%");
+            });
+        }
 
         return $query;
     }
@@ -641,6 +650,25 @@ class StudyClassRepository extends BaseRepository
             \Log::error('Error in getStudyClassListByConductEvaluationPeriodId: ' . $e->getMessage());
             throw new \Exception('Failed to retrieve study class conduct statistics');
         }
+    }
+
+    public function statisticalClassByDepartment()
+    {
+        $query = $this->getModel()
+            ->newQuery()
+            ->select(
+                'departments.id as department_id',
+                'departments.name as department_name',
+                DB::raw('COUNT(study_classes.id) as total_classes')
+            )
+            ->join('majors', 'study_classes.major_id', '=', 'majors.id')
+            ->join('faculties', 'majors.faculty_id', '=', 'faculties.id')
+            ->join('departments', 'faculties.department_id', '=', 'departments.id')
+            ->groupBy('departments.id', 'departments.name')
+            ->orderByDesc('total_classes')
+            ->get();
+
+        return $query;
     }
 
 

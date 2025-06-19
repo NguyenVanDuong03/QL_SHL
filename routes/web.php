@@ -213,9 +213,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
                 ],
                 function () {
                     Route::get('/', [StudentAffairsDepartmentController::class, 'indexClass'])->name('index');
-                    Route::post('/', [StudentAffairsDepartmentController::class, 'createClass'])->name('create');
-                    Route::put('/{id?}', [StudentAffairsDepartmentController::class, 'editClass'])->name('edit');
-                    Route::delete('/{id?}', [StudentAffairsDepartmentController::class, 'deleteClass'])->name('delete');
+                    Route::post('/', [StudentAffairsDepartmentController::class, 'createClass'])->name('store');
+                    Route::put('/{id}', [StudentAffairsDepartmentController::class, 'editClass'])->name('update');
+                    Route::delete('/{id}', [StudentAffairsDepartmentController::class, 'deleteClass'])->name('delete');
                 }
             );
 
@@ -246,6 +246,18 @@ Route::middleware(['auth', 'verified'])->group(function () {
                     Route::get('/{id?}', [StudentAffairsDepartmentController::class, 'infoAcademicWarning'])->name('infoAcademicWarning');
                      Route::put('/{id?}', [StudentAffairsDepartmentController::class, 'editAcademicWarning'])->name('update');
                      Route::delete('/{id?}', [StudentAffairsDepartmentController::class, 'deleteAcademicWarning'])->name('delete');
+                }
+            );
+
+            // Statistical
+            Route::group(
+                [
+                    'prefix' => 'statistical',
+                    'as' => 'statistical.',
+                ],
+                function () {
+                    Route::get('/', [StudentAffairsDepartmentController::class, 'indexStatistical'])->name('index');
+                    Route::get('/export-attendance', [StudentAffairsDepartmentController::class, 'exportAttendance'])->name('exportAttendance');
                 }
             );
 

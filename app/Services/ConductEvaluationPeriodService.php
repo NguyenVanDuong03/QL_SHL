@@ -23,15 +23,26 @@ class ConductEvaluationPeriodService extends BaseService
         $sort = Arr::get($params, 'sort', 'id:desc');
         $relates = Arr::get($params, 'relates', []);
         $withSemester = Arr::get($params, 'withSemester', null);
+        $search = Arr::get($params, 'search', null);
+
         if ($withSemester) {
-            $relates = ['semester'];
+            $relates[] = 'semester';
         }
 
+        $whereHas = Arr::get($params, 'where_has', []);
+        if ($search) {
+            $search = trim($search);
+            $whereHas['semester'] = function ($query) use ($search) {
+                $query->where('name', 'LIKE', "%{$search}%")
+                    ->orWhere('school_year', 'LIKE', "%{$search}%");
+            };
+        }
 
         return [
             'sort' => $sort,
             'wheres' => $wheres,
             'relates' => $relates,
+            'where_has' => $whereHas,
         ];
     }
 

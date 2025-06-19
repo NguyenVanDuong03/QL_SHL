@@ -49,7 +49,9 @@ class ClassSessionRequestRepository extends BaseRepository
 
     public function getClassSessionRequestsDone($params)
     {
-        return $this->getModel()
+        $search = $params['search'] ?? '';
+
+        $query = $this->getModel()
             ->with([
                 'lecturer.user',
                 'studyClass',
@@ -58,6 +60,14 @@ class ClassSessionRequestRepository extends BaseRepository
             ->where('study_class_id', $params['study_class_id'])
             ->where('status', Constant::CLASS_SESSION_STATUS['DONE'])
             ->orderBy('proposed_at', 'desc');
+
+        if (!empty($search)) {
+            $query->where(function ($q) use ($search) {
+                $q->where('title', 'like', '%' . $search . '%');
+            });
+        }
+
+        return $query;
     }
 
     public function getTotalDoneSessionsByLecturer($lecturerId)

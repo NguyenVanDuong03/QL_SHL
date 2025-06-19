@@ -121,11 +121,10 @@
                         <table class="table">
                             <thead>
                             <tr>
-                                <th>STT</th>
-                                <th class="d-none d-md-table-cell">Giáo viên</th>
-                                <th>Thời gian</th>
-                                <th>Lớp</th>
+                                <th>Sinh hoạt lớp</th>
                                 <th>Tiều đề</th>
+                                <th>Thời gian</th>
+                                <th class="d-none d-md-table-cell">Hình thức</th>
                                 <th class="text-center">Thao tác</th>
                             </tr>
                             </thead>
@@ -143,19 +142,9 @@
                                     <tr>
                                         <td>
                                             <div
-                                                class="fw-semibold">{{ $loop->iteration }}</div>
+                                                class="fw-semibold">{{ $item['type'] == 0 ? 'Cố định' : 'Linh hoạt' }}</div>
                                             <small
-                                                class="text-muted d-md-none">GV: {{ $item['lecturer']['user']['name'] }}</small>
-                                        </td>
-                                        <td class="d-none d-md-table-cell">{{ $item['lecturer']['user']['name'] }}</td>
-                                        <td>
-                                            <div
-                                                class="fw-semibold">{{ \Carbon\Carbon::parse($item['proposed_at'])->format('H:i') }}</div>
-                                            <small
-                                                class="text-muted">{{ \Carbon\Carbon::parse($item['proposed_at'])->format('d/m/Y') }}</small>
-                                        </td>
-                                        <td>
-                                            {{ $item['study_class']['name'] }}
+                                                class="text-muted d-md-none {{ $item['type'] == 0 ? 'text-success' : ($item['type'] == 1 ? 'text-primary' : 'text-warning') }}">{{ $item['type'] == 0 ? 'Trực tiếp' : ($item['type'] == 1 ? 'Trực tuyến' : 'Dã ngoại')}}</small>
                                         </td>
                                         <td>
                                             <span class="title_cut">
@@ -164,15 +153,20 @@
                                         </td>
                                         <td>
                                             <div
+                                                class="fw-semibold">{{ \Carbon\Carbon::parse($item['proposed_at'])->format('H:i') }}</div>
+                                            <small
+                                                class="text-muted">{{ \Carbon\Carbon::parse($item['proposed_at'])->format('d/m/Y') }}</small>
+                                        </td>
+                                        <td class="d-none d-md-table-cell {{ $item['type'] == 0 ? 'text-success' : ($item['type'] == 1 ? 'text-primary' : 'text-warning') }}">{{ $item['type'] == 0 ? 'Trực tiếp' : ($item['type'] == 1 ? 'Trực tuyến' : 'Dã ngoại') }}</td>
+                                        {{--                                        <td>--}}
+                                        {{--                                                <span--}}
+                                        {{--                                                    class="badge bg-light text-dark">{{ $item['study_class']['name'] }}</span>--}}
+                                        {{--                                        </td>--}}
+                                        <td>
+                                            <div
                                                 class="action-buttons d-flex flex-column flex-md-row gap-2 justify-content-center">
-                                                <a href="{{ route('class-staff.class-session.detailClassSession', ['study-class-id' => $item['study_class_id'], 'session-request-id' => $item['id']]) }}"
-                                                   class="btn btn-action btn-details" title="Xem chi tiết">
+                                                <a href="{{ route('student.class-session.detailClassSession', ['study-class-id' => $item['study_class']['id'], 'session-request-id' => $item['id']]) }}" class="btn btn-action btn-details" title="Xem chi tiết">
                                                     <i class="fas fa-eye"></i>
-                                                </a>
-                                                <a href="{{ route('class-staff.class-session.report', ['class_session_request_id' => $item['id'], 'report_id' => $item['class_session_report']['id'] ?? null ]) }}"
-                                                   class="btn btn-success {{ $item['type'] == 0 ? '' : 'd-none' }}"
-                                                   title="{{ isset($item['class_session_report']) ? 'Xem báo cáo' : 'Tạo báo cáo' }}">
-                                                    <i class="fas fa-pager"></i>
                                                 </a>
                                             </div>
                                         </td>

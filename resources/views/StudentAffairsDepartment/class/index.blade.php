@@ -5,15 +5,14 @@
 @section('breadcrumb')
     <x-breadcrumb.breadcrumb :links="[
     ['label' => 'Lớp học']
-    ]" />
+    ]"/>
 @endsection
 
-@section('main')
+@push('styles')
     <style>
-        /* Custom CSS - chỉ những gì Bootstrap chưa có */
         .stats-card {
-            background: linear-gradient(135deg, #0d6efd, #0056b3);
-            color: white;
+            /*background: linear-gradient(135deg, #0d6efd, #0056b3);*/
+            /*color: white;*/
             border-radius: 0.5rem;
             padding: 1.5rem;
             margin-bottom: 1rem;
@@ -83,77 +82,77 @@
             }
         }
     </style>
+@endpush
 
+@section('main')
     <div class="container-fluid">
         <!-- Statistics Cards -->
-        <div class="row mb-4">
-            <div class="col-lg-3 col-md-6 col-sm-6 mb-3">
-                <div class="stats-card">
-                    <div class="stats-number">24</div>
-                    <div class="stats-label">Tổng số lớp học</div>
+        <div class="row mb-3">
+            <div class="col-lg-3 col-md-3 mb-3">
+                <div class="stats-card border">
+                    <div class="stats-number">{{ $data['studyClasses']['total'] }}</div>
+                    <div class="stats-label">Lớp học</div>
                 </div>
             </div>
-            <div class="col-lg-3 col-md-6 col-sm-6 mb-3">
-                <div class="stats-card bg-success">
-                    <div class="stats-number">8</div>
+            <div class="col-lg-3 col-md-3 mb-3">
+                <div class="stats-card border">
+                    <div class="stats-number">{{ count($data['majors']) }}</div>
                     <div class="stats-label">Ngành học</div>
                 </div>
             </div>
-            <div class="col-lg-3 col-md-6 col-sm-6 mb-3">
-                <div class="stats-card bg-warning">
-                    <div class="stats-number">5</div>
-                    <div class="stats-label">Bộ môn</div>
+            <div class="col-lg-3 col-md-3 mb-3">
+                <div class="stats-card border">
+                    <div class="stats-number">{{ $data['totalDepartments'] }}</div>
+                    <div class="stats-label">Khoa</div>
                 </div>
             </div>
-            <div class="col-lg-3 col-md-6 col-sm-6 mb-3">
-                <div class="stats-card bg-info">
-                    <div class="stats-number">856</div>
-                    <div class="stats-label">Tổng sinh viên</div>
+            <div class="col-lg-3 col-md-3 mb-3">
+                <div class="stats-card border">
+                    <div class="stats-number">{{ $data['totalStudents'] }}</div>
+                    <div class="stats-label">Sinh viên</div>
                 </div>
             </div>
         </div>
 
         <!-- Search and Filter -->
-        <div class="card mb-4">
+        <div class="card mb-3">
             <div class="card-body">
-                <div class="row g-3">
-                    <div class="col-md-4">
-                        <label class="form-label">Tìm kiếm</label>
-                        <div class="input-group">
-                            <input type="text" class="form-control" id="searchInput" placeholder="Tìm kiếm lớp học...">
-                            <button class="btn btn-outline-secondary" type="button">
-                                <i class="fas fa-search"></i>
-                            </button>
+                <form action="{{ route('student-affairs-department.class.index') }}" method="GET">
+                    <div class="row g-3">
+                        <div class="col-md-4">
+                            <label class="form-label">Ngành học</label>
+                            <select class="form-select" id="major_id_filter" name="major_id">
+                                <option value="">Tất cả ngành</option>
+                                @forelse($data['majors'] ?? [] as $item)
+                                    <option value="{{ $item['id'] }}" {{ $item['id'] == request()->get('major_id') ? 'selected' : '' }}>{{ $item['name'] }}</option>
+                                @empty
+                                    <option value="" disabled>Không có ngành học</option>
+                                @endforelse
+                            </select>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Niên khóa</label>
+                            <select class="form-select" id="cohort_id_filter" name="cohort_id">
+                                <option value="">Tất cả khóa</option>
+                                @forelse($data['cohorts'] ?? [] as $item)
+                                    <option value="{{ $item['id'] }}"  {{ $item['id'] == request()->get('cohort_id') ? 'selected' : '' }}>{{ $item['name'] }}</option>
+                                @empty
+                                    <option value="" disabled>Không có niên khóa</option>
+                                @endforelse
+                            </select>
+                        </div>
+
+                        <div class="col-md-4">
+                            <label class="form-label">Tìm kiếm</label>
+                            <div class="input-group">
+                                <input type="text" class="form-control" id="searchInput" name="search" value="{{ request()->get('search') }}" placeholder="Tìm kiếm lớp học...">
+                                <button class="btn btn-outline-secondary" type="submit">
+                                    <i class="fas fa-search"></i>
+                                </button>
+                            </div>
                         </div>
                     </div>
-                    <div class="col-md-3">
-                        <label class="form-label">Ngành học</label>
-                        <select class="form-select" id="majorFilter">
-                            <option value="">Tất cả ngành</option>
-                            <option value="1">Công nghệ thông tin</option>
-                            <option value="2">Kỹ thuật phần mềm</option>
-                            <option value="3">Khoa học máy tính</option>
-                            <option value="4">Hệ thống thông tin</option>
-                        </select>
-                    </div>
-                    <div class="col-md-3">
-                        <label class="form-label">Bộ môn</label>
-                        <select class="form-select" id="facultyFilter">
-                            <option value="">Tất cả bộ môn</option>
-                            <option value="1">Công nghệ phần mềm</option>
-                            <option value="2">Hệ thống thông tin</option>
-                            <option value="3">Khoa học máy tính</option>
-                            <option value="4">Mạng máy tính</option>
-                            <option value="5">Trí tuệ nhân tạo</option>
-                        </select>
-                    </div>
-                    <div class="col-md-2">
-                        <label class="form-label">&nbsp;</label>
-                        <button class="btn btn-secondary w-100 d-block" onclick="filterClasses()">
-                            <i class="fas fa-filter"></i> Lọc
-                        </button>
-                    </div>
-                </div>
+                </form>
             </div>
         </div>
 
@@ -165,229 +164,236 @@
                     <i class="fas fa-plus"></i> Thêm lớp học
                 </button>
             </div>
-            <div class="card-body p-0">
+            <div class="card-body p-2">
                 <div class="table-responsive">
-                    <table class="table table-striped table-hover mb-0" id="classesTable">
-                        <thead class="table-dark">
+                    <table class="table table-hover mb-0" id="classesTable">
+                        <thead class="table-light">
                         <tr>
-                            <th width="5%">#</th>
-                            <th width="15%">Tên lớp</th>
-                            <th width="20%" class="d-none d-md-table-cell">Ngành học</th>
-                            <th width="15%" class="d-none d-lg-table-cell">Bộ môn</th>
-                            <th width="20%" class="d-none d-md-table-cell">Giảng viên phụ trách</th>
-                            <th width="10%">Khóa</th>
-                            <th width="15%">Thao tác</th>
+                            <th>#</th>
+                            <th>Niên khóa</th>
+                            <th>Tên lớp</th>
+                            <th class="d-none d-md-table-cell">Ngành học</th>
+                            <th class="d-none d-lg-table-cell">Khoa</th>
+                            <th>Thao tác</th>
                         </tr>
                         </thead>
                         <tbody>
-                        <tr data-id="1">
-                            <td>1</td>
-                            <td><strong>CNTT2021-1</strong></td>
-                            <td class="d-none d-md-table-cell">Công nghệ thông tin</td>
-                            <td class="d-none d-lg-table-cell">Công nghệ phần mềm</td>
-                            <td class="d-none d-md-table-cell">TS. Nguyễn Văn A</td>
-                            <td>2021</td>
-                            <td>
-                                <div class="action-buttons">
-                                    <button class="btn btn-sm btn-info" onclick="viewClass(1)" title="Xem">
-                                        <i class="fas fa-eye"></i>
-                                    </button>
-                                    <button class="btn btn-sm btn-warning" onclick="editClass(1)" title="Sửa">
-                                        <i class="fas fa-edit"></i>
-                                    </button>
-                                    <button class="btn btn-sm btn-danger" onclick="deleteClass(1)" title="Xóa">
-                                        <i class="fas fa-trash"></i>
-                                    </button>
-                                </div>
-                            </td>
-                        </tr>
-                        <tr data-id="2">
-                            <td>2</td>
-                            <td><strong>CNTT2021-2</strong></td>
-                            <td class="d-none d-md-table-cell">Công nghệ thông tin</td>
-                            <td class="d-none d-lg-table-cell">Công nghệ phần mềm</td>
-                            <td class="d-none d-md-table-cell">ThS. Trần Thị B</td>
-                            <td>2021</td>
-                            <td>
-                                <div class="action-buttons">
-                                    <button class="btn btn-sm btn-info" onclick="viewClass(2)" title="Xem">
-                                        <i class="fas fa-eye"></i>
-                                    </button>
-                                    <button class="btn btn-sm btn-warning" onclick="editClass(2)" title="Sửa">
-                                        <i class="fas fa-edit"></i>
-                                    </button>
-                                    <button class="btn btn-sm btn-danger" onclick="deleteClass(2)" title="Xóa">
-                                        <i class="fas fa-trash"></i>
-                                    </button>
-                                </div>
-                            </td>
-                        </tr>
-                        <tr data-id="3">
-                            <td>3</td>
-                            <td><strong>KTPM2022-1</strong></td>
-                            <td class="d-none d-md-table-cell">Kỹ thuật phần mềm</td>
-                            <td class="d-none d-lg-table-cell">Công nghệ phần mềm</td>
-                            <td class="d-none d-md-table-cell">PGS.TS. Lê Văn C</td>
-                            <td>2022</td>
-                            <td>
-                                <div class="action-buttons">
-                                    <button class="btn btn-sm btn-info" onclick="viewClass(3)" title="Xem">
-                                        <i class="fas fa-eye"></i>
-                                    </button>
-                                    <button class="btn btn-sm btn-warning" onclick="editClass(3)" title="Sửa">
-                                        <i class="fas fa-edit"></i>
-                                    </button>
-                                    <button class="btn btn-sm btn-danger" onclick="deleteClass(3)" title="Xóa">
-                                        <i class="fas fa-trash"></i>
-                                    </button>
-                                </div>
-                            </td>
-                        </tr>
-                        <tr data-id="4">
-                            <td>4</td>
-                            <td><strong>KHMT2022-1</strong></td>
-                            <td class="d-none d-md-table-cell">Khoa học máy tính</td>
-                            <td class="d-none d-lg-table-cell">Khoa học máy tính</td>
-                            <td class="d-none d-md-table-cell">TS. Phạm Thị D</td>
-                            <td>2022</td>
-                            <td>
-                                <div class="action-buttons">
-                                    <button class="btn btn-sm btn-info" onclick="viewClass(4)" title="Xem">
-                                        <i class="fas fa-eye"></i>
-                                    </button>
-                                    <button class="btn btn-sm btn-warning" onclick="editClass(4)" title="Sửa">
-                                        <i class="fas fa-edit"></i>
-                                    </button>
-                                    <button class="btn btn-sm btn-danger" onclick="deleteClass(4)" title="Xóa">
-                                        <i class="fas fa-trash"></i>
-                                    </button>
-                                </div>
-                            </td>
-                        </tr>
-                        <tr data-id="5">
-                            <td>5</td>
-                            <td><strong>HTTT2023-1</strong></td>
-                            <td class="d-none d-md-table-cell">Hệ thống thông tin</td>
-                            <td class="d-none d-lg-table-cell">Hệ thống thông tin</td>
-                            <td class="d-none d-md-table-cell">GS.TS. Hoàng Văn E</td>
-                            <td>2023</td>
-                            <td>
-                                <div class="action-buttons">
-                                    <button class="btn btn-sm btn-info" onclick="viewClass(5)" title="Xem">
-                                        <i class="fas fa-eye"></i>
-                                    </button>
-                                    <button class="btn btn-sm btn-warning" onclick="editClass(5)" title="Sửa">
-                                        <i class="fas fa-edit"></i>
-                                    </button>
-                                    <button class="btn btn-sm btn-danger" onclick="deleteClass(5)" title="Xóa">
-                                        <i class="fas fa-trash"></i>
-                                    </button>
-                                </div>
-                            </td>
-                        </tr>
-                        <tr data-id="6">
-                            <td>6</td>
-                            <td><strong>HTTT2023-2</strong></td>
-                            <td class="d-none d-md-table-cell">Hệ thống thông tin</td>
-                            <td class="d-none d-lg-table-cell">Hệ thống thông tin</td>
-                            <td class="d-none d-md-table-cell">TS. Vũ Thị F</td>
-                            <td>2023</td>
-                            <td>
-                                <div class="action-buttons">
-                                    <button class="btn btn-sm btn-info" onclick="viewClass(6)" title="Xem">
-                                        <i class="fas fa-eye"></i>
-                                    </button>
-                                    <button class="btn btn-sm btn-warning" onclick="editClass(6)" title="Sửa">
-                                        <i class="fas fa-edit"></i>
-                                    </button>
-                                    <button class="btn btn-sm btn-danger" onclick="deleteClass(6)" title="Xóa">
-                                        <i class="fas fa-trash"></i>
-                                    </button>
-                                </div>
-                            </td>
-                        </tr>
+                        @forelse($data['studyClasses']['data'] ?? [] as $item)
+                            <tr data-id="1">
+                                <td>{{ $loop->iteration }}</td>
+                                <td>{{ $item['cohort']['name'] }}</td>
+                                <td><strong>{{ $item['name'] }}</strong></td>
+                                <td class="d-none d-md-table-cell">{{ $item['major']['name'] }}</td>
+                                <td class="d-none d-lg-table-cell">{{ $item['major']['faculty']['department']['name'] }}</td>
+                                <td>
+                                    <div class="action-buttons">
+                                        <button class="btn btn-sm btn-info" data-bs-target="#viewClassModal" data-bs-toggle="modal" title="Xem"
+                                            data-id="{{ $item['id'] }}"
+                                            data-name="{{ $item['name'] }}"
+                                            data-cohort="{{ $item['cohort']['name'] }}"
+                                            data-major="{{ $item['major']['name'] }}"
+                                            data-faculty="{{ $item['major']['faculty']['name'] }}"
+                                            data-department="{{ $item['major']['faculty']['department']['name'] }}"
+                                            data-lecturer="{{ $item['lecturer']['user']['name'] ?? 'Không xác định' }}"
+                                            data-students="{{ count($item['students']) ?? 0 }}"
+                                        >
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                        <button class="btn btn-sm btn-warning" data-bs-target="#editClassModal" data-bs-toggle="modal" title="Sửa"
+                                            data-id="{{ $item['id'] }}"
+                                            data-name="{{ $item['name'] }}"
+                                            data-cohort-id="{{ $item['cohort_id'] }}"
+                                            data-major-id="{{ $item['major_id'] }}"
+                                            data-lecturer-id="{{ $item['lecturer_id'] }}"
+                                        >
+                                            <i class="fas fa-edit"></i>
+                                        </button>
+                                        <button class="btn btn-sm btn-danger" data-bs-target="#deleteModal" data-bs-toggle="modal" title="Xóa"
+                                            data-id="{{ $item['id'] }}"
+                                            data-current-page="{{ $data['studyClasses']['current_page'] }}"
+                                            data-name="{{ $item['name'] }}"
+                                        >
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                        @empty
+                            <tr>
+                                <td colspan="6" class="text-center text-muted">Không có lớp học nào</td>
+                            </tr>
+                        @endforelse
                         </tbody>
                     </table>
                 </div>
 
                 <!-- Pagination -->
-                <div class="d-flex justify-content-between align-items-center p-3 border-top">
-                    <small class="text-muted">Hiển thị 1-6 trong tổng số 24 lớp học</small>
-                    <nav>
-                        <ul class="pagination pagination-sm mb-0">
-                            <li class="page-item disabled">
-                                <a class="page-link" href="#"><i class="fas fa-chevron-left"></i></a>
-                            </li>
-                            <li class="page-item active"><a class="page-link" href="#">1</a></li>
-                            <li class="page-item"><a class="page-link" href="#">2</a></li>
-                            <li class="page-item"><a class="page-link" href="#">3</a></li>
-                            <li class="page-item"><a class="page-link" href="#">4</a></li>
-                            <li class="page-item">
-                                <a class="page-link" href="#"><i class="fas fa-chevron-right"></i></a>
-                            </li>
-                        </ul>
-                    </nav>
-                </div>
+                <x-pagination.pagination :paginate="$data['studyClasses']" class="mt-3"/>
             </div>
         </div>
     </div>
 
     <!-- Add Class Modal -->
-    <div class="modal fade" id="addClassModal" tabindex="-1">
+    <div class="modal fade" id="addClassModal" tabindex="-1" aria-labelledby="addClassModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">
+                    <h5 class="modal-title" id="addClassModalLabel">
                         <i class="fas fa-plus-circle me-2"></i>Thêm lớp học mới
                     </h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Đóng"></button>
                 </div>
-                <form id="classForm">
+                <form id="addClassForm" method="POST" action="{{ route('student-affairs-department.class.store') }}">
+                    @csrf
+                    @method('POST')
                     <div class="modal-body">
                         <div class="row g-3">
                             <div class="col-md-6">
-                                <label class="form-label">Tên lớp <span class="text-danger">*</span></label>
-                                <input type="text" class="form-control" id="className" placeholder="VD: CNTT2023-1" required>
+                                <label for="className" class="form-label">Tên lớp <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control" id="className" name="name" placeholder="VD: 63KTPM2" required>
+                                <div class="invalid-feedback">Vui lòng nhập tên lớp.</div>
                             </div>
                             <div class="col-md-6">
-                                <label class="form-label">Khóa <span class="text-danger">*</span></label>
-                                <select class="form-select" id="cohort" required>
-                                    <option value="">Chọn khóa</option>
-                                    <option value="1">2020</option>
-                                    <option value="2">2021</option>
-                                    <option value="3">2022</option>
-                                    <option value="4">2023</option>
-                                    <option value="5">2024</option>
+                                <label for="cohort_id" class="form-label">Niên khóa <span class="text-danger">*</span></label>
+                                <select class="form-select" id="cohort_id" name="cohort_id" required>
+                                    <option value="" disabled selected>Chọn niên khóa</option>
+                                    @forelse($data['cohorts'] ?? [] as $item)
+                                        <option value="{{ $item['id'] ?? '' }}">{{ $item['name'] ?? 'Không xác định' }}</option>
+                                    @empty
+                                        <option value="">Không có khóa học</option>
+                                    @endforelse
                                 </select>
+                                <div class="invalid-feedback">Vui lòng chọn niên khóa.</div>
                             </div>
                             <div class="col-md-6">
-                                <label class="form-label">Ngành học <span class="text-danger">*</span></label>
-                                <select class="form-select" id="major" required>
-                                    <option value="">Chọn ngành học</option>
-                                    <option value="1">Công nghệ thông tin</option>
-                                    <option value="2">Kỹ thuật phần mềm</option>
-                                    <option value="3">Khoa học máy tính</option>
-                                    <option value="4">Hệ thống thông tin</option>
+                                <label for="major_id" class="form-label">Ngành học <span class="text-danger">*</span></label>
+                                <select class="form-select" id="major_id" name="major_id" required>
+                                    <option value="" disabled selected>Chọn ngành học</option>
+                                    @forelse($data['majors'] ?? [] as $item)
+                                        <option value="{{ $item['id'] ?? '' }}">{{ $item['name'] ?? 'Không xác định' }}</option>
+                                    @empty
+                                        <option value="">Không có ngành học</option>
+                                    @endforelse
                                 </select>
+                                <div class="invalid-feedback">Vui lòng chọn ngành học.</div>
                             </div>
                             <div class="col-md-6">
-                                <label class="form-label">Giảng viên phụ trách <span class="text-danger">*</span></label>
-                                <select class="form-select" id="lecturer" required>
-                                    <option value="">Chọn giảng viên</option>
-                                    <option value="1">TS. Nguyễn Văn A</option>
-                                    <option value="2">ThS. Trần Thị B</option>
-                                    <option value="3">PGS.TS. Lê Văn C</option>
-                                    <option value="4">TS. Phạm Thị D</option>
-                                    <option value="5">GS.TS. Hoàng Văn E</option>
-                                    <option value="6">TS. Vũ Thị F</option>
+                                <label for="lecturer" class="form-label">Giảng viên phụ trách <span class="text-danger">*</span></label>
+                                <select class="form-select" id="lecturer" name="lecturer_id" required>
+                                    <option value="" disabled selected>Chọn giảng viên</option>
+                                    @forelse($data['lecturers'] ?? [] as $item)
+                                        @php
+                                            $title = $item['title'] ?? '';
+                                            $userName = $item['user']['name'] ?? '';
+                                            $lecturerId = $item['id'] ?? '';
+                                            $renameTitle = [
+                                                'Tiến sĩ' => 'TS.',
+                                                'Thạc sĩ' => 'ThS.',
+                                                'Giáo sư' => 'GS.',
+                                                'Phó Giáo sư' => 'PGS.',
+                                                'Giảng viên' => 'GV.'
+                                            ];
+                                            $displayTitle = array_key_exists($title, $renameTitle) ? $renameTitle[$title] : $title;
+                                        @endphp
+                                        @if($lecturerId && $userName)
+                                            <option value="{{ $lecturerId }}">{{ $displayTitle }} {{ $userName }}</option>
+                                        @endif
+                                    @empty
+                                        <option value="">Không có giảng viên</option>
+                                    @endforelse
                                 </select>
+                                <div class="invalid-feedback">Vui lòng chọn giảng viên.</div>
                             </div>
                         </div>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
-                        <button type="submit" class="btn btn-primary">
+                        <button type="submit" class="btn btn-primary" id="saveClassButton">
                             <i class="fas fa-save me-1"></i>Lưu lớp học
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Class Modal -->
+    <div class="modal fade" id="editClassModal" tabindex="-1" aria-labelledby="editClassModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editClassModalLabel">
+                        <i class="fas fa-edit me-2"></i>Chỉnh sửa lớp học
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Đóng"></button>
+                </div>
+                <form id="editClassForm" method="POST" action="">
+                    @csrf
+                    @method('PUT')
+                    <div class="modal-body">
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label for="editClassName" class="form-label">Tên lớp <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control" id="editClassName" name="name" placeholder="VD: 63KTPM2" required>
+                                <div class="invalid-feedback">Vui lòng nhập tên lớp.</div>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="editCohortId" class="form-label">Niên khóa <span class="text-danger">*</span></label>
+                                <select class="form-select" id="editCohortId" name="cohort_id" required>
+                                    <option value="" disabled>Chọn niên khóa</option>
+                                    @forelse($data['cohorts'] ?? [] as $item)
+                                        <option value="{{ $item['id'] ?? '' }}">{{ $item['name'] ?? 'Không xác định' }}</option>
+                                    @empty
+                                        <option value="">Không có khóa học</option>
+                                    @endforelse
+                                </select>
+                                <div class="invalid-feedback">Vui lòng chọn niên khóa.</div>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="editMajorId" class="form-label">Ngành học <span class="text-danger">*</span></label>
+                                <select class="form-select" id="editMajorId" name="major_id" required>
+                                    <option value="" disabled>Chọn ngành học</option>
+                                    @forelse($data['majors'] ?? [] as $item)
+                                        <option value="{{ $item['id'] ?? '' }}">{{ $item['name'] ?? 'Không xác định' }}</option>
+                                    @empty
+                                        <option value="">Không có ngành học</option>
+                                    @endforelse
+                                </select>
+                                <div class="invalid-feedback">Vui lòng chọn ngành học.</div>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="editLecturer" class="form-label">Giảng viên phụ trách <span class="text-danger">*</span></label>
+                                <select class="form-select" id="editLecturer" name="lecturer_id" required>
+                                    <option value="" disabled>Chọn giảng viên</option>
+                                    @forelse($data['lecturers'] ?? [] as $item)
+                                        @php
+                                            $title = $item['title'] ?? '';
+                                            $userName = $item['user']['name'] ?? '';
+                                            $lecturerId = $item['id'] ?? '';
+                                            $renameTitle = [
+                                                'Tiến sĩ' => 'TS.',
+                                                'Thạc sĩ' => 'ThS.',
+                                                'Giáo sư' => 'GS.',
+                                                'Phó Giáo sư' => 'PGS.',
+                                                'Giảng viên' => 'GV.'
+                                            ];
+                                            $displayTitle = array_key_exists($title, $renameTitle) ? $renameTitle[$title] : $title;
+                                        @endphp
+                                        @if($lecturerId && $userName)
+                                            <option value="{{ $lecturerId }}">{{ $displayTitle }} {{ $userName }}</option>
+                                        @endif
+                                    @empty
+                                        <option value="">Không có giảng viên</option>
+                                    @endforelse
+                                </select>
+                                <div class="invalid-feedback">Vui lòng chọn giảng viên.</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                        <button type="submit" class="btn btn-primary" id="updateClassButton">
+                            <i class="fas fa-save me-1"></i>Cập nhật lớp học
                         </button>
                     </div>
                 </form>
@@ -408,33 +414,30 @@
                 <div class="modal-body" id="viewClassContent">
                     <div class="row g-3">
                         <div class="col-md-6">
-                            <strong>Tên lớp:</strong> <span id="viewClassName">CNTT2021-1</span>
+                            <strong>Tên lớp:</strong> <span id="viewClassName"></span>
                         </div>
                         <div class="col-md-6">
-                            <strong>Khóa:</strong> <span id="viewCohort">2021</span>
+                            <strong>Khóa:</strong> <span id="viewCohort"></span>
                         </div>
                         <div class="col-md-6">
-                            <strong>Ngành học:</strong> <span id="viewMajor">Công nghệ thông tin</span>
+                            <strong>Ngành học:</strong> <span id="viewMajor"></span>
                         </div>
                         <div class="col-md-6">
-                            <strong>Bộ môn:</strong> <span id="viewFaculty">Công nghệ phần mềm</span>
+                            <strong>Bộ môn:</strong> <span id="viewFaculty"></span>
                         </div>
                         <div class="col-md-6">
-                            <strong>Giảng viên phụ trách:</strong> <span id="viewLecturer">TS. Nguyễn Văn A</span>
+                            <strong>Bộ môn:</strong> <span id="viewDepartment"></span>
                         </div>
                         <div class="col-md-6">
-                            <strong>Chức vụ:</strong> <span id="viewPosition">Trưởng bộ môn</span>
+                            <strong>Giảng viên phụ trách:</strong> <span id="viewLecturer"></span>
                         </div>
-                        <div class="col-12">
-                            <strong>Ngày tạo:</strong> <span id="viewCreatedAt">15/01/2023</span>
+                        <div class="col-md-6">
+                            <strong>Số sinh viên:</strong> <span id="viewStudents"></span>
                         </div>
                     </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
-                    <button type="button" class="btn btn-warning" onclick="editClassFromView()">
-                        <i class="fas fa-edit me-1"></i>Chỉnh sửa
-                    </button>
                 </div>
             </div>
         </div>
@@ -451,331 +454,88 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body text-center">
-                    <i class="fas fa-trash-alt text-danger mb-3" style="font-size: 3rem;"></i>
-                    <h6>Bạn có chắc chắn muốn xóa lớp học này?</h6>
-                    <p class="text-muted">Lớp: <strong id="deleteClassName">CNTT2021-1</strong></p>
+                    <h4>Bạn có chắc chắn muốn xóa lớp học này?</h4>
+                    <p class="text-muted">Lớp: <strong id="deleteClassName"></strong></p>
                     <div class="alert alert-warning">
                         <i class="fas fa-exclamation-triangle me-2"></i>
                         Hành động này không thể hoàn tác!
                     </div>
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
-                    <button type="button" class="btn btn-danger" id="confirmDelete">
-                        <i class="fas fa-trash me-1"></i>Xóa lớp học
-                    </button>
-                </div>
+                <form method="POST" action="">
+                    @csrf
+                    @method('DELETE')
+                    <input type="hidden" id="deleteClassId" name="id">
+                    <input type="hidden" id="deleteCurrentPage" name="current_page">
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                        <button type="submit" class="btn btn-danger" id="confirmDelete">
+                            <i class="fas fa-trash me-1"></i>Xóa lớp học
+                        </button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
-
-    <script>
-        $(document).ready(function() {
-            // Form submit
-            $('#classForm').on('submit', function(e) {
-                e.preventDefault();
-                saveClass();
-            });
-
-            // Search functionality
-            $('#searchInput').on('keyup', function() {
-                searchClasses();
-            });
-
-            // Reset form when modal closes
-            $('#addClassModal').on('hidden.bs.modal', function() {
-                resetForm();
-            });
-        });
-
-        // Sample data for demo
-        const classesData = {
-            1: {
-                name: 'CNTT2021-1',
-                major: 'Công nghệ thông tin',
-                faculty: 'Công nghệ phần mềm',
-                lecturer: 'TS. Nguyễn Văn A',
-                position: 'Trưởng bộ môn',
-                cohort: '2021',
-                created_at: '15/01/2023'
-            },
-            2: {
-                name: 'CNTT2021-2',
-                major: 'Công nghệ thông tin',
-                faculty: 'Công nghệ phần mềm',
-                lecturer: 'ThS. Trần Thị B',
-                position: 'Giảng viên',
-                cohort: '2021',
-                created_at: '15/01/2023'
-            },
-            3: {
-                name: 'KTPM2022-1',
-                major: 'Kỹ thuật phần mềm',
-                faculty: 'Công nghệ phần mềm',
-                lecturer: 'PGS.TS. Lê Văn C',
-                position: 'Phó trưởng khoa',
-                cohort: '2022',
-                created_at: '20/02/2023'
-            },
-            4: {
-                name: 'KHMT2022-1',
-                major: 'Khoa học máy tính',
-                faculty: 'Khoa học máy tính',
-                lecturer: 'TS. Phạm Thị D',
-                position: 'Giảng viên',
-                cohort: '2022',
-                created_at: '25/02/2023'
-            },
-            5: {
-                name: 'HTTT2023-1',
-                major: 'Hệ thống thông tin',
-                faculty: 'Hệ thống thông tin',
-                lecturer: 'GS.TS. Hoàng Văn E',
-                position: 'Trưởng khoa',
-                cohort: '2023',
-                created_at: '10/03/2023'
-            },
-            6: {
-                name: 'HTTT2023-2',
-                major: 'Hệ thống thông tin',
-                faculty: 'Hệ thống thông tin',
-                lecturer: 'TS. Vũ Thị F',
-                position: 'Phó trưởng bộ môn',
-                cohort: '2023',
-                created_at: '10/03/2023'
-            }
-        };
-
-        let currentClassId = null;
-        let isEditMode = false;
-
-        // View class
-        function viewClass(id) {
-            const data = classesData[id];
-            if (data) {
-                $('#viewClassName').text(data.name);
-                $('#viewCohort').text(data.cohort);
-                $('#viewMajor').text(data.major);
-                $('#viewFaculty').text(data.faculty);
-                $('#viewLecturer').text(data.lecturer);
-                $('#viewPosition').text(data.position);
-                $('#viewCreatedAt').text(data.created_at);
-
-                currentClassId = id;
-                $('#viewClassModal').modal('show');
-            }
-        }
-
-        // Edit class
-        function editClass(id) {
-            const data = classesData[id];
-            if (data) {
-                isEditMode = true;
-                currentClassId = id;
-
-                // Update modal title
-                $('#addClassModal .modal-title').html('<i class="fas fa-edit me-2"></i>Chỉnh sửa lớp học');
-                $('#addClassModal .btn-primary').html('<i class="fas fa-save me-1"></i>Cập nhật');
-
-                // Fill form with demo data
-                $('#className').val(data.name);
-                $('#cohort').val(data.cohort === '2021' ? '2' : (data.cohort === '2022' ? '3' : '4'));
-                $('#major').val(data.major === 'Công nghệ thông tin' ? '1' :
-                    (data.major === 'Kỹ thuật phần mềm' ? '2' :
-                        (data.major === 'Khoa học máy tính' ? '3' : '4')));
-                $('#lecturer').val(id);
-
-                $('#addClassModal').modal('show');
-            }
-        }
-
-        // Edit from view modal
-        function editClassFromView() {
-            $('#viewClassModal').modal('hide');
-            setTimeout(() => {
-                editClass(currentClassId);
-            }, 300);
-        }
-
-        // Delete class
-        function deleteClass(id) {
-            const data = classesData[id];
-            if (data) {
-                currentClassId = id;
-                $('#deleteClassName').text(data.name);
-                $('#deleteModal').modal('show');
-            }
-        }
-
-        // Confirm delete
-        $('#confirmDelete').on('click', function() {
-            if (currentClassId) {
-                // Remove row with animation
-                $(`tr[data-id="${currentClassId}"]`).fadeOut(300, function() {
-                    $(this).remove();
-                });
-
-                $('#deleteModal').modal('hide');
-                showAlert('success', 'Xóa lớp học thành công!');
-                currentClassId = null;
-            }
-        });
-
-        // Save class
-        function saveClass() {
-            // Basic validation
-            if (!$('#className').val() || !$('#cohort').val() || !$('#major').val() || !$('#lecturer').val()) {
-                showAlert('danger', 'Vui lòng điền đầy đủ thông tin bắt buộc!');
-                return;
-            }
-
-            const formData = {
-                name: $('#className').val(),
-                cohort: $('#cohort option:selected').text(),
-                major: $('#major option:selected').text(),
-                faculty: $('#major option:selected').text() === 'Công nghệ thông tin' || $('#major option:selected').text() === 'Kỹ thuật phần mềm' ?
-                    'Công nghệ phần mềm' : $('#major option:selected').text(),
-                lecturer: $('#lecturer option:selected').text(),
-                position: 'Giảng viên'
-            };
-
-            if (isEditMode) {
-                // Update existing row
-                const row = $(`tr[data-id="${currentClassId}"]`);
-                row.find('td:nth-child(2) strong').text(formData.name);
-                row.find('td:nth-child(3)').text(formData.major);
-                row.find('td:nth-child(4)').text(formData.faculty);
-                row.find('td:nth-child(5)').text(formData.lecturer);
-                row.find('td:nth-child(6)').text(formData.cohort);
-
-                showAlert('success', 'Cập nhật lớp học thành công!');
-            } else {
-                // Add new row (demo)
-                const newId = Date.now();
-                const newRow = `
-            <tr data-id="${newId}">
-                <td>${$('#classesTable tbody tr').length + 1}</td>
-                <td><strong>${formData.name}</strong></td>
-                <td class="d-none d-md-table-cell">${formData.major}</td>
-                <td class="d-none d-lg-table-cell">${formData.faculty}</td>
-                <td class="d-none d-md-table-cell">${formData.lecturer}</td>
-                <td>${formData.cohort}</td>
-                <td>
-                    <div class="action-buttons">
-                        <button class="btn btn-sm btn-info" onclick="viewClass(${newId})" title="Xem">
-                            <i class="fas fa-eye"></i>
-                        </button>
-                        <button class="btn btn-sm btn-warning" onclick="editClass(${newId})" title="Sửa">
-                            <i class="fas fa-edit"></i>
-                        </button>
-                        <button class="btn btn-sm btn-danger" onclick="deleteClass(${newId})" title="Xóa">
-                            <i class="fas fa-trash"></i>
-                        </button>
-                    </div>
-                </td>
-            </tr>
-        `;
-                $('#classesTable tbody').append(newRow);
-
-                // Add to demo data
-                classesData[newId] = {
-                    name: formData.name,
-                    major: formData.major,
-                    faculty: formData.faculty,
-                    lecturer: formData.lecturer,
-                    position: formData.position,
-                    cohort: formData.cohort,
-                    created_at: new Date().toLocaleDateString('vi-VN')
-                };
-
-                showAlert('success', 'Thêm lớp học thành công!');
-            }
-
-            $('#addClassModal').modal('hide');
-        }
-
-        // Reset form
-        function resetForm() {
-            $('#classForm')[0].reset();
-            $('#addClassModal .modal-title').html('<i class="fas fa-plus-circle me-2"></i>Thêm lớp học mới');
-            $('#addClassModal .btn-primary').html('<i class="fas fa-save me-1"></i>Lưu lớp học');
-            isEditMode = false;
-            currentClassId = null;
-        }
-
-        // Search classes
-        function searchClasses() {
-            const searchTerm = $('#searchInput').val().toLowerCase();
-            $('#classesTable tbody tr').each(function() {
-                const row = $(this);
-                const text = row.text().toLowerCase();
-                if (text.includes(searchTerm)) {
-                    row.show();
-                } else {
-                    row.hide();
-                }
-            });
-        }
-
-        // Filter classes
-        function filterClasses() {
-            const majorFilter = $('#majorFilter').val();
-            const facultyFilter = $('#facultyFilter').val();
-
-            $('#classesTable tbody tr').each(function() {
-                const row = $(this);
-                let show = true;
-
-                if (majorFilter) {
-                    const majorText = row.find('td:nth-child(3)').text().trim();
-                    const majorMap = {
-                        '1': 'Công nghệ thông tin',
-                        '2': 'Kỹ thuật phần mềm',
-                        '3': 'Khoa học máy tính',
-                        '4': 'Hệ thống thông tin'
-                    };
-                    if (majorText !== majorMap[majorFilter]) {
-                        show = false;
-                    }
-                }
-
-                if (facultyFilter && show) {
-                    const facultyText = row.find('td:nth-child(4)').text().trim();
-                    const facultyMap = {
-                        '1': 'Công nghệ phần mềm',
-                        '2': 'Hệ thống thông tin',
-                        '3': 'Khoa học máy tính',
-                        '4': 'Mạng máy tính',
-                        '5': 'Trí tuệ nhân tạo'
-                    };
-                    if (facultyText !== facultyMap[facultyFilter]) {
-                        show = false;
-                    }
-                }
-
-                if (show) {
-                    row.show();
-                } else {
-                    row.hide();
-                }
-            });
-        }
-
-        // Show alert
-        function showAlert(type, message) {
-            const alertHtml = `
-        <div class="alert alert-${type} alert-dismissible fade show" role="alert">
-            ${message}
-            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-        </div>
-    `;
-            $('.container-fluid').prepend(alertHtml);
-
-            // Auto hide after 3 seconds
-            setTimeout(() => {
-                $('.alert').fadeOut();
-            }, 3000);
-        }
-    </script>
 @endsection
 
+@push('scripts')
+    <script>
+        $(document).ready(function () {
+            const addClassModal = $('#addClassModal');
+            const addClassForm = $('#addClassForm');
+
+            addClassModal.on('show.bs.modal', function () {
+                addClassForm[0].reset();
+                addClassForm.find('.is-invalid').removeClass('is-invalid');
+                addClassForm.find('select').trigger('change');
+            });
+
+            $('#saveClassButton').on('click', function (e) {
+                e.preventDefault();
+                if (addClassForm[0].checkValidity()) {
+                    addClassForm.submit();
+                } else {
+                    addClassForm.addClass('was-validated');
+                }
+            });
+
+            $('#editClassModal').on('show.bs.modal', function (event) {
+                const button = $(event.relatedTarget);
+                const classId = button.data('id');
+                const className = button.data('name');
+                const cohortId = button.data('cohort-id');
+                const majorId = button.data('major-id');
+                const lecturerId = button.data('lecturer-id');
+
+                $('#editClassForm').attr('action', `/student-affairs-department/class/${classId}`);
+                $('#editClassName').val(className);
+                $('#editCohortId').val(cohortId);
+                $('#editMajorId').val(majorId);
+                $('#editLecturer').val(lecturerId);
+            });
+
+            $('#deleteModal').on('show.bs.modal', function (event) {
+                const button = $(event.relatedTarget);
+                const classId = button.data('id');
+                const className = button.data('name');
+                const currentPage = button.data('current-page');
+
+                $('#deleteClassName').text(className);
+                $('#deleteClassId').val(classId);
+                $('#deleteCurrentPage').val(currentPage);
+                $('#deleteModal form').attr('action', `/student-affairs-department/class/${classId}`);
+            });
+
+            $('#viewClassModal').on('show.bs.modal', function (event) {
+                const button = $(event.relatedTarget);
+                $('#viewClassName').text(button.data('name'));
+                $('#viewCohort').text(button.data('cohort'));
+                $('#viewMajor').text(button.data('major'));
+                $('#viewFaculty').text(button.data('faculty'));
+                $('#viewDepartment').text(button.data('department'));
+                $('#viewLecturer').text(button.data('lecturer'));
+                $('#viewStudents').text(button.data('students'));
+            });
+        });
+    </script>
+@endpush

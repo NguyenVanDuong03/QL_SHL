@@ -20,4 +20,9 @@ class Semester extends Model
         return $this->hasMany(AcademicWarning::class);
     }
 
+    public function conductEvaluationPeriods()
+    {
+        return $this->hasMany(ConductEvaluationPeriod::class);
+    }
+
 }

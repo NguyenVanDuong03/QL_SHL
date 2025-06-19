@@ -35,7 +35,7 @@
                                 <form method="GET" action="{{ route('student-affairs-department.account.index') }}"
                                       class="input-group me-2" style="width: 250px;">
                                     <input type="text" class="form-control" placeholder="Tìm kiếm giáo viên..."
-                                           name="search" value="{{ request('search') }}"
+                                           name="search" value="{{ request()->get('search') }}"
                                            id="teacherSearch">
                                     <button class="btn btn-outline-secondary btn-search-lecturer" type="submit">
                                         <i class="fas fa-search"></i>
