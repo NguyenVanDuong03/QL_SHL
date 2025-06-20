@@ -15,4 +15,36 @@ class ConductEvaluationPhaseRepository extends BaseRepository
         return $this->model;
     }
 
+    public function arrayUpdates(array $phases, int $conductEvaluationPeriodId): bool
+    {
+        if (empty($phases) || empty($conductEvaluationPeriodId)) {
+            return false;
+        }
+
+        foreach ($phases as $index => $phase) {
+            $this->getModel()
+                ->newQuery()
+                ->where('conduct_evaluation_period_id', $conductEvaluationPeriodId)
+                ->where('role', $index)
+                ->update([
+                    'open_date' => $phase['open_date'],
+                    'end_date' => $phase['end_date'],
+                ]);
+        }
+
+        return true;
+    }
+
+    public function arrayDeleteByConductEvaluationPeriodId($id)
+    {
+        if (empty($id)) {
+            return false;
+        }
+
+        return $this->getModel()
+            ->newQuery()
+            ->where('conduct_evaluation_period_id', $id)
+            ->delete();
+    }
+
 }

@@ -8,7 +8,7 @@
         $queryString = request()->except('page');
     @endphp
 
-    <div class="d-flex justify-content-end justify-content-md-between align-items-center mt-3">
+    <div class="d-flex justify-content-end justify-content-md-between align-items-center mt-3 mx-2">
         <div class="d-none d-md-block">
             <span>
                 {{ $paginate['total'] ?? 0 }} kết quả – Trang {{ $currentPage }} / {{ $lastPage }}

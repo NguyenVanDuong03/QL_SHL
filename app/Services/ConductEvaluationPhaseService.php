@@ -27,4 +27,18 @@ class ConductEvaluationPhaseService extends BaseService
             'wheres' => $wheres,
         ];
     }
+
+    public function arrayUpdates($phases, $conductEvaluationPeriodId): bool
+    {
+        if (empty($conductEvaluationPeriodId)) {
+            return false;
+        }
+
+        return $this->getRepository()->arrayUpdates($phases, $conductEvaluationPeriodId);
+    }
+
+    public function arrayDeleteByConductEvaluationPeriodId($id)
+    {
+        return $this->getRepository()->arrayDeleteByConductEvaluationPeriodId($id);
+    }
 }

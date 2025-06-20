@@ -230,8 +230,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
                     Route::get('/information', [StudentAffairsDepartmentController::class, 'infoConductScore'])->name('infoConductScore');
                     Route::get('/export-conduct-score', [StudentAffairsDepartmentController::class, 'exportConductScore'])->name('exportConductScore');
                     Route::post('/', [StudentAffairsDepartmentController::class, 'createConductScore'])->name('create');
-                     Route::put('/{id?}', [StudentAffairsDepartmentController::class, 'editConductScore'])->name('update');
-                     Route::delete('/{id?}', [StudentAffairsDepartmentController::class, 'deleteConductScore'])->name('delete');
+                     Route::put('/{id}', [StudentAffairsDepartmentController::class, 'editConductScore'])->name('update');
+                     Route::delete('/{id}', [StudentAffairsDepartmentController::class, 'deleteConductScore'])->name('delete');
                 }
             );
 

@@ -1,4 +1,4 @@
-<footer>
+<footer class="mt-4">
 	<div class="container">
 		<p>&copy; {{ date('Y') }} Nguyễn Văn Dương. Mọi quyền được bảo lưu.</p>
 	</div>

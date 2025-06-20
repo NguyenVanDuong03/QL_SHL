@@ -3,7 +3,7 @@
 @section('title', 'Điểm rèn luyện')
 
 @section('breadcrumb')
-    <x-breadcrumb.breadcrumb :links="[['label' => 'Điểm rèn luyện']]" />
+    <x-breadcrumb.breadcrumb :links="[['label' => 'Điểm rèn luyện']]"/>
 @endsection
 
 @push('styles')
@@ -94,11 +94,16 @@
                 <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
                     <h4 class="mb-0">Danh sách đợt chấm điểm rèn luyện</h4>
                     <div class="d-flex gap-2 align-items-center">
-                        <div class="search-container">
-                            <i class="fas fa-search search-icon"></i>
-                            <input type="text" class="form-control search-input" placeholder="Tìm kiếm..."
-                                   id="searchInput" style="width: 250px;">
-                        </div>
+                        <form method="GET" action="{{ route('student-affairs-department.conduct-score.index') }}"
+                              class="search-container">
+                            <div class="input-group">
+                                <input type="text" class="form-control" name="search" value="{{ request('search') }}" placeholder="Tìm kiếm..."
+                                       id="searchInput" style="width: 250px;">
+                                <button class="btn btn-outline-secondary btn-search-semester" type="submit">
+                                    <i class="fas fa-search"></i>
+                                </button>
+                            </div>
+                        </form>
                         <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createModal">
                             <i class="fas fa-plus me-2"></i>Tạo mới
                         </button>
@@ -117,17 +122,90 @@
                                 <thead class="table-light">
                                 <tr>
                                     <th scope="col" class="text-center" style="width: 80px;">STT</th>
-                                    <th scope="col">Tên đợt đánh giá</th>
+                                    <th scope="col">Đợt đánh giá</th>
                                     <th scope="col">Học kỳ</th>
-                                    <th scope="col">Giai đoạn</th>
                                     <th scope="col">Ngày tạo</th>
-                                    <th scope="col" class="text-center" style="width: 200px;">Thao tác</th>
+                                    <th scope="col" class="">Thao tác</th>
                                 </tr>
                                 </thead>
                                 <tbody id="tableBody">
-                                <!-- Data will be populated by JavaScript -->
+                                @forelse($data['ConductEvaluationPeriods']['data'] ?? [] as $item)
+                                    <tr>
+                                        <td class="text-center fw-bold">{{ $loop->iteration }}</td>
+                                        <td>
+                                            <div class="fw-semibold">{{ $item['name'] }}</div>
+                                        </td>
+                                        <td>
+                                        <span class="">
+                                            {{ $item['semester']['name'] }} <br>
+                                            <span class="text-muted">{{ $item['semester']['school_year'] }}</span>
+                                        </span>
+                                        </td>
+                                        <td>
+                                            <small
+                                                class="text-muted">{{ \Carbon\Carbon::parse($item['created_at'])->format('H:i d/m/Y') }}</small>
+                                        </td>
+                                        <td class="text-center">
+                                            <div class="btn-group-actions">
+                                                <button class="btn btn-primary btn-sm"
+                                                        title="thông tin"
+                                                        data-bs-target="#detailModal"
+                                                        data-bs-toggle="modal"
+                                                        data-name="{{ $item['name'] }}"
+                                                        data-semester="{{ $item['semester']['name'] }} - {{ $item['semester']['school_year'] }}"
+                                                        data-created="{{ \Carbon\Carbon::parse($item['created_at'])->format('H:i d/m/Y') }}"
+                                                        data-open-date-1="{{ \Carbon\Carbon::parse($item['conduct_evaluation_phases'][0]['open_date'])->format('H:i d/m/Y') ?? '#' }}"
+                                                        data-end-date-1="{{ \Carbon\Carbon::parse($item['conduct_evaluation_phases'][0]['end_date'])->format('H:i d/m/Y') ?? '#' }}"
+                                                        data-open-date-2="{{ \Carbon\Carbon::parse($item['conduct_evaluation_phases'][1]['open_date'])->format('H:i d/m/Y') ?? '#' }}"
+                                                        data-end-date-2="{{ \Carbon\Carbon::parse($item['conduct_evaluation_phases'][1]['end_date'])->format('H:i d/m/Y') ?? '#' }}"
+                                                        data-open-date-3="{{ \Carbon\Carbon::parse($item['conduct_evaluation_phases'][2]['open_date'])->format('H:i d/m/Y') ?? '#' }}"
+                                                        data-end-date-3="{{ \Carbon\Carbon::parse($item['conduct_evaluation_phases'][2]['end_date'])->format('H:i d/m/Y') ?? '#' }}"
+                                                >
+                                                    <i class="fas fa-eye"></i>
+                                                </button>
+                                                <a href="{{ route('student-affairs-department.conduct-score.infoConductScore', ['conduct_evaluation_period_id' => $item['id']]) }}" class="btn btn-info btn-sm" title="Chi tiết">
+                                                        <i class="fas fa-info-circle"></i>
+                                                </a>
+                                                <button class="btn btn-warning btn-sm"
+                                                        title="Chỉnh sửa"
+                                                        data-bs-target="#editModal"
+                                                        data-bs-toggle="modal"
+                                                        data-name="{{ $item['name'] }}"
+                                                        data-semester-id="{{ $item['semester']['id'] }}"
+                                                        data-id="{{ $item['id'] }}"
+                                                        data-current-page="{{ $data['ConductEvaluationPeriods']['current_page'] }}"
+                                                        data-open-date-1="{{ \Carbon\Carbon::parse($item['conduct_evaluation_phases'][0]['open_date'])->format('Y-m-d\TH:i') ?? '' }}"
+                                                        data-end-date-1="{{ \Carbon\Carbon::parse($item['conduct_evaluation_phases'][0]['end_date'])->format('Y-m-d\TH:i') ?? '' }}"
+                                                        data-open-date-2="{{ \Carbon\Carbon::parse($item['conduct_evaluation_phases'][1]['open_date'])->format('Y-m-d\TH:i') ?? '' }}"
+                                                        data-end-date-2="{{ \Carbon\Carbon::parse($item['conduct_evaluation_phases'][1]['end_date'])->format('Y-m-d\TH:i') ?? '' }}"
+                                                        data-open-date-3="{{ \Carbon\Carbon::parse($item['conduct_evaluation_phases'][2]['open_date'])->format('Y-m-d\TH:i') ?? '' }}"
+                                                        data-end-date-3="{{ \Carbon\Carbon::parse($item['conduct_evaluation_phases'][2]['end_date'])->format('Y-m-d\TH:i') ?? '' }}"
+                                                >
+                                                    <i class="fas fa-edit"></i>
+                                                </button>
+                                                <button class="btn btn-danger btn-sm"
+                                                        title="Xóa"
+                                                        data-bs-target="#deleteModal"
+                                                        data-bs-toggle="modal"
+                                                        data-id="{{ $item['id'] }}"
+                                                        data-name="{{ $item['name'] }}"
+                                                >
+                                                    <i class="fas fa-trash"></i>
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                @empty
+                                    <tr>
+                                        <td colspan="6" class="text-center py-4 text-muted">
+                                            <i class="fas fa-inbox fa-2x mb-3 d-block"></i>
+                                            Không có dữ liệu
+                                        </td>
+                                    </tr>
+                                @endforelse
                                 </tbody>
                             </table>
+                            <x-pagination.pagination :paginate="$data['ConductEvaluationPeriods']" class="mt-3"/>
                         </div>
                     </div>
                 </div>
@@ -144,7 +222,10 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <form id="createForm">
+                    <form id="createForm" method="POST"
+                          action="{{ route('student-affairs-department.conduct-score.create') }}">
+                        @csrf
+                        @method('POST')
                         <div class="row mb-4">
                             <div class="col-md-6">
                                 <label for="create_name" class="form-label">
@@ -160,9 +241,12 @@
                                 </label>
                                 <select class="form-select" id="create_semester" name="semester_id" required>
                                     <option value="">Chọn học kỳ</option>
-                                    <option value="1">HK1 - 2024-2025</option>
-                                    <option value="2">HK2 - 2024-2025</option>
-                                    <option value="3">HK3 - 2024-2025</option>
+                                    @forelse($data['semesters'] ?? [] as $item)
+                                        <option value="{{ $item['id'] }}">{{ $item['name'] }}
+                                            - {{ $item['school_year'] }}</option>
+                                    @empty
+                                        <option value="" disabled selected>Không có học kỳ nào</option>
+                                    @endforelse
                                 </select>
                                 <div class="error-message" id="create_semester_error"></div>
                             </div>
@@ -179,13 +263,15 @@
                                 <h6 class="mb-0 fw-semibold">Sinh viên</h6>
                             </div>
                             <div class="row">
+                                <input type="hidden" name="phases[0][role]" value="0">
                                 <div class="col-md-6">
                                     <label for="create_student_start" class="form-label">
                                         Thời gian bắt đầu <span class="text-danger">*</span>
                                     </label>
                                     <input type="datetime-local" class="form-control phase-datetime"
                                            id="create_student_start" name="phases[0][open_date]"
-                                           data-role="0" data-type="start" required>
+                                           data-role="0" data-type="start"
+                                           min="{{ now()->addMinutes(30)->format('Y-m-d\TH:i') }}" required>
                                     <div class="error-message" id="create_student_start_error"></div>
                                 </div>
                                 <div class="col-md-6">
@@ -194,7 +280,8 @@
                                     </label>
                                     <input type="datetime-local" class="form-control phase-datetime"
                                            id="create_student_end" name="phases[0][end_date]"
-                                           data-role="0" data-type="end" required>
+                                           data-role="0" data-type="end"
+                                           min="{{ now()->addMinutes(30)->format('Y-m-d\TH:i') }}" required>
                                     <div class="error-message" id="create_student_end_error"></div>
                                 </div>
                             </div>
@@ -207,13 +294,15 @@
                                 <h6 class="mb-0 fw-semibold">Giáo viên</h6>
                             </div>
                             <div class="row">
+                                <input type="hidden" name="phases[1][role]" value="1">
                                 <div class="col-md-6">
                                     <label for="create_teacher_start" class="form-label">
                                         Thời gian bắt đầu <span class="text-danger">*</span>
                                     </label>
                                     <input type="datetime-local" class="form-control phase-datetime"
                                            id="create_teacher_start" name="phases[1][open_date]"
-                                           data-role="1" data-type="start" required>
+                                           data-role="1" data-type="start"
+                                           min="{{ now()->addMinutes(30)->format('Y-m-d\TH:i') }}" required>
                                     <div class="error-message" id="create_teacher_start_error"></div>
                                 </div>
                                 <div class="col-md-6">
@@ -222,7 +311,8 @@
                                     </label>
                                     <input type="datetime-local" class="form-control phase-datetime"
                                            id="create_teacher_end" name="phases[1][end_date]"
-                                           data-role="1" data-type="end" required>
+                                           data-role="1" data-type="end"
+                                           min="{{ now()->addMinutes(30)->format('Y-m-d\TH:i') }}" required>
                                     <div class="error-message" id="create_teacher_end_error"></div>
                                 </div>
                             </div>
@@ -231,17 +321,19 @@
                         <!-- Office Phase -->
                         <div class="phase-card">
                             <div class="phase-header">
-                                <i class="fas fa-building phase-icon text-purple"></i>
+                                <i class="fas fa-building phase-icon text-secondary"></i>
                                 <h6 class="mb-0 fw-semibold">Văn phòng khoa</h6>
                             </div>
                             <div class="row">
+                                <input type="hidden" name="phases[2][role]" value="2">
                                 <div class="col-md-6">
                                     <label for="create_office_start" class="form-label">
                                         Thời gian bắt đầu <span class="text-danger">*</span>
                                     </label>
                                     <input type="datetime-local" class="form-control phase-datetime"
                                            id="create_office_start" name="phases[2][open_date]"
-                                           data-role="2" data-type="start" required>
+                                           data-role="2" data-type="start"
+                                           min="{{ now()->addMinutes(30)->format('Y-m-d\TH:i') }}" required>
                                     <div class="error-message" id="create_office_start_error"></div>
                                 </div>
                                 <div class="col-md-6">
@@ -250,7 +342,8 @@
                                     </label>
                                     <input type="datetime-local" class="form-control phase-datetime"
                                            id="create_office_end" name="phases[2][end_date]"
-                                           data-role="2" data-type="end" required>
+                                           data-role="2" data-type="end"
+                                           min="{{ now()->addMinutes(30)->format('Y-m-d\TH:i') }}" required>
                                     <div class="error-message" id="create_office_end_error"></div>
                                 </div>
                             </div>
@@ -281,8 +374,10 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <form id="editForm">
-                        <input type="hidden" id="edit_id" name="id">
+                    <form id="editForm" method="POST">
+                        @csrf
+                        @method('PUT')
+                        <input type="hidden" name="current_page" class="currentPage">
                         <div class="row mb-4">
                             <div class="col-md-6">
                                 <label for="edit_name" class="form-label">
@@ -298,9 +393,12 @@
                                 </label>
                                 <select class="form-select" id="edit_semester" name="semester_id" required>
                                     <option value="">Chọn học kỳ</option>
-                                    <option value="1">HK1 - 2024-2025</option>
-                                    <option value="2">HK2 - 2024-2025</option>
-                                    <option value="3">HK3 - 2024-2025</option>
+                                    @forelse($data['semesters'] ?? [] as $item)
+                                        <option value="{{ $item['id'] }}">{{ $item['name'] }}
+                                            - {{ $item['school_year'] }}</option>
+                                    @empty
+                                        <option value="" disabled selected>Không có học kỳ nào</option>
+                                    @endforelse
                                 </select>
                                 <div class="error-message" id="edit_semester_error"></div>
                             </div>
@@ -369,7 +467,7 @@
                         <!-- Office Phase -->
                         <div class="phase-card">
                             <div class="phase-header">
-                                <i class="fas fa-building phase-icon text-purple"></i>
+                                <i class="fas fa-building phase-icon text-secondary"></i>
                                 <h6 class="mb-0 fw-semibold">Văn phòng khoa</h6>
                             </div>
                             <div class="row">
@@ -419,7 +517,70 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body" id="detailContent">
-                    <!-- Content will be populated by JavaScript -->
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <label class="form-label text-muted">Tên đợt đánh giá</label>
+                            <p class="fw-semibold detail_conduct_name"></p>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label text-muted">Học kỳ</label>
+                            <p class="fw-semibold detail_semester_name"></p>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label text-muted">Ngày tạo</label>
+                            <p class="fw-semibold detail_created"></p>
+                        </div>
+                    </div>
+                    <hr>
+                    <h5 class="mb-3">Giai đoạn chấm điểm</h5>
+                    <div class="phase-card mb-3">
+                        <div class="d-flex align-items-center justify-content-between">
+                            <div class="d-flex align-items-center">
+                                <i class="fas fa-graduation-cap text-primary me-2"></i>
+                                <div>
+                                    <h6 class="mb-0 fw-semibold">Sinh viên</h6>
+                                    <small class="text-muted">
+                                        <i class="fas fa-clock text-warning me-1"></i>
+                                        <span class="detail_open_date_1"></span> - <span
+                                            class="detail_end_date_1"></span>
+                                    </small>
+                                </div>
+                            </div>
+                            <span class="badge badge-role-student">Sinh viên</span>
+                        </div>
+                    </div>
+                    <div class="phase-card mb-3">
+                        <div class="d-flex align-items-center justify-content-between">
+                            <div class="d-flex align-items-center">
+                                <i class="fas fa-chalkboard-teacher text-success me-2"></i>
+                                <div>
+                                    <h6 class="mb-0 fw-semibold">Giáo viên</h6>
+                                    <small class="text-muted">
+                                        <i class="fas fa-clock text-warning me-1"></i>
+                                        <span class="detail_open_date_2"></span> - <span
+                                            class="detail_end_date_2"></span>
+                                    </small>
+                                </div>
+                            </div>
+                            <span class="badge badge-role-teacher">Giáo viên</span>
+                        </div>
+                    </div>
+                    <div class="phase-card mb-3">
+                        <div class="d-flex align-items-center justify-content-between">
+                            <div class="d-flex align-items-center">
+                                <i class="fas fa-building text-secondary me-2"></i>
+                                <div>
+                                    <h6 class="mb-0 fw-semibold">Văn phòng khoa</h6>
+                                    <small class="text-muted">
+                                        <i class="fas fa-clock text-warning me-1"></i>
+                                        <span class="detail_open_date_3"></span> - <span
+                                            class="detail_end_date_3"></span>
+                                    </small>
+                                </div>
+                            </div>
+                            <span class="badge badge-role-office">Văn phòng khoa</span>
+                        </div>
+                    </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
@@ -447,14 +608,19 @@
                     </div>
                     <p class="text-muted small">Hành động này không thể hoàn tác!</p>
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-                        <i class="fas fa-times me-2"></i>Hủy
-                    </button>
-                    <button type="button" class="btn btn-danger" id="confirmDelete">
-                        <i class="fas fa-trash me-2"></i>Xóa
-                    </button>
-                </div>
+                <form method="POST" id="deleteForm">
+                    @csrf
+                    @method('DELETE')
+                    <input type="hidden" name="id" id="deleteId">
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                            <i class="fas fa-times me-2"></i>Hủy
+                        </button>
+                        <button type="submit" class="btn btn-danger" id="confirmDelete">
+                            <i class="fas fa-trash me-2"></i>Xóa
+                        </button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
@@ -462,42 +628,30 @@
 
 @push('scripts')
     <script>
-        $(document).ready(function() {
-            // Mock data
-            const mockSemesters = {
-                1: { id: 1, name: "HK1", school_year: "2024-2025" },
-                2: { id: 2, name: "HK2", school_year: "2024-2025" },
-                3: { id: 3, name: "HK3", school_year: "2024-2025" }
-            };
+        $(document).ready(function () {
+            $('#detailModal').on('show.bs.modal', function (event) {
+                const button = $(event.relatedTarget);
+                const name = button.data('name');
+                const semester = button.data('semester');
+                const created = button.data('created');
+                const openDate1 = button.data('open-date-1');
+                const endDate1 = button.data('end-date-1');
+                const openDate2 = button.data('open-date-2');
+                const endDate2 = button.data('end-date-2');
+                const openDate3 = button.data('open-date-3');
+                const endDate3 = button.data('end-date-3');
 
-            let evaluationPeriods = [
-                {
-                    id: 1,
-                    semester_id: 1,
-                    name: "Đợt 1 HK1 2024-2025",
-                    semester: mockSemesters[1],
-                    phases: [
-                        { id: 1, role: 0, open_date: "2024-12-01T08:00", end_date: "2024-12-07T23:59" },
-                        { id: 2, role: 1, open_date: "2024-12-08T08:00", end_date: "2024-12-14T23:59" },
-                        { id: 3, role: 2, open_date: "2024-12-15T08:00", end_date: "2024-12-21T23:59" }
-                    ],
-                    created_at: "2024-11-20T10:00:00",
-                    updated_at: "2024-11-20T10:00:00"
-                },
-                {
-                    id: 2,
-                    semester_id: 1,
-                    name: "Đợt 2 HK1 2024-2025",
-                    semester: mockSemesters[1],
-                    phases: [
-                        { id: 4, role: 0, open_date: "2025-01-10T08:00", end_date: "2025-01-16T23:59" },
-                        { id: 5, role: 1, open_date: "2025-01-17T08:00", end_date: "2025-01-23T23:59" },
-                        { id: 6, role: 2, open_date: "2025-01-24T08:00", end_date: "2025-01-30T23:59" }
-                    ],
-                    created_at: "2024-11-25T14:30:00",
-                    updated_at: "2024-11-25T14:30:00"
-                }
-            ];
+                $('#detailModalLabel').text(`Chi tiết đợt chấm điểm rèn luyện: ${name}`);
+                $('.detail_conduct_name').text(name);
+                $('.detail_semester_name').text(semester);
+                $('.detail_created').text(created);
+                $('.detail_open_date_1').text(openDate1);
+                $('.detail_end_date_1').text(endDate1);
+                $('.detail_open_date_2').text(openDate2);
+                $('.detail_end_date_2').text(endDate2);
+                $('.detail_open_date_3').text(openDate3);
+                $('.detail_end_date_3').text(endDate3);
+            });
 
             const roleNames = {
                 0: "Sinh viên",
@@ -505,100 +659,67 @@
                 2: "Văn phòng khoa"
             };
 
-            const roleBadgeClasses = {
-                0: "badge-role-student",
-                1: "badge-role-teacher",
-                2: "badge-role-office"
-            };
-
-            let currentEditId = null;
-            let currentDeleteId = null;
-
-            // Initialize
-            renderTable();
-            setupEventListeners();
-
-            function renderTable(data = evaluationPeriods) {
-                const tbody = $('#tableBody');
-                tbody.empty();
-
-                if (data.length === 0) {
-                    tbody.append(`
-                <tr>
-                    <td colspan="6" class="text-center py-4 text-muted">
-                        <i class="fas fa-inbox fa-2x mb-3 d-block"></i>
-                        Không có dữ liệu
-                    </td>
-                </tr>
-            `);
+            $('#submitCreate').on('click', function () {
+                if (!validateForm('create'))
                     return;
-                }
 
-                data.forEach((period, index) => {
-                    const phaseBadges = period.phases.map(phase =>
-                        `<span class="badge ${roleBadgeClasses[phase.role]} me-1">${roleNames[phase.role]}</span>`
-                    ).join('');
+                $('#createForm').submit();
+            });
 
-                    tbody.append(`
-                <tr>
-                    <td class="text-center fw-bold">${index + 1}</td>
-                    <td>
-                        <div class="fw-semibold">${period.name}</div>
-                    </td>
-                    <td>
-                        <span class="badge bg-secondary">${period.semester.name} - ${period.semester.school_year}</span>
-                    </td>
-                    <td>${phaseBadges}</td>
-                    <td>
-                        <small class="text-muted">${formatDateTime(period.created_at)}</small>
-                    </td>
-                    <td class="text-center">
-                        <div class="btn-group-actions">
-                            <button class="btn btn-primary btn-sm" onclick="viewDetail(${period.id})" title="Xem chi tiết">
-                                <i class="fas fa-eye"></i>
-                            </button>
-                            <button class="btn btn-warning btn-sm" onclick="editPeriod(${period.id})" title="Chỉnh sửa">
-                                <i class="fas fa-edit"></i>
-                            </button>
-                            <button class="btn btn-danger btn-sm" onclick="deletePeriod(${period.id})" title="Xóa">
-                                <i class="fas fa-trash"></i>
-                            </button>
-                        </div>
-                    </td>
-                </tr>
-            `);
-                });
-            }
+            $('#submitEdit').on('click', function () {
+                if (!validateForm('edit'))
+                    return;
 
-            function setupEventListeners() {
-                // Search functionality
-                $('#searchInput').on('input', function() {
-                    const searchTerm = $(this).val().toLowerCase();
-                    const filtered = evaluationPeriods.filter(period =>
-                        period.name.toLowerCase().includes(searchTerm) ||
-                        period.semester.name.toLowerCase().includes(searchTerm) ||
-                        period.semester.school_year.includes(searchTerm)
-                    );
-                    renderTable(filtered);
-                });
+                $('#editForm').submit();
+            });
 
-                // Form submissions
-                $('#submitCreate').click(handleCreate);
-                $('#submitEdit').click(handleEdit);
-                $('#confirmDelete').click(handleDelete);
+            $('#editModal').on('show.bs.modal', function (event) {
+                const button = $(event.relatedTarget);
+                const name = button.data('name');
+                const semesterId = button.data('semester-id');
+                const id = button.data('id');
+                const openDate1 = button.data('open-date-1');
+                const endDate1 = button.data('end-date-1');
+                const openDate2 = button.data('open-date-2');
+                const endDate2 = button.data('end-date-2');
+                const openDate3 = button.data('open-date-3');
+                const endDate3 = button.data('end-date-3');
+                const currentPage = button.data('current-page');
 
-                // Form resets
-                $('#resetCreateForm').click(() => resetForm('create'));
-                $('#resetEditForm').click(() => resetForm('edit'));
+                $('#editModalLabel').text(`Chỉnh sửa đợt chấm điểm rèn luyện: ${name}`);
+                $('#edit_name').val(name);
+                $('#edit_semester').val(semesterId);
+                $('#editForm').attr('action', `/student-affairs-department/conduct-score/${id}`);
+                $('#edit_student_start').val(openDate1);
+                $('#edit_student_end').val(endDate1);
+                $('#edit_teacher_start').val(openDate2);
+                $('#edit_teacher_end').val(endDate2);
+                $('#edit_office_start').val(openDate3);
+                $('#edit_office_end').val(endDate3);
+                $('.currentPage').val(currentPage);
 
-                // Modal events
-                $('#createModal').on('hidden.bs.modal', () => resetForm('create'));
-                $('#editModal').on('hidden.bs.modal', () => resetForm('edit'));
+                currentEditId = id;
+            });
 
-                // Real-time validation
-                $('.phase-datetime').on('change', () => validatePhases('create'));
-                $('.phase-datetime-edit').on('change', () => validatePhases('edit'));
-            }
+            $('#deleteModal').on('show.bs.modal', function (event) {
+                const button = $(event.relatedTarget);
+                const id = button.data('id');
+                const name = button.data('name');
+
+                $('#deleteForm').attr('action', `/student-affairs-department/conduct-score/${id}`);
+                $('#deleteItemName').text(`Xác nhận xóa đợt chấm điểm rèn luyện: ${name}`);
+            });
+
+            $('#resetCreateForm').click(() => resetForm('create'));
+            $('#resetEditForm').click(() => resetForm('edit'));
+
+            // Modal events
+            $('#createModal').on('hidden.bs.modal', () => resetForm('create'));
+            $('#editModal').on('hidden.bs.modal', () => resetForm('edit'));
+
+            // Real-time validation
+            $('.phase-datetime').on('change', () => validatePhases('create'));
+            $('.phase-datetime-edit').on('change', () => validatePhases('edit'));
 
             function validatePhases(formType) {
                 const prefix = formType === 'create' ? 'create' : 'edit';
@@ -620,11 +741,9 @@
 
                 let hasError = false;
 
-                // Validate each phase
                 phases.forEach((phase, index) => {
                     const roleName = getRoleName(phase.role);
 
-                    // Check if end time is after start time
                     if (phase.start && phase.end) {
                         const startDate = new Date(phase.start);
                         const endDate = new Date(phase.end);
@@ -636,7 +755,6 @@
                     }
                 });
 
-                // Check for overlapping phases
                 for (let i = 0; i < phases.length; i++) {
                     for (let j = i + 1; j < phases.length; j++) {
                         const phase1 = phases[i];
@@ -665,7 +783,7 @@
             }
 
             function getRoleName(role) {
-                const roleMap = { 0: 'student', 1: 'teacher', 2: 'office' };
+                const roleMap = {0: 'student', 1: 'teacher', 2: 'office'};
                 return roleMap[role];
             }
 
@@ -675,21 +793,18 @@
 
                 let hasError = false;
 
-                // Validate name
                 const name = $(`#${prefix}_name`).val().trim();
                 if (!name) {
                     showError(`${prefix}_name_error`, 'Vui lòng nhập tên đợt đánh giá');
                     hasError = true;
                 }
 
-                // Validate semester
                 const semesterId = $(`#${prefix}_semester`).val();
                 if (!semesterId) {
                     showError(`${prefix}_semester_error`, 'Vui lòng chọn học kỳ');
                     hasError = true;
                 }
 
-                // Validate required phase fields
                 for (let i = 0; i < 3; i++) {
                     const roleName = getRoleName(i);
                     const startVal = $(`#${prefix}_${roleName}_start`).val();
@@ -706,99 +821,11 @@
                     }
                 }
 
-                // Validate phases if no basic errors
                 if (!hasError) {
                     hasError = !validatePhases(formType);
                 }
 
                 return !hasError;
-            }
-
-            function handleCreate() {
-                if (!validateForm('create')) return;
-
-                const formData = getFormData('create');
-                const newPeriod = {
-                    id: Math.max(...evaluationPeriods.map(p => p.id)) + 1,
-                    semester_id: parseInt(formData.semester_id),
-                    name: formData.name,
-                    semester: mockSemesters[formData.semester_id],
-                    phases: [
-                        { id: getNextPhaseId(), role: 0, open_date: formData.phases[0].start, end_date: formData.phases[0].end },
-                        { id: getNextPhaseId(), role: 1, open_date: formData.phases[1].start, end_date: formData.phases[1].end },
-                        { id: getNextPhaseId(), role: 2, open_date: formData.phases[2].start, end_date: formData.phases[2].end }
-                    ],
-                    created_at: new Date().toISOString(),
-                    updated_at: new Date().toISOString()
-                };
-
-                evaluationPeriods.push(newPeriod);
-                renderTable();
-                $('#createModal').modal('hide');
-                showToast('Tạo đợt chấm điểm thành công!', 'success');
-            }
-
-            function handleEdit() {
-                if (!validateForm('edit') || !currentEditId) return;
-
-                const formData = getFormData('edit');
-                const index = evaluationPeriods.findIndex(p => p.id === currentEditId);
-
-                if (index !== -1) {
-                    evaluationPeriods[index] = {
-                        ...evaluationPeriods[index],
-                        name: formData.name,
-                        semester_id: parseInt(formData.semester_id),
-                        semester: mockSemesters[formData.semester_id],
-                        phases: [
-                            { ...evaluationPeriods[index].phases[0], open_date: formData.phases[0].start, end_date: formData.phases[0].end },
-                            { ...evaluationPeriods[index].phases[1], open_date: formData.phases[1].start, end_date: formData.phases[1].end },
-                            { ...evaluationPeriods[index].phases[2], open_date: formData.phases[2].start, end_date: formData.phases[2].end }
-                        ],
-                        updated_at: new Date().toISOString()
-                    };
-
-                    renderTable();
-                    $('#editModal').modal('hide');
-                    showToast('Cập nhật đợt chấm điểm thành công!', 'success');
-                }
-            }
-
-            function handleDelete() {
-                if (!currentDeleteId) return;
-
-                evaluationPeriods = evaluationPeriods.filter(p => p.id !== currentDeleteId);
-                renderTable();
-                $('#deleteModal').modal('hide');
-                showToast('Xóa đợt chấm điểm thành công!', 'success');
-                currentDeleteId = null;
-            }
-
-            function getFormData(formType) {
-                const prefix = formType === 'create' ? 'create' : 'edit';
-                return {
-                    name: $(`#${prefix}_name`).val().trim(),
-                    semester_id: $(`#${prefix}_semester`).val(),
-                    phases: [
-                        {
-                            start: $(`#${prefix}_student_start`).val(),
-                            end: $(`#${prefix}_student_end`).val()
-                        },
-                        {
-                            start: $(`#${prefix}_teacher_start`).val(),
-                            end: $(`#${prefix}_teacher_end`).val()
-                        },
-                        {
-                            start: $(`#${prefix}_office_start`).val(),
-                            end: $(`#${prefix}_office_end`).val()
-                        }
-                    ]
-                };
-            }
-
-            function getNextPhaseId() {
-                const allPhases = evaluationPeriods.flatMap(p => p.phases);
-                return allPhases.length > 0 ? Math.max(...allPhases.map(p => p.id)) + 1 : 1;
             }
 
             function resetForm(formType) {
@@ -828,107 +855,6 @@
                     minute: '2-digit'
                 });
             }
-
-            function showToast(message, type = 'info') {
-                // Simple toast implementation
-                const toast = $(`
-            <div class="toast align-items-center text-white bg-${type === 'success' ? 'success' : 'info'} border-0" role="alert">
-                <div class="d-flex">
-                    <div class="toast-body">${message}</div>
-                    <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
-                </div>
-            </div>
-        `);
-
-                if (!$('.toast-container').length) {
-                    $('body').append('<div class="toast-container position-fixed top-0 end-0 p-3"></div>');
-                }
-
-                $('.toast-container').append(toast);
-                toast.toast('show');
-
-                setTimeout(() => toast.remove(), 5000);
-            }
-
-            // Global functions for button clicks
-            window.viewDetail = function(id) {
-                const period = evaluationPeriods.find(p => p.id === id);
-                if (!period) return;
-
-                const phasesHtml = period.phases.map(phase => `
-            <div class="phase-card mb-3">
-                <div class="d-flex align-items-center justify-content-between">
-                    <div class="d-flex align-items-center">
-                        <i class="fas fa-${phase.role === 0 ? 'graduation-cap' : phase.role === 1 ? 'chalkboard-teacher' : 'building'} me-2"></i>
-                        <div>
-                            <h6 class="mb-0 fw-semibold">${roleNames[phase.role]}</h6>
-                            <small class="text-muted">
-                                <i class="fas fa-clock me-1"></i>
-                                ${formatDateTime(phase.open_date)} - ${formatDateTime(phase.end_date)}
-                            </small>
-                        </div>
-                    </div>
-                    <span class="badge ${roleBadgeClasses[phase.role]}">${roleNames[phase.role]}</span>
-                </div>
-            </div>
-        `).join('');
-
-                $('#detailContent').html(`
-            <div class="row mb-4">
-                <div class="col-md-6">
-                    <label class="form-label text-muted">Tên đợt đánh giá</label>
-                    <p class="fw-semibold">${period.name}</p>
-                </div>
-                <div class="col-md-6">
-                    <label class="form-label text-muted">Học kỳ</label>
-                    <p class="fw-semibold">${period.semester.name} - ${period.semester.school_year}</p>
-                </div>
-                <div class="col-md-6">
-                    <label class="form-label text-muted">Ngày tạo</label>
-                    <p>${formatDateTime(period.created_at)}</p>
-                </div>
-                <div class="col-md-6">
-                    <label class="form-label text-muted">Cập nhật lần cuối</label>
-                    <p>${formatDateTime(period.updated_at)}</p>
-                </div>
-            </div>
-            <hr>
-            <h5 class="mb-3">Giai đoạn chấm điểm</h5>
-            ${phasesHtml}
-        `);
-
-                $('#detailModal').modal('show');
-            };
-
-            window.editPeriod = function(id) {
-                const period = evaluationPeriods.find(p => p.id === id);
-                if (!period) return;
-
-                currentEditId = id;
-
-                // Populate form
-                $('#edit_id').val(period.id);
-                $('#edit_name').val(period.name);
-                $('#edit_semester').val(period.semester_id);
-
-                // Populate phases
-                period.phases.forEach(phase => {
-                    const roleName = getRoleName(phase.role);
-                    $(`#edit_${roleName}_start`).val(phase.open_date);
-                    $(`#edit_${roleName}_end`).val(phase.end_date);
-                });
-
-                $('#editModal').modal('show');
-            };
-
-            window.deletePeriod = function(id) {
-                const period = evaluationPeriods.find(p => p.id === id);
-                if (!period) return;
-
-                currentDeleteId = id;
-                $('#deleteItemName').text(period.name);
-                $('#deleteModal').modal('show');
-            };
         });
     </script>
 @endpush

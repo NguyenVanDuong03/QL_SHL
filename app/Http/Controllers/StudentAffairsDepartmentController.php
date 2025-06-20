@@ -18,6 +18,7 @@ use App\Services\ClassSessionReportService;
 use App\Services\ClassSessionRequestService;
 use App\Services\CohortService;
 use App\Services\ConductEvaluationPeriodService;
+use App\Services\ConductEvaluationPhaseService;
 use App\Services\DepartmentService;
 use App\Services\FacultyService;
 use App\Services\LecturerService;
@@ -52,6 +53,7 @@ class StudentAffairsDepartmentController extends Controller
         protected MajorService                    $majorService,
         protected AcademicWarningService          $academicWarningService,
         protected StudentConductScoreService      $studentConductScoreService,
+        protected ConductEvaluationPhaseService $conductEvaluationPhaseService,
     )
     {
     }
@@ -527,24 +529,36 @@ class StudentAffairsDepartmentController extends Controller
     public function indexConductScore(Request $request)
     {
         $params = $request->all();
-//        $params['limit'] = Constant::DEFAULT_LIMIT_12;
-//        $params['withSemester'] = true;
-//        $ConductEvaluationPeriods = $this->conductEvaluationPeriodService->paginate($params)->toArray();
-//        $semesters = $this->semesterService->getFourSemester()->limit(4)->get();
-//        $data = [
-//            'ConductEvaluationPeriods' => $ConductEvaluationPeriods,
-//            'semesters' => $semesters,
-//        ];
+        $params['limit'] = Constant::DEFAULT_LIMIT_12;
+        $ConductEvaluationPeriods = $this->conductEvaluationPeriodService->paginate($params)->toArray();
+        $semesters = $this->semesterService->getFourSemester()->limit(4)->get()->toArray();
+        $data = [
+            'ConductEvaluationPeriods' => $ConductEvaluationPeriods,
+            'semesters' => $semesters,
+        ];
 //         dd($data['ConductEvaluationPeriods']);
 
-        return view('StudentAffairsDepartment.conductScore.index');
+        return view('StudentAffairsDepartment.conductScore.index', compact('data'));
     }
 
     public function createConductScore(Request $request)
     {
         $params = $request->all();
-        // dd($params);
-        $this->conductEvaluationPeriodService->create($params);
+        $conduct_evaluation_period = $this->conductEvaluationPeriodService->create($params);
+        $conduct_evaluation_period_id = $conduct_evaluation_period->id;
+        if (!$conduct_evaluation_period) {
+            return redirect()->back()->with('error', 'Thêm mới thất bại, vui lòng kiểm tra lại thông tin');
+        }
+        $phases = $params['phases'];
+        $phases = array_map(function ($phase) use ($conduct_evaluation_period_id) {
+            $phase['conduct_evaluation_period_id'] = $conduct_evaluation_period_id;
+            $phase['created_at'] = now();
+            return $phase;
+        }, $phases);
+        $conductEvaluationPhases = $this->conductEvaluationPhaseService->insert($phases);
+        if (!$conductEvaluationPhases) {
+            return redirect()->back()->with('error', 'Thêm mới thất bại, vui lòng kiểm tra lại thông tin');
+        }
 
         return redirect()->route('student-affairs-department.conduct-score.index')->with('success', 'Thêm mới thành công');
     }
@@ -553,17 +567,33 @@ class StudentAffairsDepartmentController extends Controller
     {
         $params = $request->all();
 //         dd($params);
-        $this->conductEvaluationPeriodService->update($id, $params);
+        $conduct_evaluation_period = $this->conductEvaluationPeriodService->update($id, $params);
+        if (!$conduct_evaluation_period) {
+            return redirect()->back()->with('error', 'Cập nhật thất bại, vui lòng kiểm tra lại thông tin');
+        }
+        $phases = $params['phases'];
+
+        $conductEvaluationPhases = $this->conductEvaluationPhaseService->arrayUpdates($phases, $id);
+        if (!$conductEvaluationPhases) {
+            return redirect()->back()->with('error', 'Cập nhật thất bại, vui lòng kiểm tra lại thông tin');
+        }
 
         $targetPage = $this->conductEvaluationPeriodService->targetPage($params);
 
         return redirect()->route('student-affairs-department.conduct-score.index', $targetPage)->with('success', 'Cập nhật thành công');
     }
 
-    public function deleteConductScore(Request $request, $id)
+    public function deleteConductScore($id)
     {
+        $conduct_evaluation_period_id = $this->conductEvaluationPeriodService->delete($id);
+        if (!$conduct_evaluation_period_id) {
+            return redirect()->back()->with('error', 'Xóa thất bại, vui lòng kiểm tra lại thông tin');
+        }
 
-        $this->conductEvaluationPeriodService->delete($id);
+        $conductEvaluationPhases = $this->conductEvaluationPhaseService->arrayDeleteByConductEvaluationPeriodId($id);
+        if (!$conductEvaluationPhases) {
+            return redirect()->back()->with('error', 'Xóa thất bại, vui lòng kiểm tra lại thông tin');
+        }
 
         return redirect()->route('student-affairs-department.conduct-score.index')->with('success', 'Xóa thành công');
     }
