@@ -147,7 +147,7 @@
                                            placeholder="Nhập mã sinh viên, tên hoặc email..." required>
                                     <button type="button" class="btn btn-outline-secondary d-none"
                                             id="clear-student-btn">
-                                        <i class="bi bi-x"></i>
+                                        <i class="fa fa-x"></i>
                                     </button>
                                 </div>
 
@@ -164,7 +164,7 @@
                                     <div
                                         class="card-body py-2 px-3 bg-success bg-opacity-10 border border-success border-opacity-25">
                                         <div class="d-flex align-items-center">
-                                            <i class="bi bi-check-circle-fill text-success me-2"></i>
+                                            <i class="fa fa-check-circle-fill text-success me-2"></i>
                                             <span class="text-success fw-medium" id="selected-student-info"></span>
                                         </div>
                                     </div>
@@ -525,7 +525,7 @@
                             </div>
                             <p class="fw-medium mb-0 text-truncate">${student.user.name}</p>
                             <div class="d-flex align-items-center gap-1 small text-muted">
-                                <i class="bi bi-envelope-fill"></i>
+                                <i class="fa fa-envelope-fill"></i>
                                 <span class="text-truncate">${student.user.email}</span>
                             </div>
                         </div>
@@ -540,7 +540,7 @@
                 } else {
                     $searchResultsList.append(`
             <div class="list-group-item text-center text-muted py-3">
-                <i class="bi bi-search me-2"></i>Không tìm thấy sinh viên
+                <i class="fa fa-search me-2"></i>Không tìm thấy sinh viên
             </div>
         `);
                     $searchResultsDropdown.removeClass('d-none');
