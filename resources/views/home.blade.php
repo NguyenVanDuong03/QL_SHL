@@ -63,7 +63,7 @@
                             <div class="d-flex flex-column flex-sm-row gap-2">
                                 <a href="{{ route('login') }}" class="btn btn-teal btn-lg">
                                     Đăng nhập ngay
-                                    <i class="bi bi-arrow-right ms-2"></i>
+                                    <i class="fa fa-arrow-right ms-2"></i>
                                 </a>
                                 <a href="#features" class="btn btn-outline-secondary btn-lg smooth-scroll">Tìm hiểu thêm</a>
                             </div>
@@ -91,7 +91,7 @@
                             <div class="card h-100 border-0 shadow">
                                 <div class="card-body">
                                     <div class="d-flex align-items-center mb-3">
-                                        <i class="bi bi-calendar-event feature-icon me-3"></i>
+                                        <i class="fa fa-calendar-event feature-icon me-3"></i>
                                         <div>
                                             <h5 class="card-title mb-1">Lịch sinh hoạt lớp</h5>
                                             <p class="card-text text-muted small mb-0">Đăng ký và quản lý lịch sinh hoạt lớp</p>
@@ -108,7 +108,7 @@
                             <div class="card h-100 border-0 shadow">
                                 <div class="card-body">
                                     <div class="d-flex align-items-center mb-3">
-                                        <i class="bi bi-check-circle feature-icon me-3"></i>
+                                        <i class="fa fa-check-circle feature-icon me-3"></i>
                                         <div>
                                             <h5 class="card-title mb-1">Điểm danh</h5>
                                             <p class="card-text text-muted small mb-0">Quản lý điểm danh sinh viên</p>
@@ -125,7 +125,7 @@
                             <div class="card h-100 border-0 shadow">
                                 <div class="card-body">
                                     <div class="d-flex align-items-center mb-3">
-                                        <i class="bi bi-clipboard-check feature-icon me-3"></i>
+                                        <i class="fa fa-clipboard-check feature-icon me-3"></i>
                                         <div>
                                             <h5 class="card-title mb-1">Đánh giá điểm rèn luyện</h5>
                                             <p class="card-text text-muted small mb-0">Quản lý đánh giá điểm rèn luyện</p>
@@ -142,7 +142,7 @@
                             <div class="card h-100 border-0 shadow">
                                 <div class="card-body">
                                     <div class="d-flex align-items-center mb-3">
-                                        <i class="bi bi-file-earmark-spreadsheet feature-icon me-3"></i>
+                                        <i class="fa fa-file-earmark-spreadsheet feature-icon me-3"></i>
                                         <div>
                                             <h5 class="card-title mb-1">Báo cáo thống kê</h5>
                                             <p class="card-text text-muted small mb-0">Xuất báo cáo và thống kê</p>
@@ -159,7 +159,7 @@
                             <div class="card h-100 border-0 shadow">
                                 <div class="card-body">
                                     <div class="d-flex align-items-center mb-3">
-                                        <i class="bi bi-people feature-icon me-3"></i>
+                                        <i class="fa fa-people feature-icon me-3"></i>
                                         <div>
                                             <h5 class="card-title mb-1">Quản lý người dùng</h5>
                                             <p class="card-text text-muted small mb-0">Quản lý tài khoản người dùng</p>
@@ -176,7 +176,7 @@
                             <div class="card h-100 border-0 shadow">
                                 <div class="card-body">
                                     <div class="d-flex align-items-center mb-3">
-                                        <i class="bi bi-exclamation-triangle feature-icon me-3"></i>
+                                        <i class="fa fa-exclamation-triangle feature-icon me-3"></i>
                                         <div>
                                             <h5 class="card-title mb-1">Quản lý cảnh báo học vụ</h5>
                                             <p class="card-text text-muted small mb-0">Quản lý sinh viên bị cảnh báo học vụ</p>
@@ -234,13 +234,13 @@
                                         <div class="card-body p-4">
                                             <h3 class="h4 mb-4">Phòng Chính trị và Công tác Sinh viên</h3>
                                             <ul class="list-unstyled">
-                                                <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i>Phê duyệt thời gian mở đăng ký sinh hoạt lớp (SHL)</li>
-                                                <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i>Phê duyệt hình thức SHL (họp online, offline tại trường hoặc dã ngoại)</li>
-                                                <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i>Phê duyệt thời gian mở đánh giá điểm rèn luyện (ĐRL)</li>
-                                                <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i>Nhận báo cáo tình hình sinh hoạt lớp từ cán bộ lớp</li>
-                                                <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i>Thêm/sửa/xóa danh sách sinh viên bị cảnh báo học vụ vào hệ thống</li>
-                                                <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i>Thêm/sửa/xóa tài khoản GVCN và tài khoản sinh viên</li>
-                                                <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i>Thêm/sửa/xóa phòng học</li>
+                                                <li class="mb-2"><i class="fa fa-check-circle-fill text-success me-2"></i>Phê duyệt thời gian mở đăng ký sinh hoạt lớp (SHL)</li>
+                                                <li class="mb-2"><i class="fa fa-check-circle-fill text-success me-2"></i>Phê duyệt hình thức SHL (họp online, offline tại trường hoặc dã ngoại)</li>
+                                                <li class="mb-2"><i class="fa fa-check-circle-fill text-success me-2"></i>Phê duyệt thời gian mở đánh giá điểm rèn luyện (ĐRL)</li>
+                                                <li class="mb-2"><i class="fa fa-check-circle-fill text-success me-2"></i>Nhận báo cáo tình hình sinh hoạt lớp từ cán bộ lớp</li>
+                                                <li class="mb-2"><i class="fa fa-check-circle-fill text-success me-2"></i>Thêm/sửa/xóa danh sách sinh viên bị cảnh báo học vụ vào hệ thống</li>
+                                                <li class="mb-2"><i class="fa fa-check-circle-fill text-success me-2"></i>Thêm/sửa/xóa tài khoản GVCN và tài khoản sinh viên</li>
+                                                <li class="mb-2"><i class="fa fa-check-circle-fill text-success me-2"></i>Thêm/sửa/xóa phòng học</li>
                                             </ul>
                                         </div>
                                     </div>
@@ -251,11 +251,11 @@
                                         <div class="card-body p-4">
                                             <h3 class="h4 mb-4">Giáo viên chủ nhiệm</h3>
                                             <ul class="list-unstyled">
-                                                <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i>Đăng ký thời gian, phương thức SHL (online/offline/dã ngoại)</li>
-                                                <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i>Chuẩn bị nội dung cuộc họp, điểm danh</li>
-                                                <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i>Phê duyệt đánh giá ĐRL</li>
-                                                <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i>Thống kê số buổi họp đã tổ chức, tỷ lệ tham gia</li>
-                                                <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i>Xuất báo cáo (Excel) về điểm danh và ĐRL</li>
+                                                <li class="mb-2"><i class="fa fa-check-circle-fill text-success me-2"></i>Đăng ký thời gian, phương thức SHL (online/offline/dã ngoại)</li>
+                                                <li class="mb-2"><i class="fa fa-check-circle-fill text-success me-2"></i>Chuẩn bị nội dung cuộc họp, điểm danh</li>
+                                                <li class="mb-2"><i class="fa fa-check-circle-fill text-success me-2"></i>Phê duyệt đánh giá ĐRL</li>
+                                                <li class="mb-2"><i class="fa fa-check-circle-fill text-success me-2"></i>Thống kê số buổi họp đã tổ chức, tỷ lệ tham gia</li>
+                                                <li class="mb-2"><i class="fa fa-check-circle-fill text-success me-2"></i>Xuất báo cáo (Excel) về điểm danh và ĐRL</li>
                                             </ul>
                                         </div>
                                     </div>
@@ -266,9 +266,9 @@
                                         <div class="card-body p-4">
                                             <h3 class="h4 mb-4">Cán sự lớp</h3>
                                             <ul class="list-unstyled">
-                                                <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i>Xác nhận tham gia SHL</li>
-                                                <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i>Điểm danh và tự đánh giá ĐRL</li>
-                                                <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i>Thêm/sửa/xóa báo cáo tình hình sinh hoạt lớp sau mỗi buổi SHL</li>
+                                                <li class="mb-2"><i class="fa fa-check-circle-fill text-success me-2"></i>Xác nhận tham gia SHL</li>
+                                                <li class="mb-2"><i class="fa fa-check-circle-fill text-success me-2"></i>Điểm danh và tự đánh giá ĐRL</li>
+                                                <li class="mb-2"><i class="fa fa-check-circle-fill text-success me-2"></i>Thêm/sửa/xóa báo cáo tình hình sinh hoạt lớp sau mỗi buổi SHL</li>
                                             </ul>
                                         </div>
                                     </div>
@@ -279,8 +279,8 @@
                                         <div class="card-body p-4">
                                             <h3 class="h4 mb-4">Sinh viên</h3>
                                             <ul class="list-unstyled">
-                                                <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i>Xác nhận tham gia SHL</li>
-                                                <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i>Đánh giá ĐRL</li>
+                                                <li class="mb-2"><i class="fa fa-check-circle-fill text-success me-2"></i>Xác nhận tham gia SHL</li>
+                                                <li class="mb-2"><i class="fa fa-check-circle-fill text-success me-2"></i>Đánh giá ĐRL</li>
                                             </ul>
                                         </div>
                                     </div>
@@ -320,7 +320,7 @@
                                 <div class="col-sm-6">
                                     <div class="d-flex align-items-center">
                                         <div class="flex-shrink-0">
-                                            <i class="bi bi-award-fill text-teal-600 fs-3"></i>
+                                            <i class="fa fa-award-fill text-teal-600 fs-3"></i>
                                         </div>
                                         <div class="flex-grow-1 ms-3">
                                             <h5 class="mb-1">60+ năm</h5>
@@ -331,7 +331,7 @@
                                 <div class="col-sm-6">
                                     <div class="d-flex align-items-center">
                                         <div class="flex-shrink-0">
-                                            <i class="bi bi-people-fill text-teal-600 fs-3"></i>
+                                            <i class="fa fa-people-fill text-teal-600 fs-3"></i>
                                         </div>
                                         <div class="flex-grow-1 ms-3">
                                             <h5 class="mb-1">20,000+</h5>
@@ -342,7 +342,7 @@
                                 <div class="col-sm-6">
                                     <div class="d-flex align-items-center">
                                         <div class="flex-shrink-0">
-                                            <i class="bi bi-mortarboard-fill text-teal-600 fs-3"></i>
+                                            <i class="fa fa-mortarboard-fill text-teal-600 fs-3"></i>
                                         </div>
                                         <div class="flex-grow-1 ms-3">
                                             <h5 class="mb-1">50+</h5>
@@ -353,7 +353,7 @@
                                 <div class="col-sm-6">
                                     <div class="d-flex align-items-center">
                                         <div class="flex-shrink-0">
-                                            <i class="bi bi-globe text-teal-600 fs-3"></i>
+                                            <i class="fa fa-globe text-teal-600 fs-3"></i>
                                         </div>
                                         <div class="flex-grow-1 ms-3">
                                             <h5 class="mb-1">100+</h5>
@@ -369,7 +369,7 @@
                         <div class="col-lg-4 mb-4">
                             <div class="card h-100 border-0 shadow-sm">
                                 <div class="card-body text-center p-4">
-                                    <i class="bi bi-bullseye text-teal-600 fs-1 mb-3"></i>
+                                    <i class="fa fa-bullseye text-teal-600 fs-1 mb-3"></i>
                                     <h5 class="card-title">Sứ mệnh</h5>
                                     <p class="card-text text-muted">
                                         Đào tạo nguồn nhân lực chất lượng cao, nghiên cứu khoa học và chuyển giao công nghệ
@@ -381,7 +381,7 @@
                         <div class="col-lg-4 mb-4">
                             <div class="card h-100 border-0 shadow-sm">
                                 <div class="card-body text-center p-4">
-                                    <i class="bi bi-eye text-teal-600 fs-1 mb-3"></i>
+                                    <i class="fa fa-eye text-teal-600 fs-1 mb-3"></i>
                                     <h5 class="card-title">Tầm nhìn</h5>
                                     <p class="card-text text-muted">
                                         Trở thành trường đại học hàng đầu khu vực về thủy lợi và môi trường,
@@ -393,7 +393,7 @@
                         <div class="col-lg-4 mb-4">
                             <div class="card h-100 border-0 shadow-sm">
                                 <div class="card-body text-center p-4">
-                                    <i class="bi bi-heart text-teal-600 fs-1 mb-3"></i>
+                                    <i class="fa fa-heart text-teal-600 fs-1 mb-3"></i>
                                     <h5 class="card-title">Giá trị cốt lõi</h5>
                                     <p class="card-text text-muted">
                                         Chất lượng, Sáng tạo, Trách nhiệm, Hợp tác và Phát triển bền vững
@@ -452,7 +452,7 @@
                                             </div>
                                             <div class="col-12">
                                                 <button type="submit" class="btn btn-teal">
-                                                    <i class="bi bi-send me-2"></i>Gửi tin nhắn
+                                                    <i class="fa fa-send me-2"></i>Gửi tin nhắn
                                                 </button>
                                             </div>
                                         </div>
@@ -466,7 +466,7 @@
                                 <div class="col-12">
                                     <div class="card border-0 shadow-sm h-100">
                                         <div class="card-body text-center p-4">
-                                            <i class="bi bi-geo-alt-fill text-teal-600 fs-2 mb-3"></i>
+                                            <i class="fa fa-geo-alt-fill text-teal-600 fs-2 mb-3"></i>
                                             <h5 class="card-title">Địa chỉ</h5>
                                             <p class="card-text text-muted mb-0">
                                                 175 Tây Sơn, Đống Đa, Hà Nội<br>
@@ -479,7 +479,7 @@
                                 <div class="col-12">
                                     <div class="card border-0 shadow-sm h-100">
                                         <div class="card-body text-center p-4">
-                                            <i class="bi bi-telephone-fill text-teal-600 fs-2 mb-3"></i>
+                                            <i class="fa fa-telephone-fill text-teal-600 fs-2 mb-3"></i>
                                             <h5 class="card-title">Điện thoại</h5>
                                             <p class="card-text text-muted mb-0">
                                                 <a href="tel:+842438522201" class="text-decoration-none text-muted">
@@ -496,7 +496,7 @@
                                 <div class="col-12">
                                     <div class="card border-0 shadow-sm h-100">
                                         <div class="card-body text-center p-4">
-                                            <i class="bi bi-envelope-fill text-teal-600 fs-2 mb-3"></i>
+                                            <i class="fa fa-envelope-fill text-teal-600 fs-2 mb-3"></i>
                                             <h5 class="card-title">Email</h5>
                                             <p class="card-text text-muted mb-0">
                                                 <a href="mailto:info@tlu.edu.vn" class="text-decoration-none text-muted">
@@ -513,7 +513,7 @@
                                 <div class="col-12">
                                     <div class="card border-0 shadow-sm h-100">
                                         <div class="card-body text-center p-4">
-                                            <i class="bi bi-clock-fill text-teal-600 fs-2 mb-3"></i>
+                                            <i class="fa fa-clock-fill text-teal-600 fs-2 mb-3"></i>
                                             <h5 class="card-title">Giờ làm việc</h5>
                                             <p class="card-text text-muted mb-0">
                                                 Thứ 2 - Thứ 6: 8:00 - 17:00<br>

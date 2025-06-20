@@ -527,17 +527,17 @@ class StudentAffairsDepartmentController extends Controller
     public function indexConductScore(Request $request)
     {
         $params = $request->all();
-        $params['limit'] = Constant::DEFAULT_LIMIT_12;
-        $params['withSemester'] = true;
-        $ConductEvaluationPeriods = $this->conductEvaluationPeriodService->paginate($params)->toArray();
-        $semesters = $this->semesterService->getFourSemester()->limit(4)->get();
-        $data = [
-            'ConductEvaluationPeriods' => $ConductEvaluationPeriods,
-            'semesters' => $semesters,
-        ];
+//        $params['limit'] = Constant::DEFAULT_LIMIT_12;
+//        $params['withSemester'] = true;
+//        $ConductEvaluationPeriods = $this->conductEvaluationPeriodService->paginate($params)->toArray();
+//        $semesters = $this->semesterService->getFourSemester()->limit(4)->get();
+//        $data = [
+//            'ConductEvaluationPeriods' => $ConductEvaluationPeriods,
+//            'semesters' => $semesters,
+//        ];
 //         dd($data['ConductEvaluationPeriods']);
 
-        return view('StudentAffairsDepartment.conductScore.index', compact('data'));
+        return view('StudentAffairsDepartment.conductScore.index');
     }
 
     public function createConductScore(Request $request)

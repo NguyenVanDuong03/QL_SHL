@@ -26,7 +26,7 @@ class ConductEvaluationPeriodService extends BaseService
         $search = Arr::get($params, 'search', null);
 
         if ($withSemester) {
-            $relates[] = 'semester';
+            $relates[] = ['semester', 'conductEvaluationPhases'];
         }
 
         $whereHas = Arr::get($params, 'where_has', []);
