@@ -47,4 +47,45 @@ class ConductEvaluationPhaseRepository extends BaseRepository
             ->delete();
     }
 
+    public function currentConductEvaluationPeriodByStudent()
+    {
+        return $this->getModel()
+            ->newQuery()
+            ->where('role', 0)
+            ->orderBy('id', 'desc')
+            ->first();
+    }
+
+    public function currentConductEvaluationPeriodByLecturer()
+    {
+        return $this->getModel()
+            ->newQuery()
+            ->where('role', 1)
+            ->orderBy('id', 'desc')
+            ->first();
+    }
+
+    public function currentConductEvaluationPeriodByFacultyOffice()
+    {
+        return $this->getModel()
+            ->newQuery()
+            ->where('role', 2)
+            ->orderBy('id', 'desc')
+            ->first();
+    }
+
+    public function findConductEvaluationPeriodBySemesterId($params)
+    {
+        $role = $params['role'] ?? null;
+        $conduct_evaluation_period_id = $params['conduct_evaluation_period_id'] ?? null;
+
+        return $this->getModel()
+            ->newQuery()
+            ->where('role', $role)
+            ->where('conduct_evaluation_period_id', $conduct_evaluation_period_id)
+            ->where('open_date', '<=', now())
+            ->where('end_date', '>=', now())
+            ->first();
+    }
+
 }

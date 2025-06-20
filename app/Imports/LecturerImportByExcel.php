@@ -62,7 +62,7 @@ class LecturerImportByExcel implements ToCollection, WithStartRow, SkipsEmptyRow
                         'password' => Hash::make('12345678'),
                         'date_of_birth' => $date_of_birth,
                         'gender' => $gender,
-                        'role' => '0',
+                        'role' => '1',
                         'phone' => $phone,
                         'created_at' => now(),
                         'updated_at' => now(),
@@ -76,7 +76,7 @@ class LecturerImportByExcel implements ToCollection, WithStartRow, SkipsEmptyRow
                         'name' => $name,
                         'date_of_birth' => $date_of_birth,
                         'gender' => $gender,
-                        'role' => '0',
+                        'role' => '1',
                         'phone' => $phone,
                         'updated_at' => now(),
                     ]);

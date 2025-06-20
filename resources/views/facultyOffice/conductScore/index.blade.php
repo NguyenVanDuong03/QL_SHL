@@ -57,16 +57,15 @@
                                             {{ $loop->iteration }}
                                         </td>
                                         <td class="fw-semibold">
-                                            {{ $conductEvaluationPeriod['semester']['name'] }} -
-                                            {{ $conductEvaluationPeriod['semester']['school_year'] }}
+                                            {{ $conductEvaluationPeriod['name'] }}
                                         </td>
                                         <td>
                                             <i class="fas fa-calendar-alt text-primary me-2"></i>
-                                            {{ \Carbon\Carbon::parse($conductEvaluationPeriod['open_date'])->format('H:i d/m/Y') }}
+                                            {{ \Carbon\Carbon::parse($conductEvaluationPeriod['conduct_evaluation_phases'][2]['open_date'])->format('H:i d/m/Y') }}
                                         </td>
                                         <td>
                                             <i class="fas fa-calendar-check text-success me-2"></i>
-                                            {{ \Carbon\Carbon::parse($conductEvaluationPeriod['end_date'])->format('H:i d/m/Y') }}
+                                            {{ \Carbon\Carbon::parse($conductEvaluationPeriod['conduct_evaluation_phases'][2]['end_date'])->format('H:i d/m/Y') }}
                                         </td>
                                         <td class="text-center">
                                             <div class="btn-group gap-2" role="group">

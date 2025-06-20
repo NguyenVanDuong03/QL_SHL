@@ -46,25 +46,30 @@ class ConductEvaluationPeriodService extends BaseService
         return $this->getRepository()->currentConductEvaluationPeriod();
     }
 
-    public function checkConductEvaluationPeriod()
+//    public function checkConductEvaluationPeriod()
+//    {
+//        $currentConductEvaluationPeriod = $this->currentConductEvaluationPeriod();
+//        if ($currentConductEvaluationPeriod) {
+//            $openDate = $currentConductEvaluationPeriod->open_date;
+//            $endDate = $currentConductEvaluationPeriod->end_date;
+//            $now = now();
+//
+//            if ($now->isBetween($openDate, $endDate) || $now->lt($openDate)) {
+//                return true;
+//            }
+//        }
+//
+//        return false;
+//    }
+
+//    public function findConductEvaluationPeriodBySemesterId($params)
+//    {
+//        return $this->getRepository()->findConductEvaluationPeriodBySemesterId($params);
+//    }
+
+    public function conductEvaluationPeriodBySemesterId($semesterId)
     {
-        $currentConductEvaluationPeriod = $this->currentConductEvaluationPeriod();
-        if ($currentConductEvaluationPeriod) {
-            $openDate = $currentConductEvaluationPeriod->open_date;
-            $endDate = $currentConductEvaluationPeriod->end_date;
-            $now = now();
-
-            if ($now->isBetween($openDate, $endDate) || $now->lt($openDate)) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    public function findConductEvaluationPeriodBySemesterId($semesterId)
-    {
-        return $this->getRepository()->findConductEvaluationPeriodBySemesterId($semesterId);
+        return $this->getRepository()->conductEvaluationPeriodBySemesterId($semesterId);
     }
 
 }

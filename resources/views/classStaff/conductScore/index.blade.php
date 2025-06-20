@@ -271,7 +271,7 @@
         <!-- Alert Banner -->
         @if(!$data['checkConductEvaluationPeriod'])
             <div class="alert alert-warning-custom" role="alert">
-                ĐÃ HẾT THỜI GIAN NHẬP ĐIỂM RÈN LUYỆN
+                CHƯA ĐẾN THỜI GIAN CHẤM ĐIỂM RÈN LUYỆN
             </div>
         @endif
 
@@ -343,7 +343,8 @@
                     </tr>
                     </thead>
                     <tbody>
-                    @if($data['checkConductEvaluationPeriod'])
+                    {{--                    @if($data['checkConductEvaluationPeriod'])--}}
+                    @if ($data['findConductEvaluationPeriodBySemesterId'])
                         @forelse($data['getConductCriteriaData'] ?? [] as $index => $item)
                             @if (isset($sectionHeaders[$index]))
                                 <tr>
@@ -363,52 +364,52 @@
                                 </td>
                                 <td>
                                     <div class="criteria-actions">
-                                        @if ($data['findConductEvaluationPeriodBySemesterId'])
-                                            <div class="d-flex align-items-center gap-2">
-                                                <label class="image-upload-btn btn btn-outline-primary btn-sm">
-                                                    <i class="fas fa-camera"></i> Thêm ảnh
-                                                    <input type="file" accept="image/*" class="image-input">
-                                                </label>
-                                                <button type="button"
-                                                        class="btn btn-outline-secondary btn-sm view-images-btn"
-                                                        style="display: {{ $item['evidence_path'] ? 'inline-block' : 'none' }};">
-                                                    <i class="fas fa-eye"></i> Xem
-                                                </button>
-                                            </div>
-                                            <div class="image-preview-container">
-                                                @if($item['evidence_path'])
-                                                    <div class="image-preview"
-                                                         data-criteria="{{ $item['criterion_id'] }}">
-                                                        <img src="{{ asset('storage/' . $item['evidence_path']) }}"
-                                                             alt="Evidence Image">
-                                                        <button type="button" class="remove-image" title="Xóa ảnh">×
-                                                        </button>
-                                                    </div>
-                                                @endif
-                                            </div>
-                                            <textarea class="form-control note-input"
-                                                      placeholder="Ghi chú cho tiêu chí này...">{{ $item['note'] ?? '' }}</textarea>
-                                        @else
-                                            <div class="d-flex align-items-center gap-2">
-                                                <button type="button"
-                                                        class="btn btn-outline-secondary btn-sm view-images-btn"
-                                                        style="display: {{ $item['evidence_path'] ? 'inline-block' : 'none' }};">
-                                                    <i class="fas fa-eye"></i> Xem
-                                                </button>
-                                                <div class="image-preview-container">
-                                                    @if($item['evidence_path'])
-                                                        <div class="image-preview"
-                                                             data-criteria="{{ $item['criterion_id'] }}">
-                                                            <img src="{{ asset('storage/' . $item['evidence_path']) }}"
-                                                                 alt="Evidence Image">
-                                                        </div>
-                                                    @endif
+                                        {{--                                        @if ($data['findConductEvaluationPeriodBySemesterId'])--}}
+                                        <div class="d-flex align-items-center gap-2">
+                                            <label class="image-upload-btn btn btn-outline-primary btn-sm">
+                                                <i class="fas fa-camera"></i> Thêm ảnh
+                                                <input type="file" accept="image/*" class="image-input">
+                                            </label>
+                                            <button type="button"
+                                                    class="btn btn-outline-secondary btn-sm view-images-btn"
+                                                    style="display: {{ $item['evidence_path'] ? 'inline-block' : 'none' }};">
+                                                <i class="fas fa-eye"></i> Xem
+                                            </button>
+                                        </div>
+                                        <div class="image-preview-container">
+                                            @if($item['evidence_path'])
+                                                <div class="image-preview"
+                                                     data-criteria="{{ $item['criterion_id'] }}">
+                                                    <img src="{{ asset('storage/' . $item['evidence_path']) }}"
+                                                         alt="Evidence Image">
+                                                    <button type="button" class="remove-image" title="Xóa ảnh">×
+                                                    </button>
                                                 </div>
-                                            </div>
-                                            <div>Ghi chú:
-                                                <p class="note-input">{{ isset($item['note']) && !empty($item['note']) ? $item['note'] : '---' }}</p>
-                                            </div>
-                                        @endif
+                                            @endif
+                                        </div>
+                                        <textarea class="form-control note-input"
+                                                  placeholder="Ghi chú cho tiêu chí này...">{{ $item['note'] ?? '' }}</textarea>
+                                        {{--                                        @else--}}
+                                        {{--                                            <div class="d-flex align-items-center gap-2">--}}
+                                        {{--                                                <button type="button"--}}
+                                        {{--                                                        class="btn btn-outline-secondary btn-sm view-images-btn"--}}
+                                        {{--                                                        style="display: {{ $item['evidence_path'] ? 'inline-block' : 'none' }};">--}}
+                                        {{--                                                    <i class="fas fa-eye"></i> Xem--}}
+                                        {{--                                                </button>--}}
+                                        {{--                                                <div class="image-preview-container">--}}
+                                        {{--                                                    @if($item['evidence_path'])--}}
+                                        {{--                                                        <div class="image-preview"--}}
+                                        {{--                                                             data-criteria="{{ $item['criterion_id'] }}">--}}
+                                        {{--                                                            <img src="{{ asset('storage/' . $item['evidence_path']) }}"--}}
+                                        {{--                                                                 alt="Evidence Image">--}}
+                                        {{--                                                        </div>--}}
+                                        {{--                                                    @endif--}}
+                                        {{--                                                </div>--}}
+                                        {{--                                            </div>--}}
+                                        {{--                                            <div>Ghi chú:--}}
+                                        {{--                                                <p class="note-input">{{ isset($item['note']) && !empty($item['note']) ? $item['note'] : '---' }}</p>--}}
+                                        {{--                                            </div>--}}
+                                        {{--                                        @endif--}}
                                     </div>
                                 </td>
                             </tr>

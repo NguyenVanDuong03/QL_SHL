@@ -22,12 +22,13 @@ class ConductEvaluationPeriodRepository extends BaseRepository
             ->first();
     }
 
-//    public function findConductEvaluationPeriodBySemesterId($semesterId)
-//    {
-//        return $this->getModel()->where('semester_id', $semesterId)
-//            ->where('open_date', '<=', now())
-//            ->where('end_date', '>=', now())
-//            ->first();
-//    }
+    public function conductEvaluationPeriodBySemesterId($semesterId)
+    {
+        return $this->getModel()
+            ->newQuery()
+            ->where('semester_id', $semesterId)
+            ->orderBy('id', 'desc')
+            ->first();
+    }
 
 }

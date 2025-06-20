@@ -1,24 +1,24 @@
 @php
     switch (Auth::user()->role ?? null) {
-        case '0':
+        case '1':
             $layout = 'layouts.teacher';
             $breadcumb = 'Thông tin cá nhân';
             break;
-        case '1':
+        case '4':
             $layout = 'layouts.studentAffairsDepartment';
             $breadcumb = 'Thông tin cá nhân';
             break;
-        case '2':
+        case '3':
             $layout = 'layouts.classStaff';
             $breadcumb = '';
             break;
-        case '3':
+        case '0':
             $layout = 'layouts.student';
             $breadcumb = '';
             break;
-        case '4':
+        case '2':
             $layout = 'layouts.facultyOffice';
-            $breadcumb = '';
+            $breadcumb = 'Thôgn tin cá nhân';
             break;
         default:
             $layout = 'layouts.app'; // layout mặc định

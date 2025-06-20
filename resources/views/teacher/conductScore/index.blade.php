@@ -20,11 +20,11 @@
                 <div class="d-flex justify-content-end justify-content-md-between align-items-center">
                     <h4 class="flex-grow-1 mb-0 d-none d-md-block">Danh sách điểm rèn luyện</h4>
                     <div class="d-flex gap-2">
-                        <form class="position-relative">
+                        <form method="GET" action="{{ route('teacher.conduct-score.index') }}" class="position-relative">
                             <div class="input-group me-2" style="width: 250px;">
-                                <input type="text" class="form-control" placeholder="Tìm kiếm..."
+                                <input type="text" class="form-control" name="search" value="{{ request('search') }}" placeholder="Tìm kiếm..."
                                        id="search">
-                                <button class="btn btn-secondary" type="button">
+                                <button class="btn btn-secondary" type="submit">
                                     <i class="fas fa-search"></i>
                                 </button>
                             </div>
@@ -44,7 +44,7 @@
                                 <thead class="table-light">
                                 <tr>
                                     <th scope="col" class="text-center" style="width: 80px;">STT</th>
-                                    <th scope="col">Học kỳ</th>
+                                    <th scope="col">Đợt đánh giá</th>
                                     <th scope="col">Thời gian bắt đầu</th>
                                     <th scope="col">Thời gian kết thúc</th>
                                     <th scope="col" class="text-center" style="width: 200px;">Thao tác</th>
@@ -57,16 +57,15 @@
                                             {{ $loop->iteration }}
                                         </td>
                                         <td class="fw-semibold">
-                                            {{ $conductEvaluationPeriod['semester']['name'] }} -
-                                            {{ $conductEvaluationPeriod['semester']['school_year'] }}
+                                            {{ $conductEvaluationPeriod['name'] }}
                                         </td>
                                         <td>
                                             <i class="fas fa-calendar-alt text-primary me-2"></i>
-                                            {{ \Carbon\Carbon::parse($conductEvaluationPeriod['open_date'])->format('H:i d/m/Y') }}
+                                            {{ \Carbon\Carbon::parse($conductEvaluationPeriod['conduct_evaluation_phases'][1]['open_date'])->format('H:i d/m/Y') }}
                                         </td>
                                         <td>
                                             <i class="fas fa-calendar-check text-success me-2"></i>
-                                            {{ \Carbon\Carbon::parse($conductEvaluationPeriod['end_date'])->format('H:i d/m/Y') }}
+                                            {{ \Carbon\Carbon::parse($conductEvaluationPeriod['conduct_evaluation_phases'][1]['end_date'])->format('H:i d/m/Y') }}
                                         </td>
                                         <td class="text-center">
                                             <div class="btn-group gap-2" role="group">

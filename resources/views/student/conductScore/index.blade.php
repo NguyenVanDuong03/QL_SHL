@@ -271,7 +271,7 @@
         <!-- Alert Banner -->
         @if(!$data['checkConductEvaluationPeriod'])
             <div class="alert alert-warning-custom" role="alert">
-                ĐÃ HẾT THỜI GIAN NHẬP ĐIỂM RÈN LUYỆN
+                CHƯA ĐẾN THỜI GIAN CHẤM ĐIỂM RÈN LUYỆN
             </div>
         @endif
 
@@ -334,7 +334,7 @@
                     </tr>
                     </thead>
                     <tbody>
-                    @if($data['checkConductEvaluationPeriod'])
+                    @if($data['findConductEvaluationPeriodBySemesterId'])
                         @forelse($data['getConductCriteriaData'] ?? [] as $item)
                             <tr class="criteria-row" data-criteria="{{ $item['criterion_id'] }}">
                                 <td>{{ $loop->iteration }}</td>

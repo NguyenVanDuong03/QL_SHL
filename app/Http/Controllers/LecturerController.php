@@ -11,6 +11,7 @@ use App\Services\ClassSessionRegistrationService;
 use App\Services\ClassSessionRequestService;
 use App\Services\ConductCriteriaService;
 use App\Services\ConductEvaluationPeriodService;
+use App\Services\ConductEvaluationPhaseService;
 use App\Services\DetailConductScoreService;
 use App\Services\FacultyService;
 use App\Services\LecturerService;
@@ -44,6 +45,7 @@ class LecturerController extends Controller
         protected ConductCriteriaService          $conductCriteriaService,
         protected FacultyService                  $facultyService,
         protected UserService                     $userService,
+        protected ConductEvaluationPhaseService  $conductEvaluationPhaseService,
     )
     {
     }
@@ -486,7 +488,8 @@ class LecturerController extends Controller
     {
         $params = $request->all();
         $semesterId = $this->conductEvaluationPeriodService->find($params['conduct_evaluation_period_id'])->semester_id ?? null;
-        $findConductEvaluationPeriodBySemesterId = $this->conductEvaluationPeriodService->findConductEvaluationPeriodBySemesterId($semesterId);
+        $params['role'] = 1;
+        $findConductEvaluationPeriodBySemesterId = $this->conductEvaluationPhaseService->findConductEvaluationPeriodBySemesterId($params);
         $params['semester_id'] = $params['semester_id'] ?? $semesterId;
         $params['lecturer_id'] = auth()->user()->lecturer?->id;
         $params['study_class_id'] = $request->get('study_class_id', null);
@@ -541,11 +544,12 @@ class LecturerController extends Controller
         $studentId = $params['student_id'] ?? null;
         $student = $this->studentService->infoStudent($studentId)->toArray();
         $conductEvaluationPeriodId = $params['conduct_evaluation_period_id'] ?? null;
+        $params['role'] = 1;
         $conductEvaluationPeriod = $this->conductEvaluationPeriodService->find($conductEvaluationPeriodId);
-        $checkConductEvaluationPeriodBySemesterId = $this->conductEvaluationPeriodService->findConductEvaluationPeriodBySemesterId($conductEvaluationPeriod?->semester_id);
+        $checkConductEvaluationPeriodBySemesterId = $this->conductEvaluationPhaseService->findConductEvaluationPeriodBySemesterId($params);
         $studentConductScore = $this->studentConductScoreService->findStudentConductScore($conductEvaluationPeriodId, $studentId);
         $params['student_conduct_score_id'] = $studentConductScore?->id ?? null;
-        $checkConductEvaluationPeriod = $this->conductEvaluationPeriodService->checkConductEvaluationPeriod();
+        $checkConductEvaluationPeriod = $this->conductEvaluationPhaseService->checkConductEvaluationPeriod();
         $getConductCriteriaData = $this->detailConductScoreService->getConductCriteriaDataByLecturer($params);
         $calculateTotalScore = $this->detailConductScoreService->calculateTotalScore($getConductCriteriaData);
         $conductCriterias = $this->conductCriteriaService->get()->toArray();
@@ -560,7 +564,7 @@ class LecturerController extends Controller
             'conductCriterias' => $conductCriterias,
             'study_class_id' => $params['study_class_id'] ?? null,
         ];
-//dd($data['getConductCriteriaData']);
+//dd($data['checkConductEvaluationPeriodBySemesterId']);
         return view('teacher.conductScore.detail', compact('data'));
     }
 

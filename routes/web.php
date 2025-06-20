@@ -1,5 +1,6 @@
 <?php
 
+use \App\Helpers\Constant;
 use App\Http\Controllers\ClassStaffController;
 use App\Http\Controllers\LecturerController;
 use App\Http\Controllers\FacultyOfficeController;
@@ -10,15 +11,15 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
 
 Route::get('/', function () {
-    if (Auth::check() && Auth::user()->role == 0) {
+    if (Auth::check() && Auth::user()->role == Constant::ROLE_LIST['TEACHER']) {
         return redirect()->route('teacher.index');
-    } else if (Auth::check() && Auth::user()->role == 1) {
+    } else if (Auth::check() && Auth::user()->role == Constant::ROLE_LIST['STUDENT_AFFAIRS_DEPARTMENT']) {
         return redirect()->route('student-affairs-department.index');
-    } else if (Auth::check() && Auth::user()->role == 2) {
+    } else if (Auth::check() && Auth::user()->role == Constant::ROLE_LIST['CLASS_STAFF']) {
         return redirect()->route('class-staff.index');
-    } else if (Auth::check() && Auth::user()->role == 3) {
+    } else if (Auth::check() && Auth::user()->role == Constant::ROLE_LIST['STUDENT']) {
         return redirect()->route('student.index');
-    } else if (Auth::check() && Auth::user()->role == 4) {
+    } else if (Auth::check() && Auth::user()->role == Constant::ROLE_LIST['FACULTY_OFFICE']) {
         return redirect()->route('faculty-office.index');
     }
 
@@ -37,7 +38,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         [
             'prefix' => 'teacher',
             'as' => 'teacher.',
-            'middleware' => ['role:0'],
+            'middleware' => ['role:1'],
         ],
         function () {
             Route::get('/', [LecturerController::class, 'index'])->name('index');
@@ -130,7 +131,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         [
             'prefix' => 'student-affairs-department',
             'as' => 'student-affairs-department.',
-            'middleware' => ['role:1'],
+            'middleware' => ['role:4'],
         ],
         function () {
             Route::get('/', [StudentAffairsDepartmentController::class, 'index'])->name('index');
@@ -270,7 +271,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         [
             'prefix' => 'class-staff',
             'as' => 'class-staff.',
-            'middleware' => ['role:2'],
+            'middleware' => ['role:3'],
         ],
         function () {
             Route::get('/', [ClassStaffController::class, 'index'])->name('index');
@@ -325,7 +326,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         [
             'prefix' => 'student',
             'as' => 'student.',
-            'middleware' => ['role:3'],
+            'middleware' => ['role:0'],
         ],
         function () {
             Route::get('/', [StudentController::class, 'index'])->name('index');
@@ -375,7 +376,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::group([
         'prefix' => 'faculty-office',
         'as' => 'faculty-office.',
-        'middleware' => ['role:4'],
+        'middleware' => ['role:2'],
     ], function () {
         Route::get('/', [FacultyOfficeController::class, 'index'])->name('index');
 

@@ -334,7 +334,7 @@
         <!-- Alert Banner -->
         @if(!$data['checkConductEvaluationPeriod'])
             <div class="alert alert-warning-custom" role="alert">
-                ĐÃ HẾT THỜI GIAN NHẬP ĐIỂM RÈN LUYỆN
+                CHƯA ĐẾN THỜI GIAN CHẤM ĐIỂM RÈN LUYỆN
             </div>
         @endif
 
@@ -364,103 +364,112 @@
                     </tr>
                     </thead>
                     <tbody>
-                    @forelse($data['getConductCriteriaData'] ?? [] as $index => $item)
-                        @if (isset($sectionHeaders[$index]))
-                            <tr>
-                                <td colspan="7" class="bg-secondary text-white">
-                                    <strong>{{ $sectionHeaders[$index] }}</strong>
-                                </td>
-                            </tr>
-                        @endif
-                        <tr class="criteria-row" data-criteria="{{ $item['criterion_id'] }}"
-                            data-score-id="{{ $data['student_conduct_score_id'] }}">
-                            <td>{{ $loop->iteration }}</td>
-                            <td>{{ $item['content'] }}</td>
-                            <td class="text-center">{{ $item['max_score'] }}</td>
-                            <td class="text-center">
-                                <input type="number" class="form-control form-control-sm"
-                                       value="{{ $item['self_score'] ?? 0 }}"
-                                       disabled>
-                            </td>
-                            <td class="text-center">
-                                <input type="number" class="form-control form-control-sm"
-                                       value="{{ $item['class_score'] ?? 0 }}"
-                                       disabled>
-                            </td>
-                            <td class="text-center">
-                                <input type="number" class="form-control form-control-sm score-input"
-                                       min="0" max="{{ $item['max_score'] }}"
-                                       value="{{ $item['final_score'] ?? 0 }}"
-                                       data-max="{{ $item['max_score'] }}"
-                                    {{ $data['checkConductEvaluationPeriodBySemesterId'] ? '' : 'disabled' }}>
-                            </td>
-                            <td>
-                                <div class="criteria-actions">
-                                    <div class="d-flex align-items-center gap-2">
-                                        <button type="button"
-                                                class="btn btn-outline-secondary btn-sm view-images-btn"
-                                                style="display: {{ $item['evidence_path'] ? 'inline-block' : 'none' }};">
-                                            <i class="fas fa-eye"></i> Xem
-                                        </button>
-                                        <div class="image-preview-container">
-                                            @if($item['evidence_path'])
-                                                <div class="image-preview" data-criteria="{{ $item['criterion_id'] }}">
-                                                    <img src="{{ asset('storage/' . $item['evidence_path']) }}"
-                                                         alt="Evidence Image">
-                                                </div>
-                                            @endif
-                                        </div>
-                                    </div>
-                                    <div>Ghi chú:
-                                        <p class="note-input">{{ isset($item['note']) && !empty($item['note']) ? $item['note'] : '' }}</p>
-                                    </div>
-                                </div>
-                            </td>
-                        </tr>
-                    @empty
-                        @php
-                            $currentSection = -1;
-                        @endphp
-                        @foreach($data['conductCriterias'] ?? [] as $index2 => $criteria)
-                            @if (isset($sectionHeaders[$index2]) && $currentSection !== $index2)
-                                @php
-                                    $currentSection = $index2;
-                                @endphp
+                    @if($data['checkConductEvaluationPeriodBySemesterId'])
+                        @forelse($data['getConductCriteriaData'] ?? [] as $index => $item)
+                            @if (isset($sectionHeaders[$index]))
                                 <tr>
                                     <td colspan="7" class="bg-secondary text-white">
-                                        <strong>{{ $sectionHeaders[$index2] }}</strong>
+                                        <strong>{{ $sectionHeaders[$index] }}</strong>
                                     </td>
                                 </tr>
                             @endif
-                            <tr class="criteria-row" data-criteria="{{ $criteria['id'] }}">
+                            <tr class="criteria-row" data-criteria="{{ $item['criterion_id'] }}"
+                                data-score-id="{{ $data['student_conduct_score_id'] }}">
                                 <td>{{ $loop->iteration }}</td>
-                                <td>{{ $criteria['content'] }}</td>
-                                <td class="text-center">{{ $criteria['max_score'] }}</td>
+                                <td>{{ $item['content'] }}</td>
+                                <td class="text-center">{{ $item['max_score'] }}</td>
                                 <td class="text-center">
                                     <input type="number" class="form-control form-control-sm"
-                                           value="0" disabled>
+                                           value="{{ $item['self_score'] ?? 0 }}"
+                                           disabled>
                                 </td>
                                 <td class="text-center">
                                     <input type="number" class="form-control form-control-sm"
-                                           value="0" disabled>
+                                           value="{{ $item['class_score'] ?? 0 }}"
+                                           disabled>
                                 </td>
                                 <td class="text-center">
                                     <input type="number" class="form-control form-control-sm score-input"
-                                           min="0" max="{{ $criteria['max_score'] }}"
-                                           value="{{ $criteria['final_score'] ?? 0 }}"
-                                           data-max="{{ $criteria['max_score'] }}"
+                                           min="0" max="{{ $item['max_score'] }}"
+                                           value="{{ $item['final_score'] ?? 0 }}"
+                                           data-max="{{ $item['max_score'] }}"
                                         {{ $data['checkConductEvaluationPeriodBySemesterId'] ? '' : 'disabled' }}>
                                 </td>
                                 <td>
                                     <div class="criteria-actions">
+                                        <div class="d-flex align-items-center gap-2">
+                                            <button type="button"
+                                                    class="btn btn-outline-secondary btn-sm view-images-btn"
+                                                    style="display: {{ $item['evidence_path'] ? 'inline-block' : 'none' }};">
+                                                <i class="fas fa-eye"></i> Xem
+                                            </button>
+                                            <div class="image-preview-container">
+                                                @if($item['evidence_path'])
+                                                    <div class="image-preview"
+                                                         data-criteria="{{ $item['criterion_id'] }}">
+                                                        <img src="{{ asset('storage/' . $item['evidence_path']) }}"
+                                                             alt="Evidence Image">
+                                                    </div>
+                                                @endif
+                                            </div>
+                                        </div>
                                         <div>Ghi chú:
-                                            <p class="note-input">{{ isset($criteria['note']) && !empty($criteria['note']) ? $criteria['note'] : '' }}</p>
+                                            <p class="note-input">{{ isset($item['note']) && !empty($item['note']) ? $item['note'] : '' }}</p>
                                         </div>
                                     </div>
                                 </td>
                             </tr>
-                        @endforeach
-                    @endforelse
+                        @empty
+                            @php
+                                $currentSection = -1;
+                            @endphp
+                            @foreach($data['conductCriterias'] ?? [] as $index2 => $criteria)
+                                @if (isset($sectionHeaders[$index2]) && $currentSection !== $index2)
+                                    @php
+                                        $currentSection = $index2;
+                                    @endphp
+                                    <tr>
+                                        <td colspan="7" class="bg-secondary text-white">
+                                            <strong>{{ $sectionHeaders[$index2] }}</strong>
+                                        </td>
+                                    </tr>
+                                @endif
+                                <tr class="criteria-row" data-criteria="{{ $criteria['id'] }}">
+                                    <td>{{ $loop->iteration }}</td>
+                                    <td>{{ $criteria['content'] }}</td>
+                                    <td class="text-center">{{ $criteria['max_score'] }}</td>
+                                    <td class="text-center">
+                                        <input type="number" class="form-control form-control-sm"
+                                               value="0" disabled>
+                                    </td>
+                                    <td class="text-center">
+                                        <input type="number" class="form-control form-control-sm"
+                                               value="0" disabled>
+                                    </td>
+                                    <td class="text-center">
+                                        <input type="number" class="form-control form-control-sm score-input"
+                                               min="0" max="{{ $criteria['max_score'] }}"
+                                               value="{{ $criteria['final_score'] ?? 0 }}"
+                                               data-max="{{ $criteria['max_score'] }}"
+                                            {{ $data['checkConductEvaluationPeriodBySemesterId'] ? '' : 'disabled' }}>
+                                    </td>
+                                    <td>
+                                        <div class="criteria-actions">
+                                            <div>Ghi chú:
+                                                <p class="note-input">{{ isset($criteria['note']) && !empty($criteria['note']) ? $criteria['note'] : '' }}</p>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            @endforeach
+                        @endforelse
+                    @else
+                        <tr>
+                            <td colspan="7" class="text-center text-muted">
+                                Chưa có dữ liệu điểm rèn luyện cho sinh viên này.
+                            </td>
+                        </tr>
+                    @endif
                     </tbody>
                 </table>
             </div>
