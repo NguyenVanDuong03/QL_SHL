@@ -273,8 +273,8 @@ class ClassStaffController extends Controller
             DB::beginTransaction();
 
             $conductEvaluationPeriod = \App\Models\ConductEvaluationPeriod::where('semester_id', $semesterId)
-                ->where('open_date', '<=', now('Asia/Ho_Chi_Minh'))
-                ->where('end_date', '>=', now('Asia/Ho_Chi_Minh'))
+                ->where('open_date', '<=', now())
+                ->where('end_date', '>=', now())
                 ->first();
 
             if (!$conductEvaluationPeriod) {
