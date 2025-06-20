@@ -110,7 +110,7 @@
                                 <th scope="col" class="px-4 py-3 d-none d-md-table-cell">Thời gian</th>
                                 <th scope="col" class="px-4 py-3 d-none d-md-table-cell">Ngành/Khoa</th>
                                 <th scope="col" class="px-4 py-3">Học kỳ</th>
-                                <th scope="col" class="px-4 py-3 text-center">Xem chi tiết</th>
+                                <th scope="col" class="px-4 py-3 text-center">Chi tiết</th>
                             </tr>
                             </thead>
                             <tbody id="reports-table-body">

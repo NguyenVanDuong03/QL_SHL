@@ -105,7 +105,9 @@
                                 <div class="mb-3">
                                     <label for="timeSelect" class="form-label">Thời gian</label>
                                     <input type="datetime-local" class="form-control" name="proposed_at" id="timeSelect"
-                                           placeholder="Chọn thời gian" required>
+                                           placeholder="Chọn thời gian"
+                                           min="{{ now()->addMinutes(30)->format('Y-m-d\TH:i') }}"
+                                           required>
                                 </div>
 
                                 <div class="mb-3 class-location">
