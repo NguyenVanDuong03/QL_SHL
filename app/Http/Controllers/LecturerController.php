@@ -560,7 +560,7 @@ class LecturerController extends Controller
             'conductCriterias' => $conductCriterias,
             'study_class_id' => $params['study_class_id'] ?? null,
         ];
-//dd($data['calculateTotalScore']);
+//dd($data['getConductCriteriaData']);
         return view('teacher.conductScore.detail', compact('data'));
     }
 

@@ -14,8 +14,7 @@ return new class extends Migration
         Schema::create('conduct_evaluation_periods', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('semester_id');
-            $table->dateTime('open_date');
-            $table->dateTime('end_date');
+            $table->string('name');
             $table->softDeletes();
             $table->timestamps();
 

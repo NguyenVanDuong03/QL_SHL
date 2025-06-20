@@ -483,13 +483,13 @@
                     </div>
 
                     <!-- Search -->
-                    <div class="p-2 p-md-3 border-bottom">
-                        <div class="input-group">
-                            <span class="input-group-text"><i class="fas fa-search"></i></span>
-                            <input type="text" class="form-control" id="searchStudent"
-                                   placeholder="Tìm kiếm sinh viên...">
-                        </div>
-                    </div>
+{{--                    <div class="p-2 p-md-3 border-bottom">--}}
+{{--                        <div class="input-group">--}}
+{{--                            <span class="input-group-text"><i class="fas fa-search"></i></span>--}}
+{{--                            <input type="text" class="form-control" id="searchStudent"--}}
+{{--                                   placeholder="Tìm kiếm sinh viên...">--}}
+{{--                        </div>--}}
+{{--                    </div>--}}
 
                     <div class="d-md-none" id="mobileView">
                         <div id="mobileStudentList" class="p-2">

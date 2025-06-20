@@ -237,7 +237,7 @@ class StudentRepository extends BaseRepository
                     WHEN student_conduct_scores.status = 0 THEN 'Đã đánh giá (SV chấm)'
                     WHEN student_conduct_scores.status IS NULL THEN 'Chưa đánh giá'
                     WHEN student_conduct_scores.status = 1 THEN 'Đã đánh giá (GVCN chấm)'
-                    WHEN student_conduct_scores.status = 2 THEN 'Đã đánh giá (CTSV chấm)'
+                    WHEN student_conduct_scores.status = 2 THEN 'Đã đánh giá (VPK chấm)'
                     WHEN student_conduct_scores.status = 3 THEN 'Bị từ chối'
                 END AS status_description
             "),
@@ -296,7 +296,7 @@ class StudentRepository extends BaseRepository
                     WHEN student_conduct_scores.status = 0 THEN 'Đã đánh giá (SV chấm)'
                     WHEN student_conduct_scores.status IS NULL THEN 'Chưa đánh giá'
                     WHEN student_conduct_scores.status = 1 THEN 'Đã đánh giá (GVCN chấm)'
-                    WHEN student_conduct_scores.status = 2 THEN 'Đã đánh giá (CTSV chấm)'
+                    WHEN student_conduct_scores.status = 2 THEN 'Đã đánh giá (VPK chấm)'
                     WHEN student_conduct_scores.status = 3 THEN 'Bị từ chối'
                 END AS status_description
             "),

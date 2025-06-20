@@ -45,7 +45,7 @@
                         </button>
                     </div>
                     <h4 class="fw-bold d-none d-md-block">Sinh hoạt lớp cố định</h4>
-                    <div>
+                    <div class="d-flex flex-column justify-content-end">
                         <div class="input-group mb-3">
                             <input type="text" class="form-control" placeholder="Tìm kiếm lớp học"
                                    aria-label="Recipient's username" aria-describedby="basic-addon2">
@@ -54,7 +54,7 @@
                         </div>
 
                         <a class="btn btn-secondary btn-create-class-session" href="{{ route('student-affairs-department.class-session.listReports') }}">
-                            Danh sách báo cáo sinh hoạt lớp
+                            Báo cáo
                         </a>
                     </div>
                 </div>
@@ -187,7 +187,7 @@
                             Tạo lịch đăng ký sinh hoạt lớp
                         </button>
                         <a class="btn btn-secondary btn-create-class-session" href="{{ route('student-affairs-department.class-session.listReports') }}">
-                            Danh sách báo cáo sinh hoạt lớp
+                            Báo cáo
                         </a>
                     </div>
                 </div>
