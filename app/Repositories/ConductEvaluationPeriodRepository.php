@@ -25,8 +25,8 @@ class ConductEvaluationPeriodRepository extends BaseRepository
     public function findConductEvaluationPeriodBySemesterId($semesterId)
     {
         return $this->getModel()->where('semester_id', $semesterId)
-            ->where('open_date', '<=', now('Asia/Ho_Chi_Minh'))
-            ->where('end_date', '>=', now('Asia/Ho_Chi_Minh'))
+            ->where('open_date', '<=', now())
+            ->where('end_date', '>=', now())
             ->first();
     }
 
