@@ -416,10 +416,10 @@
 
             rawData.forEach(item => {
                 switch (item.role) {
-                    case 0:
+                    case 1:
                         groupedData['Giảng viên'] += item.total;
                         break;
-                    case 2:
+                    case 0:
                     case 3:
                         groupedData['Sinh viên'] += item.total;
                         break;
@@ -434,7 +434,7 @@
                 data: {
                     labels: labels,
                     datasets: [{
-                        label: 'Số lượng người dùng theo vai trò',
+                        label: 'Số lượng',
                         data: data,
                         backgroundColor: '#3b82f6',
                         borderColor: '#0C4095FF',

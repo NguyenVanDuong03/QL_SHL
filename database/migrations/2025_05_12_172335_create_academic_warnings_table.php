@@ -15,8 +15,6 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('student_id');
             $table->unsignedBigInteger('semester_id');
-            $table->date('warning_date')->nullable()->comment('Ngày cảnh cáo của giáo viên');
-            $table->text('reason')->nullable()->comment('Lý do cảnh cáo của giáo viên');
             $table->string('credits');
             $table->integer(('gpa_10'));
             $table->float('gpa_4');

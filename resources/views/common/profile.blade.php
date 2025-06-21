@@ -276,23 +276,23 @@
                                             $roleClass = '';
                                             $roleText = '';
                                             switch(Auth::user()->role) {
-                                                case '0':
+                                                case '1':
                                                     $roleClass = 'role-teacher';
                                                     $roleText = 'Giáo viên';
                                                     break;
-                                                case '1':
+                                                case '4':
                                                     $roleClass = 'role-ctsv';
                                                     $roleText = 'Cán bộ công tác sinh viên';
                                                     break;
-                                                case '2':
+                                                case '3':
                                                     $roleClass = 'role-cbl';
                                                     $roleText = Auth::user()->student?->position == 1 ? 'Lớp trưởng' : (Auth::user()->student?->position == 2 ? 'Lớp phó' : 'Bí thư');
                                                     break;
-                                                case '3':
+                                                case '0':
                                                     $roleClass = 'role-student';
                                                     $roleText = 'Sinh viên';
                                                     break;
-                                                case '4':
+                                                case '2':
                                                     $roleClass = 'bg-info text-white';
                                                     $roleText = 'Văn phòng khoa';
                                                     break;

@@ -11,8 +11,6 @@ class AcademicWarning extends Model
     protected $fillable = [
         'student_id',
         'semester_id',
-        'warning_date',
-        'reason',
         'credits',
         'gpa_10',
         'gpa_4',
