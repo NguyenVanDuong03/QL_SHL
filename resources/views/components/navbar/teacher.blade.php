@@ -22,7 +22,7 @@
                                         Route::currentRouteName() == 'teacher.class-session.flexibleDetail'
                                         ? 'active' : '' }}"
                    href="{{ route('teacher.class-session.index') }}">
-                    <i class="fas fa-book"></i>
+                    <i class="fa fa-bell"></i>
                     Sinh hoạt lớp
 {{--                    @if($countClassSession > 0)--}}
 {{--                        <span class="badge bg-danger ms-1">{{ $countClassSession }}</span>--}}
@@ -42,7 +42,7 @@
                                       Route::currentRouteName() == 'teacher.conduct-score.list' ||
                                       Route::currentRouteName() == 'teacher.conduct-score.detail'
                                       ? 'active' : '' }}" href="{{ route('teacher.conduct-score.index') }}">
-                    <i class="fas fa-chart-bar"></i>
+                    <i class="fa fa-clipboard-check"></i>
                     Điểm rèn luyện
                 </a>
             </li>
@@ -54,7 +54,7 @@
             </li>
             <li class="nav-item">
                 <a class="nav-link {{ Route::currentRouteName() == 'profile' ? 'active' : '' }}" href="{{ route('profile') }}">
-                    <i class="fas fa-chart-line"></i>
+                    <i class="fa fa-id-card"></i>
                     Thông tin cá nhân
                 </a>
             </li>

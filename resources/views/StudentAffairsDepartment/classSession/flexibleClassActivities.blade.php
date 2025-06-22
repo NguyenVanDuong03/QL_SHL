@@ -154,7 +154,7 @@
                     <div class="modal-content">
                         <div class="modal-body p-4">
                             <div class="d-flex justify-content-between align-items-center mb-4">
-                                <h5 class="modal-title fw-bold" id="formModalLabel">Xét duyệt sinh hoạt lớp cố định</h5>
+                                <h5 class="modal-title fw-bold" id="formModalLabel">Xét duyệt sinh hoạt lớp linh hoạt</h5>
                                 <button type="button" class="btn btn-outline-danger" id="btnReject">Huỷ đăng ký</button>
                             </div>
 

@@ -12,7 +12,7 @@
             </li>
             <li class="nav-item">
                 <a class="nav-link {{ Route::currentRouteName() == 'student-affairs-department.semester.index' ? 'active' : '' }}" href="{{ route('student-affairs-department.semester.index') }}">
-                    <i class="fas fa-calendar-minus"></i>
+                    <i class="fa fa-calendar-alt"></i>
                     Học kỳ
                 </a>
             </li>
@@ -32,7 +32,7 @@
                 <a class="nav-link {{ Route::currentRouteName() == 'student-affairs-department.conduct-score.index' ||
                                       Route::currentRouteName() == 'student-affairs-department.conduct-score.infoConductScore'
                                       ? 'active' : '' }}" href="{{ route('student-affairs-department.conduct-score.index') }}">
-                    <i class="fas fa-book"></i>
+                    <i class="fa fa-clipboard-check"></i>
                     Điểm rèn luyện
                 </a>
             </li>
@@ -52,25 +52,25 @@
             </li>
             <li class="nav-item">
                 <a class="nav-link {{ Route::currentRouteName() == 'student-affairs-department.room.index' ? 'active' : '' }}" href="{{ route('student-affairs-department.room.index') }}">
-                    <i class="fas fa-user-graduate"></i>
+                    <i class="fa fa-door-open"></i>
                     Phòng học
                 </a>
             </li>
             <li class="nav-item">
                 <a class="nav-link {{ Route::currentRouteName() == 'student-affairs-department.academic-warning.index' ? 'active' : '' }}" href="{{ route('student-affairs-department.academic-warning.index') }}">
-                    <i class="fas fa-chart-bar"></i>
+                    <i class="fa fa-exclamation-triangle"></i>
                     Cảnh báo học vụ
                 </a>
             </li>
             <li class="nav-item">
                 <a class="nav-link {{ Route::currentRouteName() == 'student-affairs-department.statistical.index' ? 'active' : '' }}" href="{{ route('student-affairs-department.statistical.index') }}">
-                    <i class="fas fa-chart-line"></i>
+                    <i class="fa fa-chart-line"></i>
                     Thống kê
                 </a>
             </li>
             <li class="nav-item">
                 <a class="nav-link {{ Route::currentRouteName() == 'profile' ? 'active' : '' }}" href="{{ route('profile') }}">
-                    <i class="fas fa-chart-line"></i>
+                    <i class="fa fa-id-card"></i>
                     Thông tin cá nhân
                 </a>
             </li>
