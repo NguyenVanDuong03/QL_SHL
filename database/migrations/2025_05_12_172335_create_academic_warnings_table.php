@@ -16,8 +16,8 @@ return new class extends Migration
             $table->unsignedBigInteger('student_id');
             $table->unsignedBigInteger('semester_id');
             $table->string('credits');
-            $table->integer(('gpa_10'));
-            $table->float('gpa_4');
+            $table->decimal('gpa_10', 4, 2)->comment('Điểm trung bình học kỳ theo thang điểm 10');
+            $table->decimal('gpa_4', 3, 2)->comment('Điểm trung bình học kỳ theo thang điểm 4');
             $table->string('academic_status')->comment('Mức xử lý học vụ');
             $table->text('note')->nullable()->comment('Ghi chú');
             $table->softDeletes();

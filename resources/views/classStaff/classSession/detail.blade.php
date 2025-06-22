@@ -206,7 +206,7 @@
                                             data-bs-toggle="modal">
                                         <i class="fas fa-users me-2"></i>Danh sách lớp
                                     </button>
-                                    @if($data['getClassSessionRequest']->status != 3)
+                                    @if($data['getClassSessionRequest']->status == 1)
                                         <button type="button"
                                                 class="btn btn-success btn-confirm-attendance"
                                                 data-bs-toggle="modal"
@@ -258,7 +258,7 @@
                                 <!-- Trực tiếp tại trường -->
                                 <div class="mb-3">
                                     <label class="form-label fw-bold" style="color: var(--gray-600);">Phòng học:</label>
-                                    <p class="text-dark mb-0 fs-5">{{ $data['getClassSessionRequest']->room->name }}</p>
+                                    <p class="text-dark mb-0 fs-5">{{ $data['getClassSessionRequest']->room->name ?? '---' }}</p>
                                 </div>
                                 <div class="alert alert-info">
                                     <i class="fas fa-info-circle me-2"></i>
@@ -427,15 +427,6 @@
                                     </div>
                                 </div>
                             @endforeach
-                        </div>
-                    </div>
-
-                    <!-- Search -->
-                    <div class="p-2 p-md-3 border-bottom">
-                        <div class="input-group">
-                            <span class="input-group-text"><i class="fas fa-search"></i></span>
-                            <input type="text" class="form-control" id="searchStudent"
-                                   placeholder="Tìm kiếm sinh viên...">
                         </div>
                     </div>
 

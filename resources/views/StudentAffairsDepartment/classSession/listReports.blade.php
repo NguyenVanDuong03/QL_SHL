@@ -183,7 +183,7 @@
 
                     <div class="row mb-3">
                         <div class="col-md-6">
-                            <h6 class="fw-bold mb-2">Thông tin chung</h6>
+                            <h5 class="fw-bold mb-2">Thông tin chung</h5>
                             <p class="mb-1"><strong>Giáo viên tham dự:</strong> <span
                                     id="modal-teacher-attendance"></span></p>
                             <p class="mb-1"><strong>Số sinh viên tham dự:</strong> <span
@@ -192,7 +192,7 @@
                             </p>
                         </div>
                         <div class="col-md-6">
-                            <h6 class="fw-bold mb-2">Tình hình lớp</h6>
+                            <h5 class="fw-bold mb-2">Tình hình lớp</h5>
                             <p class="mb-1"><strong>Chính trị, đạo đức, lối sống:</strong> <span
                                     id="modal-politics"></span></p>
                             <p class="mb-1"><strong>Tình hình học tập, rèn luyện:</strong> <span
@@ -202,13 +202,13 @@
 
                     <div class="row mb-3">
                         <div class="col-md-6">
-                            <h6 class="fw-bold mb-2">Tình hình sinh viên</h6>
+                            <h5 class="fw-bold mb-2">Tình hình sinh viên</h5>
                             <p class="mb-1"><strong>Sinh viên nội trú:</strong> <span id="modal-on-campus"></span></p>
                             <p class="mb-1"><strong>Sinh viên ngoại trú:</strong> <span id="modal-off-campus"></span>
                             </p>
                         </div>
                         <div class="col-md-6">
-                            <h6 class="fw-bold mb-2">Kiến nghị</h6>
+                            <h5 class="fw-bold mb-2">Kiến nghị</h5>
                             <p id="modal-suggestions"></p>
                         </div>
                     </div>

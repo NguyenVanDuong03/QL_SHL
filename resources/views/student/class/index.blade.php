@@ -75,11 +75,11 @@
                             <tr>
                                 <th scope="row">{{ $index + 1 }}</th>
                                 <td>
-                                    <div class="fw-medium">{{ $student['user']['name'] }} <br>
+                                    <div class="fw-medium">{{ $student['user']['name'] ?? '---' }} <br>
                                         <small class="text-muted">ID: {{ $student['student_code'] }}</small>
                                     </div>
                                 </td>
-                                <td class="d-none d-md-table-cell">{{ $student['user']['email'] }}</td>
+                                <td class="d-none d-md-table-cell">{{ $student['user']['email'] ?? '---' }}</td>
                                 <td class="d-none d-md-table-cell">
                                         <span
                                             class="badge {{ $student['user']['gender'] == 'Nam' ? 'bg-info' : 'bg-pink' }}">

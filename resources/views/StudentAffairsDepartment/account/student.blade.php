@@ -150,7 +150,7 @@
                         </div>
                     </div>
                     <div class="card-footer bg-light">
-                        <x-pagination.pagination :paginate="$data['students']" />
+                        <x-pagination.pagination :paginate="$data['getAllWithTrashed']" />
                     </div>
                 </div>
             </div>

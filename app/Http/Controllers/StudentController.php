@@ -189,7 +189,7 @@ class StudentController extends Controller
             'students' => $students,
             'studyClassName' => $studyClassName,
         ];
-//         dd($data['studyClassId']);
+//         dd($data['students']);
 
         return view('student.class.index', compact('data'));
     }
