@@ -525,7 +525,7 @@
                         Bạn có chắc chắn muốn xác nhận tham gia buổi sinh hoạt lớp này?
                         <input type="hidden" name="class_session_request_id"
                                value="{{ $data['getClassSessionRequest']->id }}">
-                        <input type="hidden" name="staus" value="0">
+{{--                        <input type="hidden" name="staus" value="0">--}}
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
@@ -556,7 +556,7 @@
                         </div>
                         <input type="hidden" name="class_session_request_id"
                                value="{{ $data['getClassSessionRequest']->id }}">
-                        <input type="hidden" name="status" value="1">
+{{--                        <input type="hidden" name="status" value="1">--}}
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>

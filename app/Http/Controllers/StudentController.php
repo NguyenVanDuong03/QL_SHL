@@ -123,6 +123,8 @@ class StudentController extends Controller
     {
         $params = $request->all();
         $infoClassRequestbyId = $this->classSessionRequestService->find($params['session-request-id']);
+        $params['class_session_request_id'] = $params['session-request-id'] ?? null;
+        $params['student_id'] = auth()->user()->student?->id;
         $params['class_session_registration_id'] = $infoClassRequestbyId->class_session_registration_id ?? null;
         $getCSRSemesterInfo = $this->classSessionRegistrationService->getCSRSemesterInfo();
         $getStudyClassByIds = $this->studyClassService->find($params['study-class-id']);
@@ -130,7 +132,6 @@ class StudentController extends Controller
         $getTotalStudentsByClass = $this->studentService->getTotalStudentsByClass($params);
         $getAttendanceStatusSummary = $this->studentService->getAttendanceStatusSummary($params);
         $getAttendanceStudent = $this->attendanceService->getAttendanceStudent($params);
-//        dd($getAttendanceStudent);
         $data = [
             'getCSRSemesterInfo' => $getCSRSemesterInfo,
             'getStudyClassByIds' => $getStudyClassByIds,
@@ -156,21 +157,31 @@ class StudentController extends Controller
         $params = $request->all();
         $params['student_id'] = auth()->user()->student?->id;
         $params['reason'] = null;
-
         $attendance = $this->attendanceService->confirmAttendance($params);
+        if (!$attendance) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Xác nhận tham gia thất bại',
+            ], 400);
+        }
 
         return response()->json([
             'status' => 'success',
             'message' => 'Xác nhận tham gia thành công',
-        ], 200); // Mã HTTP 200
+        ], 200);
     }
 
     public function updateAbsence(Request $request)
     {
         $params = $request->all();
         $params['student_id'] = auth()->user()->student?->id;
-//        dd($params);
         $attendance = $this->attendanceService->updateAbsence($params);
+        if (!$attendance) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Cập nhật lý do vắng mặt thất bại',
+            ], 400);
+        }
 
         return response()->json([
             'status' => 'success',
