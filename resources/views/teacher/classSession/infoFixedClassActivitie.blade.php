@@ -527,11 +527,13 @@
                                                     ];
                                                 @endphp
                                                 <td class="text-center">
-                                                    @if ($student->attendance_status == 0)
+                                                    @if ($data['getClassSessionRequest']->proposed_at < now() && $data['getClassSessionRequest']->status == 1)
                                                         <input class="form-check-input attendance-checkbox"
                                                                type="checkbox"
                                                                name="student_ids[]"
-                                                               value="{{ $student->student_id }}">
+                                                               value="{{ $student->student_id }}"
+                                                            {{ $student->attendance_status == 2 ? 'checked' : '' }}
+                                                        >
                                                     @else
                                                         <span class="text-muted"><i
                                                                 class="fas {{ $statusIcons[$student->attendance_status] ?? -1 }}"></i></span>
@@ -567,12 +569,11 @@
                                 <div class="d-md-none w-100">
                                     <div class="d-flex justify-content-between align-items-center mb-2">
                                         <div class="btn-group btn-group-sm">
-                                            <button type="button" class="btn btn-outline-success"
-                                                    onclick="checkAllAttendance()">
+                                            <button type="button" class="btn btn-outline-success checkAllAttendanceBtn">
                                                 <i class="fas fa-check-double"></i>
                                             </button>
-                                            <button type="button" class="btn btn-outline-secondary"
-                                                    onclick="uncheckAllAttendance()">
+                                            <button type="button"
+                                                    class="btn btn-outline-secondary uncheckAllAttendanceBtn">
                                                 <i class="fas fa-times"></i>
                                             </button>
                                         </div>
@@ -592,12 +593,12 @@
                                 <!-- Desktop Footer -->
                                 <div class="d-none d-md-flex justify-content-between align-items-center w-100">
                                     <div>
-                                        <button type="button" class="btn btn-outline-success btn-sm me-2"
-                                                onclick="checkAllAttendance()">
+                                        <button type="button"
+                                                class="btn btn-outline-success btn-sm me-2 checkAllAttendanceBtn">
                                             <i class="fas fa-check-double me-1"></i>Chọn tất cả
                                         </button>
-                                        <button type="button" class="btn btn-outline-secondary btn-sm"
-                                                onclick="uncheckAllAttendance()">
+                                        <button type="button"
+                                                class="btn btn-outline-secondary btn-sm uncheckAllAttendanceBtn">
                                             <i class="fas fa-times me-1"></i>Bỏ chọn
                                         </button>
                                     </div>
@@ -684,7 +685,6 @@
                 $('.student-row, .mobile-student-card').each(function () {
                     const $this = $(this);
                     const studentName = $this.data('student-name').toLowerCase();
-                    const studentId = $this.data('student-id');
                     const studentCode = $this.data('student-code').toLowerCase();
 
                     if (studentName.includes(searchTerm) || studentCode.includes(searchTerm)) {
@@ -699,9 +699,22 @@
             });
 
             // Checkbox change handler
-            $(document).on('change', '.attendance-checkbox', updateCounts);
+            $(document).on('change', '.attendance-checkbox', function () {
+                const $this = $(this);
+                const studentId = $this.val();
+                const isChecked = $this.is(':checked');
+                const isMobile = $(window).width() < 768;
 
-            // Note icon click handler
+                if ($this.closest('.student-row').length) {
+                    $(`.mobile-student-card[data-student-id="${studentId}"] .attendance-checkbox`).prop('checked', isChecked);
+                } else if ($this.closest('.mobile-student-card').length) {
+                    $(`.student-row[data-student-id="${studentId}"] .attendance-checkbox`).prop('checked', isChecked);
+                }
+
+                updateCounts();
+                toggleSubmitButton();
+            });
+
             $(document).on('click', '.note-icon', function (e) {
                 e.stopPropagation();
                 const $this = $(this);
@@ -725,19 +738,32 @@
                 toggleSubmitButton();
             });
 
-            $(document).on('change', '.attendance-checkbox', function () {
-                toggleSubmitButton();
+            $('.checkAllAttendanceBtn').on('click', function () {
+                checkAllAttendance();
             });
 
-            // Form submission
+            $('.uncheckAllAttendanceBtn').on('click', function () {
+                uncheckAllAttendance();
+            });
+
             $('#attendanceForm').on('submit', function (e) {
                 e.preventDefault();
 
-                const attendanceData = $('.attendance-checkbox:checked').map(function () {
+                let selector = '.attendance-checkbox:checked';
+                if ($(window).width() < 768) {
+                    selector = '.mobile-student-card .attendance-checkbox:checked';
+                } else {
+                    selector = '.student-row .attendance-checkbox:checked';
+                }
+
+                const attendanceData = $(selector).map(function () {
                     return $(this).val();
                 }).get();
+
                 const session_request_id = $('.session_request_id').val();
                 const study_class_id = $('.study_class_id').val();
+
+                console.log('Attendance Data:', attendanceData); // Debug
 
                 $.ajax({
                     url: `{{ route('teacher.attendance.updateAttendance') }}`,
@@ -758,122 +784,145 @@
                     }
                 });
             });
+
+            function generateMobileCards() {
+                const $mobileContainer = $('#mobileStudentList');
+                $mobileContainer.empty();
+
+                $('.student-row').each(function () {
+                    const $row = $(this);
+                    const studentId = $row.data('student-id');
+                    const studentName = $row.data('student-name');
+                    const status = $row.data('status');
+                    const studentCode = $row.data('student-code');
+                    const absentReason = $row.data('reason') || '';
+                    const proposedAt = $row.data('proposed-at');
+                    const classRequestStatus = $row.data('class-request-status');
+
+                    const isChecked = $row.find('.attendance-checkbox').is(':checked');
+
+                    let statusBadge = '';
+                    let checkboxHtml = '';
+
+                    if (status === -1) {
+                        statusBadge = '<span class="badge bg-warning"><i class="fas fa-question me-1"></i>Chưa xác nhận</span>';
+                        if (proposedAt && new Date(proposedAt) < new Date() && classRequestStatus === 1) {
+                            checkboxHtml = `<input class="form-check-input attendance-checkbox" type="checkbox" name="student_ids[]" value="${studentId}" ${isChecked ? 'checked' : ''} style="transform: scale(1.2);">`;
+                        } else {
+                            checkboxHtml = '<span class="text-muted"><i class="fas fa-question"></i></span>';
+                        }
+                    } else if (status === 0) {
+                        statusBadge = '<span class="badge bg-primary"><i class="fas fa-clock me-1"></i>Xác nhận</span>';
+                        if (proposedAt && new Date(proposedAt) < new Date() && classRequestStatus === 1) {
+                            checkboxHtml = `<input class="form-check-input attendance-checkbox" type="checkbox" name="student_ids[]" value="${studentId}" ${isChecked ? 'checked' : ''} style="transform: scale(1.2);">`;
+                        } else {
+                            checkboxHtml = '<span class="text-muted"><i class="fas fa-clock"></i></span>';
+                        }
+                    } else if (status === 1) {
+                        statusBadge = '<span class="badge bg-secondary"><i class="fas fa-times me-1"></i>Xin vắng</span>';
+                        if (proposedAt && new Date(proposedAt) < new Date() && classRequestStatus === 1) {
+                            checkboxHtml = `<input class="form-check-input attendance-checkbox" type="checkbox" name="student_ids[]" value="${studentId}" ${isChecked ? 'checked' : ''} style="transform: scale(1.2);">`;
+                        } else {
+                            checkboxHtml = '<span class="text-muted"><i class="fas fa-times"></i></span>';
+                        }
+                    } else if (status === 2) {
+                        statusBadge = '<span class="badge bg-success"><i class="fas fa-check me-1"></i>Có mặt</span>';
+                        if (proposedAt && new Date(proposedAt) < new Date() && classRequestStatus === 1) {
+                            checkboxHtml = `<input class="form-check-input attendance-checkbox" type="checkbox" name="student_ids[]" value="${studentId}" ${isChecked ? 'checked' : ''} style="transform: scale(1.2);">`;
+                        } else {
+                            checkboxHtml = '<span class="text-muted"><i class="fas fa-check"></i></span>';
+                        }
+                    } else if (status === 3) {
+                        statusBadge = '<span class="badge bg-danger"><i class="fas fa-exclamation-triangle me-1"></i>Vắng mặt</span>';
+                        if (proposedAt && new Date(proposedAt) < new Date() && classRequestStatus === 1) {
+                            checkboxHtml = `<input class="form-check-input attendance-checkbox" type="checkbox" name="student_ids[]" value="${studentId}" ${isChecked ? 'checked' : ''} style="transform: scale(1.2);">`;
+                        } else {
+                            checkboxHtml = '<span class="text-muted"><i class="fas fa-exclamation-triangle"></i></span>';
+                        }
+                    }
+
+                    const card = $(`
+                        <div class="mobile-student-card card mb-2 border-0 shadow-sm"
+                             data-student-id="${studentId}"
+                             data-student-name="${studentName}"
+                             data-status="${status}"
+                             data-student-code="${studentCode}">
+                            <div class="card-body p-3">
+                                <div class="d-flex justify-content-between align-items-start">
+                                    <div class="flex-grow-1">
+                                        <div class="d-flex justify-content-between align-items-center mb-2">
+                                            <h6 class="mb-0 fw-bold">${studentName}</h6>
+                                            <span class="badge bg-light text-dark">${studentCode}</span>
+                                        </div>
+                                        <div class="mb-2">${statusBadge}</div>
+                                        ${absentReason ? `<small class="text-danger"><i class="fas fa-exclamation-triangle me-1"></i>${absentReason}</small>` : ''}
+                                    </div>
+                                    <div class="ms-3 d-flex align-items-center">
+                                        <div class="text-center">
+                                            <small class="text-muted d-block mb-1">Điểm danh</small>
+                                            ${checkboxHtml}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    `);
+
+                    $mobileContainer.append(card);
+                });
+            }
+
+            function toggleSubmitButton() {
+                const isMobile = $(window).width() < 768;
+                const checkedCount = isMobile
+                    ? $('.mobile-student-card .attendance-checkbox:checked').length
+                    : $('.student-row .attendance-checkbox:checked').length;
+                $('#selectedCount').text(isMobile ? 0 : checkedCount);
+                $('#selectedCountMobile').text(isMobile ? checkedCount : 0);
+            }
+
+            function checkAllAttendance() {
+                const isMobile = $(window).width() < 768;
+                const selector = isMobile ? '.mobile-student-card' : '.student-row';
+
+                $(selector).each(function () {
+                    const $container = $(this);
+                    const $checkbox = $container.find('.attendance-checkbox');
+                    $checkbox.prop('checked', true);
+                    const studentId = $container.data('student-id');
+                    if (isMobile) {
+                        $(`.student-row[data-student-id="${studentId}"] .attendance-checkbox`).prop('checked', true);
+                    } else {
+                        $(`.mobile-student-card[data-student-id="${studentId}"] .attendance-checkbox`).prop('checked', true);
+                    }
+                });
+
+                toggleSubmitButton();
+            }
+
+            function uncheckAllAttendance() {
+                const isMobile = $(window).width() < 768;
+                const selector = isMobile ? '.mobile-student-card' : '.student-row';
+
+                $(selector).each(function () {
+                    const $container = $(this);
+                    const $checkbox = $container.find('.attendance-checkbox');
+                    $checkbox.prop('checked', false);
+
+                    const studentId = $container.data('student-id');
+                    if (isMobile) {
+                        $(`.student-row[data-student-id="${studentId}"] .attendance-checkbox`).prop('checked', false);
+                    } else {
+                        $(`.mobile-student-card[data-student-id="${studentId}"] .attendance-checkbox`).prop('checked', false);
+                    }
+                });
+
+                toggleSubmitButton();
+            }
+
+            function updateCounts() {
+                toggleSubmitButton();
+            }
         });
-
-        function generateMobileCards() {
-            const $mobileContainer = $('#mobileStudentList');
-            $mobileContainer.empty();
-
-            $('.student-row').each(function () {
-                const $row = $(this);
-                const studentId = $row.data('student-id');
-                const studentName = $row.data('student-name');
-                const status = $row.data('status');
-                const studentCode = $row.data('student-code');
-                const absentReason = $row.data('reason') || '';
-                const proposedAt = $row.data('proposed-at');
-                const classRequestStatus = $row.data('class-request-status');
-
-                let statusBadge = '';
-                let checkboxHtml = '';
-
-                if (status === -1) {
-                    statusBadge = '<span class="badge bg-warning"><i class="fas fa-question me-1"></i>Chưa xác nhận</span>';
-                    if (proposedAt && new Date(proposedAt) < new Date() && classRequestStatus === 1) {
-                        checkboxHtml = `<input class="form-check-input attendance-checkbox" type="checkbox" name="student_ids[]" value="${studentId}" style="transform: scale(1.2);">`;
-                    } else
-                        checkboxHtml = '<span class="text-muted"><i class="fas fa-question"></i></span>';
-
-                } else if (status === 0) {
-                    statusBadge = '<span class="badge bg-primary"><i class="fas fa-clock me-1"></i>Xác nhận</span>';
-                    if (proposedAt && new Date(proposedAt) < new Date() && classRequestStatus === 1) {
-                        checkboxHtml = `<input class="form-check-input attendance-checkbox" type="checkbox" name="student_ids[]" value="${studentId}" style="transform: scale(1.2);">`;
-                    } else
-                        checkboxHtml = '<span class="text-muted"><i class="fas fa-clock"></i></span>';
-
-                } else if (status === 1) {
-                    statusBadge = '<span class="badge bg-secondary"><i class="fas fa-times me-1"></i>Xin vắng</span>';
-                    if (proposedAt && new Date(proposedAt) < new Date() && classRequestStatus === 1) {
-                        checkboxHtml = `<input class="form-check-input attendance-checkbox" type="checkbox" name="student_ids[]" value="${studentId}" style="transform: scale(1.2);">`;
-                    } else
-                    checkboxHtml = '<span class="text-muted"><i class="fas fa-times"></i></span>';
-                } else if (status === 2) {
-                    statusBadge = '<span class="badge bg-success"><i class="fas fa-check me-1"></i>Có mặt</span>';
-                    if (proposedAt && new Date(proposedAt) < new Date() && classRequestStatus === 1) {
-                        checkboxHtml = `<input class="form-check-input attendance-checkbox" type="checkbox" name="student_ids[]" checked value="${studentId}" style="transform: scale(1.2);">`;
-                    } else
-                    checkboxHtml = `'<span class="text-muted"><i class="fas fa-check"></i></span>`;
-
-                } else if (status === 3) {
-                    statusBadge = '<span class="badge bg-danger"><i class="fas fa-exclamation-triangle me-1"></i>Vắng mặt</span>';
-                    if (proposedAt && new Date(proposedAt) < new Date() && classRequestStatus === 1) {
-                        checkboxHtml = `<input class="form-check-input attendance-checkbox" type="checkbox" name="student_ids[]" value="${studentId}" style="transform: scale(1.2);">`;
-                    } else
-                    checkboxHtml = '<span class="text-muted"><i class="fas fa-exclamation-triangle"></i></span>';
-                }
-
-                const card = $(`
-            <div class="mobile-student-card card mb-2 border-0 shadow-sm"
-                 data-student-id="${studentId}"
-                 data-student-name="${studentName}"
-                 data-status="${status}"
-                 data-student-code="${studentCode}">
-                <div class="card-body p-3">
-                    <div class="d-flex justify-content-between align-items-start">
-                        <div class="flex-grow-1">
-                            <div class="d-flex justify-content-between align-items-center mb-2">
-                                <h6 class="mb-0 fw-bold">${studentName}</h6>
-                                <span class="badge bg-light text-dark">${studentCode}</span>
-                            </div>
-                            <div class="mb-2">${statusBadge}</div>
-                            ${absentReason ? `<small class="text-danger"><i class="fas fa-exclamation-triangle me-1"></i>${absentReason}</small>` : ''}
-                        </div>
-                        <div class="ms-3 d-flex align-items-center">
-                            <div class="text-center">
-                                <small class="text-muted d-block mb-1">Điểm danh</small>
-                                ${checkboxHtml}
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        `);
-
-                $mobileContainer.append(card);
-            });
-        }
-
-        // Hàm kiểm tra xem có checkbox nào được chọn không
-        function toggleSubmitButton() {
-            const checkedCount = $('.attendance-checkbox:checked').length;
-            // $('.submitAttendanceBtn').prop('disabled', checkedCount === 0);
-            $('#selectedCount, #selectedCountMobile').text(checkedCount);
-        }
-
-        function checkAllAttendance() {
-            $('.attendance-checkbox').each(function () {
-                const $container = $(this).closest('.student-row, .mobile-student-card');
-                const proposedAt = $container.data('proposed-at');
-                const classRequestStatus = $container.data('class-request-status');
-                const status = $container.data('status');
-
-                if ($container.is(':visible') && status !== 1 && status !== 3 && classRequestStatus == 1 && new Date(proposedAt) < new Date()) {
-                    $(this).prop('checked', true);
-                }
-            });
-            updateCounts();
-            toggleSubmitButton();
-        }
-
-        function uncheckAllAttendance() {
-            $('.attendance-checkbox').prop('checked', false);
-            updateCounts();
-            toggleSubmitButton()
-        }
-
-        function updateCounts() {
-            const checkedCount = $('.attendance-checkbox:checked').length;
-            $('#selectedCount, #selectedCountMobile, #attendedStudents').text(checkedCount);
-        }
     </script>
 @endpush

@@ -57,7 +57,6 @@ class AttendanceRepository extends BaseRepository
         $classSessionRequestId = $params['session-request-id'] ?? null;
         $studyClassId = $params['study-class-id'] ?? null;
         $studentIds = $params['student_ids'] ?? [];
-
         if (!$classSessionRequestId || !$studyClassId) {
             return false;
         }
