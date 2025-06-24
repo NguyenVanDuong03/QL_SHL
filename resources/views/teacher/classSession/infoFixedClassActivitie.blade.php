@@ -572,7 +572,8 @@
                                             <button type="button" class="btn btn-outline-success checkAllAttendanceBtn">
                                                 <i class="fas fa-check-double"></i>
                                             </button>
-                                            <button type="button" class="btn btn-outline-secondary uncheckAllAttendanceBtn">
+                                            <button type="button"
+                                                    class="btn btn-outline-secondary uncheckAllAttendanceBtn">
                                                 <i class="fas fa-times"></i>
                                             </button>
                                         </div>
@@ -592,10 +593,12 @@
                                 <!-- Desktop Footer -->
                                 <div class="d-none d-md-flex justify-content-between align-items-center w-100">
                                     <div>
-                                        <button type="button" class="btn btn-outline-success btn-sm me-2 checkAllAttendanceBtn">
+                                        <button type="button"
+                                                class="btn btn-outline-success btn-sm me-2 checkAllAttendanceBtn">
                                             <i class="fas fa-check-double me-1"></i>Chọn tất cả
                                         </button>
-                                        <button type="button" class="btn btn-outline-secondary btn-sm uncheckAllAttendanceBtn">
+                                        <button type="button"
+                                                class="btn btn-outline-secondary btn-sm uncheckAllAttendanceBtn">
                                             <i class="fas fa-times me-1"></i>Bỏ chọn
                                         </button>
                                     </div>
@@ -884,26 +887,13 @@
 
                 $(selector).each(function () {
                     const $container = $(this);
-                    const proposedAt = $container.data('proposed-at');
-                    const classRequestStatus = $container.data('class-request-status');
-                    const status = $container.data('status');
-
-                    if (
-                        $container.is(':visible') &&
-                        status !== 1 && status !== 3 &&
-                        classRequestStatus == 1 &&
-                        proposedAt && new Date(proposedAt) < new Date()
-                    ) {
-                        const $checkbox = $container.find('.attendance-checkbox');
-                        $checkbox.prop('checked', true);
-
-                        // Đồng bộ trạng thái checkbox
-                        const studentId = $container.data('student-id');
-                        if (isMobile) {
-                            $(`.student-row[data-student-id="${studentId}"] .attendance-checkbox`).prop('checked', true);
-                        } else {
-                            $(`.mobile-student-card[data-student-id="${studentId}"] .attendance-checkbox`).prop('checked', true);
-                        }
+                    const $checkbox = $container.find('.attendance-checkbox');
+                    $checkbox.prop('checked', true);
+                    const studentId = $container.data('student-id');
+                    if (isMobile) {
+                        $(`.student-row[data-student-id="${studentId}"] .attendance-checkbox`).prop('checked', true);
+                    } else {
+                        $(`.mobile-student-card[data-student-id="${studentId}"] .attendance-checkbox`).prop('checked', true);
                     }
                 });
 
