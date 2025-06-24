@@ -265,9 +265,9 @@
                                     <small>Sinh viên cần có mặt tại phòng học đúng giờ quy định.</small>
                                 </div>
                                 @if($data['getClassSessionRequest']->status == 3)
-                                    <button type="button" class="btn btn-secondary">
+                                    <a href="{{ route('class-staff.class-session.report', ['class_session_request_id' => $data['getClassSessionRequest']->id]) }}" class="btn btn-secondary">
                                         <i class="fas fa-pager me-2"></i>Tạo báo cáo
-                                    </button>
+                                    </a>
                                 @endif
                             @elseif($position == 1)
                                 <!-- Trực tuyến -->

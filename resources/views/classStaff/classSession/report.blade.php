@@ -29,7 +29,7 @@
                     <div class="card-body">
                         <form id="reportForm" enctype="multipart/form-data">
                             @csrf
-                            <input type="hidden" id="class_session_request_id" name="class_session_request_id" value="{{ request()->get('class_session_request_id') }}">
+                            <input type="hidden" id="class_session_request_id" name="class_session_request_id" value="{{ $data['class_session_request_id'] }}">
                             <input type="hidden" id="reporter_id" name="reporter_id" value="{{ auth()->user()->student?->id }}">
                             <input type="hidden" name="attending_students" value="{{ $data['countAttendanceByClassSessionRequestId'] ?? 0 }}">
 
@@ -40,9 +40,6 @@
                                         <i class="fas fa-users me-1"></i>
                                         Số sinh viên tham dự: <span id="attending_students">{{ $data['countAttendanceByClassSessionRequestId'] ?? 0 }}</span>
                                     </label>
-{{--                                    <input type="number" class="form-control" id="attending_students" name="attending_students"--}}
-{{--                                           placeholder="Nhập số sinh viên tham dự" min="0" value="" required>--}}
-{{--                                    <div class="invalid-feedback">Vui lòng nhập số sinh viên tham dự</div>--}}
                                 </div>
 
                                 <div class="col-md-6 mb-3">
@@ -159,9 +156,9 @@
                             <div class="row">
                                 <div class="col-12">
                                     <div class="d-flex justify-content-between">
-                                        <button type="button" class="btn btn-secondary" onclick="history.back()">
+                                        <a href="{{ route('class-staff.class-session.history') }}" class="btn btn-secondary">
                                             <i class="fas fa-arrow-left me-1"></i>Quay lại
-                                        </button>
+                                        </a>
                                         <button type="submit" class="btn btn-primary" id="submit-btn">
                                             <i class="fas fa-paper-plane me-1"></i>
                                             <span id="submit-text">Gửi báo cáo</span>
