@@ -20,6 +20,7 @@ class AcademicWarningRepository extends BaseRepository
     public function getStudentWarningByStudyClassId($lecturerId)
     {
         $getAllStudentWarning = $this->getModel()
+            ->newQuery()
             ->whereHas('student.studyClass', function ( $query) use ($lecturerId) {
                 $query->where('lecturer_id', $lecturerId);
             })
@@ -62,6 +63,7 @@ class AcademicWarningRepository extends BaseRepository
     public function academicWarningBySemesterId($semesterId)
     {
         return $this->getModel()
+            ->newQuery()
             ->where('semester_id', $semesterId)
             ->with(['student', 'semester', 'student.user:id,name,email', 'student.studyClass:id,name'])
             ->orderByDesc('id');

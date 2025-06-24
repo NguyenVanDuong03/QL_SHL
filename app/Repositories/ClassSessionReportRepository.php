@@ -57,6 +57,7 @@ class ClassSessionReportRepository extends BaseRepository
     public function countClassSessionReports($semesterId)
     {
         return $this->getModel()
+            ->newQuery()
             ->whereHas('classSessionRequest.classSessionRegistration.semester', function ($query) use ($semesterId) {
                 $query->where('id', $semesterId);
             })

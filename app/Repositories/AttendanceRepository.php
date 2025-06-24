@@ -5,6 +5,7 @@ namespace App\Repositories;
 use App\Helpers\Constant;
 use App\Models\Attendance;
 use App\Models\Student;
+use Illuminate\Support\Facades\DB;
 
 class AttendanceRepository extends BaseRepository
 {
@@ -28,6 +29,7 @@ class AttendanceRepository extends BaseRepository
     public function getAttendanceStudent ($params)
     {
         return $this->getModel()
+            ->newQuery()
             ->where('student_id', $params['student_id'])
             ->where('class_session_request_id', $params['class_session_request_id'])
             ->first();
@@ -54,9 +56,9 @@ class AttendanceRepository extends BaseRepository
     {
         $classSessionRequestId = $params['session-request-id'] ?? null;
         $studyClassId = $params['study-class-id'] ?? null;
-        $studentIds = $params['student_ids'] ?? null;
+        $studentIds = $params['student_ids'] ?? [];
 
-        if (!$classSessionRequestId || !$studyClassId || !$studentIds) {
+        if (!$classSessionRequestId || !$studyClassId) {
             return false;
         }
 
@@ -65,62 +67,93 @@ class AttendanceRepository extends BaseRepository
             ->pluck('id')
             ->toArray();
 
-        $existingAttendances = $this->getModel()
-            ->where('class_session_request_id', $classSessionRequestId)
-            ->whereIn('student_id', $studentIds)
-            ->get();
+        DB::beginTransaction();
 
-        foreach ($existingAttendances as $attendance) {
-            $attendance->update(['status' => Constant::ATTENDANCE_STATUS['PRESENT']]);
-        }
+        try {
+            if (!empty($studentIds)) {
+                foreach ($studentIds as $studentId) {
+                    $attendance = $this->getModel()
+                        ->newQuery()
+                        ->where('class_session_request_id', $classSessionRequestId)
+                        ->where('student_id', $studentId)
+                        ->first();
 
-        $absentStudentIds = array_diff($allStudents, $studentIds);
+                    if ($attendance) {
+                        $attendance->update([
+                            'status' => Constant::ATTENDANCE_STATUS['PRESENT'],
+                            'reason' => null,
+                            'updated_at' => now(),
+                        ]);
+                    } else {
+                        $this->create([
+                            'student_id' => $studentId,
+                            'class_session_request_id' => $classSessionRequestId,
+                            'status' => Constant::ATTENDANCE_STATUS['PRESENT'],
+                            'reason' => null,
+                            'created_at' => now(),
+                            'updated_at' => now(),
+                        ]);
+                    }
+                }
+            }
 
-        $existingAbsentAttendances = $this->getModel()
-            ->where('class_session_request_id', $classSessionRequestId)
-            ->whereIn('student_id', $absentStudentIds)
-            ->whereNotIn('status', [Constant::ATTENDANCE_STATUS['EXCUSED'], Constant::ATTENDANCE_STATUS['PRESENT']])
-            ->get();
+            $absentStudentIds = empty($studentIds) ? $allStudents : array_diff($allStudents, $studentIds);
 
-        foreach ($existingAbsentAttendances as $attendance) {
-            $attendance->update(['status' => Constant::ATTENDANCE_STATUS['ABSENT']]);
-        }
-
-        $studentsWithoutAttendance = $this->getModel()
-            ->where('class_session_request_id', $classSessionRequestId)
-            ->whereIn('student_id', $absentStudentIds)
-            ->doesntExist();
-
-        if ($studentsWithoutAttendance) {
-            $newAttendances = [];
-            foreach ($absentStudentIds as $studentId) {
-                $existing = $this->getModel()
+            if (!empty($absentStudentIds)) {
+                $existingAbsentAttendances = $this->getModel()
+                    ->newQuery()
                     ->where('class_session_request_id', $classSessionRequestId)
-                    ->where('student_id', $studentId)
-                    ->first();
+                    ->whereIn('student_id', $absentStudentIds)
+                    ->where('status', '!=', Constant::ATTENDANCE_STATUS['EXCUSED'])
+                    ->get();
 
-                if (!$existing) {
-                    $newAttendances[] = [
+                foreach ($existingAbsentAttendances as $attendance) {
+                    $attendance->update([
+                        'status' => Constant::ATTENDANCE_STATUS['ABSENT'],
+                        'reason' => null,
+                        'updated_at' => now(),
+                    ]);
+                }
+
+                $studentsWithoutAttendance = array_diff(
+                    $absentStudentIds,
+                    $this->getModel()
+                        ->newQuery()
+                        ->where('class_session_request_id', $classSessionRequestId)
+                        ->whereIn('student_id', $absentStudentIds)
+                        ->pluck('student_id')
+                        ->toArray()
+                );
+
+                $newAbsentAttendances = [];
+                foreach ($studentsWithoutAttendance as $studentId) {
+                    $newAbsentAttendances[] = [
                         'student_id' => $studentId,
                         'class_session_request_id' => $classSessionRequestId,
                         'status' => Constant::ATTENDANCE_STATUS['ABSENT'],
+                        'reason' => null,
                         'created_at' => now(),
                         'updated_at' => now(),
                     ];
                 }
+
+                if (!empty($newAbsentAttendances)) {
+                    $this->getModel()->newQuery()->insert($newAbsentAttendances);
+                }
             }
 
-            if (!empty($newAttendances)) {
-                $this->getModel()->insert($newAttendances);
-            }
+            DB::commit();
+            return true;
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return false;
         }
-
-        return true;
     }
 
     public function countAttendanceByClassSessionRequestId($classRequestId, $studyClassId)
     {
         return $this->getModel()
+            ->newQuery()
             ->join('students', 'attendances.student_id', '=', 'students.id')
             ->join('users', 'students.user_id', '=', 'users.id')
             ->join('class_session_requests', 'attendances.class_session_request_id', '=', 'class_session_requests.id')

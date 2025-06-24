@@ -172,7 +172,6 @@
 
 @section('main')
     <div class="container-fluid mt-4">
-        <!-- Header với thông tin khóa học -->
         <div class="mx-3">
             <div class="mb-2">
                 <a href="{{ route('teacher.class-session.detailFixedClassActivitie') }}"
@@ -409,36 +408,7 @@
                                         </p>
                                     </div>
                                 </div>
-                                {{--                                <div class="col-6">--}}
-                                {{--                                    <div class="mb-2">--}}
-                                {{--                                        <small class="text-muted">Học kỳ:</small>--}}
-                                {{--                                        <p class="mb-0">{{ $data['getCSRSemesterInfo']->name }}--}}
-                                {{--                                            - {{ $data['getCSRSemesterInfo']->school_year }}</p>--}}
-                                {{--                                    </div>--}}
-                                {{--                                    <div class="mb-2">--}}
-                                {{--                                        <small class="text-muted">Lớp:</small>--}}
-                                {{--                                        <p class="mb-0">{{ $data['getStudyClassByIds']->name }}</p>--}}
-                                {{--                                    </div>--}}
-                                {{--                                    <div class="mb-2">--}}
-                                {{--                                        <small class="text-muted">Ngày tạo:</small>--}}
-                                {{--                                        <p class="mb-0">{{ \Carbon\Carbon::parse($data['getClassSessionRequest']->created_at ?? now())->format('H:i d/m/Y') }}</p>--}}
-                                {{--                                    </div>--}}
-                                {{--                                    <div class="mb-2">--}}
-                                {{--                                        <small class="text-muted">Cập nhật lần cuối:</small>--}}
-                                {{--                                        <p class="mb-0">{{ \Carbon\Carbon::parse($data['getClassSessionRequest']->updated_at ?? now())->format('H:i d/m/Y') }}</p>--}}
-                                {{--                                    </div>--}}
-                                {{--                                    <div class="mb-2">--}}
-                                {{--                                        <small class="text-muted">Loại sinh hoạt:</small>--}}
-                                {{--                                        <p class="mb-0">--}}
-                                {{--                                            @php--}}
-                                {{--                                                $type = $data['getClassSessionRequest']->type ?? 0;--}}
-                                {{--                                                echo $type == 0 ? 'SHL cố định' : 'SHL linh hoạt';--}}
-                                {{--                                            @endphp--}}
-                                {{--                                        </p>--}}
-                                {{--                                    </div>--}}
-                                {{--                                </div>--}}
                             </div>
-
                         </div>
                     </div>
                 </div>
@@ -470,36 +440,28 @@
                                 </div>
                             </div>
 
-                            @foreach($data['getAttendanceStatusSummary'] as $status)
+                            @foreach($data['getAttendanceStatusSummary'] ?? [] as $status)
                                 <div class="col-6 col-md-2">
                                     <div
                                         class="stat-box p-3 bg-white rounded d-flex flex-column justify-content-center align-items-center h-100">
-                                        <h6 class="mb-0 text-success fs-5 fw-bold">{{ $status['count'] }}</h6>
-                                        <small class="text-muted d-block">{{ $status['status_text'] }}</small>
+                                        <h6 class="mb-0 text-success fs-5 fw-bold">{{ $status['count'] ?? 0 }}</h6>
+                                        <small class="text-muted d-block">{{ $status['status_text'] ?? '' }}</small>
                                     </div>
                                 </div>
                             @endforeach
                         </div>
                     </div>
 
-                    <!-- Search -->
-{{--                    <div class="p-2 p-md-3 border-bottom">--}}
-{{--                        <div class="input-group">--}}
-{{--                            <span class="input-group-text"><i class="fas fa-search"></i></span>--}}
-{{--                            <input type="text" class="form-control" id="searchStudent"--}}
-{{--                                   placeholder="Tìm kiếm sinh viên...">--}}
-{{--                        </div>--}}
-{{--                    </div>--}}
-
                     <div class="d-md-none" id="mobileView">
                         <div id="mobileStudentList" class="p-2">
                         </div>
                     </div>
 
-                    <!-- HTML/PHP structure remains largely the same, but I'll add a form element for submission -->
                     <form id="attendanceForm">
-                        <input type="hidden" name="session-request-id" class="session_request_id" value="{{ $data['getClassSessionRequest']->id }}">
-                        <input type="hidden" name="study-class-id" class="study_class_id" value="{{ $data['getClassSessionRequest']->study_class_id }}">
+                        <input type="hidden" name="session-request-id" class="session_request_id"
+                               value="{{ $data['getClassSessionRequest']->id }}">
+                        <input type="hidden" name="study-class-id" class="study_class_id"
+                               value="{{ $data['getClassSessionRequest']->study_class_id }}">
                         <div class="d-none d-md-block">
                             <div class="table-responsive" style="max-height: 400px; overflow-y: auto;">
                                 <table class="table table-hover mb-0">
@@ -525,6 +487,8 @@
                                         @endphp
                                         @foreach($data['students'] as $student)
                                             <tr class="student-row"
+                                                data-proposed-at="{{ $data['getClassSessionRequest']->proposed_at }}"
+                                                data-class-request-status="{{ $data['getClassSessionRequest']->status }}"
                                                 data-status="{{ $student->attendance_status }}"
                                                 data-student-id="{{ $student->student_id }}"
                                                 data-student-name="{{ $student->name }}"
@@ -547,7 +511,8 @@
                                                     </div>
                                                 </td>
                                                 <td>
-                                                    <span class="badge bg-{{ $statusColors[$student->attendance_status] ?? 'secondary' }}">
+                                                    <span
+                                                        class="badge bg-{{ $statusColors[$student->attendance_status] ?? 'secondary' }}">
                                                         <i class="fas fa-check me-1"></i>{{ $student->attendance_status_text }}
                                                     </span>
                                                 </td>
@@ -568,7 +533,8 @@
                                                                name="student_ids[]"
                                                                value="{{ $student->student_id }}">
                                                     @else
-                                                        <span class="text-muted"><i class="fas {{ $statusIcons[$student->attendance_status] ?? -1 }}"></i></span>
+                                                        <span class="text-muted"><i
+                                                                class="fas {{ $statusIcons[$student->attendance_status] ?? -1 }}"></i></span>
                                                     @endif
                                                 </td>
                                             </tr>
@@ -596,56 +562,61 @@
                         <div id="mobileStudentList" class="d-md-none"></div>
 
                         @if($data['getClassSessionRequest']->proposed_at < now())
-                        <div class="modal-footer p-2 p-md-3">
-                            <!-- Mobile Footer -->
-                            <div class="d-md-none w-100">
-                                <div class="d-flex justify-content-between align-items-center mb-2">
-                                    <div class="btn-group btn-group-sm">
-                                        <button type="button" class="btn btn-outline-success"
-                                                onclick="checkAllAttendance()">
-                                            <i class="fas fa-check-double"></i>
+                            <div class="modal-footer p-2 p-md-3">
+                                <!-- Mobile Footer -->
+                                <div class="d-md-none w-100">
+                                    <div class="d-flex justify-content-between align-items-center mb-2">
+                                        <div class="btn-group btn-group-sm">
+                                            <button type="button" class="btn btn-outline-success"
+                                                    onclick="checkAllAttendance()">
+                                                <i class="fas fa-check-double"></i>
+                                            </button>
+                                            <button type="button" class="btn btn-outline-secondary"
+                                                    onclick="uncheckAllAttendance()">
+                                                <i class="fas fa-times"></i>
+                                            </button>
+                                        </div>
+                                        <span class="text-muted small">Đã chọn: <strong
+                                                id="selectedCountMobile">0</strong></span>
+                                    </div>
+                                    <div class="d-grid gap-2">
+                                        <button type="submit"
+                                                class="btn btn-success btn-submit-attendance submitAttendanceBtn">
+                                            <i class="fas fa-save me-2"></i>Lưu điểm danh
                                         </button>
-                                        <button type="button" class="btn btn-outline-secondary"
-                                                onclick="uncheckAllAttendance()">
-                                            <i class="fas fa-times"></i>
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng
                                         </button>
                                     </div>
-                                    <span class="text-muted small">Đã chọn: <strong id="selectedCountMobile">0</strong></span>
                                 </div>
-                                <div class="d-grid gap-2">
-                                    <button type="submit"
-                                            class="btn btn-success btn-submit-attendance submitAttendanceBtn">
-                                        <i class="fas fa-save me-2"></i>Lưu điểm danh
-                                    </button>
-                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng
-                                    </button>
-                                </div>
-                            </div>
 
-                            <!-- Desktop Footer -->
-                            <div class="d-none d-md-flex justify-content-between align-items-center w-100">
-                                <div>
-                                    <button type="button" class="btn btn-outline-success btn-sm me-2"
-                                            onclick="checkAllAttendance()">
-                                        <i class="fas fa-check-double me-1"></i>Chọn tất cả
-                                    </button>
-                                    <button type="button" class="btn btn-outline-secondary btn-sm"
-                                            onclick="uncheckAllAttendance()">
-                                        <i class="fas fa-times me-1"></i>Bỏ chọn
-                                    </button>
-                                </div>
-                                <div class="text-end">
-                                    <span class="text-muted me-3">Đã chọn: <strong id="selectedCount">0</strong></span>
-                                    <button type="button" class="btn btn-secondary me-2" data-bs-dismiss="modal">Đóng</button>
-                                    <button type="submit" class="btn btn-success submitAttendanceBtn">
-                                        <i class="fas fa-save me-2"></i>Lưu điểm danh
-                                    </button>
+                                <!-- Desktop Footer -->
+                                <div class="d-none d-md-flex justify-content-between align-items-center w-100">
+                                    <div>
+                                        <button type="button" class="btn btn-outline-success btn-sm me-2"
+                                                onclick="checkAllAttendance()">
+                                            <i class="fas fa-check-double me-1"></i>Chọn tất cả
+                                        </button>
+                                        <button type="button" class="btn btn-outline-secondary btn-sm"
+                                                onclick="uncheckAllAttendance()">
+                                            <i class="fas fa-times me-1"></i>Bỏ chọn
+                                        </button>
+                                    </div>
+                                    <div class="text-end">
+                                        <span class="text-muted me-3">Đã chọn: <strong
+                                                id="selectedCount">0</strong></span>
+                                        <button type="button" class="btn btn-secondary me-2" data-bs-dismiss="modal">
+                                            Đóng
+                                        </button>
+                                        <button type="submit" class="btn btn-success submitAttendanceBtn">
+                                            <i class="fas fa-save me-2"></i>Lưu điểm danh
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
                         @else
                             <div class="d-flex justify-content-center align-items-center w-100 my-2">
-                            <button type="button" class="btn btn-secondary me-2" data-bs-dismiss="modal">Đóng</button>
+                                <button type="button" class="btn btn-secondary me-2" data-bs-dismiss="modal">Đóng
+                                </button>
                             </div>
                         @endif
                     </form>
@@ -688,8 +659,7 @@
             element.select();
             element.setSelectionRange(0, 99999);
             navigator.clipboard.writeText(element.value).then(function () {
-                // Show success message
-                showToast('Đã sao chép vào clipboard!', 'success');
+                toastr.success('Đã sao chép vào clipboard!');
             });
         }
 
@@ -699,22 +669,6 @@
                 window.open(`https://www.google.com/maps/search/${encodedLocation}`, '_blank');
             }
         }
-
-        // function showToast(message, type = 'info') {
-        //     // Simple toast implementation
-        //     const toast = document.createElement('div');
-        //     toast.className = `alert alert-${type === 'success' ? 'success' : 'info'} position-fixed`;
-        //     toast.style.cssText = 'top: 20px; right: 20px; z-index: 9999; min-width: 250px;';
-        //     toast.innerHTML = `
-        //         <i class="fas fa-${type === 'success' ? 'check' : 'info'}-circle me-2"></i>
-        //         ${message}
-        //     `;
-        //     document.body.appendChild(toast);
-        //
-        //     setTimeout(() => {
-        //         toast.remove();
-        //     }, 3000);
-        // }
     </script>
 
     <script>
@@ -785,13 +739,6 @@
                 const session_request_id = $('.session_request_id').val();
                 const study_class_id = $('.study_class_id').val();
 
-
-                if (attendanceData.length === 0) {
-                    toastr.error('Vui lòng chọn ít nhất một sinh viên để điểm danh.');
-                    return;
-                }
-
-                // Send AJAX request
                 $.ajax({
                     url: `{{ route('teacher.attendance.updateAttendance') }}`,
                     method: 'PATCH',
@@ -807,7 +754,7 @@
                         window.location.reload();
                     },
                     error: function (xhr) {
-                        toastr.error('Đã xảy ra lỗi khi lưu điểm danh: ' + (xhr.responseText || 'Lỗi không xác định'));
+                        toastr.error('Đã xảy ra lỗi khi lưu điểm danh: ' + (xhr.responseJSON?.message || 'Lỗi không xác định'));
                     }
                 });
             });
@@ -824,24 +771,44 @@
                 const status = $row.data('status');
                 const studentCode = $row.data('student-code');
                 const absentReason = $row.data('reason') || '';
+                const proposedAt = $row.data('proposed-at');
+                const classRequestStatus = $row.data('class-request-status');
 
                 let statusBadge = '';
                 let checkboxHtml = '';
 
                 if (status === -1) {
                     statusBadge = '<span class="badge bg-warning"><i class="fas fa-question me-1"></i>Chưa xác nhận</span>';
-                    checkboxHtml = `<span class="text-muted"><i class="fas fa-question"></i></span>`;
+                    if (proposedAt && new Date(proposedAt) < new Date() && classRequestStatus === 1) {
+                        checkboxHtml = `<input class="form-check-input attendance-checkbox" type="checkbox" name="student_ids[]" value="${studentId}" style="transform: scale(1.2);">`;
+                    } else
+                        checkboxHtml = '<span class="text-muted"><i class="fas fa-question"></i></span>';
+
                 } else if (status === 0) {
                     statusBadge = '<span class="badge bg-primary"><i class="fas fa-clock me-1"></i>Xác nhận</span>';
-                    checkboxHtml = `<input class="form-check-input attendance-checkbox" type="checkbox" name="student_ids[]" value="${studentCode}" style="transform: scale(1.2);">`;
+                    if (proposedAt && new Date(proposedAt) < new Date() && classRequestStatus === 1) {
+                        checkboxHtml = `<input class="form-check-input attendance-checkbox" type="checkbox" name="student_ids[]" value="${studentId}" style="transform: scale(1.2);">`;
+                    } else
+                        checkboxHtml = '<span class="text-muted"><i class="fas fa-clock"></i></span>';
+
                 } else if (status === 1) {
                     statusBadge = '<span class="badge bg-secondary"><i class="fas fa-times me-1"></i>Xin vắng</span>';
+                    if (proposedAt && new Date(proposedAt) < new Date() && classRequestStatus === 1) {
+                        checkboxHtml = `<input class="form-check-input attendance-checkbox" type="checkbox" name="student_ids[]" value="${studentId}" style="transform: scale(1.2);">`;
+                    } else
                     checkboxHtml = '<span class="text-muted"><i class="fas fa-times"></i></span>';
                 } else if (status === 2) {
                     statusBadge = '<span class="badge bg-success"><i class="fas fa-check me-1"></i>Có mặt</span>';
+                    if (proposedAt && new Date(proposedAt) < new Date() && classRequestStatus === 1) {
+                        checkboxHtml = `<input class="form-check-input attendance-checkbox" type="checkbox" name="student_ids[]" checked value="${studentId}" style="transform: scale(1.2);">`;
+                    } else
                     checkboxHtml = `'<span class="text-muted"><i class="fas fa-check"></i></span>`;
+
                 } else if (status === 3) {
                     statusBadge = '<span class="badge bg-danger"><i class="fas fa-exclamation-triangle me-1"></i>Vắng mặt</span>';
+                    if (proposedAt && new Date(proposedAt) < new Date() && classRequestStatus === 1) {
+                        checkboxHtml = `<input class="form-check-input attendance-checkbox" type="checkbox" name="student_ids[]" value="${studentId}" style="transform: scale(1.2);">`;
+                    } else
                     checkboxHtml = '<span class="text-muted"><i class="fas fa-exclamation-triangle"></i></span>';
                 }
 
@@ -879,19 +846,23 @@
         // Hàm kiểm tra xem có checkbox nào được chọn không
         function toggleSubmitButton() {
             const checkedCount = $('.attendance-checkbox:checked').length;
-            $('.submitAttendanceBtn').prop('disabled', checkedCount === 0);
+            // $('.submitAttendanceBtn').prop('disabled', checkedCount === 0);
             $('#selectedCount, #selectedCountMobile').text(checkedCount);
         }
 
         function checkAllAttendance() {
             $('.attendance-checkbox').each(function () {
                 const $container = $(this).closest('.student-row, .mobile-student-card');
-                if ($container.is(':visible') && $container.data('status') == 0) {
+                const proposedAt = $container.data('proposed-at');
+                const classRequestStatus = $container.data('class-request-status');
+                const status = $container.data('status');
+
+                if ($container.is(':visible') && status !== 1 && status !== 3 && classRequestStatus == 1 && new Date(proposedAt) < new Date()) {
                     $(this).prop('checked', true);
                 }
             });
             updateCounts();
-            toggleSubmitButton()
+            toggleSubmitButton();
         }
 
         function uncheckAllAttendance() {

@@ -20,6 +20,7 @@ class LecturerRepository extends BaseRepository
     public function getTotalStudentsByLecturer($lecturerId)
     {
         return $this->getModel()
+            ->newQuery()
             ->join('study_classes', 'lecturers.id', '=', 'study_classes.lecturer_id')
             ->join('students', 'study_classes.id', '=', 'students.study_class_id')
             ->where('lecturers.id', $lecturerId)
@@ -29,6 +30,7 @@ class LecturerRepository extends BaseRepository
     public function getAverageConductScoreByLecturer($lecturerId)
     {
         return $this->getModel()
+            ->newQuery()
             ->join('study_classes as sc', 'lecturers.id', '=', 'sc.lecturer_id')
             ->join('students as s', 's.study_class_id', '=', 'sc.id')
             ->leftJoin('student_conduct_scores as scs', 'scs.student_id', '=', 's.id')

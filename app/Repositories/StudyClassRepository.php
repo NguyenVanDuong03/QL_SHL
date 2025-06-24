@@ -144,6 +144,7 @@ class StudyClassRepository extends BaseRepository
         $semesterId = $params['semester_id'];
 
         $query = $this->getModel()
+            ->newQuery()
             ->where('lecturer_id', $lecturerId)
             ->whereHas('classSessionRequests', function ($q) use ($semesterId) {
                 $q->where('status', 1)
@@ -181,6 +182,7 @@ class StudyClassRepository extends BaseRepository
         $cohortId = $params['cohort_id'] ?? null;
 
         $query = $this->getModel()
+            ->newQuery()
             ->select([
                 'study_classes.id as class_id',
                 'study_classes.name as study_class_name',
@@ -244,6 +246,7 @@ class StudyClassRepository extends BaseRepository
         $search = $params['search'] ?? '';
 
         $query = $this->getModel()
+            ->newQuery()
             ->select([
                 'study_classes.id as class_id',
                 'study_classes.name as study_class_name',
@@ -285,6 +288,7 @@ class StudyClassRepository extends BaseRepository
         $departmentId = $params['department_id'];
 
         $query = $this->getModel()
+            ->newQuery()
             ->select([
                 'study_classes.id as class_id',
                 'study_classes.name as study_class_name',
@@ -320,6 +324,7 @@ class StudyClassRepository extends BaseRepository
         $search = $params['search'] ?? '';
 
         $query = $this->getModel()
+            ->newQuery()
             ->select([
                 'study_classes.id as class_id',
                 'study_classes.name as study_class_name',
@@ -372,6 +377,7 @@ class StudyClassRepository extends BaseRepository
     public function listStatisticsByLecturerId($lecturerId, $semesterId)
     {
         $query = $this->getModel()
+            ->newQuery()
             ->select(
                 'study_classes.id AS class_id',
                 'study_classes.name AS class_name',
@@ -423,6 +429,7 @@ class StudyClassRepository extends BaseRepository
 //    public function listStatisticsStudyClassByLecturerId($lecturerId, $semesterId)
 //    {
 //        $query = $this->getModel()
+//            ->newQuery()
 //            ->select(
 //                'study_classes.id AS class_id',
 //                'study_classes.name AS class_name',
@@ -465,6 +472,7 @@ class StudyClassRepository extends BaseRepository
     public function listStatisticsStudyClassByLecturerId($lecturerId, $semesterId)
     {
         $query = $this->getModel()
+            ->newQuery()
             ->select(
                 'study_classes.id AS class_id',
                 'study_classes.name AS class_name',
@@ -536,6 +544,7 @@ class StudyClassRepository extends BaseRepository
 //        }
 //
 //        $query = $this->getModel()
+//            ->newQuery()
 //            ->select([
 //                'study_classes.id as class_id',
 //                'study_classes.name as study_class_name',
@@ -623,6 +632,7 @@ class StudyClassRepository extends BaseRepository
         }
 
         $query = $this->getModel()
+            ->newQuery()
             ->select([
                 'study_classes.id as class_id',
                 'study_classes.name as study_class_name',
@@ -718,6 +728,5 @@ class StudyClassRepository extends BaseRepository
 
         return $query;
     }
-
 
 }

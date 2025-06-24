@@ -28,6 +28,7 @@ class SemesterReponsitory extends BaseRepository
     public function statisticalSemester($lecturerId)
     {
         return $this->getModel()
+            ->newQuery()
             ->select([
                 'semesters.name as semester_name',
                 'semesters.school_year',
@@ -68,6 +69,7 @@ class SemesterReponsitory extends BaseRepository
     public function statisticalAllSemester()
     {
         return $this->getModel()
+            ->newQuery()
             ->select([
                 'semesters.name as semester_name',
                 'semesters.school_year',

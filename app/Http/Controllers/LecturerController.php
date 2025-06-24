@@ -311,7 +311,7 @@ class LecturerController extends Controller
         $students = $this->studentService->getStudentsByClassId($params);
         $getTotalStudentsByClass = $this->studentService->getTotalStudentsByClass($params);
         $getAttendanceStatusSummary = $this->studentService->getAttendanceStatusSummary($params);
-//        dd($students);
+//        dd($getAttendanceStatusSummary);
         $data = [
             'getCSRSemesterInfo' => $getCSRSemesterInfo,
             'getStudyClassByIds' => $getStudyClassByIds,
@@ -356,7 +356,6 @@ class LecturerController extends Controller
         $params = $request->all();
         $params['session-request-id'] = $params['session_request_id'];
         $params['study-class-id'] = $params['study_class_id'];
-//        dd($params);
         $result = $this->attendanceService->updateAttendance($params);
 
         if ($result) {
