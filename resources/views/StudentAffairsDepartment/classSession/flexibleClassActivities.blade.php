@@ -73,7 +73,7 @@
                                                 <span class="badge bg-danger">Đã từ chối</span>
                                             @endif
                                         </td>
-                                        <td class="px-4 py-3 text-center">
+                                        <td class="btn-group gap-2">
                                             <button class="btn btn-primary btn-sm btn-confirm-class"
                                                     title="Xét duyệt"
                                                     data-bs-toggle="modal"
@@ -118,10 +118,6 @@
                                             >
                                                 <i class="fas fa-info-circle"></i>
                                             </button>
-                                            {{--                                                <button--}}
-                                            {{--                                                    class="btn btn-danger btn-sm {{ $class['status'] == 0 ? 'disabled' : '' }}">--}}
-                                            {{--                                                    <i class="fas fa-trash-alt"></i>--}}
-                                            {{--                                                </button>--}}
                                         </td>
                                     </tr>
                                 @endforeach

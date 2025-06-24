@@ -108,7 +108,7 @@
                                                 <span class="badge bg-success">Đăng ký thành công</span>
                                             @endif
                                         </td>
-                                        <td class="px-4 py-1 text-center">
+                                        <td class="px-4 py-1 text-center btn-group gap-2">
                                             @if($data['checkClassSessionRegistration'])
                                                 <a class="btn btn-primary btn-sm"
                                                    title="{{ empty($class['class_session_requests']) ? 'Đăng ký' : 'Chỉnh sửa' }}"

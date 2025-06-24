@@ -591,8 +591,8 @@
                                 </div>
 
                                 <!-- Desktop Footer -->
-                                <div class="d-none d-md-flex justify-content-between align-items-center w-100">
-                                    <div>
+                                <div class="d-none d-md-flex justify-content-between align-items-end w-100">
+                                    <div class="btn-group-ms">
                                         <button type="button"
                                                 class="btn btn-outline-success btn-sm me-2 checkAllAttendanceBtn">
                                             <i class="fas fa-check-double me-1"></i>Chọn tất cả
@@ -605,12 +605,14 @@
                                     <div class="text-end">
                                         <span class="text-muted me-3">Đã chọn: <strong
                                                 id="selectedCount">0</strong></span>
-                                        <button type="button" class="btn btn-secondary me-2" data-bs-dismiss="modal">
-                                            Đóng
-                                        </button>
-                                        <button type="submit" class="btn btn-success submitAttendanceBtn">
-                                            <i class="fas fa-save me-2"></i>Lưu điểm danh
-                                        </button>
+                                        <div class="btn-group-sm">
+                                            <button type="button" class="btn btn-secondary me-2" data-bs-dismiss="modal">
+                                                Đóng
+                                            </button>
+                                            <button type="submit" class="btn btn-success submitAttendanceBtn">
+                                                <i class="fas fa-save me-2"></i>Lưu điểm danh
+                                            </button>
+                                        </div>
                                     </div>
                                 </div>
                             </div>

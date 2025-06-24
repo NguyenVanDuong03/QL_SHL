@@ -142,16 +142,6 @@
                                                 title="Xem chi tiết">
                                             <i class="fas fa-eye"></i>
                                         </button>
-
-{{--                                        <button type="button"--}}
-{{--                                                class="btn btn-danger btn-sm"--}}
-{{--                                                data-bs-toggle="modal"--}}
-{{--                                                data-bs-target="#deleteStudentModal"--}}
-{{--                                                data-student-id="{{ $student['id'] }}"--}}
-{{--                                                data-student-name="{{ $student['user']['name'] }}"--}}
-{{--                                                title="Xóa khỏi lớp">--}}
-{{--                                            <i class="fas fa-trash"></i>--}}
-{{--                                        </button>--}}
                                     </div>
                                 </td>
                             </tr>

@@ -125,7 +125,6 @@
                                 <th>Tiều đề</th>
                                 <th>Thời gian</th>
                                 <th class="d-none d-md-table-cell">Hình thức</th>
-{{--                                <th>Lớp</th>--}}
                                 <th class="text-center">Thao tác</th>
                             </tr>
                             </thead>
@@ -157,10 +156,6 @@
                                                 class="text-muted">{{ \Carbon\Carbon::parse($item['proposed_at'])->format('d/m/Y') }}</small>
                                         </td>
                                         <td class="d-none d-md-table-cell {{ $item['type'] == 0 ? 'text-success' : ($item['type'] == 1 ? 'text-primary' : 'text-warning') }}">{{ $item['type'] == 0 ? 'Trực tiếp' : ($item['type'] == 1 ? 'Trực tuyến' : 'Dã ngoại') }}</td>
-{{--                                        <td>--}}
-{{--                                                <span--}}
-{{--                                                    class="badge bg-light text-dark">{{ $item['study_class']['name'] }}</span>--}}
-{{--                                        </td>--}}
                                         <td>
                                             <div
                                                 class="action-buttons d-flex flex-column flex-md-row gap-2 justify-content-center">

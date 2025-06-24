@@ -59,7 +59,7 @@
                             <th class="text-center">GPA (10) / (4)</th>
                             <th class="text-center">Mức cảnh báo</th>
                             <th class="text-center">Ghi chú</th>
-                            <th class="text-center">Hành động</th>
+                            <th class="text-center">Thao tác</th>
                         </tr>
                         </thead>
                         <tbody id="warningsTable">
@@ -80,7 +80,7 @@
                                 <td class="text-center">{{ $item['gpa_10'] }} / {{ $item['gpa_4'] }}</td>
                                 <td class="text-center">{{ $item['academic_status'] }}</td>
                                 <td class="text-center title_cut">{{ $item['note'] ?? '---' }}</td>
-                                <td class="text-center">
+                                <td class="text-center btn-group gap-2">
                                     <button class="btn btn-sm btn-warning btn-edit-academic" data-bs-toggle="modal"
                                             data-bs-target="#editModal"
                                             title="Sửa"
