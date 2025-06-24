@@ -31,6 +31,7 @@ class StudentRepository extends BaseRepository
         $classSessionRequestId = $params['session-request-id'] ?? null;
 
         $query = $this->getModel()
+            ->newQuery()
             ->select([
                 'students.id as student_id',
                 'students.student_code',
@@ -95,6 +96,7 @@ class StudentRepository extends BaseRepository
         $studyClassId = $params['study-class-id'] ?? null;
 
         return $this->getModel()
+            ->newQuery()
             ->where('study_class_id', $studyClassId)
             ->count();
     }
@@ -141,6 +143,7 @@ class StudentRepository extends BaseRepository
         $classSessionRequestId = $params['session-request-id'] ?? null;
 
         return $this->getModel()
+            ->newQuery()
             ->select([
                 DB::raw('COALESCE(attendances.status, -1) as status'),
                 DB::raw('COUNT(*) as count')
@@ -172,6 +175,7 @@ class StudentRepository extends BaseRepository
     public function resetClassOfficers($studyClassId)
     {
         $studentUserIds = $this->getModel()
+            ->newQuery()
             ->where('study_class_id', $studyClassId)
             ->whereIn('position', [
                 Constant::STUDENT_POSITION['CLASS_PRESIDENT'],
@@ -181,6 +185,7 @@ class StudentRepository extends BaseRepository
             ->pluck('user_id');
 
         $this->getModel()
+            ->newQuery()
             ->where('study_class_id', $studyClassId)
             ->whereIn('position', [
                 Constant::STUDENT_POSITION['CLASS_PRESIDENT'],
@@ -201,6 +206,7 @@ class StudentRepository extends BaseRepository
     public function updateStudentPosition($studentId, $newPosition)
     {
         $updated = $this->getModel()
+            ->newQuery()
             ->where('id', $studentId)
             ->update(['position' => $newPosition]);
 
@@ -226,7 +232,8 @@ class StudentRepository extends BaseRepository
         $evaluationPeriodId = $params['conduct_evaluation_period_id'] ?? null;
         $search = $params['search'] ?? '';
 
-        $query = Student::query()
+        $query = $this->getModel()
+            ->newQuery()
             ->select([
                 'students.id as student_id',
                 'students.student_code',
@@ -285,7 +292,8 @@ class StudentRepository extends BaseRepository
         $classId = $params['study_class_id'] ?? null;
         $evaluationPeriodId = $params['conduct_evaluation_period_id'] ?? null;
 
-        $query = Student::query()
+        $query = $this->getModel()
+            ->newQuery()
             ->select([
                 'students.id as student_id',
                 'students.student_code',
@@ -362,6 +370,7 @@ class StudentRepository extends BaseRepository
     public function statisticalAttendance($semesterId, $studyClassId)
     {
         return $this->getModel()
+            ->newQuery()
             ->select([
                 'students.student_code',
                 'users.name',

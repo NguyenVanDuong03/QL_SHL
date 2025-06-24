@@ -20,6 +20,7 @@ class ClassSessionRequestRepository extends BaseRepository
     public function getClassSessionRequestBySclIdAndCsrId($params)
     {
         return $this->getModel()
+            ->newQuery()
             ->where('study_class_id', $params['study_class_id'])
             ->where('class_session_registration_id', $params['class_session_registration_id'])
             ->first();
@@ -73,6 +74,7 @@ class ClassSessionRequestRepository extends BaseRepository
     public function getTotalDoneSessionsByLecturer($lecturerId)
     {
         return $this->getModel()
+            ->newQuery()
             ->where('lecturer_id', $lecturerId)
             ->where('status', Constant::CLASS_SESSION_STATUS['DONE'])
             ->count();
@@ -81,6 +83,7 @@ class ClassSessionRequestRepository extends BaseRepository
     public function getTotalSessionsByLecturer($lecturerId)
     {
         return $this->getModel()
+            ->newQuery()
             ->where('lecturer_id', $lecturerId)
             ->count();
     }
@@ -88,6 +91,7 @@ class ClassSessionRequestRepository extends BaseRepository
     public function countFlexibleClassSessionRequest($lecturerId)
     {
         return $this->getModel()
+            ->newQuery()
             ->where('type', Constant::CLASS_SESSION_TYPE['FLEXIBLE'])
             ->where('lecturer_id', $lecturerId)
             ->whereIn('status', [
@@ -102,6 +106,7 @@ class ClassSessionRequestRepository extends BaseRepository
     public function countFixeClassSessionRequest($lecturerId, $classSessionRegistrationId)
     {
         return $this->getModel()
+            ->newQuery()
             ->where('type', Constant::CLASS_SESSION_TYPE['FIXED'])
             ->where('lecturer_id', $lecturerId)
             ->where('class_session_registration_id', $classSessionRegistrationId)
@@ -112,6 +117,7 @@ class ClassSessionRequestRepository extends BaseRepository
     public function countApprovedByLecturerAndSemester($lecturerId, $semesterId)
     {
         return $this->getModel()
+            ->newQuery()
             ->where('lecturer_id', $lecturerId)
             ->where('status', constant::CLASS_SESSION_STATUS['APPROVED'])
             ->whereHas('classSessionRegistration', function ($q) use ($semesterId) {
@@ -123,6 +129,7 @@ class ClassSessionRequestRepository extends BaseRepository
     public function countFlexibleClassSessionRequestByLecturer($lecturerId)
     {
         return $this->getModel()
+            ->newQuery()
             ->where('type', Constant::CLASS_SESSION_TYPE['FLEXIBLE'])
             ->where('lecturer_id', $lecturerId)
             ->whereIn('status', [
@@ -134,6 +141,7 @@ class ClassSessionRequestRepository extends BaseRepository
     public function countRejectedByLecturerAndSemester($lecturerId, $semesterId)
     {
         return $this->getModel()
+            ->newQuery()
             ->where('lecturer_id', $lecturerId)
             ->where('status', constant::CLASS_SESSION_STATUS['REJECTED'])
             ->whereHas('classSessionRegistration', function ($q) use ($semesterId) {
@@ -145,6 +153,7 @@ class ClassSessionRequestRepository extends BaseRepository
     public function countFlexibleRejectedByLecturer($lecturerId)
     {
         return $this->getModel()
+            ->newQuery()
             ->where('type', Constant::CLASS_SESSION_TYPE['FLEXIBLE'])
             ->where('lecturer_id', $lecturerId)
             ->where('status', Constant::CLASS_SESSION_STATUS['REJECTED'])
@@ -154,6 +163,7 @@ class ClassSessionRequestRepository extends BaseRepository
     public function getClassSessionRequestById($studyClassId, $class_session_registration_id)
     {
         return $this->getModel()
+            ->newQuery()
             ->where('study_class_id', $studyClassId)
             ->where('class_session_registration_id', $class_session_registration_id)
             ->first();
@@ -162,6 +172,7 @@ class ClassSessionRequestRepository extends BaseRepository
     public function createOrUpdateByClassAndSemester(array $params)
     {
         $instance = $this->getModel()
+            ->newQuery()
             ->where('study_class_id', $params['study_class_id'])
             ->where('type', Constant::CLASS_SESSION_TYPE['FIXED'])
             ->where('class_session_registration_id', $params['class_session_registration_id'])
@@ -178,6 +189,7 @@ class ClassSessionRequestRepository extends BaseRepository
     public function flexibleCreateOrUpdate(array $params)
     {
         $instance = $this->getModel()
+            ->newQuery()
             ->where('study_class_id', $params['study_class_id'])
             ->where('type', Constant::CLASS_SESSION_TYPE['FLEXIBLE'])
             ->whereIn('status', [
@@ -261,12 +273,15 @@ class ClassSessionRequestRepository extends BaseRepository
     {
         return [
             'fixed' => $this->getModel()
+                ->newQuery()
                 ->where('type', Constant::CLASS_SESSION_TYPE['FIXED'])
                 ->count(),
             'flexible' => $this->getModel()
+                ->newQuery()
                 ->where('type', Constant::CLASS_SESSION_TYPE['FLEXIBLE'])
                 ->count(),
             'total' => $this->getModel()
+                ->newQuery()
                 ->count()
         ];
     }
@@ -275,14 +290,17 @@ class ClassSessionRequestRepository extends BaseRepository
     {
         return [
             'fixed' => $this->getModel()
+                ->newQuery()
                 ->where('type', Constant::CLASS_SESSION_TYPE['FIXED'])
                 ->where('lecturer_id', $lecturerId)
                 ->count(),
             'flexible' => $this->getModel()
+                ->newQuery()
                 ->where('type', Constant::CLASS_SESSION_TYPE['FLEXIBLE'])
                 ->where('lecturer_id', $lecturerId)
                 ->count(),
             'total' => $this->getModel()
+                ->newQuery()
                 ->where('lecturer_id', $lecturerId)
                 ->count()
         ];
