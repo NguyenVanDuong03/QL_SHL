@@ -264,7 +264,7 @@
                                     <i class="fas fa-info-circle me-2"></i>
                                     <small>Sinh viên cần có mặt tại phòng học đúng giờ quy định.</small>
                                 </div>
-                                @if($data['getClassSessionRequest']->status == 3)
+                                @if($data['getClassSessionRequest']->status == 3 && auth()->user()->student?->position == 1)
                                     <button type="button" class="btn btn-secondary">
                                         <i class="fas fa-pager me-2"></i>Tạo báo cáo
                                     </button>

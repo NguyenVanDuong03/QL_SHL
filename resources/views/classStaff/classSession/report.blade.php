@@ -1,6 +1,6 @@
 @extends('layouts.classStaff')
 
-@section('title', 'Chi tiết sinh hoạt lớp')
+@section('title', 'Báo cáo sinh hoạt lớp')
 
 @push('styles')
     <style>
