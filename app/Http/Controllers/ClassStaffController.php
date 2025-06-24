@@ -174,6 +174,7 @@ class ClassStaffController extends Controller
         $countAttendanceByClassSessionRequestId = $this->attendanceService->countAttendanceByClassSessionRequestId($params['class_session_request_id']);
 
         $data = [
+            'class_session_request_id' => $params['class_session_request_id'] ?? null,
             'report' => null,
             'countAttendanceByClassSessionRequestId' => $countAttendanceByClassSessionRequestId,
         ];
