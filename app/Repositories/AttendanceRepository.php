@@ -29,7 +29,7 @@ class AttendanceRepository extends BaseRepository
     {
         return $this->getModel()
             ->where('student_id', $params['student_id'])
-            ->where('class_session_request_id', $params['session-request-id'])
+            ->where('class_session_request_id', $params['class_session_request_id'])
             ->first();
     }
 

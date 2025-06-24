@@ -32,9 +32,7 @@ class AttendanceService extends BaseService
 
     public function getAttendanceStudent ($params)
     {
-        $params['student_id'] = auth()->user()->student?->id;
         $attendanceStudentId = $this->getRepository()->getAttendanceStudent($params);
-//        dd($attendanceStudentId);
         if (!isset($attendanceStudentId)) {
             return null;
         }
@@ -44,39 +42,38 @@ class AttendanceService extends BaseService
 
     public function confirmAttendance($params)
     {
-        $params['session-request-id'] = $params['class_session_request_id'];
-        $params = $this->buildFilterParams($params);
-        $attendanceStudentId = $this->getAttendanceStudent($params);
-        if (isset($attendanceStudentId)) {
-            $attendanceStudentId->update([
-                'status' => Constant::ATTENDANCE_STATUS['CONFIRM'],
+        $attendanceStudent = $this->getAttendanceStudent($params);
+        $params['status'] = Constant::ATTENDANCE_STATUS['CONFIRM'];
+        if (isset($attendanceStudent)) {
+            $confirmAttendance = $attendanceStudent->update([
+                'status' => $params['status'],
                 'reason' => null,
             ]);
-        } else {
-            $params['status'] = Constant::ATTENDANCE_STATUS['PRESENT'];
-            $this->getRepository()->create($params);
+
+            return $confirmAttendance;
         }
 
-        return $attendanceStudentId;
+        $confirmAttendance = $this->getRepository()->create($params);
+
+        return $confirmAttendance;
     }
 
     public function updateAbsence($params)
     {
-        $params['session-request-id'] = $params['class_session_request_id'];
-        $params = $this->buildFilterParams($params);
         $attendanceStudentId = $this->getAttendanceStudent($params);
-//        dd($attendanceStudentId);
+        $params['status'] = Constant::ATTENDANCE_STATUS['EXCUSED'];
         if (isset($attendanceStudentId)) {
-            $attendanceStudentId->update([
-                'status' => Constant::ATTENDANCE_STATUS['EXCUSED'],
+            $updateAbsence = $attendanceStudentId->update([
+                'status' => $params['status'],
                 'reason' => $params['reason'],
             ]);
-        } else {
-            $params['status'] = Constant::ATTENDANCE_STATUS['EXCUSED'];
-            $this->getRepository()->create($params);
+
+            return $updateAbsence;
         }
 
-        return $attendanceStudentId;
+        $updateAbsence = $this->getRepository()->create($params);
+
+        return $updateAbsence;
     }
 
     public function updateAttendance($params)
