@@ -98,7 +98,7 @@
                                                 <span class="badge bg-success">Đăng ký thành công</span>
                                             @endif
                                         </td>
-                                        <td class="px-4 py-1 text-center">
+                                        <td class="px-4 py-1 text-center btn-group gap-2">
                                             <a class="btn btn-primary btn-sm"
                                                title="{Chỉnh sửa"
                                                href="{{ route('teacher.class-session.flexibleCreate', ['study-class-id' => $class['id'], 'session-request-id' => $class['id'] ?? null]) }}">

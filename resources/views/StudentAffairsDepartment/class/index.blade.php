@@ -186,7 +186,7 @@
                                 <td class="d-none d-md-table-cell">{{ $item['major']['name'] }}</td>
                                 <td class="d-none d-lg-table-cell">{{ $item['major']['faculty']['department']['name'] }}</td>
                                 <td>
-                                    <div class="action-buttons">
+                                    <div class="btn-group gap-2">
                                         <button class="btn btn-sm btn-info" data-bs-target="#viewClassModal" data-bs-toggle="modal" title="Xem"
                                             data-id="{{ $item['id'] }}"
                                             data-name="{{ $item['name'] }}"

@@ -84,10 +84,6 @@
                                         <tr>
                                             <td>{{ $loop->iteration }}</td>
                                             <td>{{ $lecturer['user']['name'] }}</td>
-                                            {{--                                                <td class="d-none d-md-table-cell">--}}
-                                            {{--                                                    {{ \Carbon\Carbon::parse($lecturer['user']['date_of_birth'])->format('d/m/Y') }}--}}
-                                            {{--                                                </td>--}}
-                                            {{--                                                <td class="d-none d-md-table-cell">{{ $lecturer['user']['gender'] }}</td>--}}
                                             <td>{{ $lecturer['user']['email'] }}</td>
                                             @php
                                                 $deleted = isset($lecturer['user']) && $lecturer['user']['deleted_at'] !== null;
@@ -99,7 +95,7 @@
                                                     <span class="badge bg-success">Hoạt động</span>
                                                 @endif
                                             </td>
-                                            <td>
+                                            <td class="btn-group gap-2">
                                                 <button class="btn btn-sm btn-info btn-show-lecturer"
                                                         title="Xem chi tiết"
                                                         data-email="{{ $lecturer['user']['email'] }}"
