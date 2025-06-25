@@ -62,6 +62,7 @@ class LecturerRepository extends BaseRepository
 
     public function getAllWithTrashed($params)
     {
+        $search = $params['search'] ?? null;
         $query = $this->getModel()
             ->newQuery()
             ->with([
@@ -73,6 +74,17 @@ class LecturerRepository extends BaseRepository
             ])
             ->orderByDesc('id')
             ->withTrashed();
+
+        if (trim($search)) {
+            $search = trim($search);
+            $query->where(function ($query) use ($search) {
+                $query->whereHas('user', function ($query) use ($search) {
+                    $query->where('role', Constant::ROLE_LIST['TEACHER'])
+                        ->where('name', 'LIKE', "%{$search}%")
+                        ->orWhere('email', 'LIKE', "%{$search}%");
+                });
+            });
+        }
 
         return $query;
     }

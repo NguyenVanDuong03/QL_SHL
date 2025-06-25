@@ -34,7 +34,7 @@
     <div class="container-fluid py-4">
         <!-- Header with navigation and actions -->
         <div class="d-md-flex justify-content-end align-items-center mb-4">
-            <div class="d-flex align-items-center gap-2">
+            <div class="d-flex align-items-center justify-content-end gap-2">
                 <!-- Search -->
                 <form class="input-group" method="GET"
                       action="{{ route('student.class.index') }}"

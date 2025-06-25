@@ -3,7 +3,7 @@
 @section('title', 'Tài khoản GV & SV')
 
 @section('breadcrumb')
-    <x-breadcrumb.breadcrumb :links="[['label' => 'Tài khoản GV & SV']]" />
+    <x-breadcrumb.breadcrumb :links="[['label' => 'Tài khoản GV & SV']]"/>
 @endsection
 
 @push('styles')
@@ -32,26 +32,29 @@
                         <div class="d-flex justify-content-between align-items-center">
                             <span class="text-primary fw-bold d-none d-md-block">Tài khoản sinh viên</span>
                             <div class="d-flex align-items-end">
-                                <div class="input-group me-2" style="width: 250px;">
-                                    <input type="text" class="form-control" placeholder="Tìm kiếm sinh viên..."
-                                        id="studentSearch">
-                                    <button class="btn btn-outline-secondary" type="button">
-                                        <i class="fas fa-search"></i>
-                                    </button>
-                                </div>
-{{--                                <form method="POST"--}}
-{{--                                    action="{{ route('student-affairs-department.account.importStudent') }}"--}}
-{{--                                    enctype="multipart/form-data" class="d-inline">--}}
-{{--                                    @csrf--}}
-{{--                                    @method('POST')--}}
-{{--                                    <label for="studentExcelFile" class="btn btn-sm btn-success me-2 mb-0"  title="Tạo tài khoản từ Excel">--}}
-{{--                                        <i class="fas fa-file-excel"></i> Thêm từ Excel--}}
-{{--                                        <input type="file" id="studentExcelFile" class="d-none" name="studentExcelFile"--}}
-{{--                                            accept=".xlsx, .xls">--}}
-{{--                                    </label>--}}
-{{--                                </form>--}}
+                                <form method="GET" action="{{ route('student-affairs-department.account.student') }}">
+                                    <div class="input-group me-2" style="width: 250px;">
+                                        <input type="text" class="form-control" name="search"
+                                               value="{{ request('search') }}" placeholder="Tìm kiếm sinh viên..."
+                                               id="studentSearch">
+                                        <button class="btn btn-outline-secondary" type="submit">
+                                            <i class="fas fa-search"></i>
+                                        </button>
+                                    </div>
+                                </form>
+                                {{--                                <form method="POST"--}}
+                                {{--                                    action="{{ route('student-affairs-department.account.importStudent') }}"--}}
+                                {{--                                    enctype="multipart/form-data" class="d-inline">--}}
+                                {{--                                    @csrf--}}
+                                {{--                                    @method('POST')--}}
+                                {{--                                    <label for="studentExcelFile" class="btn btn-sm btn-success me-2 mb-0"  title="Tạo tài khoản từ Excel">--}}
+                                {{--                                        <i class="fas fa-file-excel"></i> Thêm từ Excel--}}
+                                {{--                                        <input type="file" id="studentExcelFile" class="d-none" name="studentExcelFile"--}}
+                                {{--                                            accept=".xlsx, .xls">--}}
+                                {{--                                    </label>--}}
+                                {{--                                </form>--}}
                                 <button class="btn btn-sm btn-primary mb-0" data-bs-toggle="modal"
-                                    data-bs-target="#addStudentModal" title="Thêm sinh viên mới">
+                                        data-bs-target="#addStudentModal" title="Thêm sinh viên mới">
                                     <i class="fas fa-plus"></i> Thêm mới
                                 </button>
                             </div>
@@ -61,75 +64,77 @@
                         <div class="table-responsive">
                             <table class="table table-hover table-striped mb-0 columns-acctount">
                                 <thead class="table-light">
-                                    <tr>
-                                        <th>STT</th>
-                                        <th>MSSV</th>
-                                        <th>Họ và tên</th>
-                                        <th>Email</th>
-                                        <th>Trạng thái</th>
-                                        <th style="width: 150px;">Thao tác</th>
-                                    </tr>
+                                <tr>
+                                    <th>STT</th>
+                                    <th>MSSV</th>
+                                    <th>Họ và tên</th>
+                                    <th>Email</th>
+                                    <th>Trạng thái</th>
+                                    <th style="width: 150px;">Thao tác</th>
+                                </tr>
                                 </thead>
                                 <tbody id="studentTableBody">
-                                    @if ($data['getAllWithTrashed']['total'] == 0)
+                                @if ($data['getAllWithTrashed']['total'] == 0)
+                                    <tr>
+                                        <td colspan="7" class="text-center">Không có dữ liệu sinh viên</td>
+                                    </tr>
+                                @else
+                                    @foreach ($data['getAllWithTrashed']['data'] as $student)
                                         <tr>
-                                            <td colspan="7" class="text-center">Không có dữ liệu sinh viên</td>
-                                        </tr>
-                                    @else
-                                        @foreach ($data['getAllWithTrashed']['data'] as $student)
-                                            <tr>
-                                                <td>{{ $loop->iteration }}</td>
-                                                <td>{{ $student['student_code'] }}</td>
-                                                <td>{{ $student['user']['name'] }}</td>
-                                                <td>{{ $student['user']['email'] }}</td>
-                                                @php
-                                                    $deleted = isset($student['user']) && $student['user']['deleted_at'] !== null;
-                                                @endphp
-                                                <td>
-                                                    @if ($deleted)
-                                                        <span class="badge bg-danger">Đã xóa</span>
-                                                    @else
-                                                        <span class="badge bg-success">Hoạt động</span>
-                                                    @endif
-                                                </td>
-                                                <td class="btn-group gap-2">
+                                            <td>{{ $loop->iteration }}</td>
+                                            <td>{{ $student['student_code'] }}</td>
+                                            <td>{{ $student['user']['name'] }}</td>
+                                            <td>{{ $student['user']['email'] }}</td>
+                                            @php
+                                                $deleted = isset($student['user']) && $student['user']['deleted_at'] !== null;
+                                            @endphp
+                                            <td>
+                                                @if ($deleted)
+                                                    <span class="badge bg-danger">Đã xóa</span>
+                                                @else
+                                                    <span class="badge bg-success">Hoạt động</span>
+                                                @endif
+                                            </td>
+                                            <td>
+                                                <div class="btn-group gap-2">
                                                     <button class="btn btn-sm btn-info btn-show-student mb-1"
-                                                        title="Xem chi tiết" data-id="{{ $student['id'] }}"
-                                                        data-name="{{ $student['user']['name'] }}"
-                                                        data-email="{{ $student['user']['email'] }}"
-                                                        data-birth="{{ \Carbon\Carbon::parse($student['user']['date_of_birth'])->format('d/m/Y') }}"
-                                                        data-gender="{{ $student['user']['gender'] }}"
-                                                        data-code="{{ $student['student_code'] }}"
-                                                        data-position="{{ $student['position'] }}"
-                                                        data-class="{{ $student['study_class']['name'] }}"
-                                                        data-cohort="{{ $student['cohort']['name'] }}"
-                                                        data-phone="{{ $student['user']['phone'] }}" data-bs-toggle="modal"
-                                                        data-bs-target="#showModal">
+                                                            title="Xem chi tiết" data-id="{{ $student['id'] }}"
+                                                            data-name="{{ $student['user']['name'] }}"
+                                                            data-email="{{ $student['user']['email'] }}"
+                                                            data-birth="{{ \Carbon\Carbon::parse($student['user']['date_of_birth'])->format('d/m/Y') }}"
+                                                            data-gender="{{ $student['user']['gender'] }}"
+                                                            data-code="{{ $student['student_code'] }}"
+                                                            data-position="{{ $student['position'] }}"
+                                                            data-class="{{ $student['study_class']['name'] }}"
+                                                            data-cohort="{{ $student['cohort']['name'] }}"
+                                                            data-phone="{{ $student['user']['phone'] }}"
+                                                            data-bs-toggle="modal"
+                                                            data-bs-target="#showModal">
                                                         <i class="fas fa-eye"></i>
                                                     </button>
                                                     @if (!$deleted)
-                                                    <button class="btn btn-sm btn-warning mb-1" title="Chỉnh sửa"
-                                                        data-id="{{ $student['id'] }}"
-                                                        data-userid="{{ $student['user']['id'] }}"
-                                                        data-name="{{ $student['user']['name'] }}"
-                                                        data-email="{{ $student['user']['email'] }}"
-                                                        data-birth="{{ $student['user']['date_of_birth'] }}"
-                                                        data-gender="{{ $student['user']['gender'] }}"
-                                                        data-position="{{ $student['position'] }}"
-                                                        data-classid="{{ $student['study_class_id'] }}"
-                                                        data-cohortid="{{ $student['cohort_id'] }}"
-                                                        data-phone="{{ $student['user']['phone'] }}"
-                                                        data-current-page="{{ $data['students']['current_page'] }}"
-                                                        data-bs-toggle="modal" data-bs-target="#editModal">
-                                                        <i class="fas fa-edit"></i>
-                                                    </button>
-                                                    <button class="btn btn-sm btn-danger mb-1" title="Xóa"
-                                                        data-id="{{ $student['id'] }}"
-                                                        data-user-id="{{ $student['user_id'] }}"
-                                                        data-current-page="{{ $data['students']['current_page'] }}"
-                                                        data-bs-toggle="modal" data-bs-target="#deleteModal">
-                                                        <i class="fas fa-trash"></i>
-                                                    </button>
+                                                        <button class="btn btn-sm btn-warning mb-1" title="Chỉnh sửa"
+                                                                data-id="{{ $student['id'] }}"
+                                                                data-userid="{{ $student['user']['id'] }}"
+                                                                data-name="{{ $student['user']['name'] }}"
+                                                                data-email="{{ $student['user']['email'] }}"
+                                                                data-birth="{{ $student['user']['date_of_birth'] }}"
+                                                                data-gender="{{ $student['user']['gender'] }}"
+                                                                data-position="{{ $student['position'] }}"
+                                                                data-classid="{{ $student['study_class_id'] }}"
+                                                                data-cohortid="{{ $student['cohort_id'] }}"
+                                                                data-phone="{{ $student['user']['phone'] }}"
+                                                                data-current-page="{{ $data['students']['current_page'] }}"
+                                                                data-bs-toggle="modal" data-bs-target="#editModal">
+                                                            <i class="fas fa-edit"></i>
+                                                        </button>
+                                                        <button class="btn btn-sm btn-danger mb-1" title="Xóa"
+                                                                data-id="{{ $student['id'] }}"
+                                                                data-user-id="{{ $student['user_id'] }}"
+                                                                data-current-page="{{ $data['students']['current_page'] }}"
+                                                                data-bs-toggle="modal" data-bs-target="#deleteModal">
+                                                            <i class="fas fa-trash"></i>
+                                                        </button>
                                                     @else
                                                         <button class="btn btn-sm btn-secondary" title="Khôi phục"
                                                                 data-id="{{ $student['id'] }}"
@@ -139,16 +144,17 @@
                                                             <i class="fas fa-undo"></i>
                                                         </button>
                                                     @endif
-                                                </td>
-                                            </tr>
-                                        @endforeach
-                                    @endif
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    @endforeach
+                                @endif
                                 </tbody>
                             </table>
                         </div>
                     </div>
                     <div class="card-footer bg-light">
-                        <x-pagination.pagination :paginate="$data['getAllWithTrashed']" />
+                        <x-pagination.pagination :paginate="$data['getAllWithTrashed']"/>
                     </div>
                 </div>
             </div>
@@ -156,14 +162,16 @@
     </div>
 
     {{-- Add Student Modal --}}
-    <div class="modal fade auto-reset-modal" id="addStudentModal" tabindex="-1" aria-labelledby="addStudentModalLabel" aria-hidden="true">
+    <div class="modal fade auto-reset-modal" id="addStudentModal" tabindex="-1" aria-labelledby="addStudentModalLabel"
+         aria-hidden="true">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="addStudentModalLabel">Thêm sinh viên mới</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <form id="addStudentForm" method="POST" action="{{ route('student-affairs-department.account.createAccount') }}">
+                <form id="addStudentForm" method="POST"
+                      action="{{ route('student-affairs-department.account.createAccount') }}">
                     @csrf
                     @method('POST')
                     <input type="hidden" name="type" value="0">
@@ -266,7 +274,7 @@
                                 <input type="text" class="form-control" id="editName" name="name" required>
                                 <div class="text-danger text-danger-error"></div>
                                 @error('name')
-                                    <div class="text-danger text-danger-error">{{ $message }}</div>
+                                <div class="text-danger text-danger-error">{{ $message }}</div>
                                 @enderror
                             </div>
                             <div class="col-12 col-md-6">
@@ -274,7 +282,7 @@
                                 <input type="email" class="form-control" id="editEmail" name="email" required>
                                 <div class="text-danger text-danger-error"></div>
                                 @error('email')
-                                    <div class="text-danger text-danger-error">{{ $message }}</div>
+                                <div class="text-danger text-danger-error">{{ $message }}</div>
                                 @enderror
                             </div>
 
@@ -283,7 +291,7 @@
                                 <input type="date" class="form-control" id="editBirth" name="date_of_birth" required>
                                 <div class="text-danger text-danger-error"></div>
                                 @error('date_of_birth')
-                                    <div class="text-danger text-danger-error">{{ $message }}</div>
+                                <div class="text-danger text-danger-error">{{ $message }}</div>
                                 @enderror
                             </div>
                             <div class="col-12 col-md-6">
@@ -291,7 +299,7 @@
                                 <input type="number" class="form-control" id="editPhone" name="phone" required>
                                 <div class="text-danger text-danger-error"></div>
                                 @error('phone')
-                                    <div class="text-danger text-danger-error">{{ $message }}</div>
+                                <div class="text-danger text-danger-error">{{ $message }}</div>
                                 @enderror
                             </div>
 
@@ -317,12 +325,12 @@
                             <div class="col-12 col-md-6">
                                 <label for="editClass" class="form-label">Lớp</label>
                                 <select class="form-select" id="editClass" name="study_class_id"
-                                    data-selected="{{ $student['study_class_id'] ?? '' }}" required>
+                                        data-selected="{{ $student['study_class_id'] ?? '' }}" required>
                                     <option disabled>-- Chọn lớp --</option>
                                 </select>
                                 <div class="text-danger text-danger-error"></div>
                                 @error('study_class_id')
-                                    <div class="text-danger text-danger-error">{{ $message }}</div>
+                                <div class="text-danger text-danger-error">{{ $message }}</div>
                                 @enderror
                             </div>
 
@@ -394,18 +402,18 @@
 
 @push('scripts')
     <script>
-        $(document).ready(function() {
+        $(document).ready(function () {
             // $('.auto-reset-modal').on('hidden.bs.modal', function() {
             //     $(this).find('form')[0].reset();
             // });
 
-            $('#studentExcelFile').on('change', function() {
+            $('#studentExcelFile').on('change', function () {
                 if (this.files.length > 0) {
                     $(this).closest('form').submit();
                 }
             });
 
-            $('.btn-show-student').on('click', function() {
+            $('.btn-show-student').on('click', function () {
                 const student = $(this).data();
                 $('.student-name').text(student.name ?? "---");
                 $('.student-code').text(student.code ?? "---");
@@ -439,7 +447,7 @@
                 const matchedClasses = studyClasses.filter(sc => sc.cohort_id == cohortId);
 
                 if (matchedClasses.length > 0) {
-                    matchedClasses.forEach(function(studyClass) {
+                    matchedClasses.forEach(function (studyClass) {
                         const isSelected = selectedClassId && studyClass.id == selectedClassId;
                         studyClassSelect.append(
                             `<option value="${studyClass.id}" ${isSelected ? 'selected' : ''}>${studyClass.name}</option>`
@@ -451,13 +459,13 @@
             }
 
             // Khi chọn lại niên khóa
-            $('#editCohort').on('change', function() {
+            $('#editCohort').on('change', function () {
                 const selectedCohortId = $(this).val();
                 updateStudyClassSelect(selectedCohortId);
             });
 
             // Khi mở modal
-            $('#editModal').on('show.bs.modal', function(event) {
+            $('#editModal').on('show.bs.modal', function (event) {
                 const button = $(event.relatedTarget); // button được click
 
                 const selectedCohortId = button.data('cohortid');
@@ -491,7 +499,7 @@
                 updateStudyClassSelect(selectedCohortId, selectedClassId);
             });
 
-            $('.btn-edit').on('click', function(event) {
+            $('.btn-edit').on('click', function (event) {
                 event.preventDefault();
 
                 const nameValid = checkValidate('#editName', /.+/, 'Yêu cầu nhập họ và tên!');
@@ -511,7 +519,7 @@
 
             });
 
-            $('#deleteModal').on('show.bs.modal', function(event) {
+            $('#deleteModal').on('show.bs.modal', function (event) {
                 const button = $(event.relatedTarget);
                 const id = button.data('id');
                 const userId = button.data('user-id');

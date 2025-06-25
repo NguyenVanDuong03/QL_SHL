@@ -346,6 +346,11 @@
                 13 => 'ĐÁNH GIÁ Ý THỨC CÔNG DÂN TRONG QUAN HỆ CỘNG ĐỒNG',
                 16 => 'ĐÁNH GIÁ Ý THỨC, KẾT QUẢ THAM GIA CÔNG TÁC CÁN BỘ LỚP, ĐOÀN THỂ, TỔ CHỨC TRONG TRƯỜNG HOẶC ĐẠT THÀNH TÍCH ĐẶC BIỆT TRONG HỌC TẬP, RÈN LUYỆN (SINH VIÊN ĐẠT ĐƯỢC NHIỀU TIÊU CHÍ THÌ CỘNG ĐIỂM KHÔNG ĐƯỢC VƯỢT QUÁ 10 ĐIỂM)',
             ];
+
+            $subSectionHeaders = [
+                3 => '(ĐIỂM ĐƯỢC TÍNH TỰ ĐỘNG DỰA TRÊN ĐIỂM HỌC TẬP CỦA SINH VIÊN)',
+                4 => '(ĐIỂM ĐƯỢC TÍNH TỰ ĐỘNG DỰA TRÊN ĐIỂM HỌC TẬP CỦA SINH VIÊN)',
+            ];
         @endphp
             <!-- Table -->
         <div class="table-container">
@@ -374,7 +379,7 @@
                             <tr class="criteria-row" data-criteria="{{ $item['criterion_id'] }}"
                                 data-score-id="{{ $data['student_conduct_score_id'] }}">
                                 <td>{{ $loop->iteration }}</td>
-                                <td>{{ $item['content'] }}</td>
+                                <td>{{ $item['content'] }} {!! isset($subSectionHeaders[$index]) ? '<p class="m-0 p-0"><small class="text-danger fs-7">' . $subSectionHeaders[$index] . '</small></p>' : '' !!}</td>
                                 <td class="text-center">{{ $item['max_score'] }}</td>
                                 <td class="text-center">
                                     <input type="number" class="form-control form-control-sm"
@@ -386,7 +391,9 @@
                                            min="0" max="{{ $item['max_score'] }}"
                                            value="{{ $item['class_score'] ?? 0 }}"
                                            data-max="{{ $item['max_score'] }}"
-                                        {{ $data['checkConductEvaluationPeriodBySemesterId'] ? '' : 'disabled' }}>
+                                        {{ $data['checkConductEvaluationPeriodBySemesterId'] ? '' : 'disabled' }}
+                                        {{ $index == 4 || $index == 3 ? 'disabled' : '' }}
+                                    >
                                 </td>
                                 <td>
                                     <div class="criteria-actions">
@@ -417,6 +424,13 @@
                                 $currentSection = -1;
                             @endphp
                             @foreach($data['conductCriterias'] ?? [] as $index2 => $criteria)
+                                @if (isset($sectionHeaders[$index2]))
+                                    <tr>
+                                        <td colspan="6" class="bg-secondary text-white">
+                                            <strong>{{ $sectionHeaders[$index2] }}</strong>
+                                        </td>
+                                    </tr>
+                                @endif
                                 @if (isset($sectionHeaders[$index2]) && $currentSection !== $index2)
                                     @php
                                         $currentSection = $index2;
@@ -429,7 +443,7 @@
                                 @endif
                                 <tr class="criteria-row" data-criteria="{{ $criteria['id'] }}">
                                     <td>{{ $loop->iteration }}</td>
-                                    <td>{{ $criteria['content'] }}</td>
+                                    <td>{{ $criteria['content'] }} {!! isset($subSectionHeaders[$index2]) ? '<p class="m-0 p-0"><small class="text-danger fs-7">' . $subSectionHeaders[$index2] . '</small></p>' : '' !!}</td>
                                     <td class="text-center">{{ $criteria['max_score'] }}</td>
                                     <td class="text-center">
                                         <input type="number" class="form-control form-control-sm"
@@ -440,7 +454,9 @@
                                                min="0" max="{{ $criteria['max_score'] }}"
                                                value="{{ $criteria['class_score'] ?? 0 }}"
                                                data-max="{{ $criteria['max_score'] }}"
-                                            {{ $data['checkConductEvaluationPeriodBySemesterId'] ? '' : 'disabled' }}>
+                                            {{ $data['checkConductEvaluationPeriodBySemesterId'] ? '' : 'disabled' }}
+                                            {{ $index == 4 || $index == 3 ? 'disabled' : '' }}
+                                        >
                                     </td>
                                     <td>
                                         <div class="criteria-actions">

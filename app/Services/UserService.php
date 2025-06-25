@@ -42,9 +42,23 @@ class UserService extends BaseService
         ];
     }
 
+    public function isValidEmailByRole($email, $role)
+    {
+        if ($role === Constant::ROLE_LIST['STUDENT']) {
+            return preg_match('/^[0-9]{10}@e\.tlu\.edu\.vn$/', $email);
+        }
+
+        if ($role === Constant::ROLE_LIST['TEACHER']) {
+            return preg_match('/^[a-zA-Z0-9._%+-]+@tlu\.edu\.vn$/', $email) && !str_contains($email, '@e.tlu.edu.vn');
+        }
+
+        return false;
+    }
+
+
     public function createStudentUser($params)
     {
-        if (!preg_match('/^[0-9]{10}@e\.tlu\.edu\.vn$/', $params['email'])) {
+        if (!$this->isValidEmailByRole($params['email'], Constant::ROLE_LIST['STUDENT'])) {
             return false;
         }
 
@@ -65,7 +79,7 @@ class UserService extends BaseService
 
     public function createTeacherUser($params)
     {
-        if (!str_ends_with($params['email'], '@tlu.edu.vn')) {
+        if ($this->isValidEmailByRole($params['email'], Constant::ROLE_LIST['TEACHER'])) {
             return false;
         }
 
