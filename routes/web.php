@@ -345,6 +345,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
                     Route::post('/', [StudentController::class, 'confirmAttendance'])->name('confirmAttendance');
                     Route::patch('/', [StudentController::class, 'updateAbsence'])->name('updateAbsence');
                     Route::get('/history', [StudentController::class, 'history'])->name('history');
+                    Route::get('/report', [StudentController::class, 'report'])->name('report');
+                    Route::post('/report', [StudentController::class, 'storeReport'])->name('storeReport');
+                    Route::put('/report/{id}', [StudentController::class, 'updateReport'])->name('updateReport');
+                    Route::delete('/report/{id}', [StudentController::class, 'deleteReport'])->name('deleteReport');
                 }
             );
 

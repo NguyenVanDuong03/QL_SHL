@@ -206,7 +206,7 @@
                                             data-bs-toggle="modal">
                                         <i class="fas fa-users me-2"></i>Danh sách lớp
                                     </button>
-{{--                                    @if($data['getClassSessionRequest']->status == 1)--}}
+                                    @if($data['getClassSessionRequest']->status == 1)
                                         <button type="button"
                                                 class="btn btn-success btn-confirm-attendance"
                                                 data-bs-toggle="modal"
@@ -221,7 +221,7 @@
                                                 data-reason="{{ $data['getAttendanceStudent']->reason ?? '' }}">
                                             <i class="fas fa-times me-2"></i>Xin vắng
                                         </button>
-{{--                                    @endif--}}
+                                    @endif
                                 </div>
                             </div>
                         </div>
@@ -265,9 +265,9 @@
                                     <small>Sinh viên cần có mặt tại phòng học đúng giờ quy định.</small>
                                 </div>
                                 @if($data['getClassSessionRequest']->status == 3 && auth()->user()->student?->position == 1)
-                                    <button type="button" class="btn btn-secondary">
+                                    <a href="{{ route('student.class-session.report', ['class_session_request_id' => $data['getClassSessionRequest']->id]) }}" class="btn btn-secondary">
                                         <i class="fas fa-pager me-2"></i>Tạo báo cáo
-                                    </button>
+                                    </a>
                                 @endif
                             @elseif($position == 1)
                                 <!-- Trực tuyến -->
