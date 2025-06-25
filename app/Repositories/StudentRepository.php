@@ -398,7 +398,7 @@ class StudentRepository extends BaseRepository
 
     public function getAllWithTrashed($params)
     {
-        $search = $params['search'] ?? '';
+        $search = $params['search'] ?? null;
         $query = $this->getModel()
             ->with([
                 'studyClass',
@@ -409,6 +409,17 @@ class StudentRepository extends BaseRepository
             ])
             ->orderByDesc('id')
             ->withTrashed();
+
+        if (trim($search)) {
+            $query->where(function ($q) use ($search) {
+                $q->where('student_code', 'like', '%' . $search . '%')
+                    ->orWhereHas('user', function ($q) use ($search) {
+                        $q->whereIn('role', [Constant::ROLE_LIST['STUDENT'], Constant::ROLE_LIST['CLASS_STAFF']])
+                            ->where('email', 'like', '%' . $search . '%')
+                            ->orWhere('name', 'like', '%' . $search . '%');
+                    });
+            });
+        }
 
             return $query;
     }

@@ -131,6 +131,11 @@ class ClassSessionRequestService extends BaseService
         return $this->getRepository()->countClassSessionById($lecturerId);
     }
 
+    public function deleteByClassSessionRegistrationId($classSessionRegistrationId)
+    {
+        return $this->getRepository()->deleteByClassSessionRegistrationId($classSessionRegistrationId);
+    }
+
 //    public function StatisticalClassSessionRequests($params)
 //    {
 //        return $this->getRepository()->StatisticalClassSessionRequests($params);

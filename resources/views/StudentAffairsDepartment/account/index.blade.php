@@ -95,58 +95,60 @@
                                                     <span class="badge bg-success">Hoạt động</span>
                                                 @endif
                                             </td>
-                                            <td class="btn-group gap-2">
-                                                <button class="btn btn-sm btn-info btn-show-lecturer"
-                                                        title="Xem chi tiết"
-                                                        data-email="{{ $lecturer['user']['email'] }}"
-                                                        data-name="{{ $lecturer['user']['name'] }}"
-                                                        data-birth="{{ \Carbon\Carbon::parse($lecturer['user']['date_of_birth'])->format('d/m/Y') }}"
-                                                        data-phone="{{ $lecturer['user']['phone'] }}"
-                                                        data-gender="{{ $lecturer['user']['gender'] }}"
-                                                        data-faculty="{{ $lecturer['faculty']['name'] }}"
-                                                        data-department="{{ $lecturer['faculty']['department']['name'] }}"
-                                                        data-title="{{ $lecturer['title'] }}"
-                                                        data-position="{{ $lecturer['position'] }}"
-                                                        data-current-page="{{ $data['lecturers']['current_page'] }}"
-                                                        data-search="{{ request('search') }}"
-                                                        data-bs-target="#showModal" data-bs-toggle="modal">
-                                                    <i class="fas fa-eye"></i>
-                                                </button>
-                                                @if (!$deleted)
-                                                    <button class="btn btn-sm btn-warning" title="Chỉnh sửa"
-                                                            data-id="{{ $lecturer['id'] }}"
-                                                            data-user-id="{{ $lecturer['user_id'] }}"
+                                            <td>
+                                                <div class="btn-group gap-2">
+                                                    <button class="btn btn-sm btn-info btn-show-lecturer"
+                                                            title="Xem chi tiết"
                                                             data-email="{{ $lecturer['user']['email'] }}"
                                                             data-name="{{ $lecturer['user']['name'] }}"
-                                                            data-birth="{{ $lecturer['user']['date_of_birth'] }}"
+                                                            data-birth="{{ \Carbon\Carbon::parse($lecturer['user']['date_of_birth'])->format('d/m/Y') }}"
                                                             data-phone="{{ $lecturer['user']['phone'] }}"
                                                             data-gender="{{ $lecturer['user']['gender'] }}"
-                                                            data-faculty="{{ $lecturer['faculty']['id'] }}"
-                                                            data-department="{{ $lecturer['faculty']['department']['id'] }}"
+                                                            data-faculty="{{ $lecturer['faculty']['name'] }}"
+                                                            data-department="{{ $lecturer['faculty']['department']['name'] }}"
                                                             data-title="{{ $lecturer['title'] }}"
                                                             data-position="{{ $lecturer['position'] }}"
                                                             data-current-page="{{ $data['lecturers']['current_page'] }}"
                                                             data-search="{{ request('search') }}"
-                                                            data-bs-target="#editModal" data-bs-toggle="modal">
-                                                        <i class="fas fa-edit"></i>
+                                                            data-bs-target="#showModal" data-bs-toggle="modal">
+                                                        <i class="fas fa-eye"></i>
                                                     </button>
+                                                    @if (!$deleted)
+                                                        <button class="btn btn-sm btn-warning" title="Chỉnh sửa"
+                                                                data-id="{{ $lecturer['id'] }}"
+                                                                data-user-id="{{ $lecturer['user_id'] }}"
+                                                                data-email="{{ $lecturer['user']['email'] }}"
+                                                                data-name="{{ $lecturer['user']['name'] }}"
+                                                                data-birth="{{ $lecturer['user']['date_of_birth'] }}"
+                                                                data-phone="{{ $lecturer['user']['phone'] }}"
+                                                                data-gender="{{ $lecturer['user']['gender'] }}"
+                                                                data-faculty="{{ $lecturer['faculty']['id'] }}"
+                                                                data-department="{{ $lecturer['faculty']['department']['id'] }}"
+                                                                data-title="{{ $lecturer['title'] }}"
+                                                                data-position="{{ $lecturer['position'] }}"
+                                                                data-current-page="{{ $data['lecturers']['current_page'] }}"
+                                                                data-search="{{ request('search') }}"
+                                                                data-bs-target="#editModal" data-bs-toggle="modal">
+                                                            <i class="fas fa-edit"></i>
+                                                        </button>
 
-                                                    <button class="btn btn-sm btn-danger" title="Xóa"
-                                                            data-id="{{ $lecturer['id'] }}"
-                                                            data-user-id="{{ $lecturer['user_id'] }}"
-                                                            data-current-page="{{ $data['lecturers']['current_page'] }}"
-                                                            data-bs-toggle="modal" data-bs-target="#deleteModal">
-                                                        <i class="fas fa-trash"></i>
-                                                    </button>
-                                                @else
-                                                    <button class="btn btn-sm btn-secondary" title="Khôi phục"
-                                                            data-id="{{ $lecturer['id'] }}"
-                                                            data-user-id="{{ $lecturer['user_id'] }}"
-                                                            data-current-page="{{ $data['lecturers']['current_page'] }}"
-                                                            data-bs-toggle="modal" data-bs-target="#restoreModal">
-                                                        <i class="fas fa-undo"></i>
-                                                    </button>
-                                                @endif
+                                                        <button class="btn btn-sm btn-danger" title="Xóa"
+                                                                data-id="{{ $lecturer['id'] }}"
+                                                                data-user-id="{{ $lecturer['user_id'] }}"
+                                                                data-current-page="{{ $data['lecturers']['current_page'] }}"
+                                                                data-bs-toggle="modal" data-bs-target="#deleteModal">
+                                                            <i class="fas fa-trash"></i>
+                                                        </button>
+                                                    @else
+                                                        <button class="btn btn-sm btn-secondary" title="Khôi phục"
+                                                                data-id="{{ $lecturer['id'] }}"
+                                                                data-user-id="{{ $lecturer['user_id'] }}"
+                                                                data-current-page="{{ $data['lecturers']['current_page'] }}"
+                                                                data-bs-toggle="modal" data-bs-target="#restoreModal">
+                                                            <i class="fas fa-undo"></i>
+                                                        </button>
+                                                    @endif
+                                                </div>
                                             </td>
                                         </tr>
                                     @endforeach
@@ -577,8 +579,9 @@
                             $('#restoreModal').modal('hide');
                             if (response.success) {
                                 toastr.success(response.message);
-                                // window.location.href = response.redirect;
+                                $('button').prop('disabled', true);
                                 setTimeout(function () {
+                                    $('button').prop('disabled', false);
                                     location.reload();
                                 }, 5000);
                             } else {

@@ -146,6 +146,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
                     Route::get('/', [StudentAffairsDepartmentController::class, 'classSession'])->name('index');
                     Route::get('/flexible-class-activities', [StudentAffairsDepartmentController::class, 'flexibleClassActivities'])->name('flexibleClassActivities');
                     Route::post('/create-classSession-registration', [StudentAffairsDepartmentController::class, 'createClassSessionRegistration'])->name('createClassSessionRegistration');
+                    Route::delete('/delete-classSession-registration/{id?}', [StudentAffairsDepartmentController::class, 'deleteClassSessionRegistration'])->name('deleteClassSessionRegistration');
                     Route::put('/edit-classSession-registration/{id?}', [StudentAffairsDepartmentController::class, 'editClassSessionRegistration'])->name('editClassSessionRegistration');
                     Route::patch('/confirm-classSession/{id?}', [StudentAffairsDepartmentController::class, 'confirmClassSession'])->name('updateClassRequest');
                     Route::get('/list-reports', [StudentAffairsDepartmentController::class, 'listReports'])->name('listReports');

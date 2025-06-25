@@ -306,6 +306,15 @@ class ClassSessionRequestRepository extends BaseRepository
         ];
     }
 
+    public function deleteByClassSessionRegistrationId($classSessionRegistrationId)
+    {
+        return $this->getModel()
+            ->newQuery()
+            ->where('class_session_registration_id', $classSessionRegistrationId)
+            ->whereIn('status', [Constant::CLASS_SESSION_STATUS['ACTIVE'], Constant::CLASS_SESSION_STATUS['REJECTED'], Constant::CLASS_SESSION_STATUS['APPROVED']])
+            ->delete();
+    }
+
 //    public function StatisticalClassSessionRequests($params)
 //    {
 //        return $this->getModel()

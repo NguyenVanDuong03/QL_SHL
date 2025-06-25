@@ -66,11 +66,6 @@
         }
 
         @media (max-width: 576px) {
-            .table th:nth-child(n+6),
-            .table td:nth-child(n+6) {
-                display: none;
-            }
-
             .card-header {
                 flex-direction: column;
                 align-items: flex-start !important;
@@ -170,7 +165,7 @@
                         <thead class="table-light">
                         <tr>
                             <th>#</th>
-                            <th>Niên khóa</th>
+                            <th class="d-none d-md-table-cell">Niên khóa</th>
                             <th>Tên lớp</th>
                             <th class="d-none d-md-table-cell">Ngành học</th>
                             <th class="d-none d-lg-table-cell">Khoa</th>
@@ -181,7 +176,7 @@
                         @forelse($data['studyClasses']['data'] ?? [] as $item)
                             <tr data-id="1">
                                 <td>{{ $loop->iteration }}</td>
-                                <td>{{ $item['cohort']['name'] }}</td>
+                                <td class="d-none d-md-table-cell">{{ $item['cohort']['name'] }}</td>
                                 <td><strong>{{ $item['name'] }}</strong></td>
                                 <td class="d-none d-md-table-cell">{{ $item['major']['name'] }}</td>
                                 <td class="d-none d-lg-table-cell">{{ $item['major']['faculty']['department']['name'] }}</td>

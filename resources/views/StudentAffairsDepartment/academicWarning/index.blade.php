@@ -80,32 +80,34 @@
                                 <td class="text-center">{{ $item['gpa_10'] }} / {{ $item['gpa_4'] }}</td>
                                 <td class="text-center">{{ $item['academic_status'] }}</td>
                                 <td class="text-center title_cut">{{ $item['note'] ?? '---' }}</td>
-                                <td class="text-center btn-group gap-2">
-                                    <button class="btn btn-sm btn-warning btn-edit-academic" data-bs-toggle="modal"
-                                            data-bs-target="#editModal"
-                                            title="Sửa"
-                                            data-id="{{ $item['id'] }}"
-                                            data-semester-id="{{ $item['semester_id'] }}"
-                                            data-student-id="{{ $item['student_id'] }}"
-                                            data-student-code="{{ $item['student']['student_code'] }}"
-                                            data-student-name="{{ $item['student']['user']['name'] }}"
-                                            data-student-email="{{ $item['student']['user']['email'] }}"
-                                            data-study-class-name="{{ $item['student']['study_class']['name'] }}"
-                                            data-credits="{{ $item['credits'] }}"
-                                            data-gpa-10="{{ $item['gpa_10'] }}"
-                                            data-gpa-4="{{ $item['gpa_4'] }}"
-                                            data-academic-status="{{ $item['academic_status'] }}"
-                                            data-note="{{ $item['note'] }}"
-                                            data-current-page="{{ $data['academicWarnings']['current_page'] }}"
-                                    ><i class="fas fa-edit"></i>
-                                    </button>
-                                    <button class="btn btn-sm btn-danger btn-delete-academic" data-bs-toggle="modal"
-                                            data-bs-target="#deleteModal"
-                                            title="Xóa"
-                                            data-id="{{ $item['id'] }}"
-                                            data-current-page="{{ $data['academicWarnings']['current_page'] }}"
-                                    ><i class="fas fa-trash"></i>
-                                    </button>
+                                <td class="text-center">
+                                    <div class="btn-group gap-2">
+                                        <button class="btn btn-sm btn-warning btn-edit-academic" data-bs-toggle="modal"
+                                                data-bs-target="#editModal"
+                                                title="Sửa"
+                                                data-id="{{ $item['id'] }}"
+                                                data-semester-id="{{ $item['semester_id'] }}"
+                                                data-student-id="{{ $item['student_id'] }}"
+                                                data-student-code="{{ $item['student']['student_code'] }}"
+                                                data-student-name="{{ $item['student']['user']['name'] }}"
+                                                data-student-email="{{ $item['student']['user']['email'] }}"
+                                                data-study-class-name="{{ $item['student']['study_class']['name'] }}"
+                                                data-credits="{{ $item['credits'] }}"
+                                                data-gpa-10="{{ $item['gpa_10'] }}"
+                                                data-gpa-4="{{ $item['gpa_4'] }}"
+                                                data-academic-status="{{ $item['academic_status'] }}"
+                                                data-note="{{ $item['note'] }}"
+                                                data-current-page="{{ $data['academicWarnings']['current_page'] }}"
+                                        ><i class="fas fa-edit"></i>
+                                        </button>
+                                        <button class="btn btn-sm btn-danger btn-delete-academic" data-bs-toggle="modal"
+                                                data-bs-target="#deleteModal"
+                                                title="Xóa"
+                                                data-id="{{ $item['id'] }}"
+                                                data-current-page="{{ $data['academicWarnings']['current_page'] }}"
+                                        ><i class="fas fa-trash"></i>
+                                        </button>
+                                    </div>
                                 </td>
                             </tr>
                         @empty
@@ -236,7 +238,8 @@
         </div>
     </div>
 
-    <div class="modal fade" id="view-academic-warning" tabindex="-1" aria-labelledby="viewModalLabel" aria-hidden="true">
+    <div class="modal fade" id="view-academic-warning" tabindex="-1" aria-labelledby="viewModalLabel"
+         aria-hidden="true">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">

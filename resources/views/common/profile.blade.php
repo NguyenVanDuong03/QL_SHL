@@ -434,7 +434,7 @@
                 const currentPassword = $("#current_password").val();
                 const newPassword = $("#new_password").val();
                 const confirmPassword = $("#new_password_confirmation").val();
-                const strongPasswordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+                const strongPasswordRegex = /^.{8,}$/;
 
                 if (newPassword || confirmPassword || currentPassword) {
                     if (!currentPassword) {
@@ -453,7 +453,7 @@
 
                     if (newPassword && !strongPasswordRegex.test(newPassword)) {
                         e.preventDefault();
-                        showAlert("Mật khẩu mới phải chứa ít nhất 8 ký tự, bao gồm chữ hoa, chữ thường, số và ký tự đặc biệt.", "warning");
+                        showAlert("Mật khẩu phải có ít nhất 8 ký tự.", "warning");
                         $("#new_password").focus();
                         isValid = false;
                     }

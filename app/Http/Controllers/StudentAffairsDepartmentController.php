@@ -31,6 +31,7 @@ use App\Services\StudyClassService;
 use App\Services\UserService;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Facades\Excel;
 
 class StudentAffairsDepartmentController extends Controller
@@ -172,6 +173,22 @@ class StudentAffairsDepartmentController extends Controller
         return redirect()->route('student-affairs-department.class-session.index')->with('success', 'Cập nhật thành công');
     }
 
+    public function deleteClassSessionRegistration($id)
+    {
+        try {
+            DB::beginTransaction();
+            $this->classSessionRegistrationService->delete($id);
+            $this->classSessionRequestService->deleteByClassSessionRegistrationId($id);
+            DB::commit();
+        } catch (\Exception $exception) {
+            DB::rollBack();
+            return redirect()->back()->with('error', 'Xóa thất bại, vui lòng kiểm tra lại thông tin');
+        }
+
+        return redirect()->back()->with('success', 'Xóa thành công');
+    }
+
+
     public function indexSemester(Request $request)
     {
         $params = $request->all();
@@ -242,19 +259,19 @@ class StudentAffairsDepartmentController extends Controller
         if ($params['type'] == 0) {
             $studentUser = $this->userService->createStudentUser($params);
             if (!$studentUser) {
-                return redirect()->back()->with('error', 'Thêm mới thất bại, vui lòng kiểm tra lại thông tin email');
+                return redirect()->back()->with('error', 'Email không hợp lệ, vui lòng kiểm tra lại thông tin email');
             }
 
-            return redirect()->route('student-affairs-department.account.student')->with('success', 'Thêm mới thành công');
+            return redirect()->route('student-affairs-department.account.student')->with('success', 'Thêm Email thành công');
         }
 
         $lecturerUser = $this->userService->createTeacherUser($params);
 
         if (!$lecturerUser) {
-            return redirect()->back()->with('error', 'Thêm mới thất bại, vui lòng kiểm tra lại thông tin email');
+            return redirect()->back()->with('error', 'Email không hợp lệ, vui lòng kiểm tra lại thông tin email');
         }
 
-        return redirect()->route('student-affairs-department.account.index')->with('success', 'Thêm mới thành công');
+        return redirect()->route('student-affairs-department.account.index')->with('success', 'Thêm Email thành công');
     }
 
     public function editAccount(Request $request, $id)

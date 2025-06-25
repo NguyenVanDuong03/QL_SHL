@@ -21,7 +21,7 @@ class UserController extends Controller
 
     public function updateProfile(Request $request)
     {
-        $params = request()->all();
+        $params = $request->all();
         $user = auth()->user();
         $password = $params['password'] ?? null;
         $newPasswordConfirmation = $params['new_password_confirmation'] ?? null;

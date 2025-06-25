@@ -320,6 +320,21 @@
             </div>
         </div>
 
+        <h4 class="text-center">Đánh giá điểm rèn luyện</h4>
+        @php
+            $sectionHeaders = [
+                0 => 'ĐÁNH GIÁ VỀ Ý THỨ THAM GIA HỌC TẬP',
+                5 => 'ĐÁNH GIÁ VỀ Ý THỨC VÀ KẾT QUẢ CHẤP HÀNH NỘI QUY, QUY CHẾ, QUY ĐỊNH CỦA NHÀ TRƯỜNG',
+                9 => 'ĐÁNH GIÁ Ý THỨC, KẾT QUẢ THAM GIA CÁC HOẠT ĐỘNG CHÍNH TRỊ, XÃ HỘI, VĂN HÓA, VĂN NGHỆ THỂ THAO, PHÒNG CHỐNG TỘI PHẠM VÀ CÁC TỆ NẠN XÃ HỘI',
+                13 => 'ĐÁNH GIÁ Ý THỨC CÔNG DÂN TRONG QUAN HỆ CỘNG ĐỒNG',
+                16 => 'ĐÁNH GIÁ Ý THỨC, KẾT QUẢ THAM GIA CÔNG TÁC CÁN BỘ LỚP, ĐOÀN THỂ, TỔ CHỨC TRONG TRƯỜNG HOẶC ĐẠT THÀNH TÍCH ĐẶC BIỆT TRONG HỌC TẬP, RÈN LUYỆN (SINH VIÊN ĐẠT ĐƯỢC NHIỀU TIÊU CHÍ THÌ CỘNG ĐIỂM KHÔNG ĐƯỢC VƯỢT QUÁ 10 ĐIỂM)',
+            ];
+
+            $subSectionHeaders = [
+                3 => '(ĐIỂM ĐƯỢC TÍNH TỰ ĐỘNG DỰA TRÊN ĐIỂM HỌC TẬP CỦA SINH VIÊN)',
+                4 => '(ĐIỂM ĐƯỢC TÍNH TỰ ĐỘNG DỰA TRÊN ĐIỂM HỌC TẬP CỦA SINH VIÊN)',
+            ];
+        @endphp
         <!-- Table -->
         <div class="table-container">
             <div class="table-responsive">
@@ -335,15 +350,25 @@
                     </thead>
                     <tbody>
                     @if($data['findConductEvaluationPeriodBySemesterId'])
-                        @forelse($data['getConductCriteriaData'] ?? [] as $item)
+                        @forelse($data['getConductCriteriaData'] ?? [] as $index => $item)
+                            @if (isset($sectionHeaders[$index]))
+                                <tr>
+                                    <td colspan="6" class="bg-secondary text-white">
+                                        <strong>{{ $sectionHeaders[$index] }}</strong>
+                                    </td>
+                                </tr>
+                            @endif
                             <tr class="criteria-row" data-criteria="{{ $item['criterion_id'] }}">
                                 <td>{{ $loop->iteration }}</td>
-                                <td>{{ $item['content'] }}</td>
+                                <td>{{ $item['content'] }} {!! isset($subSectionHeaders[$index]) ? '<p class="m-0 p-0"><small class="text-danger fs-7">' . $subSectionHeaders[$index] . '</small></p>' : '' !!}</td>
                                 <td class="text-center">{{ $item['max_score'] }}</td>
                                 <td class="text-center">
                                     <input type="number" class="form-control form-control-sm score-input"
                                            min="0" max="{{ $item['max_score'] }}" value="{{ $item['self_score'] ?? 0 }}"
-                                           data-max="{{ $item['max_score'] }}" {{ $data['findConductEvaluationPeriodBySemesterId'] ? '' : 'disabled' }}>
+                                           data-max="{{ $item['max_score'] }}"
+                                        {{ $data['findConductEvaluationPeriodBySemesterId'] ? '' : 'disabled' }}
+                                        {{ $index == 4 || $index == 3 ? 'disabled' : '' }}
+                                    >
                                 </td>
                                 <td>
                                     <div class="criteria-actions">
@@ -397,15 +422,25 @@
                                 </td>
                             </tr>
                         @empty
-                            @foreach($data['conductCriterias'] ?? [] as $criteria)
+                            @foreach($data['conductCriterias'] ?? [] as $index2 => $criteria)
+                                @if (isset($sectionHeaders[$index2]))
+                                    <tr>
+                                        <td colspan="6" class="bg-secondary text-white">
+                                            <strong>{{ $sectionHeaders[$index2] }}</strong>
+                                        </td>
+                                    </tr>
+                                @endif
                                 <tr class="criteria-row" data-criteria="{{ $criteria['id'] }}">
                                     <td>{{ $loop->iteration }}</td>
-                                    <td>{{ $criteria['content'] }}</td>
+                                    <td>{{ $criteria['content'] }} {!! isset($subSectionHeaders[$index2]) ? '<p class="m-0 p-0"><small class="text-danger fs-7">' . $subSectionHeaders[$index2] . '</small></p>' : '' !!}</td>
                                     <td class="text-center">{{ $criteria['max_score'] }}</td>
                                     <td class="text-center">
                                         <input type="number" class="form-control form-control-sm score-input"
                                                min="0" max="{{ $criteria['max_score'] }}" value="0"
-                                               data-max="{{ $criteria['max_score'] }}" {{ $data['findConductEvaluationPeriodBySemesterId'] ? '' : 'disabled' }}>
+                                               data-max="{{ $criteria['max_score'] }}"
+                                            {{ $data['findConductEvaluationPeriodBySemesterId'] ? '' : 'disabled' }}
+                                            {{ $index2 == 4 || $index2 == 3 ? 'disabled' : '' }}
+                                        >
                                     </td>
                                     <td>
                                         <div class="criteria-actions">

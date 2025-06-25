@@ -20,7 +20,7 @@
         <!-- Header Section -->
         <div class="row mb-4">
             <div class="col-12">
-                <div class="d-flex justify-content-end justify-content-md-between align-items-center">
+                <div class="d-flex justify-content-end justify-content-between align-items-center">
                     <a href="{{ route('teacher.conduct-score.index') }}"
                        class="btn btn-outline-secondary btn-sm">
                         <i class="fas fa-arrow-left me-2"></i>Quay lại
