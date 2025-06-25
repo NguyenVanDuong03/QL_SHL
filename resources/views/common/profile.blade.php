@@ -4,13 +4,9 @@
             $layout = 'layouts.teacher';
             $breadcumb = 'Thông tin cá nhân';
             break;
-        case '4':
+        case '3':
             $layout = 'layouts.studentAffairsDepartment';
             $breadcumb = 'Thông tin cá nhân';
-            break;
-        case '3':
-            $layout = 'layouts.classStaff';
-            $breadcumb = '';
             break;
         case '0':
             $layout = 'layouts.student';
@@ -280,17 +276,13 @@
                                                     $roleClass = 'role-teacher';
                                                     $roleText = 'Giáo viên';
                                                     break;
-                                                case '4':
+                                                case '3':
                                                     $roleClass = 'role-ctsv';
                                                     $roleText = 'Cán bộ công tác sinh viên';
                                                     break;
-                                                case '3':
-                                                    $roleClass = 'role-cbl';
-                                                    $roleText = Auth::user()->student?->position == 1 ? 'Lớp trưởng' : (Auth::user()->student?->position == 2 ? 'Lớp phó' : 'Bí thư');
-                                                    break;
                                                 case '0':
-                                                    $roleClass = 'role-student';
-                                                    $roleText = 'Sinh viên';
+                                                    $roleClass = 'role-cbl';
+                                                    $roleText = Auth::user()->student?->position == 1 ? 'Lớp trưởng' : (Auth::user()->student?->position == 2 ? 'Lớp phó' : (Auth::user()->student?->position == 3 ? 'Bí thư' : 'Sinh viên'));
                                                     break;
                                                 case '2':
                                                     $roleClass = 'bg-info text-white';

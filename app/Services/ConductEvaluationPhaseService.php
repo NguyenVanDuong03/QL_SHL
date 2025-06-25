@@ -60,7 +60,8 @@ class ConductEvaluationPhaseService extends BaseService
     public function checkConductEvaluationPeriod()
     {
         $currentConductEvaluationPeriod = null;
-        if (auth()->user()->role === Constant::ROLE_LIST['STUDENT'] || auth()->user()->role === Constant::ROLE_LIST['CLASS_STAFF'])
+//        if (auth()->user()->role === Constant::ROLE_LIST['STUDENT'] || auth()->user()->role === Constant::ROLE_LIST['CLASS_STAFF'])
+        if (auth()->user()->role === Constant::ROLE_LIST['STUDENT'])
             $currentConductEvaluationPeriod = $this->getRepository()->currentConductEvaluationPeriodByStudent();
         elseif (auth()->user()->role === Constant::ROLE_LIST['TEACHER'])
             $currentConductEvaluationPeriod = $this->getRepository()->currentConductEvaluationPeriodByLecturer();

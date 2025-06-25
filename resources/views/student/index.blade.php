@@ -318,7 +318,7 @@
                                             <td>
                                                 <div
                                                     class="action-buttons d-flex flex-column flex-md-row gap-2 justify-content-center">
-                                                    <a href="{{ route('class-staff.class-session.detailClassSession', ['study-class-id' => $request->studyClass->id, 'session-request-id' => $request->id]) }}" class="btn btn-action btn-details">
+                                                    <a href="{{ route('student.class-session.detailClassSession', ['study-class-id' => $request->studyClass->id, 'session-request-id' => $request->id]) }}" class="btn btn-action btn-details">
                                                         <i class="fas fa-eye me-1"></i>Chi tiết
                                                     </a>
                                                 </div>

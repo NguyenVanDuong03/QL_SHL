@@ -15,8 +15,8 @@ Route::get('/', function () {
         return redirect()->route('teacher.index');
     } else if (Auth::check() && Auth::user()->role == Constant::ROLE_LIST['STUDENT_AFFAIRS_DEPARTMENT']) {
         return redirect()->route('student-affairs-department.index');
-    } else if (Auth::check() && Auth::user()->role == Constant::ROLE_LIST['CLASS_STAFF']) {
-        return redirect()->route('class-staff.index');
+//    } else if (Auth::check() && Auth::user()->role == Constant::ROLE_LIST['CLASS_STAFF']) {
+//        return redirect()->route('class-staff.index');
     } else if (Auth::check() && Auth::user()->role == Constant::ROLE_LIST['STUDENT']) {
         return redirect()->route('student.index');
     } else if (Auth::check() && Auth::user()->role == Constant::ROLE_LIST['FACULTY_OFFICE']) {
@@ -131,7 +131,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         [
             'prefix' => 'student-affairs-department',
             'as' => 'student-affairs-department.',
-            'middleware' => ['role:4'],
+            'middleware' => ['role:3'],
         ],
         function () {
             Route::get('/', [StudentAffairsDepartmentController::class, 'index'])->name('index');
@@ -268,59 +268,59 @@ Route::middleware(['auth', 'verified'])->group(function () {
     );
 
     // Route Class Staff
-    Route::group(
-        [
-            'prefix' => 'class-staff',
-            'as' => 'class-staff.',
-            'middleware' => ['role:3'],
-        ],
-        function () {
-            Route::get('/', [ClassStaffController::class, 'index'])->name('index');
-
-            // class session
-            Route::group(
-                [
-                    'prefix' => 'class-session',
-                    'as' => 'class-session.',
-                ],
-                function () {
-                    Route::get('/', [ClassStaffController::class, 'indexClassSession'])->name('index');
-                    Route::get('/detail', [ClassStaffController::class, 'detailClassSession'])->name('detailClassSession');
-                    Route::post('/', [ClassStaffController::class, 'confirmAttendance'])->name('confirmAttendance');
-                    Route::patch('/', [ClassStaffController::class, 'updateAbsence'])->name('updateAbsence');
-                    Route::get('/history', [ClassStaffController::class, 'history'])->name('history');
-                    Route::get('/report', [ClassStaffController::class, 'report'])->name('report');
-                    Route::post('/report', [ClassStaffController::class, 'storeReport'])->name('storeReport');
-                    Route::put('/report/{id}', [ClassStaffController::class, 'updateReport'])->name('updateReport');
-                    Route::delete('/report/{id}', [ClassStaffController::class, 'deleteReport'])->name('deleteReport');
-                }
-            );
-
-            // Class
-            Route::group(
-                [
-                    'prefix' => 'class',
-                    'as' => 'class.',
-                ],
-                function () {
-                    Route::get('/', [ClassStaffController::class, 'indexClass'])->name('index');
-                }
-            );
-
-            // Conduct Score
-            Route::group(
-                [
-                    'prefix' => 'conduct-score',
-                    'as' => 'conduct-score.',
-                ],
-                function () {
-                    Route::get('/', [ClassStaffController::class, 'indexConductScore'])->name('index');
-                    Route::post('/', [ClassStaffController::class, 'SaveConductScore'])->name('save');
-                }
-            );
-        }
-
-    );
+//    Route::group(
+//        [
+//            'prefix' => 'class-staff',
+//            'as' => 'class-staff.',
+//            'middleware' => ['role:3'],
+//        ],
+//        function () {
+//            Route::get('/', [ClassStaffController::class, 'index'])->name('index');
+//
+//            // class session
+//            Route::group(
+//                [
+//                    'prefix' => 'class-session',
+//                    'as' => 'class-session.',
+//                ],
+//                function () {
+//                    Route::get('/', [ClassStaffController::class, 'indexClassSession'])->name('index');
+//                    Route::get('/detail', [ClassStaffController::class, 'detailClassSession'])->name('detailClassSession');
+//                    Route::post('/', [ClassStaffController::class, 'confirmAttendance'])->name('confirmAttendance');
+//                    Route::patch('/', [ClassStaffController::class, 'updateAbsence'])->name('updateAbsence');
+//                    Route::get('/history', [ClassStaffController::class, 'history'])->name('history');
+//                    Route::get('/report', [ClassStaffController::class, 'report'])->name('report');
+//                    Route::post('/report', [ClassStaffController::class, 'storeReport'])->name('storeReport');
+//                    Route::put('/report/{id}', [ClassStaffController::class, 'updateReport'])->name('updateReport');
+//                    Route::delete('/report/{id}', [ClassStaffController::class, 'deleteReport'])->name('deleteReport');
+//                }
+//            );
+//
+//            // Class
+//            Route::group(
+//                [
+//                    'prefix' => 'class',
+//                    'as' => 'class.',
+//                ],
+//                function () {
+//                    Route::get('/', [ClassStaffController::class, 'indexClass'])->name('index');
+//                }
+//            );
+//
+//            // Conduct Score
+//            Route::group(
+//                [
+//                    'prefix' => 'conduct-score',
+//                    'as' => 'conduct-score.',
+//                ],
+//                function () {
+//                    Route::get('/', [ClassStaffController::class, 'indexConductScore'])->name('index');
+//                    Route::post('/', [ClassStaffController::class, 'SaveConductScore'])->name('save');
+//                }
+//            );
+//        }
+//
+//    );
 
     // Route Student
     Route::group(

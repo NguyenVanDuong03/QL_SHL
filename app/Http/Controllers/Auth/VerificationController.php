@@ -19,8 +19,8 @@ class VerificationController extends Controller
             return route('teacher.index');
         else if ($user->role == Constant::ROLE_LIST['STUDENT_AFFAIRS_DEPARTMENT'])
             return route('student-affairs-department.index');
-        else if ($user->role == Constant::ROLE_LIST['CLASS_STAFF'])
-            return route('class-staff.index');
+//        else if ($user->role == Constant::ROLE_LIST['CLASS_STAFF'])
+//            return route('class-staff.index');
         else if ($user->role == Constant::ROLE_LIST['FACULTY_OFFICE'])
             return route('faculty-office.index');
 
