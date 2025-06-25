@@ -779,7 +779,11 @@
                     success: function (response) {
                         $('#attendanceModal').modal('hide');
                         toastr.success('Đã lưu điểm danh thành công!');
-                        window.location.reload();
+                        $('button').prop('disabled', true);
+                        setTimeout(function () {
+                            $('button').prop('disabled', false);
+                            window.location.reload();
+                        }, 5000);
                     },
                     error: function (xhr) {
                         toastr.error('Đã xảy ra lỗi khi lưu điểm danh: ' + (xhr.responseJSON?.message || 'Lỗi không xác định'));

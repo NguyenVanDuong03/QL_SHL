@@ -194,11 +194,11 @@ class StudentRepository extends BaseRepository
             ])
             ->update(['position' => Constant::STUDENT_POSITION['STUDENT']]);
 
-        if ($studentUserIds->isNotEmpty()) {
-            DB::table('users')
-                ->whereIn('id', $studentUserIds)
-                ->update(['role' => Constant::ROLE_LIST['STUDENT']]);
-        }
+//        if ($studentUserIds->isNotEmpty()) {
+//            DB::table('users')
+//                ->whereIn('id', $studentUserIds)
+//                ->update(['role' => Constant::ROLE_LIST['STUDENT']]);
+//        }
 
         return true;
     }
@@ -210,18 +210,18 @@ class StudentRepository extends BaseRepository
             ->where('id', $studentId)
             ->update(['position' => $newPosition]);
 
-        if ($updated && in_array($newPosition, [
-                Constant::STUDENT_POSITION['CLASS_PRESIDENT'],
-                Constant::STUDENT_POSITION['VICE_PRESIDENT'],
-                Constant::STUDENT_POSITION['SECRETARY'],
-            ])) {
-            $student = $this->getModel()->find($studentId);
-            if ($student) {
-                DB::table('users')
-                    ->where('id', $student->user_id)
-                    ->update(['role' => Constant::ROLE_LIST['CLASS_STAFF']]);
-            }
-        }
+//        if ($updated && in_array($newPosition, [
+//                Constant::STUDENT_POSITION['CLASS_PRESIDENT'],
+//                Constant::STUDENT_POSITION['VICE_PRESIDENT'],
+//                Constant::STUDENT_POSITION['SECRETARY'],
+//            ])) {
+//            $student = $this->getModel()->find($studentId);
+//            if ($student) {
+//                DB::table('users')
+//                    ->where('id', $student->user_id)
+//                    ->update(['role' => Constant::ROLE_LIST['CLASS_STAFF']]);
+//            }
+//        }
 
         return $updated;
     }

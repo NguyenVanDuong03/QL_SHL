@@ -119,6 +119,66 @@ class StudentController extends Controller
         return view('student.classSession.history', compact('data'));
     }
 
+    public function report(Request $request)
+    {
+        $params = $request->all();
+//        dd($params);
+        $countAttendanceByClassSessionRequestId = $this->attendanceService->countAttendanceByClassSessionRequestId($params['class_session_request_id']);
+
+        $data = [
+            'class_session_request_id' => $params['class_session_request_id'] ?? null,
+            'report' => null,
+            'countAttendanceByClassSessionRequestId' => $countAttendanceByClassSessionRequestId,
+        ];
+        if (isset($params['report_id'])) {
+            $report = $this->classSessionReport->find($params['report_id']) ?? null;
+            $report->path = $report->path ? asset('storage/' . $report->path) : null;
+            $data['report'] = $report;
+        }
+//        dd($data['countAttendanceByClassSessionRequestId']);
+
+        return view('student.classSession.report', compact('data'));
+    }
+
+    public function storeReport(Request $request)
+    {
+        $params = $request->all();
+//        dd($params);
+
+        $classSessionReport = $this->classSessionReport->storeReport($params);
+
+        return response()->json([
+//            'status' => 'success',
+            'message' => 'Báo cáo đã được gửi thành công',
+            'data' => $classSessionReport,
+        ], 200);
+    }
+
+    public function updateReport(Request $request, $id)
+    {
+        $params = $request->all();
+        $params['id'] = $id;
+//        dd($params, $id);
+
+        $classSessionReport = $this->classSessionReport->updateReport($params);
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Báo cáo đã được cập nhật thành công',
+            'data' => $classSessionReport,
+        ], 200);
+    }
+
+    public function deleteReport($id)
+    {
+        $this->classSessionReport->deleteReport($id);
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Báo cáo đã được xóa thành công',
+        ], 200);
+    }
+
     public function detailClassSession(Request $request)
     {
         $params = $request->all();

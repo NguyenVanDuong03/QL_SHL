@@ -62,7 +62,7 @@
                                    data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
                                     {{ Auth::user()->name ?? 'Sinh viên' }}
                                 </a>
-                                <small class="text-muted text-end my-0 me-2 d-none d-md-block">Sinh viên</small>
+                                <small class="text-muted text-end my-0 me-2 d-none d-md-block">{{ Auth::user()->student?->position == 1 ? 'Lớp trưởng' : (Auth::user()->student?->position == 2 ? 'Lớp Phó' : (Auth::user()->student?->position == 3 ? 'Bí thư' : 'Sinh viên')) }}</small>
 {{--                            </div>--}}
 
                             <div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
