@@ -6,13 +6,15 @@ class Constant
 {
     const DEFAULT_LIMIT = 6;
     const DEFAULT_LIMIT_8 = 8;
+
     const DEFAULT_LIMIT_12 = 12;
+
     const ROLE_LIST = [
         'STUDENT' => 0,
         'TEACHER' => 1,
         'FACULTY_OFFICE' => 2,
-        'CLASS_STAFF' => 3,
-        'STUDENT_AFFAIRS_DEPARTMENT' => 4,
+//        'CLASS_STAFF' => 3,
+        'STUDENT_AFFAIRS_DEPARTMENT' => 3,
     ];
 
     const SEMESTER_TYPE = [

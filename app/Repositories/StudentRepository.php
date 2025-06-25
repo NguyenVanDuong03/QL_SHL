@@ -414,7 +414,7 @@ class StudentRepository extends BaseRepository
             $query->where(function ($q) use ($search) {
                 $q->where('student_code', 'like', '%' . $search . '%')
                     ->orWhereHas('user', function ($q) use ($search) {
-                        $q->whereIn('role', [Constant::ROLE_LIST['STUDENT'], Constant::ROLE_LIST['CLASS_STAFF']])
+                        $q->where('role', Constant::ROLE_LIST['STUDENT'])
                             ->where('email', 'like', '%' . $search . '%')
                             ->orWhere('name', 'like', '%' . $search . '%');
                     });
