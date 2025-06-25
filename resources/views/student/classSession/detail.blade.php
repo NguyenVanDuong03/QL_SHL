@@ -635,10 +635,12 @@
                     data: formData,
                     success: function (response) {
                         $('#confirmAttendanceModal').modal('hide');
-                        // toastr.success('Xác nhận tham gia thành công');
-                        toastr.success(response.message, 'success');
-                        window.location.reload();
-
+                        $('button').prop('disabled', true);
+                        toastr.success(response.message);
+                        setTimeout(function () {
+                            $('button').prop('disabled', false);
+                            location.reload();
+                        }, 5000);
                     },
                     error: function (xhr) {
                         toastr.error('Đã xảy ra lỗi: ' + (xhr.responseText || 'Lỗi không xác định'));
@@ -657,9 +659,12 @@
                     data: formData,
                     success: function (response) {
                         $('#requestAbsenceModal').modal('hide');
-                        // toastr.success('Gửi lý do vắng mặt thành công');
-                        toastr.success(response.message, 'success');
-                        window.location.reload();
+                        $('#requestAbsenceModal button').prop('disabled', true);
+                        toastr.success(response.message);
+                        setTimeout(function () {
+                            $('#requestAbsenceModal button').prop('disabled', false);
+                            location.reload();
+                        }, 5000);
                     },
                     error: function (xhr) {
                         toastr.error('Đã xảy ra lỗi: ' + (xhr.responseText || 'Lỗi không xác định'));

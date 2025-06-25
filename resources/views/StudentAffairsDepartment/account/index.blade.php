@@ -577,8 +577,9 @@
                             $('#restoreModal').modal('hide');
                             if (response.success) {
                                 toastr.success(response.message);
-                                // window.location.href = response.redirect;
+                                $('button').prop('disabled', true);
                                 setTimeout(function () {
+                                    $('button').prop('disabled', false);
                                     location.reload();
                                 }, 5000);
                             } else {
