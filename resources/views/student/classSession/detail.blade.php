@@ -265,7 +265,7 @@
                                     <small>Sinh viên cần có mặt tại phòng học đúng giờ quy định.</small>
                                 </div>
                                 @if($data['getClassSessionRequest']->status == 3 && auth()->user()->student?->position == 1)
-                                    <a href="{{ route('student.class-session.report', ['class_session_request_id' => $data['getClassSessionRequest']->id]) }}" class="btn btn-secondary">
+                                    <a href="{{ route('student.class-session.report', ['class_session_request_id' => $data['getClassSessionRequest']->id, 'study_class_id' => $data['getClassSessionRequest']->study_class_id]) }}" class="btn btn-secondary">
                                         <i class="fas fa-pager me-2"></i>Tạo báo cáo
                                     </a>
                                 @endif

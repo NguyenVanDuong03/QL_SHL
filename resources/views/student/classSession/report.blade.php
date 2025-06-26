@@ -29,16 +29,20 @@
                     <div class="card-body">
                         <form id="reportForm" enctype="multipart/form-data">
                             @csrf
-                            <input type="hidden" id="class_session_request_id" name="class_session_request_id" value="{{ $data['class_session_request_id'] }}">
-                            <input type="hidden" id="reporter_id" name="reporter_id" value="{{ auth()->user()->student?->id }}">
-                            <input type="hidden" name="attending_students" value="{{ $data['countAttendanceByClassSessionRequestId'] ?? 0 }}">
+                            <input type="hidden" id="class_session_request_id" name="class_session_request_id"
+                                   value="{{ $data['class_session_request_id'] }}">
+                            <input type="hidden" id="reporter_id" name="reporter_id"
+                                   value="{{ auth()->user()->student?->id }}">
+                            <input type="hidden" name="attending_students"
+                                   value="{{ $data['countAttendanceByClassSessionRequestId'] ?? 0 }}">
 
                             <div class="row">
                                 <!-- Thông tin cơ bản -->
                                 <div class="col-md-6 mb-3">
                                     <label for="attending_students" class="form-label">
                                         <i class="fas fa-users me-1"></i>
-                                        Số sinh viên tham dự: <span id="attending_students">{{ $data['countAttendanceByClassSessionRequestId'] ?? 0 }}</span>
+                                        Số sinh viên tham dự: <span
+                                            id="attending_students">{{ $data['countAttendanceByClassSessionRequestId'] ?? 0 }}</span>
                                     </label>
                                 </div>
 
@@ -47,7 +51,8 @@
                                         <i class="fas fa-chalkboard-teacher me-1"></i>
                                         Giáo viên chủ nhiệm tham gia <span class="text-danger">*</span>
                                     </label>
-                                    <select class="form-select" id="teacher_attendance" name="teacher_attendance" required>
+                                    <select class="form-select" id="teacher_attendance" name="teacher_attendance"
+                                            required>
                                         <option value="">-- Chọn --</option>
                                         <option value="0">Có tham gia</option>
                                         <option value="1">Không tham gia</option>
@@ -61,11 +66,17 @@
                                 <div class="col-12 mb-3">
                                     <label for="politics_ethics_lifestyle" class="form-label">
                                         <i class="fas fa-balance-scale me-1"></i>
-                                        Tình hình chính trị, tư tưởng, đạo đức, lối sống <span class="text-danger">*</span>
+                                        Tình hình chính trị, tư tưởng, đạo đức, lối sống <span
+                                            class="text-danger">*</span>
                                     </label>
-                                    <textarea class="form-control" id="politics_ethics_lifestyle" name="politics_ethics_lifestyle"
-                                              rows="4" placeholder="Mô tả tình hình chính trị, tư tưởng, đạo đức, lối sống của sinh viên..." required></textarea>
-                                    <div class="invalid-feedback">Vui lòng mô tả tình hình chính trị, tư tưởng, đạo đức, lối sống</div>
+                                    <textarea class="form-control" id="politics_ethics_lifestyle"
+                                              name="politics_ethics_lifestyle"
+                                              rows="4"
+                                              placeholder="Mô tả tình hình chính trị, tư tưởng, đạo đức, lối sống của sinh viên..."
+                                              required></textarea>
+                                    <div class="invalid-feedback">Vui lòng mô tả tình hình chính trị, tư tưởng, đạo đức,
+                                        lối sống
+                                    </div>
                                 </div>
                             </div>
 
@@ -75,8 +86,10 @@
                                         <i class="fas fa-graduation-cap me-1"></i>
                                         Tình hình học tập, rèn luyện <span class="text-danger">*</span>
                                     </label>
-                                    <textarea class="form-control" id="academic_training_status" name="academic_training_status"
-                                              rows="4" placeholder="Mô tả tình hình học tập, rèn luyện của sinh viên..." required></textarea>
+                                    <textarea class="form-control" id="academic_training_status"
+                                              name="academic_training_status"
+                                              rows="4" placeholder="Mô tả tình hình học tập, rèn luyện của sinh viên..."
+                                              required></textarea>
                                     <div class="invalid-feedback">Vui lòng mô tả tình hình học tập, rèn luyện</div>
                                 </div>
                             </div>
@@ -87,8 +100,10 @@
                                         <i class="fas fa-building me-1"></i>
                                         Tình hình sinh viên nội trú <span class="text-danger">*</span>
                                     </label>
-                                    <textarea class="form-control" id="on_campus_student_status" name="on_campus_student_status"
-                                              rows="3" placeholder="Mô tả tình hình sinh viên ở nội trú..." required></textarea>
+                                    <textarea class="form-control" id="on_campus_student_status"
+                                              name="on_campus_student_status"
+                                              rows="3" placeholder="Mô tả tình hình sinh viên ở nội trú..."
+                                              required></textarea>
                                     <div class="invalid-feedback">Vui lòng mô tả tình hình sinh viên nội trú</div>
                                 </div>
 
@@ -97,8 +112,10 @@
                                         <i class="fas fa-home me-1"></i>
                                         Tình hình sinh viên ngoại trú <span class="text-danger">*</span>
                                     </label>
-                                    <textarea class="form-control" id="off_campus_student_status" name="off_campus_student_status"
-                                              rows="3" placeholder="Mô tả tình hình sinh viên ở ngoại trú..." required></textarea>
+                                    <textarea class="form-control" id="off_campus_student_status"
+                                              name="off_campus_student_status"
+                                              rows="3" placeholder="Mô tả tình hình sinh viên ở ngoại trú..."
+                                              required></textarea>
                                     <div class="invalid-feedback">Vui lòng mô tả tình hình sinh viên ngoại trú</div>
                                 </div>
                             </div>
@@ -110,7 +127,9 @@
                                         Các hoạt động khác <span class="text-danger">*</span>
                                     </label>
                                     <textarea class="form-control" id="other_activities" name="other_activities"
-                                              rows="3" placeholder="Mô tả các hoạt động khác trong buổi sinh hoạt lớp..." required></textarea>
+                                              rows="3"
+                                              placeholder="Mô tả các hoạt động khác trong buổi sinh hoạt lớp..."
+                                              required></textarea>
                                     <div class="invalid-feedback">Vui lòng mô tả các hoạt động khác</div>
                                 </div>
                             </div>
@@ -121,8 +140,10 @@
                                         <i class="fas fa-lightbulb me-1"></i>
                                         Đề xuất, kiến nghị với Khoa, Nhà trường <span class="text-danger">*</span>
                                     </label>
-                                    <textarea class="form-control" id="suggestions_to_faculty_university" name="suggestions_to_faculty_university"
-                                              rows="3" placeholder="Các đề xuất, kiến nghị với Khoa, Nhà trường..." required></textarea>
+                                    <textarea class="form-control" id="suggestions_to_faculty_university"
+                                              name="suggestions_to_faculty_university"
+                                              rows="3" placeholder="Các đề xuất, kiến nghị với Khoa, Nhà trường..."
+                                              required></textarea>
                                     <div class="invalid-feedback">Vui lòng nhập đề xuất, kiến nghị</div>
                                 </div>
                             </div>
@@ -141,13 +162,15 @@
 
                                     <!-- Preview image -->
                                     <div id="image-preview" class="mt-3" style="display: none;">
-                                        <img id="preview-img" src="" class="img-thumbnail" style="max-width: 300px; max-height: 200px;">
+                                        <img id="preview-img" src="" class="img-thumbnail"
+                                             style="max-width: 300px; max-height: 200px;">
                                     </div>
 
                                     <!-- Existing image (for edit mode) -->
                                     <div id="existing-image" class="mt-3" style="display: none;">
                                         <h6>Hình ảnh hiện tại:</h6>
-                                        <img id="existing-img" src="" class="img-thumbnail" style="max-width: 300px; max-height: 200px;">
+                                        <img id="existing-img" src="" class="img-thumbnail"
+                                             style="max-width: 300px; max-height: 200px;">
                                     </div>
                                 </div>
                             </div>
@@ -156,7 +179,8 @@
                             <div class="row">
                                 <div class="col-12">
                                     <div class="d-flex justify-content-between">
-                                        <a href="{{ route('student.class-session.history') }}" class="btn btn-secondary">
+                                        <a href="{{ route('student.class-session.detailClassSession', ['study-class-id' => $data['study_class_id'], 'session-request-id' => $data['class_session_request_id']]) }}"
+                                           class="btn btn-secondary">
                                             <i class="fas fa-arrow-left me-1"></i>Quay lại
                                         </a>
                                         <button type="submit" class="btn btn-primary" id="submit-btn">
@@ -198,36 +222,31 @@
 
 @push('scripts')
     <script>
-        $(document).ready(function() {
+        $(document).ready(function () {
             let isEditMode = false;
             let reportId = null;
             $('#submit-btn').removeClass('d-none');
 
-            // Setup CSRF token for all AJAX requests
             $.ajaxSetup({
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 }
             });
 
-            // Check if we're in edit mode
             checkEditMode();
 
             function checkEditMode() {
-                const urlParams = new URLSearchParams(window.location.search);
-                reportId = urlParams.get('report_id');
+                // const urlParams = new URLSearchParams(window.location.search);
+                // reportId = urlParams.get('report_id');
+                const report = @json($data['report'] ?? null);
 
-                // if (reportId) {
-                //     isEditMode = true;
-                //     loadExistingData();
-                //     $('#form-title').text('Chỉnh sửa báo cáo sinh hoạt lớp');
-                //     $('#submit-text').text('Cập nhật báo cáo');
-                //     $('#action-buttons').show();
-                //     $('#activity_evidence_image').removeAttr('required');
-                // }
-                if (reportId) {
+                if (report) {
                     isEditMode = true;
-                    loadExistingData();
+                    loadExistingData(report);
+                    $('#form-title').text('Chỉnh sửa báo cáo sinh hoạt lớp');
+                    $('#submit-text').text('Cập nhật báo cáo');
+                    $('#action-buttons').show();
+                    $('#activity_evidence_image').removeAttr('required');
                     $('#form-title').text('Chi tiết báo cáo sinh hoạt lớp');
                     $('#submit-btn').addClass('d-none');
                     $('#action-buttons').show();
@@ -235,22 +254,14 @@
                 }
             }
 
-            function loadExistingData() {
-                const report = @json($data['report'] ?? null);
-                setTimeout(function() {
-                    const sampleData = {
-                        // attending_students: report['attending_students'] ?? '',
-                        teacher_attendance: report['teacher_attendance'] ?? '',
-                        politics_ethics_lifestyle: report['politics_ethics_lifestyle'] ?? '',
-                        academic_training_status: report['academic_training_status'] ?? '',
-                        on_campus_student_status: report['on_campus_student_status'] ?? '',
-                        off_campus_student_status: report['off_campus_student_status'] ?? '',
-                        other_activities: report['other_activities'] ?? '',
-                        suggestions_to_faculty_university: report['suggestions_to_faculty_university'] ?? '',
-                        existing_image: report['path'] ?? ''
-                    };
-                    populateForm(sampleData);
-                }, 500);
+            function loadExistingData(report) {
+                $('#teacher_attendance').val(report.teacher_attendance ?? '');
+                $('#politics_ethics_lifestyle').val(report.politics_ethics_lifestyle ?? '');
+                $('#academic_training_status').val(report.academic_training_status ?? '');
+                $('#on_campus_student_status').val(report.on_campus_student_status ?? '');
+                $('#off_campus_student_status').val(report.off_campus_student_status ?? '');
+                $('#other_activities').val(report.other_activities ?? '');
+                $('#suggestions_to_faculty_university').val(report.suggestions_to_faculty_university ?? '');
             }
 
             function populateForm(data) {
@@ -268,7 +279,7 @@
             }
 
             // Handle file input change for image preview
-            $('#activity_evidence_image').on('change', function() {
+            $('#activity_evidence_image').on('change', function () {
                 const file = this.files[0];
 
                 if (file) {
@@ -287,7 +298,7 @@
                     }
 
                     const reader = new FileReader();
-                    reader.onload = function(e) {
+                    reader.onload = function (e) {
                         $('#preview-img').attr('src', e.target.result);
                         $('#image-preview').show();
                         $('#existing-image').hide();
@@ -310,7 +321,7 @@
                 const requiredFields = $('input[required], textarea[required], select[required]');
                 $('.form-control, .form-select').removeClass('is-invalid is-valid');
 
-                requiredFields.each(function() {
+                requiredFields.each(function () {
                     const value = $(this).val();
 
                     if (!value || value.trim() === '') {
@@ -320,13 +331,6 @@
                         $(this).addClass('is-valid');
                     }
                 });
-
-                // const attendingStudents = $('#attending_students').val();
-                // if (attendingStudents && (isNaN(attendingStudents) || parseInt(attendingStudents) < 0)) {
-                //     $('#attending_students').addClass('is-invalid').removeClass('is-valid');
-                //     toastr.error('Số sinh viên tham dự phải là số dương');
-                //     isValid = false;
-                // }
 
                 const fileInput = $('#activity_evidence_image')[0];
                 const hasNewImage = fileInput.files.length > 0;
@@ -342,7 +346,7 @@
             }
 
             // Submit form
-            $('#reportForm').on('submit', function(e) {
+            $('#reportForm').on('submit', function (e) {
                 e.preventDefault();
 
                 if (!validateForm()) {
@@ -369,18 +373,17 @@
                 submitBtn.find('span').text('Đang gửi...');
                 submitBtn.find('i').removeClass('fa-paper-plane').addClass('fa-spinner fa-spin');
 
-                // Ensure CSRF token and method are included
-                // formData.append('_token', $('meta[name="csrf-token"]').attr('content'));
-                // if (isEditMode) {
-                //     formData.append('_method', 'PUT');
+                // for (let pair of formData.entries()) {
+                //     console.log(pair[0] + ': ' + pair[1]);
                 // }
-                for (let pair of formData.entries()) {
-                    console.log(pair[0] + ': ' + pair[1]);
-                }
                 // const url = isEditMode ? `/student/class-session/report/${reportId}` : '/student/class-session/report';
                 const url = '/student/class-session/report';
                 // const method = isEditMode ? 'PUT' : 'POST';
                 const method = 'POST';
+
+                // if (method === 'PUT') {
+                //     formData.append('_method', 'PUT');
+                // }
 
                 $.ajax({
                     url: url,
@@ -388,20 +391,22 @@
                     data: formData,
                     processData: false,
                     contentType: false,
-                    success: function(response) {
+                    success: function (response) {
                         toastr.success('Gửi báo cáo thành công');
+                        $('button').prop('disabled', true);
                         setTimeout(() => {
-                            window.location.href = '/student/class-session/history';
-                        }, 1500);
+                            $('button').prop('disabled', false);
+                            location.reload();
+                        }, 5000);
                     },
-                    error: function(xhr) {
+                    error: function (xhr) {
                         let message = 'Có lỗi xảy ra, vui lòng thử lại';
                         if (xhr.responseJSON && xhr.responseJSON.message) {
                             message = xhr.responseJSON.message;
                         }
                         toastr.error(message);
                     },
-                    complete: function() {
+                    complete: function () {
                         submitBtn.prop('disabled', false);
                         submitBtn.find('span').text(originalText);
                         submitBtn.find('i').removeClass('fa-spinner fa-spin').addClass('fa-paper-plane');
@@ -411,67 +416,42 @@
 
             // Delete report
             $('#delete-btn').on
-            $('#delete-btn').on('click', function() {
+            $('#delete-btn').on('click', function () {
                 $('#deleteModal').modal('show');
             });
 
-            $('#confirm-delete-btn').on('click', function() {
+            $('#confirm-delete-btn').on('click', function () {
                 const deleteBtn = $(this);
                 deleteBtn.prop('disabled', true);
                 deleteBtn.html('<i class="fas fa-spinner fa-spin me-1"></i>Đang xóa...');
+                const report = @json($data['report'] ?? null);
+                const classSessionRequestId = $('#class_session_request_id').val();
+                const studyClassId = '{{ $data['study_class_id'] }}';
 
                 $.ajax({
-                    url: `/student/class-session/report/${reportId}`,
+                    url: `/student/class-session/report/${report.id}`,
                     method: 'DELETE',
                     data: {
                         _token: $('meta[name="csrf-token"]').attr('content')
                     },
-                    success: function(response) {
+                    success: function (response) {
                         toastr.success('Xóa báo cáo thành công');
                         $('#deleteModal').modal('hide');
                         setTimeout(() => {
-                            window.location.href = '/student/class-session/history';
-                        }, 1500);
+                            // Sử dụng route Blade để tạo URL hoàn chỉnh
+                            window.location.href = '{!! route('student.class-session.detailClassSession', ['study-class-id' => $data['study_class_id'], 'session-request-id' => $data['class_session_request_id']]) !!}';
+                        }, 5000);
                     },
-                    error: function(xhr) {
-                        const message = xhr.responseJSON ?.message || 'Có lỗi xảy ra khi xóa báo cáo';
+                    error: function (xhr) {
+                        const message = xhr.responseJSON?.message || 'Có lỗi xảy ra khi xóa báo cáo';
                         toastr.error(message);
                     },
-                    complete: function() {
+                    complete: function () {
                         deleteBtn.prop('disabled', false);
                         deleteBtn.html('<i class="fas fa-trash me-1"></i>Xóa');
                     }
                 });
             });
-
-            // Toast notification function
-            // function showToast(message, type = 'info') {
-            //     const toastClass = type === 'error' ? 'bg-danger' : type === 'success' ? 'bg-success' : 'bg-info';
-            //     const toastHtml = `
-            //         <div class="toast align-items-center text-white ${toastClass} border-0" role="alert" aria-live="assertive" aria-atomic="true">
-            //             <div class="d-flex">
-            //                 <div class="toast-body">
-            //                     ${message}
-            //                 </div>
-            //                 <button type="btn" type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close">Xóa</button>
-            //             </div>
-            //         </div>
-            //     `;
-            //
-            //     if (!$('#toast-container').length) {
-            //         $('body').append('<div id="toast-container" class="toast-container position-fixed top-0 end-0 p-3" style="z-index: 9999;"></div>');
-            //     }
-            //
-            //     const $toast = $(toastHtml);
-            //     $('#toast-container').append($toast);
-            //
-            //     const toast = new bootstrap.Toast($toast[0]);
-            //     toast.show();
-            //
-            //     $toast.on('hidden.bs.toast', function() {
-            //         $(this).remove();
-            //     });
-            // }
         });
     </script>
 @endpush
