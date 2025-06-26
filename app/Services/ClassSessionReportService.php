@@ -89,4 +89,9 @@ class ClassSessionReportService extends BaseService
         return $this->getRepository()->delete($id);
     }
 
+    public function findReport($id)
+    {
+        return $this->getRepository()->findReport($id);
+    }
+
 }

@@ -108,34 +108,37 @@
                                                 <span class="badge bg-success">Đăng ký thành công</span>
                                             @endif
                                         </td>
-                                        <td class="px-4 py-1 text-center btn-group gap-2">
-                                            @if($data['checkClassSessionRegistration'])
-                                                <a class="btn btn-primary btn-sm"
-                                                   title="{{ empty($class['class_session_requests']) ? 'Đăng ký' : 'Chỉnh sửa' }}"
-                                                   href="{{ route('teacher.class-session.create', ['study-class-id' => $class['id'], 'session-request-id' => $class['class_session_requests']['id'] ?? null]) }}">
-                                                    <i class="fas fa-file-signature"></i>
+                                        <td>
+                                            <div class="text-center btn-group gap-2">
+                                                @if($data['checkClassSessionRegistration'])
+                                                    <a class="btn btn-primary btn-sm"
+                                                       title="{{ empty($class['class_session_requests']) ? 'Đăng ký' : 'Chỉnh sửa' }}"
+                                                       href="{{ route('teacher.class-session.create', ['study-class-id' => $class['id'], 'session-request-id' => $class['class_session_requests']['id'] ?? null]) }}">
+                                                        <i class="fas fa-file-signature"></i>
+                                                    </a>
+                                                @endif
+                                                <a href="{{ route('teacher.class-session.detail', ['study-class-id' => $class['id'], 'session-request-id' => $class['class_session_requests']['id'] ?? null]) }}"
+                                                   class="btn btn-secondary btn-sm {{ empty($class['class_session_requests']) ? 'disabled' : '' }}"
+                                                   title="Chi tiết">
+                                                    <i class="fas fa-info-circle"></i>
                                                 </a>
-                                            @endif
-                                            <a href="{{ route('teacher.class-session.detail', ['study-class-id' => $class['id'], 'session-request-id' => $class['class_session_requests']['id'] ?? null]) }}"
-                                               class="btn btn-secondary btn-sm {{ empty($class['class_session_requests']) ? 'disabled' : '' }}"
-                                               title="Chi tiết">
-                                                <i class="fas fa-info-circle"></i>
-                                            </a>
-                                            @if($data['checkClassSessionRegistration'])
-                                                <button
-                                                    class="btn btn-danger btn-sm btn-delete-class-session {{ empty($class['class_session_requests']) ? 'disabled' : '' }}"
-                                                    title="Hủy đăng ký"
-                                                    @if(!empty($class['class_session_requests']))
-                                                        data-id="{{ $class['class_session_requests']['id'] }}"
-                                                    data-room-id="{{ $class['class_session_requests']['room_id'] }}"
-                                                    data-current-page="{{ $data['getStudyClassByIds']['current_page'] }}"
-                                                    data-bs-toggle="modal"
-                                                    data-bs-target="#confirmDeleteModal"
-                                                    @endif
-                                                >
-                                                    <i class="fas fa-trash-alt"></i>
-                                                </button>
-                                            @endif
+                                                @if($data['checkClassSessionRegistration'])
+                                                    <button
+                                                        class="btn btn-danger btn-sm btn-delete-class-session {{ empty($class['class_session_requests']) ? 'disabled' : '' }}"
+                                                        title="Hủy đăng ký"
+                                                        @if(!empty($class['class_session_requests']))
+                                                            data-id="{{ $class['class_session_requests']['id'] }}"
+                                                        data-room-id="{{ $class['class_session_requests']['room_id'] }}"
+                                                        data-current-page="{{ $data['getStudyClassByIds']['current_page'] }}"
+                                                        data-bs-toggle="modal"
+                                                        data-bs-target="#confirmDeleteModal"
+                                                        @endif
+                                                    >
+                                                        <i class="fas fa-trash-alt"></i>
+                                                    </button>
+                                                @endif
+                                            </div>
+
                                         </td>
                                     </tr>
                                 @endforeach

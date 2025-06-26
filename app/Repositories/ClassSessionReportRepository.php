@@ -64,4 +64,12 @@ class ClassSessionReportRepository extends BaseRepository
             ->count();
     }
 
+    public function findReport($id)
+    {
+        return $this->getModel()
+            ->newQuery()
+            ->where('class_session_request_id', $id)
+            ->first();
+    }
+
 }
