@@ -237,9 +237,9 @@
                                                 <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i>Phê duyệt hình thức SHL (họp online, offline tại trường hoặc dã ngoại)</li>
                                                 <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i>Phê duyệt thời gian mở đánh giá điểm rèn luyện (ĐRL)</li>
                                                 <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i>Nhận báo cáo tình hình sinh hoạt lớp từ cán bộ lớp</li>
-                                                <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i>Thêm/sửa/xóa danh sách sinh viên bị cảnh báo học vụ vào hệ thống</li>
-                                                <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i>Thêm/sửa/xóa tài khoản GVCN và tài khoản sinh viên</li>
-                                                <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i>Thêm/sửa/xóa phòng học</li>
+                                                <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i>Quản lý danh sách sinh viên bị cảnh báo học vụ vào hệ thống</li>
+                                                <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i>Quản lý tài khoản GVCN và tài khoản sinh viên</li>
+                                                <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i>Quản lý phòng học</li>
                                             </ul>
                                         </div>
                                     </div>
@@ -267,7 +267,7 @@
                                             <ul class="list-unstyled">
                                                 <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i>Xác nhận tham gia SHL</li>
                                                 <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i>Điểm danh và tự đánh giá ĐRL</li>
-                                                <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i>Thêm/sửa/xóa báo cáo tình hình sinh hoạt lớp sau mỗi buổi SHL</li>
+                                                <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i>Quản lý báo cáo tình hình sinh hoạt lớp sau mỗi buổi SHL</li>
                                             </ul>
                                         </div>
                                     </div>
@@ -291,7 +291,7 @@
             </section>
 
             <!-- About Section -->
-            <section id="about" class="pt-5">
+            <section id="about" class="pt-5 mt-4">
                 <div class="container py-3">
                     <div class="text-center mb-5">
                         <span class="badge bg-teal-100 text-teal-700 mb-3">Giới thiệu</span>
@@ -446,7 +446,7 @@
                                             </div>
                                             <div class="col-12">
                                                 <label for="contactMessage" class="form-label">Nội dung tin nhắn</label>
-                                                <textarea class="form-control" id="contactMessage" rows="5" required></textarea>
+                                                <textarea class="form-control" id="contactMessage" rows="6" required></textarea>
                                             </div>
                                             <div class="col-12">
                                                 <button type="submit" class="btn btn-teal">

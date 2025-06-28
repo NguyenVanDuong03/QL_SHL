@@ -66,6 +66,10 @@
             padding: 0;
             list-style: none;
         }
+
+        textarea {
+            resize: none;
+        }
     </style>
 
     @vite(['resources/sass/app.scss', 'resources/js/app.js'])

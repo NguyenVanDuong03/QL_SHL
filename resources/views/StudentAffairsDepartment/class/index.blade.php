@@ -11,10 +11,8 @@
 @push('styles')
     <style>
         .stats-card {
-            /*background: linear-gradient(135deg, #0d6efd, #0056b3);*/
-            /*color: white;*/
             border-radius: 0.5rem;
-            padding: 1.5rem;
+            padding: 0.5rem;
             margin-bottom: 1rem;
             transition: transform 0.2s;
         }
@@ -26,7 +24,6 @@
         .stats-card .stats-number {
             font-size: 2rem;
             font-weight: 700;
-            margin-bottom: 0.5rem;
         }
 
         .stats-card .stats-label {
@@ -82,29 +79,25 @@
 @section('main')
     <div class="container-fluid">
         <!-- Statistics Cards -->
-        <div class="row mb-3">
-            <div class="col-lg-3 col-md-3 mb-3">
+        <div class="row">
+            <div class="col-lg-3 col-md-3 ">
                 <div class="stats-card border">
-                    <div class="stats-number">{{ $data['studyClasses']['total'] }}</div>
-                    <div class="stats-label">Lớp học</div>
+                    <div class="stats-number">{{ $data['studyClasses']['total'] }} <span class="stats-label">Lớp học</span></div>
                 </div>
             </div>
-            <div class="col-lg-3 col-md-3 mb-3">
+            <div class="col-lg-3 col-md-3">
                 <div class="stats-card border">
-                    <div class="stats-number">{{ count($data['majors']) }}</div>
-                    <div class="stats-label">Ngành học</div>
+                    <div class="stats-number">{{ count($data['majors']) }} <span class="stats-label">Ngành học</span></div>
                 </div>
             </div>
-            <div class="col-lg-3 col-md-3 mb-3">
+            <div class="col-lg-3 col-md-3">
                 <div class="stats-card border">
-                    <div class="stats-number">{{ $data['totalDepartments'] }}</div>
-                    <div class="stats-label">Khoa</div>
+                    <div class="stats-number">{{ $data['totalDepartments'] }} <span class="stats-label">Khoa</span></div>
                 </div>
             </div>
-            <div class="col-lg-3 col-md-3 mb-3">
+            <div class="col-lg-3 col-md-3">
                 <div class="stats-card border">
-                    <div class="stats-number">{{ $data['totalStudents'] }}</div>
-                    <div class="stats-label">Sinh viên</div>
+                    <div class="stats-number">{{ $data['totalStudents'] }} <span class="stats-label">Sinh viên</span></div>
                 </div>
             </div>
         </div>

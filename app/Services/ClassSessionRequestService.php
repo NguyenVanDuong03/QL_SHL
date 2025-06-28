@@ -44,6 +44,11 @@ class ClassSessionRequestService extends BaseService
         return $this->getRepository()->classSessionRequests($params);
     }
 
+    public function getAllClassSessionRequestsDone()
+    {
+        return $this->getRepository()->getAllClassSessionRequestsDone();
+    }
+
     public function getClassSessionRequestsDone($params)
     {
         return $this->getRepository()->getClassSessionRequestsDone($params);

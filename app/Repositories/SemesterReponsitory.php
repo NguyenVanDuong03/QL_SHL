@@ -60,9 +60,7 @@ class SemesterReponsitory extends BaseRepository
                 'study_classes.id',
                 'class_session_requests.id'
             )
-            ->orderByDesc('semesters.school_year')
-            ->orderBy('semesters.name')
-            ->orderBy('study_classes.name')
+            ->orderByDesc('semesters.id')
             ->get();
     }
 

@@ -48,6 +48,22 @@ class ClassSessionRequestRepository extends BaseRepository
             ->orderBy('id', 'desc');
     }
 
+    public function getAllClassSessionRequestsDone()
+    {
+        $query = $this->getModel()
+            ->with([
+                'lecturer.user',
+                'studyClass',
+                'classSessionRegistration',
+                'classSessionRegistration.semester',
+                'attendances'
+            ])
+            ->where('status', Constant::CLASS_SESSION_STATUS['DONE'])
+            ->orderBy('proposed_at', 'desc');
+
+        return $query;
+    }
+
     public function getClassSessionRequestsDone($params)
     {
         $search = $params['search'] ?? '';

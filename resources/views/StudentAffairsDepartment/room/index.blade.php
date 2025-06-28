@@ -7,11 +7,10 @@
 @endsection
 
 @section('main')
-    <div class="container-fluid py-4">
+    <div class="container-fluid">
         <div class="row mb-4">
             <div class="col-md-6">
                 <h1 class="h3 mb-2 text-gray-800">Quản lý phòng học</h1>
-                <p class="mb-4">Danh sách tất cả các phòng học trong hệ thống.</p>
             </div>
             <div class="col-md-6 text-md-end">
                 <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addRoomModal">

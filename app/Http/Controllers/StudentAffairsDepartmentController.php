@@ -735,13 +735,15 @@ class StudentAffairsDepartmentController extends Controller
         $statisticalClassByDepartment = $this->studyClassService->statisticalClassByDepartment()->toArray();
         $statisticalUserByRole = $this->userService->statisticalUserByRole()->toArray();
         $staticalAcademicWarningBySemester = $this->semesterService->staticalAcademicWarningBySemester()->toArray();
+        $getAllClassSessionRequestsDone = $this->studyClassService->getAllStatisticsByStudyClass()->get()->toArray();
 
         $data = [
             'statisticalClassByDepartment' => $statisticalClassByDepartment,
             'statisticalUserByRole' => $statisticalUserByRole,
             'staticalAcademicWarningBySemester' => $staticalAcademicWarningBySemester,
+            'getAllClassSessionRequestsDone' => $getAllClassSessionRequestsDone,
         ];
-//        dd($data['staticalAcademicWarningBySemester']);
+//        dd($data['getAllClassSessionRequestsDone']);
 
         return view('StudentAffairsDepartment.statistical.index', compact('data'));
     }

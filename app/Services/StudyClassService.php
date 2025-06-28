@@ -128,4 +128,14 @@ class StudyClassService extends BaseService
         return $this->getRepository()->statisticalClassByDepartment();
     }
 
+    public function getAllStatisticsByStudyClass()
+    {
+        return $this->getRepository()->getAllStatisticsByStudyClass();
+    }
+
+    public function getAllStatisticsByStudyClassByLecturer()
+    {
+        return $this->getRepository()->getAllStatisticsByStudyClassByLecturer();
+    }
+
 }

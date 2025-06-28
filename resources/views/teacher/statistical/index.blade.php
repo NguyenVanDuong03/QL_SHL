@@ -66,8 +66,7 @@
                         <div class="card-body text-center">
                             <i class="fas fa-calendar text-info mb-2"></i>
                             <h6 class="text-muted">Buổi SHL</h6>
-                            <h4 class="mb-0">{{ $data['getTotalDoneSessionsByLecturer'] }}
-                                /{{ $data['getTotalSessionsByLecturer'] }}</h4>
+                            <h4 class="mb-0">{{ $data['getTotalDoneSessionsByLecturer'] }}/{{ $data['getTotalSessionsByLecturer'] }}</h4>
                         </div>
                     </div>
                 </div>
@@ -116,7 +115,7 @@
                                     </tr>
                                     </thead>
                                     <tbody id="activitiesBody">
-                                    @forelse(array_slice($data['statisticalSemester'] ?? [], 0, 5) as $activity)
+                                    @forelse($data['statisticalSemester'] as $activity)
                                         <tr>
                                             <td>{{ $activity['semester_name'] }} - {{ $activity['school_year'] }}</td>
                                             <td>{{ $activity['class_name'] }}</td>
@@ -161,48 +160,8 @@
 @push('scripts')
     <script>
         $(document).ready(function () {
-            let activityPage = 1;
-            let conductPage = 1;
-            const pageSize = 5;
 
             initializeWarningChart();
-
-            function loadMoreActivities() {
-                $.ajax({
-                    url: '{{ route("teacher.statistical.index") }}',
-                    method: 'GET',
-                    data: {
-                        page: activityPage + 1,
-                        semester_id: $('#semesterSelect').val()
-                    },
-                    success: function (response) {
-                        if (response.activities && response.activities.length > 0) {
-                            activityPage++;
-                            response.activities.forEach(activity => {
-                                $('#activitiesBody').append(`
-                            <tr>
-                                <td>${activity.semester_name} - ${activity.school_year}</td>
-                                <td>${activity.class_name}</td>
-                                <td>${activity.proposed_at}</td>
-                                <td>${activity.attendance_count}/${activity.total_students}</td>
-                                <td>
-                                    <a href="{{ route('teacher.statistical.exportAttendance', ['class_request_id' => ':class_request_id', 'study_class_id' => ':study_class_id', 'study_class_name' => ':study_class_name']) }}"
-                                       class="btn btn-success btn-sm" target="_blank">
-                                        <i class="fas fa-file-excel me-2"></i> Xuất file
-                                    </a>
-                                </td>
-                            </tr>
-                        `.replace(':class_request_id', activity.class_session_requests_id)
-                                    .replace(':study_class_id', activity.class_id)
-                                    .replace(':study_class_name', activity.class_name));
-                            });
-                        }
-                    },
-                    error: function (xhr) {
-                        console.error('Lỗi khi tải hoạt động:', xhr);
-                    }
-                });
-            }
 
             $('#activitiesTable').on('scroll', function () {
                 if ($(this).scrollTop() + $(this).innerHeight() >= $(this)[0].scrollHeight) {

@@ -641,15 +641,8 @@ class LecturerController extends Controller
         $participationRate = $this->studyClassService->participationRate($lecturerId);
         $statisticalAttendance = $this->studentService->statisticalAttendance($lecturerId, $params['semester_id'])->toArray();
 
-        $statisticalSemester = $this->semesterService->statisticalSemester($lecturerId)
-            ->when($request->has('page'), function ($query) use ($page, $pageSize) {
-                return $query->skip(($page - 1) * $pageSize)->take($pageSize);
-            })
-            ->toArray();
-
-        if ($request->ajax()) {
-            return response()->json(['activities' => $statisticalSemester]);
-        }
+        $statisticalSemester = $this->semesterService->statisticalSemester($lecturerId)->toArray();
+//        $statisticalSemester = $this->studyClassService->getAllStatisticsByStudyClassByLecturer()->get()->toArray();
 
         $data = [
             'semesters' => $semesters,
@@ -662,7 +655,7 @@ class LecturerController extends Controller
             'statisticalAttendance' => $statisticalAttendance,
             'getAcademicWarningsCountByLecturerAndSemester' => $getAcademicWarningsCountByLecturerAndSemester,
         ];
-//        dd($data['getAcademicWarningsCountByLecturerAndSemester']);
+//        dd($data['statisticalSemester']);
 
         return view('teacher.statistical.index', compact('data'));
     }

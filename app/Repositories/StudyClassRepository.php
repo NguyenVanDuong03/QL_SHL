@@ -729,4 +729,41 @@ class StudyClassRepository extends BaseRepository
         return $query;
     }
 
+    public function getAllStatisticsByStudyClass()
+    {
+        $query = $this->getModel()
+            ->newQuery()
+            ->select(
+                'study_classes.name as class_name',
+                DB::raw('COUNT(CASE WHEN class_session_requests.type = 0 THEN 1 END) as fixed_sessions'),
+                DB::raw('COUNT(CASE WHEN class_session_requests.type = 1 THEN 1 END) as flexible_sessions'),
+                DB::raw('COUNT(CASE WHEN class_session_requests.position = 0 THEN 1 END) as on_campus_sessions'),
+                DB::raw('COUNT(CASE WHEN class_session_requests.position = 1 THEN 1 END) as online_sessions'),
+                DB::raw('COUNT(CASE WHEN class_session_requests.position = 2 THEN 1 END) as field_trip_sessions')
+            )
+            ->leftJoin('class_session_requests', 'study_classes.id', '=', 'class_session_requests.study_class_id')
+            ->groupBy('study_classes.id', 'study_classes.name');
+
+        return $query;
+    }
+
+    public function getAllStatisticsByStudyClassByLecturer()
+    {
+        $query = $this->getModel()
+            ->newQuery()
+            ->select(
+                'study_classes.name as class_name',
+                DB::raw('COUNT(CASE WHEN class_session_requests.type = 0 THEN 1 END) as fixed_sessions'),
+                DB::raw('COUNT(CASE WHEN class_session_requests.type = 1 THEN 1 END) as flexible_sessions'),
+                DB::raw('COUNT(CASE WHEN class_session_requests.position = 0 THEN 1 END) as on_campus_sessions'),
+                DB::raw('COUNT(CASE WHEN class_session_requests.position = 1 THEN 1 END) as online_sessions'),
+                DB::raw('COUNT(CASE WHEN class_session_requests.position = 2 THEN 1 END) as field_trip_sessions')
+            )
+            ->leftJoin('class_session_requests', 'study_classes.id', '=', 'class_session_requests.study_class_id')
+            ->where('study_classes.lecturer_id', auth()->user()->lecturer?->id)
+            ->groupBy('study_classes.id', 'study_classes.name');
+
+        return $query;
+    }
+
 }

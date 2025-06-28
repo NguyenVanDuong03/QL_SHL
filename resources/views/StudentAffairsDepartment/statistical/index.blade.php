@@ -12,24 +12,29 @@
             height: 8px;
             border-radius: 4px;
         }
+
         .table-hover tbody tr:hover {
-            background-color: rgba(0,0,0,0.025);
+            background-color: rgba(0, 0, 0, 0.025);
         }
+
         .nav-tabs .nav-link {
             border: none;
             color: #6c757d;
             font-weight: 500;
         }
+
         .nav-tabs .nav-link.active {
             background-color: #fff;
             color: #0d6efd;
             border-bottom: 3px solid #0d6efd;
         }
+
         .chart-container {
             position: relative;
             height: 300px;
             width: 100%;
         }
+
         .chart-container-large {
             position: relative;
             height: 400px;
@@ -40,7 +45,7 @@
 
 @section('main')
     <div class="dashboard-bg">
-        <div class="container-fluid p-4">
+        <div class="container-fluid">
             <!-- Header -->
             <div class="d-flex justify-content-between align-items-center mb-4">
                 <h4 class="h2 text-dark mb-0">Thống Kê</h4>
@@ -113,55 +118,34 @@
                         <div class="tab-pane fade" id="activities" role="tabpanel">
                             <div class="card border-0 shadow-sm">
                                 <div class="card-header bg-white">
-                                    <h5 class="card-title mb-0">Danh sách Sinh hoạt lớp cố định</h5>
+                                    <h5 class="card-title mb-0">Danh sách thống kê SHL</h5>
                                 </div>
                                 <div class="card-body p-0">
                                     <div class="table-responsive" style="max-height: 500px; overflow-y: auto;">
                                         <table class="table table-hover mb-0" id="activitiesTable">
                                             <thead class="table-light sticky-top">
                                             <tr>
-                                                <th class="fw-semibold">Học kỳ</th>
-                                                <th class="fw-semibold">Lớp</th>
-                                                <th class="fw-semibold">Ngày</th>
-                                                <th class="fw-semibold">Tham gia</th>
-                                                <th class="fw-semibold">Trạng thái</th>
+                                                <th class="fw-semibold">Lớp học</th>
+                                                <th class="fw-semibold">SHL cố định</th>
+                                                <th class="fw-semibold">SHL linh hoạt</th>
+                                                <th class="fw-semibold">Trực tiếp</th>
+                                                <th class="fw-semibold">Trực tuyến</th>
+                                                <th class="fw-semibold">Dã ngoại</th>
                                             </tr>
                                             </thead>
                                             <tbody id="activitiesBody">
-                                            @forelse(array_slice($data['statisticalSemester'] ?? [], 0, 5) as $activity)
+                                            @forelse($data['getAllClassSessionRequestsDone'] ?? [] as $activity)
                                                 <tr>
-                                                    <td>{{ $activity['semester_name'] ?? 'HK1' }} - {{ $activity['school_year'] ?? '' }}</td>
-                                                    <td>
-                                                        <span class="badge bg-primary">{{ $activity['class_name'] ?? '' }}</span>
-                                                    </td>
-                                                    <td>{{ $activity['proposed_at'] ?? '' }}</td>
-                                                    <td>
-                                                        <div class="d-flex align-items-center gap-2">
-                                                            <span class="fw-semibold">
-                                                                {{ $activity['attendance_count'] ?? 0 }}/{{ $activity['total_students'] ?? 0 }}
-                                                            </span>
-                                                            <div class="progress progress-custom flex-grow-1" style="width: 100px;">
-                                                                <div class="progress-bar bg-primary" role="progressbar"
-                                                                     style="width: {{ (($activity['attendance_count'] ?? 0) / ($activity['total_students'] ?? 0)) * 100 }}%">
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </td>
-                                                    <td>
-                                                        <a href="{{ route('student-affairs-department.statistical.exportAttendance', [
-                                                            'class_request_id' => $activity['class_session_requests_id'],
-                                                            'study_class_id' => $activity['class_id'],
-                                                            'study_class_name' => $activity['class_name']
-                                                        ]) }}"
-                                                           class="btn btn-success btn-sm d-flex align-items-center gap-1" target="_blank">
-                                                            <i class="fas fa-file-excel"></i>
-                                                            Xuất file
-                                                        </a>
-                                                    </td>
+                                                    <td>{{ $activity['class_name'] ?? '' }}</td>
+                                                    <td>{{ $activity['fixed_sessions'] ?? 0 }}</td>
+                                                    <td>{{ $activity['flexible_sessions'] ?? 0 }}</td>
+                                                    <td>{{ $activity['on_campus_sessions'] ?? 0 }}</td>
+                                                    <td>{{ $activity['online_sessions'] ?? 0 }}</td>
+                                                    <td>{{ $activity['field_trip_sessions'] ?? 0 }}</td>
                                                 </tr>
                                             @empty
                                                 <tr>
-                                                    <td colspan="5" class="text-center py-4 text-muted">
+                                                    <td colspan="6" class="text-center py-4 text-muted">
                                                         <i class="fas fa-inbox fa-2x mb-2 d-block"></i>
                                                         Không có dữ liệu
                                                     </td>
@@ -169,6 +153,7 @@
                                             @endforelse
                                             </tbody>
                                         </table>
+                                        <button id="loadMoreBtn" class="btn btn-primary mt-3 d-none">Tải thêm</button>
                                     </div>
                                 </div>
                             </div>
@@ -196,67 +181,44 @@
 
 @push('scripts')
     <script>
-        $(document).ready(function() {
-            // Initialize all charts
+        $(document).ready(function () {
             initializeClassDistributionChart();
             initializeWarningsChart();
             initializeRolesChart();
 
-            // Load more activities functionality
             let activityPage = 1;
             const pageSize = 5;
+            let isLoading = false;
 
-            function loadMoreActivities() {
-                $.ajax({
-                    url: '{{ route("teacher.statistical.index") }}',
-                    method: 'GET',
-                    data: {
-                        page: activityPage + 1,
-                        semester_id: $('#semesterSelect').val()
-                    },
-                    success: function(response) {
-                        if (response.activities && response.activities.length > 0) {
-                            activityPage++;
-                            response.activities.forEach(activity => {
-                                const attendanceRate = (activity.attendance_count / activity.total_students) * 100;
-                                $('#activitiesBody').append(`
-                            <tr>
-                                <td>${activity.semester_name} - ${activity.school_year}</td>
-                                <td><span class="badge bg-primary">${activity.class_name}</span></td>
-                                <td>${activity.proposed_at}</td>
-                                <td>
-                                    <div class="d-flex align-items-center gap-2">
-                                        <span class="fw-semibold">${activity.attendance_count}/${activity.total_students}</span>
-                                        <div class="progress progress-custom flex-grow-1" style="width: 100px;">
-                                            <div class="progress-bar bg-primary" style="width: ${attendanceRate}%"></div>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td>
-                                    <a href="{{ route('teacher.statistical.exportAttendance', ['class_request_id' => ':class_request_id', 'study_class_id' => ':study_class_id', 'study_class_name' => ':study_class_name']) }}"
-                                       class="btn btn-success btn-sm d-flex align-items-center gap-1" target="_blank">
-                                        <i class="fas fa-file-excel"></i> Xuất file
-                                    </a>
-                                </td>
-                            </tr>
-                        `.replace(':class_request_id', activity.class_session_requests_id)
-                                    .replace(':study_class_id', activity.class_id)
-                                    .replace(':study_class_name', activity.class_name));
-                            });
-                        }
-                    },
-                    error: function(xhr) {
-                        console.error('Lỗi khi tải hoạt động:', xhr);
-                    }
-                });
-            }
+            // Load more on button click
+            $('#loadMoreBtn').on('click', loadMoreActivities);
 
-            // Scroll to load more
-            $('#activitiesTable').parent().on('scroll', function() {
-                if ($(this).scrollTop() + $(this).innerHeight() >= $(this)[0].scrollHeight - 5) {
+            // Infinite scroll for mobile and desktop
+            const tableContainer = $('#activitiesTable').parent();
+            tableContainer.on('scroll', function () {
+                if (isMobile() || $(this).scrollTop() + $(this).innerHeight() >= $(this)[0].scrollHeight - 5) {
                     loadMoreActivities();
                 }
             });
+
+            // Detect mobile device
+            function isMobile() {
+                return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || window.innerWidth <= 768;
+            }
+
+            // Show load more button if there are more activities
+            if ($('#activitiesBody tr').length >= pageSize) {
+                $('#loadMoreBtn').removeClass('d-none');
+            }
+
+            // Trigger load more on mobile scroll
+            if (isMobile()) {
+                $(window).on('scroll', function () {
+                    if ($(window).scrollTop() + $(window).height() >= $(document).height() - 100) {
+                        loadMoreActivities();
+                    }
+                });
+            }
         });
 
         function initializeClassDistributionChart() {
@@ -345,7 +307,6 @@
                         groupedData['Giảng viên'] += item.total;
                         break;
                     case 0:
-                    case 3:
                         groupedData['Sinh viên'] += item.total;
                         break;
                     case 2:

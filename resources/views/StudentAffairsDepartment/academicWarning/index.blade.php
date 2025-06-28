@@ -18,17 +18,17 @@
 
 @section('main')
     <div class="container-fluid py-4">
-        <div class="card shadow-sm">
-            <div class="card-header d-flex justify-content-between align-items-center">
-                <h4 class="mb-0">Quản lý cảnh báo học vụ</h4>
-                <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#createWarningModal">
-                    <i class="fas fa-plus"></i> Thêm mới
-                </button>
-            </div>
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h4 class="mb-0">Quản lý cảnh báo học vụ</h4>
+            <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#createWarningModal">
+                <i class="fas fa-plus"></i> Thêm mới
+            </button>
+        </div>
 
+        <div class="card shadow-sm">
             <form method="GET" action="{{ route('student-affairs-department.academic-warning.index') }}"
-                  class="card-header d-flex justify-content-between align-items-center gap-2">
-                <select class="form-select w-auto" id="semesterFilter" name="semester_id">
+                  class="card-header d-md-flex justify-content-between align-items-center gap-2">
+                <select class="form-select w-auto mb-md-0 mb-2" id="semesterFilter" name="semester_id">
                     <option value="">Tất cả học kỳ</option>
                     @forelse($data['getSemesters'] ?? [] as $item)
                         <option value="{{ $item['id'] }}" {{ request('semester_id') == $item['id'] ? 'selected' : '' }}>
