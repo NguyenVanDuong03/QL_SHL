@@ -265,7 +265,6 @@
                                     <th class="d-none d-md-table-cell">Giáo viên</th>
                                     <th>Thời gian</th>
                                     <th>Lớp</th>
-                                    <th>Trạng thái</th>
                                     <th class="text-center">Thao tác</th>
                                 </tr>
                                 </thead>
@@ -293,27 +292,7 @@
                                                     class="text-muted">{{ \Carbon\Carbon::parse($request->proposed_at)->format('d/m/Y') }}</small>
                                             </td>
                                             <td>
-                                                <span
-                                                    class="badge bg-light text-dark">{{ $request->studyClass->name }}</span>
-                                            </td>
-                                            @php
-                                                $statusMap = [
-                                                    0 => ['text' => 'Xác nhận', 'class' => 'bg-primary'],
-                                                    1 => ['text' => 'Xin vắng', 'class' => 'badge-warning'],
-                                                    2 => ['text' => 'Có mặt', 'class' => 'bg-success'],
-                                                    3 => ['text' => 'Vắng mặt', 'class' => 'bg-danger'],
-                                                    4 => ['text' => 'Chưa xác nhận', 'class' => 'bg-secondary'],
-                                                ];
-                                                if (!isset($data['attendanceStatus'])) {
-                                                $status = 4;
-                                                } else {
-                                                    $status = $data['attendanceStatus']->status;
-                                                }
-                                            @endphp
-                                            <td>
-                                                <span class="badge badge-status {{ $statusMap[$status]['class'] }}">
-                                                    {{ $statusMap[$status]['text'] }}
-                                                </span>
+                                                <span>{{ $request->studyClass->name }}</span>
                                             </td>
                                             <td>
                                                 <div

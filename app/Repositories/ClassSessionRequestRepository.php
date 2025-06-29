@@ -48,6 +48,24 @@ class ClassSessionRequestRepository extends BaseRepository
             ->orderBy('id', 'desc');
     }
 
+    public function classSessionRequestsDoneByStudent($params)
+    {
+        return $this->getModel()
+            ->with([
+                'lecturer.user',
+                'studyClass',
+                'room',
+                'attendances' => function ($query) use ($params) {
+                    $query->where('student_id', $params['student_id'])
+                        ->latest('id')
+                        ->first();
+                }
+            ])
+            ->where('study_class_id', $params['study_class_id'])
+                ->where('status', Constant::CLASS_SESSION_STATUS['APPROVED'])
+            ->orderBy('id', 'desc');
+    }
+
     public function getAllClassSessionRequestsDone()
     {
         $query = $this->getModel()
@@ -221,7 +239,14 @@ class ClassSessionRequestRepository extends BaseRepository
     public function getListFlexibleClass()
     {
         return $this->getModel()
-            ->with('studyClass', 'room', 'lecturer', 'studyClass.major.faculty.department')
+            ->with([
+                'studyClass' => function ($query) {
+                    $query->withCount('students');
+                },
+                'room',
+                'lecturer',
+                'studyClass.major.faculty.department'
+            ])
             ->where('type', Constant::CLASS_SESSION_TYPE['FLEXIBLE'])
             ->whereIn('status', [
                 Constant::CLASS_SESSION_STATUS['ACTIVE'],

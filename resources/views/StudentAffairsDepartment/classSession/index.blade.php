@@ -131,6 +131,7 @@
                                                             data-note="{{ $class['note'] }}"
                                                             data-room-name="{{ $class['room_name'] ?? '' }}"
                                                             data-room-id="{{ $class['room_id'] ?? '' }}"
+                                                            data-total-students = "{{ $class['total_students'] }}"
                                                             data-status="{{ $class['status'] }}"
                                                     >
                                                         <i class="fas fa-file-signature"></i>
@@ -152,6 +153,7 @@
                                                         data-study-class-name="{{ $class['study_class_name'] }}"
                                                         data-note="{{ $class['note'] }}"
                                                         data-room-name="{{ $class['room_name'] ?? '' }}"
+                                                        data-room-description="{{ $class['room_description'] ?? '' }}"
                                                         data-room-id="{{ $class['room_id'] ?? '' }}"
                                                         data-status="{{ $class['status'] }}"
                                                         data-detail="true"
@@ -390,6 +392,7 @@
                             <h6>Ghi chú: <span class="class_session_note"></span></h6>
 
                             <h6 class="class_session_room d-none">Phòng: <span class="class_session_room_name"></span></h6>
+                            <h6 class="class_session_room d-none">Mô tả: <span class="class_session_room_description"></span></h6>
                             <div class="form-group session-offline d-none mb-3">
                                 <label for="room" class="form-label room">Chọn phòng họp:</label>
                                 <select class="form-select" id="room" name="room_id">
@@ -580,6 +583,7 @@
                 const note = $(this).data('note');
                 const roomName = $(this).data('room-name') || '';
                 const roomId = $(this).data('room-id');
+                const totalStudents = $(this).data('total-students');
                 const status = $(this).data('status');
 
                 if (status === 1) {
@@ -593,9 +597,16 @@
                 roomSelect.empty();
 
                 @if(isset($data['rooms']) && $data['rooms']->isNotEmpty())
+                let hasValidRoom = false;
                 @foreach($data['rooms'] as $room)
-                roomSelect.append(`<option value="{{ $room->id }}">{{ $room->name }}</option>`);
+                if ({{ $room->quantity }} >= totalStudents) {
+                    roomSelect.append(`<option value="{{ $room->id }}">{{ $room->name }} - {{ $room->description }}</option>`);
+                    hasValidRoom = true;
+                }
                 @endforeach
+                if (!hasValidRoom) {
+                    roomSelect.append(`<option value="" disabled selected>Không có phòng khả dụng cho ${totalStudents} sinh viên</option>`);
+                }
                 @else
                 roomSelect.append(`<option value="" disabled selected>Không có phòng khả dụng</option>`);
                 @endif
@@ -653,6 +664,7 @@
                 const note = $(this).data('note');
                 const roomName = $(this).data('room-name') || '---';
                 const roomId = $(this).data('room-id');
+                const roomDescription = $(this).data('room-description') || '---';
                 const status = $(this).data('status');
                 const isDetail = $(this).data('detail');
 
@@ -687,6 +699,7 @@
                 $('.class_session_meeting_url').attr('href', meetingUrl);
                 $('.class_session_note').text(!note ? '---' : note);
                 $('.class_session_room_name').text(roomName);
+                $('.class_session_room_description').text(roomDescription);
             });
 
             $('.btn-confirm-form').on('click', function (e) {

@@ -57,7 +57,7 @@ class StudentController extends Controller
 //        $params['class_session_registration_id'] = $getCurrentSemester->id ?? null;
         $params['study_class_id'] = auth()->user()->student?->studyClass?->id ?? null;
         $params['student_id'] = auth()->user()->student?->id ?? null;
-        $classSessionRequests = $this->classSessionRequestService->ClassSessionRequests($params)->limit(Constant::DEFAULT_LIMIT)->get();
+        $classSessionRequests = $this->classSessionRequestService->classSessionRequestsDoneByStudent($params)->limit(Constant::DEFAULT_LIMIT)->get();
         $attendanceStatus = $classSessionRequests->first()?->attendances->first() ?? null;
         $studyClasses = $this->studyClassService->get()->toArray();
         $cohorts = $this->cohortService->get()->toArray();
@@ -94,14 +94,14 @@ class StudentController extends Controller
         $params = $request->all();
         $params['study_class_id'] = auth()->user()->student?->studyClass?->id ?? null;
         $params['student_id'] = auth()->user()->student?->id ?? null;
-        $classSessionRequests = $this->classSessionRequestService->ClassSessionRequests($params)->paginate(Constant::DEFAULT_LIMIT_12)->toArray();
+        $classSessionRequests = $this->classSessionRequestService->classSessionRequestsDoneByStudent($params)->paginate(Constant::DEFAULT_LIMIT_12)->toArray();
         $attendanceStatus = $classSessionRequests['data'][0]['attendances'][0]['status'] ?? null;
 //        dd($attendanceStatus);
         $data = [
             'classSessionRequests' => $classSessionRequests,
             'attendanceStatus' => $attendanceStatus,
         ];
-
+//dd($data['classSessionRequests']);
         return view('student.classSession.index', compact('data'));
     }
 

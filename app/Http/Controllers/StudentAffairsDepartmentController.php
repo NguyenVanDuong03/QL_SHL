@@ -76,7 +76,7 @@ class StudentAffairsDepartmentController extends Controller
             'getAllClassSession' => $getAllClassSession,
             'countClassSession' => $countClassSession,
         ];
-//        dd($data['countClassSession']);
+
         return view('StudentAffairsDepartment.index', compact('data'));
     }
 
@@ -96,7 +96,6 @@ class StudentAffairsDepartmentController extends Controller
             $data['ListCSRs'] = $this->classSessionRegistrationService->getListCSR()->toArray();
             $data['rooms'] = $rooms;
         }
-//        dd($data['checkClassSessionRegistration']);
 
         return view('StudentAffairsDepartment.classSession.index', compact('data'));
     }
@@ -146,11 +145,11 @@ class StudentAffairsDepartmentController extends Controller
 
         if ($params['type'] == 1) {
             return redirect()->route('student-affairs-department.class-session.flexibleClassActivities')
-                ->with('success', 'Xác nhận thành công');
+                ->with('success', 'Xét duyệt thành công');
         }
 
         return redirect()->route('student-affairs-department.class-session.index')
-            ->with('success', 'Xác nhận thành công');
+            ->with('success', 'Xét duyệt thành công');
 
     }
 
@@ -192,7 +191,6 @@ class StudentAffairsDepartmentController extends Controller
     public function indexSemester(Request $request)
     {
         $params = $request->all();
-        // dd($params);
         $semesters = $this->semesterService->paginate($params)->toArray();
         $data = [
             'semesters' => $semesters,
@@ -217,7 +215,6 @@ class StudentAffairsDepartmentController extends Controller
         $this->semesterService->update($id, $params);
 
         $targetPage = $this->semesterService->targetPage($params);
-        // dd($targetPage);
 
         return redirect()->route('student-affairs-department.semester.index', $targetPage)->with('success', 'Cập nhật thành công');
     }
@@ -229,7 +226,6 @@ class StudentAffairsDepartmentController extends Controller
         $this->semesterService->delete($id);
 
         $targetPage = $this->semesterService->targetPage($params);
-        // dd($targetPage);
 
         return redirect()->route('student-affairs-department.semester.index', $targetPage)->with('success', 'Xóa thành công');
     }
@@ -248,7 +244,6 @@ class StudentAffairsDepartmentController extends Controller
             'departments' => $departments ?? [],
             'getAllWithTrashed' => $getAllWithTrashed ?? [],
         ];
-//         dd($data['getAllWithTrashed']['data']);
 
         return view('StudentAffairsDepartment.account.index', compact('data'));
     }
@@ -285,7 +280,6 @@ class StudentAffairsDepartmentController extends Controller
             return redirect()->back()->with('error', 'Cập nhật thất bại');
         }
         $targetPage = $this->lecturerService->targetPage($params);
-        // dd($params);
 
         return redirect()->route('student-affairs-department.account.index', $targetPage)->with('success', 'Cập nhật thành công');
     }
@@ -350,7 +344,6 @@ class StudentAffairsDepartmentController extends Controller
             'studyClasses' => $studyClasses ?? [],
             'getAllWithTrashed' => $getAllWithTrashed ?? [],
         ];
-//         dd($data['getAllWithTrashed']);
 
         return view('StudentAffairsDepartment.account.student', compact('data'));
     }
@@ -449,7 +442,6 @@ class StudentAffairsDepartmentController extends Controller
     {
         $params = $request->all();
         $rooms = $this->roomService->paginate($params)->toArray();
-//        dd($rooms);
 
         return view('StudentAffairsDepartment.room.index', compact('rooms'));
     }
@@ -457,7 +449,6 @@ class StudentAffairsDepartmentController extends Controller
     public function createRoom(Request $request)
     {
         $params = $request->all();
-        // dd($params);
         $this->roomService->create($params);
 
         return redirect()->route('student-affairs-department.room.index')->with('success', 'Thêm mới thành công');
@@ -466,7 +457,6 @@ class StudentAffairsDepartmentController extends Controller
     public function editRoom(Request $request, $id)
     {
         $params = $request->all();
-        // dd($params['search']);
 
         $update = $this->roomService->update($id, $params);
 
@@ -554,7 +544,6 @@ class StudentAffairsDepartmentController extends Controller
             'ConductEvaluationPeriods' => $ConductEvaluationPeriods,
             'semesters' => $semesters,
         ];
-//         dd($data['ConductEvaluationPeriods']);
 
         return view('StudentAffairsDepartment.conductScore.index', compact('data'));
     }
@@ -584,7 +573,6 @@ class StudentAffairsDepartmentController extends Controller
     public function editConductScore(Request $request, $id)
     {
         $params = $request->all();
-//         dd($params);
         $conduct_evaluation_period = $this->conductEvaluationPeriodService->update($id, $params);
         if (!$conduct_evaluation_period) {
             return redirect()->back()->with('error', 'Cập nhật thất bại, vui lòng kiểm tra lại thông tin');
@@ -632,7 +620,6 @@ class StudentAffairsDepartmentController extends Controller
             'departments' => $departments,
             'semesterId' => $semesterId,
         ];
-//        dd($data['getStudyClassList']);
 
         return view('StudentAffairsDepartment.conductScore.list', compact('data'));
     }
@@ -664,14 +651,13 @@ class StudentAffairsDepartmentController extends Controller
             'getSemesters' => $getSemesters,
             'students' => $students,
         ];
-//dd($data['students']);
+
         return view('StudentAffairsDepartment.academicWarning.index', compact('data'));
     }
 
     public function createAcademicWarning(Request $request)
     {
         $params = $request->all();
-//        dd($params);
 
         $this->academicWarningService->create($params);
 
@@ -681,7 +667,6 @@ class StudentAffairsDepartmentController extends Controller
     public function editAcademicWarning(Request $request, $id)
     {
         $params = $request->all();
-//        dd($params);
 
         $this->academicWarningService->update($id, $params);
 
@@ -715,7 +700,6 @@ class StudentAffairsDepartmentController extends Controller
             'getSemesters' => $getSemesters,
             'getMajors' => $getMajors,
         ];
-//        dd($data['reports']);
 
         return view('StudentAffairsDepartment.classSession.listReports', compact('data'));
     }
@@ -744,7 +728,6 @@ class StudentAffairsDepartmentController extends Controller
             'staticalAcademicWarningBySemester' => $staticalAcademicWarningBySemester,
             'getAllClassSessionRequestsDone' => $getAllClassSessionRequestsDone,
         ];
-//        dd($data['getAllClassSessionRequestsDone']);
 
         return view('StudentAffairsDepartment.statistical.index', compact('data'));
     }

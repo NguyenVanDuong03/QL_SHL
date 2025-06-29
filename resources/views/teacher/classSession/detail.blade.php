@@ -268,7 +268,10 @@
                                 <!-- Trực tiếp tại trường -->
                                 <div class="mb-3">
                                     <label class="form-label fw-bold text-success">Phòng học:</label>
-                                    <p class="text-dark mb-0 fs-5">{{ $data['getClassSessionRequest']->room->name ?? 'Chưa có phòng' }}</p>
+                                    <p class="text-dark mb-0 fs-5">
+                                        {{ $data['getClassSessionRequest']->room->name ?? 'Chưa có phòng' }} <br>
+                                        <small class="text-muted">Mô tả: {{ $data['getClassSessionRequest']->room->description ?? '---' }}</small>
+                                    </p>
                                 </div>
                                 <div class="alert alert-info">
                                     <i class="fas fa-info-circle me-2"></i>
