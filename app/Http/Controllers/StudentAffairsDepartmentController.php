@@ -85,7 +85,7 @@ class StudentAffairsDepartmentController extends Controller
         $params = $request->all();
         $params['isEmptyRoom'] = true;
         $semesters = $this->semesterService->getFourSemester()->limit(4)->get();
-        $checkClassSessionRegistration = $this->classSessionRegistrationService->checkClassSessionRegistration();
+        $checkClassSessionRegistration = $this->classSessionRegistrationService->checkClassSessionRegistrationPlus5days();
         $rooms = $this->roomService->get($params);
         $data = [
             'semesters' => $semesters,
@@ -96,7 +96,7 @@ class StudentAffairsDepartmentController extends Controller
             $data['ListCSRs'] = $this->classSessionRegistrationService->getListCSR()->toArray();
             $data['rooms'] = $rooms;
         }
-//        dd($data['ListCSRs']);
+//        dd($data['checkClassSessionRegistration']);
 
         return view('StudentAffairsDepartment.classSession.index', compact('data'));
     }

@@ -44,6 +44,22 @@ class ClassSessionRegistrationService extends BaseService
         return false;
     }
 
+    public function checkClassSessionRegistrationPlus5days()
+    {
+        $currentSemester = $this->getCurrentSemester();
+        if ($currentSemester) {
+            $openDate = Carbon::parse($currentSemester->open_date);
+            $endDate = Carbon::parse($currentSemester->end_date)->addDays(5);
+            $now = Carbon::now();
+
+            if ($now->isBetween($openDate, $endDate) || $now->lt($openDate)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     public function getCurrentSemester()
     {
         return $this->getRepository()->getCurrentSemester();
