@@ -449,6 +449,7 @@ class StudentAffairsDepartmentController extends Controller
     {
         $params = $request->all();
         $rooms = $this->roomService->paginate($params)->toArray();
+//        dd($rooms);
 
         return view('StudentAffairsDepartment.room.index', compact('rooms'));
     }

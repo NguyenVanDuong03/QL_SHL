@@ -8,20 +8,21 @@
 
 @section('main')
     <div class="container-fluid">
-        <div class="row mb-4">
-            <div class="col-md-6">
-                <h1 class="h3 mb-2 text-gray-800">Quản lý phòng học</h1>
-            </div>
-            <div class="col-md-6 text-md-end">
-                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addRoomModal">
-                    <i class="fas fa-plus"></i> Thêm phòng học
-                </button>
-            </div>
-        </div>
+{{--        <div class="row mb-4">--}}
+{{--            <div class="col-md-6">--}}
+{{--                <h1 class="h3 mb-2 text-gray-800">Quản lý phòng học</h1>--}}
+{{--            </div>--}}
+{{--            <div class="col-md-6 text-md-end">--}}
+{{--                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addRoomModal">--}}
+{{--                    <i class="fas fa-plus"></i> Thêm phòng học--}}
+{{--                </button>--}}
+{{--            </div>--}}
+{{--        </div>--}}
+        <h4 class="mb-4">Quản lý phòng học</h4>
 
         <div class="card shadow mb-4">
             <div class="card-header py-3 d-flex flex-wrap justify-content-between align-items-center">
-                <h6 class="m-0 font-weight-bold text-primary mb-2">Danh sách phòng học</h6>
+                <h6 class="m-0 font-weight-bold mb-2">{{ $rooms['total'] }} phòng học</h6>
                 <div class="d-flex flex-wrap gap-2">
                     <form method="GET" action="{{ route('student-affairs-department.room.index') }}" class="input-group" style="width: 250px;">
                         <input type="text" class="form-control" name="search" placeholder="Tìm kiếm..." id="searchInput"  value="{{ request('search') }}">
@@ -36,10 +37,11 @@
                     <table class="table table-bordered table-hover" id="classroomsTable" width="100%" cellspacing="0">
                         <thead>
                             <tr>
-                                <th>Mã phòng</th>
+                                <th>STT</th>
                                 <th>Tên phòng</th>
+                                <th>Sức chứa</th>
+                                <th>Mô tả</th>
                                 <th>Trạng thái</th>
-                                <th>Thao tác</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -53,30 +55,32 @@
                                         data-status="{{ $room['status'] }}">
                                         <td>{{ $loop->iteration }}</td>
                                         <td>{{ $room['name'] }}</td>
+                                        <td>{{ $room['quantity'] ?? 0 }}</td>
+                                        <td>{{ $room['description'] ?? '' }}</td>
                                         <td>
                                             <span
                                                 class="badge {{ $room['status'] == 0 ? 'bg-success' : 'bg-warning' }}">{{ $room['status'] == 0 ? 'Trống' : 'Đang sử dụng' }}</span>
                                         </td>
-                                        <td>
-                                            <div class="btn-group gap-3">
-                                                <button type="button" class="btn btn-sm btn-warning edit-room-btn"
-                                                    data-id="{{ $room['id'] }}" data-name="{{ $room['name'] }}"
-                                                    data-status="{{ $room['status'] }}"
-                                                    data-current-page={{ $rooms['current_page'] }}
-                                                    data-search="{{ request('search') }}"
-                                                    data-bs-target="#editRoomModal" data-bs-toggle="modal"
-                                                    title="Chỉnh sửa">
-                                                    <i class="fas fa-edit"></i>
-                                                </button>
-                                                <button type="button" class="btn btn-sm btn-danger delete-room-btn"
-                                                    data-bs-target="#deleteRoomModal" data-id="{{ $room['id'] }}"
-                                                    data-current-page={{ $rooms['current_page'] }} data-search="{{ request('search') }}"
-                                                    data-bs-toggle="modal"
-                                                    title="Xóa">
-                                                    <i class="fas fa-trash"></i>
-                                                </button>
-                                            </div>
-                                        </td>
+{{--                                        <td>--}}
+{{--                                            <div class="btn-group gap-3">--}}
+{{--                                                <button type="button" class="btn btn-sm btn-warning edit-room-btn"--}}
+{{--                                                    data-id="{{ $room['id'] }}" data-name="{{ $room['name'] }}"--}}
+{{--                                                    data-status="{{ $room['status'] }}"--}}
+{{--                                                    data-current-page={{ $rooms['current_page'] }}--}}
+{{--                                                    data-search="{{ request('search') }}"--}}
+{{--                                                    data-bs-target="#editRoomModal" data-bs-toggle="modal"--}}
+{{--                                                    title="Chỉnh sửa">--}}
+{{--                                                    <i class="fas fa-edit"></i>--}}
+{{--                                                </button>--}}
+{{--                                                <button type="button" class="btn btn-sm btn-danger delete-room-btn"--}}
+{{--                                                    data-bs-target="#deleteRoomModal" data-id="{{ $room['id'] }}"--}}
+{{--                                                    data-current-page={{ $rooms['current_page'] }} data-search="{{ request('search') }}"--}}
+{{--                                                    data-bs-toggle="modal"--}}
+{{--                                                    title="Xóa">--}}
+{{--                                                    <i class="fas fa-trash"></i>--}}
+{{--                                                </button>--}}
+{{--                                            </div>--}}
+{{--                                        </td>--}}
                                     </tr>
                                 @endforeach
                             @endif
