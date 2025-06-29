@@ -36,7 +36,7 @@
 @endpush
 
 @section('main')
-    <div class="m-4">
+    <div class="m-3">
         <!-- Header -->
         <h4 class="mb-0">Thống Kê</h4>
 

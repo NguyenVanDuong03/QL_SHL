@@ -1,6 +1,6 @@
 <footer class="mt-4">
 	<div class="container">
-		<p>&copy; {{ date('Y') }} Nguyễn Văn Dương. Mọi quyền được bảo lưu.</p>
+		<p>&copy; {{ date('Y') }} Trường Đại học Thủy Lợi. Mọi quyền được bảo lưu.</p>
 	</div>
     <div class="container">
         <ul class="list-inline">

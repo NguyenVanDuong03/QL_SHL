@@ -48,7 +48,7 @@
         <div class="container-fluid">
             <!-- Header -->
             <div class="d-flex justify-content-between align-items-center mb-4">
-                <h4 class="h2 text-dark mb-0">Thống Kê</h4>
+                <h4 class="h2 text-dark mb-0">Thống kê</h4>
             </div>
 
             <!-- Main Content Tabs -->

@@ -7,7 +7,7 @@
 @endsection
 
 @section('main')
-    <div class="container-fluid py-4">
+    <div class="container-fluid pb-4">
         <!-- Header with search -->
         <div class="d-flex justify-content-between mb-4">
             <h4>Lớp học</h4>

@@ -7,7 +7,7 @@
 @endsection
 
 @section('main')
-    <div class="container-fluid py-4">
+    <div class="container-fluid pb-4">
         <div class="d-flex justify-content-between align-items-center mb-4">
             <h4 class="h3 mb-0 text-gray-800">Quản lý học kỳ</h4>
             <button type="button" class="btn btn-primary" data-bs-toggle="modal"
