@@ -109,7 +109,6 @@ class StudentAffairsDepartmentController extends Controller
             'ListCSRs' => $this->classSessionRequestService->getListFlexibleClass()->toArray(),
             'rooms' => $rooms,
         ];
-//        dd($data['ListCSRs']);
 
         return view('StudentAffairsDepartment.classSession.flexibleClassActivities', compact('data'));
     }

@@ -74,7 +74,7 @@ class FacultyOfficeController extends Controller
             'countClassSession' => $countClassSession,
             'statisticalUserByRole' => $statisticalUserByRole,
         ];
-//        dd($data['countClassSession']);
+
         return view('facultyOffice.index', compact('data'));
     }
 
@@ -89,7 +89,6 @@ class FacultyOfficeController extends Controller
             'ConductEvaluationPeriods' => $ConductEvaluationPeriods,
             'semesters' => $semesters,
         ];
-//         dd($data['ConductEvaluationPeriods']);
 
         return view('facultyOffice.conductScore.index', compact('data'));
     }
@@ -102,8 +101,6 @@ class FacultyOfficeController extends Controller
         $findConductEvaluationPeriodBySemesterId = $this->conductEvaluationPhaseService->findConductEvaluationPeriodBySemesterId($params);
         $params['semester_id'] = $params['semester_id'] ?? $semesterId;
         $params['department_id'] = auth()->user()->facultyOffice?->department_id;
-//        dd($params['department_id']);
-//        dd($findConductEvaluationPeriodBySemesterId);
         $params['study_class_id'] = $request->get('study_class_id', null);
         $getStudyClassList = $this->studyClassService->getStudyClassListByConductEvaluationPeriodIdByFacultyOffice($params)->toArray();
 //        $infoByStudyClassListAndConductEvaluationPeriodId = $this->studyClassService->infoByStudyClassListAndConductEvaluationPeriodId($params);
@@ -113,7 +110,6 @@ class FacultyOfficeController extends Controller
             'conduct_evaluation_period_id' => $params['conduct_evaluation_period_id'] ?? null,
             'findConductEvaluationPeriodBySemesterId' => $findConductEvaluationPeriodBySemesterId,
         ];
-//        dd($data['getStudyClassList']);
 
         return view('facultyOffice.conductScore.list', compact('data'));
     }
@@ -123,7 +119,6 @@ class FacultyOfficeController extends Controller
         $params = $request->all();
         $listConductScores = $this->studentService->listConductScores($params)->toArray();
         $countStudentsByConductStatus = $this->studentService->countStudentsByConductStatus($params);
-//        dd($listConductScores);
         $data = [
             'listConductScores' => $listConductScores,
             'countStudentsByConductStatus' => $countStudentsByConductStatus,
@@ -161,7 +156,7 @@ class FacultyOfficeController extends Controller
             'conductCriterias' => $conductCriterias,
             'study_class_id' => $params['study_class_id'] ?? null,
         ];
-//dd($data['checkConductEvaluationPeriodBySemesterId']);
+
         return view('facultyOffice.conductScore.detail', compact('data'));
     }
 

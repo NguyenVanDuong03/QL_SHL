@@ -78,7 +78,6 @@ class StudentController extends Controller
         $params = $request->all();
         $params['user_id'] = auth()->user()->id;
         $params['position'] = $params['position'] ?? Constant::STUDENT_POSITION['STUDENT'];
-//        dd($params);
         $student = $this->studentService->createOrUpdate($params);
         $user = $this->userService->update($params['user_id'], $params);
 
@@ -96,12 +95,11 @@ class StudentController extends Controller
         $params['student_id'] = auth()->user()->student?->id ?? null;
         $classSessionRequests = $this->classSessionRequestService->classSessionRequestsDoneByStudent($params)->paginate(Constant::DEFAULT_LIMIT_12)->toArray();
         $attendanceStatus = $classSessionRequests['data'][0]['attendances'][0]['status'] ?? null;
-//        dd($attendanceStatus);
         $data = [
             'classSessionRequests' => $classSessionRequests,
             'attendanceStatus' => $attendanceStatus,
         ];
-//dd($data['classSessionRequests']);
+
         return view('student.classSession.index', compact('data'));
     }
 
@@ -111,7 +109,6 @@ class StudentController extends Controller
         $params['study_class_id'] = auth()->user()->student?->studyClass?->id ?? null;
         $params['student_id'] = auth()->user()->student?->id ?? null;
         $classSessionRequests = $this->classSessionRequestService->getClassSessionRequestsDone($params)->paginate(Constant::DEFAULT_LIMIT_12)->toArray();
-//        dd($classSessionRequests);
         $data = [
             'classSessionRequests' => $classSessionRequests,
         ];
@@ -122,7 +119,6 @@ class StudentController extends Controller
     public function report(Request $request)
     {
         $params = $request->all();
-//        dd($params);
         $countAttendanceByClassSessionRequestId = $this->attendanceService->countAttendanceByClassSessionRequestId($params['class_session_request_id']);
 
         $data = [
@@ -143,7 +139,6 @@ class StudentController extends Controller
     public function storeReport(Request $request)
     {
         $params = $request->all();
-//        dd($params);
 
         $classSessionReport = $this->classSessionReport->storeReport($params);
 
@@ -158,7 +153,6 @@ class StudentController extends Controller
     {
         $params = $request->all();
         $params['id'] = $id;
-//        dd($params, $id);
 
         $classSessionReport = $this->classSessionReport->updateReport($params);
 
@@ -255,12 +249,10 @@ class StudentController extends Controller
         $params['class_id'] = auth()->user()->student?->studyClass?->id ?? null;
         $studyClassName = auth()->user()->student?->studyClass?->name ?? null;
         $students = $this->studentService->getListStudentByClassId($params)->toArray();
-//        dd($params['class_id']);
         $data = [
             'students' => $students,
             'studyClassName' => $studyClassName,
         ];
-//         dd($data['students']);
 
         return view('student.class.index', compact('data'));
     }
@@ -290,7 +282,7 @@ class StudentController extends Controller
             'conductCriterias' => $conductCriterias,
             'checkConductEvaluationPeriod' => $checkConductEvaluationPeriod,
         ];
-//dd($data['findConductEvaluationPeriodBySemesterId']);
+
         return view('student.conductScore.index', compact('data'));
     }
 
@@ -383,8 +375,8 @@ class StudentController extends Controller
                 $data = [
                     'self_score' => $detail['self_score'],
                     'note' => $detail['note'] ?? null,
-                    'class_score' => null, // GVCN chấm later
-                    'final_score' => null, // CTSV chấm later
+                    'class_score' => null,
+                    'final_score' => null,
                     'created_at' => now(),
                     'updated_at' => now(),
                 ];

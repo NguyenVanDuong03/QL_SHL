@@ -72,7 +72,6 @@ class LecturerController extends Controller
             'getAverageConductScores' => $getAverageConductScores,
             'getOverallAverageConductScoreWithTotalStudents' => $getOverallAverageConductScoreWithTotalStudents,
         ];
-//         dd($data['getOverallAverageConductScoreWithTotalStudents']);
 
         return view('teacher.index', compact('data'));
     }
@@ -109,7 +108,7 @@ class LecturerController extends Controller
             'countFixeClassSessionRequest' => $countFixeClassSessionRequest,
             'getClassSessionRegistration' => $getClassSessionRegistration,
         ];
-//dd($data['countFixeClassSessionRequest']);
+
         return view('teacher.classSession.index', compact('data'));
     }
 
@@ -121,7 +120,6 @@ class LecturerController extends Controller
         $data = [
             'classes' => $classes,
         ];
-//         dd($data['classes']);
 
         return view('teacher.class.index', compact('data'));
     }
@@ -132,7 +130,6 @@ class LecturerController extends Controller
         $params['class_id'] = $id;
         $students = $this->studentService->getListStudentByClassId($params)->toArray();
         $getNoteStudentById = $this->studentService->getNoteStudentById($id)->toArray();
-//        dd($students);
         $classInfo = $this->studyClassService->find($id);
         $data = [
             'students' => $students,
@@ -140,7 +137,6 @@ class LecturerController extends Controller
             'getNoteStudentById' => $getNoteStudentById,
             'studyClassId' => $id,
         ];
-//         dd($data['students']);
 
         return view('teacher.class.infoStudent', compact('data'));
     }
@@ -148,7 +144,6 @@ class LecturerController extends Controller
     public function saveNotes(Request $request, $id)
     {
         $params = $request->all();
-//        dd($params);
         $this->studentService->update($id, [
             'note' => $params['note'],
         ]);
@@ -159,7 +154,6 @@ class LecturerController extends Controller
     public function updateOfficers(Request $request)
     {
         $params = $request->all();
-//dd($params);
         $this->studentService->updateOfficers($params);
 
         return redirect()->back()->with('success', 'Cập nhật cán bộ lớp thành công');
@@ -178,7 +172,6 @@ class LecturerController extends Controller
         $countApprovedByLecturerAndSemester = $this->classSessionRequestService->countApprovedByLecturerAndSemester($lecturerId, $getSemesterInfo?->id);
         $countRejectedByLecturerAndSemester = $this->classSessionRequestService->countRejectedByLecturerAndSemester($lecturerId, $getSemesterInfo?->id);
         $checkClassSessionRegistration = $this->classSessionRegistrationService->checkClassSessionRegistration();
-//        dd($getStudyClassByIds);
         $data = [
             'getCSRSemesterInfo' => $getCSRSemesterInfo,
             'getStudyClassByIds' => $getStudyClassByIds,
@@ -187,7 +180,6 @@ class LecturerController extends Controller
             'countRejectedByLecturerAndSemester' => $countRejectedByLecturerAndSemester,
             'checkClassSessionRegistration' => $checkClassSessionRegistration,
         ];
-//        dd($data['getStudyClassByIds']['total']);
 
         return view('teacher.classSession.fixedClassActivitie', compact('data'));
     }
@@ -196,7 +188,6 @@ class LecturerController extends Controller
     {
         $studyClassId = $request->query('study-class-id');
         $sessionRequestId = $request->query('session-request-id');
-//        dd($studyClassId, $sessionRequestId);
         $getCSRSemesterInfo = $this->classSessionRegistrationService->getCSRSemesterInfo();
         $getStudyClassByIds = $this->studyClassService->find($studyClassId);
         $data = [
@@ -211,7 +202,6 @@ class LecturerController extends Controller
             $data['getClassSessionRequest'] = $getClassSessionRequest;
             $data['rooms'] = $rooms;
         }
-//        dd($data['getClassSessionRequest']);
 
         return view('teacher.classSession.create', compact('data'));
     }
@@ -227,7 +217,6 @@ class LecturerController extends Controller
             $params['meeting_type'] = null;
         if ($params['position'] != '0')
             $params['room_id'] = null;
-//        dd($params);
 
         $this->classSessionRequestService->createOrUpdateByClassAndSemester($params);
         return redirect()->route('teacher.class-session.fixed-class-activitie')->with('success', 'Tạo yêu cầu thành công');
@@ -254,7 +243,6 @@ class LecturerController extends Controller
         $getCSRSemesterInfo = $this->classSessionRegistrationService->getCSRSemesterInfo();
         $getStudyClassByIds = $this->studyClassService->find($studyClassId);
 //        $students = $this->studentService->getStudentsByClassId($studyClassId);
-//        dd($students);
         $data = [
             'getCSRSemesterInfo' => $getCSRSemesterInfo,
             'getStudyClassByIds' => $getStudyClassByIds,
@@ -266,10 +254,8 @@ class LecturerController extends Controller
 
             $data['getClassSessionRequest'] = $getClassSessionRequest;
             $data['rooms'] = $rooms;
-//            dd($data['rooms']);
         }
 
-//        dd($data['getClassSessionRequest']);
         return view('teacher.classSession.detail', compact('data'));
     }
 
@@ -286,7 +272,6 @@ class LecturerController extends Controller
         $countApprovedByLecturerAndSemester = $this->classSessionRequestService->countApprovedByLecturerAndSemester($lecturerId, $getSemesterInfo?->id);
         $countRejectedByLecturerAndSemester = $this->classSessionRequestService->countRejectedByLecturerAndSemester($lecturerId, $getSemesterInfo?->id);
         $checkClassSessionRegistration = $this->classSessionRegistrationService->checkClassSessionRegistration();
-//        dd($getStudyClassByIds);
         $data = [
             'getCSRSemesterInfo' => $getCSRSemesterInfo,
             'getStudyClassByIds' => $getStudyClassByIds,
@@ -311,7 +296,6 @@ class LecturerController extends Controller
         $students = $this->studentService->getStudentsByClassId($params);
         $getTotalStudentsByClass = $this->studentService->getTotalStudentsByClass($params);
         $getAttendanceStatusSummary = $this->studentService->getAttendanceStatusSummary($params);
-//        dd($getAttendanceStatusSummary);
         $data = [
             'getCSRSemesterInfo' => $getCSRSemesterInfo,
             'getStudyClassByIds' => $getStudyClassByIds,
@@ -375,7 +359,6 @@ class LecturerController extends Controller
         $totalClasses = $this->studyClassService->coutStudyClassListByLecturerId($params);
         $countFlexibleClassSessionRequestByLecturer = $this->classSessionRequestService->countFlexibleClassSessionRequestByLecturer($lecturerId);
         $countFlexibleRejectedByLecturer = $this->classSessionRequestService->countFlexibleRejectedByLecturer($lecturerId);
-//        dd($getStudyClassByIds);
         $data = [
             'getStudyClassByIds' => $getStudyClassByIds,
             'totalClasses' => $totalClasses,
@@ -404,7 +387,6 @@ class LecturerController extends Controller
             $data['getClassSessionRequest'] = $getClassSessionRequest;
             $data['rooms'] = $rooms;
         }
-//        dd($data['getClassSessionRequest']);
 
         return view('teacher.classSession.flexibleCreate', compact('data'));
     }
@@ -414,7 +396,6 @@ class LecturerController extends Controller
         $lecturerId = auth()->user()->lecturer?->id;
         $params['lecturer_id'] = $lecturerId;
         $studyClasses = $this->studyClassService->getStudyClassListByLecturerId($params)->get();
-//        dd(($studyClasses));
         return view('teacher.classSession.flexibleCreateRequest', compact('studyClasses'));
     }
 
@@ -428,7 +409,6 @@ class LecturerController extends Controller
             $params['meeting_type'] = null;
         if ($params['position'] != '0')
             $params['room_id'] = null;
-//        dd($params);
 
         $this->classSessionRequestService->flexibleCreateOrUpdate($params);
         return redirect()->route('teacher.class-session.flexible-class-activitie')->with('success', 'Tạo yêu cầu thành công');
@@ -437,7 +417,6 @@ class LecturerController extends Controller
     public function flexibleDetail(Request $request)
     {
         $params = $request->all();
-//        dd($params);
 //        $studyClassId = $request->query('study-class-id');
 //        $sessionRequestId = $request->query('session-request-id');
         $infoClassRequestbyId = $this->classSessionRequestService->find($params['session-request-id']) ?? null;
@@ -461,7 +440,6 @@ class LecturerController extends Controller
 
             $data['getClassSessionRequest'] = $getClassSessionRequest;
             $data['rooms'] = $rooms;
-//            dd($data['getStudyClassByIds']);
         }
 
         return view('teacher.classSession.flexibleDetail', compact('data'));
@@ -478,7 +456,6 @@ class LecturerController extends Controller
             'ConductEvaluationPeriods' => $ConductEvaluationPeriods,
             'semesters' => $semesters,
         ];
-//         dd($data['ConductEvaluationPeriods']);
 
         return view('teacher.conductScore.index', compact('data'));
     }
@@ -501,7 +478,6 @@ class LecturerController extends Controller
             'semester_id' => $params['semester_id'],
             'findConductEvaluationPeriodBySemesterId' => $findConductEvaluationPeriodBySemesterId,
         ];
-//        dd($data['conduct_evaluation_period_id']);
 
         return view('teacher.conductScore.list', compact('data'));
     }
@@ -525,7 +501,6 @@ class LecturerController extends Controller
         $params = $request->all();
         $listConductScores = $this->studentService->listConductScores($params)->toArray();
         $countStudentsByConductStatus = $this->studentService->countStudentsByConductStatus($params);
-//        dd($listConductScores);
         $data = [
             'listConductScores' => $listConductScores,
             'countStudentsByConductStatus' => $countStudentsByConductStatus,
@@ -563,7 +538,7 @@ class LecturerController extends Controller
             'conductCriterias' => $conductCriterias,
             'study_class_id' => $params['study_class_id'] ?? null,
         ];
-//dd($data['checkConductEvaluationPeriodBySemesterId']);
+
         return view('teacher.conductScore.detail', compact('data'));
     }
 
@@ -655,7 +630,6 @@ class LecturerController extends Controller
             'statisticalAttendance' => $statisticalAttendance,
             'getAcademicWarningsCountByLecturerAndSemester' => $getAcademicWarningsCountByLecturerAndSemester,
         ];
-//        dd($data['statisticalSemester']);
 
         return view('teacher.statistical.index', compact('data'));
     }
@@ -665,7 +639,6 @@ class LecturerController extends Controller
         $classRequestId = $request->query('class_request_id');
         $studyClassId = $request->query('study_class_id');
         $studyClassName = $request->query('study_class_name');
-//        dd($classRequestId, $studyClassId);
         try {
             $fileName = $studyClassName. '_' . now()->format('Ymd_His') . '.xlsx';
             return Excel::download(new AttendancesExport($classRequestId, $studyClassId), $fileName);
