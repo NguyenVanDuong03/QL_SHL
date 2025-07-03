@@ -319,6 +319,11 @@
                                     <i class="fas fa-exclamation-triangle me-2"></i>
                                     <small>Kiểm tra kết nối internet và thiết bị trước khi tham gia.</small>
                                 </div>
+                                @if($data['getClassSessionRequest']->status == 3 && auth()->user()->student?->position == 1)
+                                    <a href="{{ route('student.class-session.report', ['class_session_request_id' => $data['getClassSessionRequest']->id, 'study_class_id' => $data['getClassSessionRequest']->study_class_id]) }}" class="btn btn-secondary">
+                                        <i class="fas fa-pager me-2"></i>Tạo báo cáo
+                                    </a>
+                                @endif
                             @else
                                 <!-- Dã ngoại -->
                                 <div class="mb-3">
@@ -337,6 +342,11 @@
                                     <i class="fas fa-leaf me-2"></i>
                                     <small>Chuẩn bị đầy đủ đồ dùng cá nhân và tuân thủ quy định an toàn.</small>
                                 </div>
+                                @if($data['getClassSessionRequest']->status == 3 && auth()->user()->student?->position == 1)
+                                    <a href="{{ route('student.class-session.report', ['class_session_request_id' => $data['getClassSessionRequest']->id, 'study_class_id' => $data['getClassSessionRequest']->study_class_id]) }}" class="btn btn-secondary">
+                                        <i class="fas fa-pager me-2"></i>Tạo báo cáo
+                                    </a>
+                                @endif
                             @endif
 
                             @if(!empty($data['getClassSessionRequest']->note))

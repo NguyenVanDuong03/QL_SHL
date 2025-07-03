@@ -359,7 +359,7 @@
                         <th style="min-width: 91px;">Điểm tối đa</th>
                         <th style="min-width: 70px;">Điểm SV</th>
                         <th style="min-width: 70px;">Điểm GVCN</th>
-                        <th style="min-width: 70px;">Điểm CTSV</th>
+                        <th style="min-width: 70px;">Điểm VPK</th>
                         <th style="min-width: 250px;">Hành động & Ghi chú</th>
                     </tr>
                     </thead>
