@@ -1,0 +1,105 @@
+:root {
+    --teal-50: #f0fdfa;
+    --teal-100: #ccfbf1;
+    --teal-600: #2D8AEFFF;
+    --teal-700: #0f766e;
+    --primary-btn: #2b82df;
+    --primary-btn-hover: #0f4976;
+}
+
+/*body {*/
+/*    font-family: "Inter", sans-serif;*/
+/*    background-color: #f8f9fa;*/
+/*}*/
+
+.bg-teal-50 {
+    background-color: var(--teal-50);
+}
+
+.bg-teal-100 {
+    background-color: var(--teal-100);
+}
+
+.bg-teal-600 {
+    background-color: var(--teal-600);
+}
+
+.bg-teal-700 {
+    background-color: var(--teal-700);
+}
+
+.text-teal-600 {
+    color: var(--teal-600);
+}
+
+.text-teal-700 {
+    color: var(--teal-700);
+}
+
+.btn-teal {
+    background-color: var(--primary-btn);
+    border-color: var(--primary-btn);
+    color: white;
+}
+
+.btn-teal:hover {
+    background-color: var(--primary-btn-hover);
+    border-color: var(--primary-btn-hover);
+    color: white;
+}
+
+.hero-gradient {
+    background: linear-gradient(to bottom, var(--teal-50), white);
+}
+
+.navbar-brand {
+    font-weight: bold;
+    font-size: 1.25rem;
+}
+
+.feature-icon {
+    font-size: 2rem;
+    color: var(--teal-600);
+}
+
+.sticky-top {
+    backdrop-filter: blur(10px);
+    background-color: rgba(255, 255, 255, 0.95);
+}
+
+.navbar-nav .nav-link {
+    position: relative;
+    color: #000; /* màu chữ mặc định */
+    transition: color 0.3s ease;
+}
+
+.navbar-nav .nav-link::after {
+    content: "";
+    position: absolute;
+    width: 0;
+    height: 2px;
+    bottom: 0;
+    left: 0;
+    background-color: #0d6efd; /* màu gạch chân khi hover (xanh Bootstrap) */
+    transition: width 0.3s ease;
+}
+
+.navbar-nav .nav-link:hover {
+    color: #0d6efd;
+}
+
+.navbar-nav .nav-link:hover::after {
+    width: 100%;
+}
+
+.navbar-nav .nav-link:active {
+    background-color: rgba(13, 110, 253, 0.1);
+    color: #0d6efd;
+}
+
+.navbar-nav .nav-link.active {
+    color: #0d6efd;
+    font-weight: bold;
+
+}
+

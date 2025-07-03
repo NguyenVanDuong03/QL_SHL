@@ -1,0 +1,423 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Helpers\Constant;
+use App\Services\AttendanceService;
+use App\Services\ClassSessionRegistrationService;
+use App\Services\ClassSessionReportService;
+use App\Services\ClassSessionRequestService;
+use App\Services\CohortService;
+use App\Services\ConductCriteriaService;
+use App\Services\ConductEvaluationPeriodService;
+use App\Services\ConductEvaluationPhaseService;
+use App\Services\DepartmentService;
+use App\Services\DetailConductScoreService;
+use App\Services\FacultyService;
+use App\Services\LecturerService;
+use App\Services\RoomService;
+use App\Services\SemesterService;
+use App\Services\StudentConductScoreService;
+use App\Services\StudentService;
+use App\Services\StudyClassService;
+use App\Services\UserService;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
+
+class StudentController extends Controller
+{
+    public function __construct(
+        protected SemesterService                 $semesterService,
+        protected ClassSessionRegistrationService $classSessionRegistrationService,
+        protected ClassSessionRequestService      $classSessionRequestService,
+        protected StudentService                 $studentService,
+        protected LecturerService                $lecturerService,
+        protected RoomService                    $roomService,
+        protected DepartmentService              $titleService,
+        protected FacultyService                 $facultyService,
+        protected UserService                    $userService,
+        protected CohortService                  $cohortService,
+        protected StudyClassService              $studyClassService,
+        protected ConductEvaluationPeriodService $conductEvaluationPeriodService,
+        protected AttendanceService              $attendanceService,
+        protected ClassSessionReportService      $classSessionReport,
+        protected DetailConductScoreService      $detailConductScoreService,
+        protected ConductCriteriaService         $conductCriteriaService,
+        protected StudentConductScoreService     $studentConductScoreService,
+        protected ConductEvaluationPhaseService  $conductEvaluationPhaseService,
+    )
+    {
+    }
+
+    public function index()
+    {
+        $params = request()->all();
+        $getCurrentSemester = $this->classSessionRegistrationService->getCurrentSemester();
+//        $params['class_session_registration_id'] = $getCurrentSemester->id ?? null;
+        $params['study_class_id'] = auth()->user()->student?->studyClass?->id ?? null;
+        $params['student_id'] = auth()->user()->student?->id ?? null;
+        $classSessionRequests = $this->classSessionRequestService->classSessionRequestsDoneByStudent($params)->limit(Constant::DEFAULT_LIMIT)->get();
+        $attendanceStatus = $classSessionRequests->first()?->attendances->first() ?? null;
+        $studyClasses = $this->studyClassService->get()->toArray();
+        $cohorts = $this->cohortService->get()->toArray();
+        $user = auth()->user();
+
+        $data = [
+            'classSessionRequests' => $classSessionRequests,
+            'attendanceStatus' => $attendanceStatus,
+            'studyClasses' => $studyClasses,
+            'cohorts' => $cohorts,
+            'user' => $user,
+        ];
+        return view('student.index', compact('data'));
+    }
+
+    public function createOrUpdateStudent(Request $request)
+    {
+        $params = $request->all();
+        $params['user_id'] = auth()->user()->id;
+        $params['position'] = $params['position'] ?? Constant::STUDENT_POSITION['STUDENT'];
+        $student = $this->studentService->createOrUpdate($params);
+        $user = $this->userService->update($params['user_id'], $params);
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Cập nhật thông tin sinh viên thành công',
+            'data' => $student,
+        ], 200);
+    }
+
+    public function indexClassSession(Request $request)
+    {
+        $params = $request->all();
+        $params['study_class_id'] = auth()->user()->student?->studyClass?->id ?? null;
+        $params['student_id'] = auth()->user()->student?->id ?? null;
+        $classSessionRequests = $this->classSessionRequestService->classSessionRequestsDoneByStudent($params)->paginate(Constant::DEFAULT_LIMIT_12)->toArray();
+        $attendanceStatus = $classSessionRequests['data'][0]['attendances'][0]['status'] ?? null;
+        $data = [
+            'classSessionRequests' => $classSessionRequests,
+            'attendanceStatus' => $attendanceStatus,
+        ];
+
+        return view('student.classSession.index', compact('data'));
+    }
+
+    public function history(Request $request)
+    {
+        $params = $request->all();
+        $params['study_class_id'] = auth()->user()->student?->studyClass?->id ?? null;
+        $params['student_id'] = auth()->user()->student?->id ?? null;
+        $classSessionRequests = $this->classSessionRequestService->getClassSessionRequestsDone($params)->paginate(Constant::DEFAULT_LIMIT_12)->toArray();
+        $data = [
+            'classSessionRequests' => $classSessionRequests,
+        ];
+
+        return view('student.classSession.history', compact('data'));
+    }
+
+    public function report(Request $request)
+    {
+        $params = $request->all();
+        $countAttendanceByClassSessionRequestId = $this->attendanceService->countAttendanceByClassSessionRequestId($params['class_session_request_id']);
+
+        $data = [
+            'class_session_request_id' => $params['class_session_request_id'] ?? null,
+            'study_class_id' => $params['study_class_id'] ?? null,
+            'report' => null,
+            'countAttendanceByClassSessionRequestId' => $countAttendanceByClassSessionRequestId,
+        ];
+        $report = $this->classSessionReport->findReport($params['class_session_request_id']) ?? null;
+        if ($report) {
+            $report->path = $report->path ? asset('storage/' . $report->path) : null;
+            $data['report'] = $report;
+        }
+
+        return view('student.classSession.report', compact('data'));
+    }
+
+    public function storeReport(Request $request)
+    {
+        $params = $request->all();
+
+        $classSessionReport = $this->classSessionReport->storeReport($params);
+
+        return response()->json([
+//            'status' => 'success',
+            'message' => 'Báo cáo đã được gửi thành công',
+            'data' => $classSessionReport,
+        ], 200);
+    }
+
+    public function updateReport(Request $request, $id)
+    {
+        $params = $request->all();
+        $params['id'] = $id;
+
+        $classSessionReport = $this->classSessionReport->updateReport($params);
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Báo cáo đã được cập nhật thành công',
+            'data' => $classSessionReport,
+        ], 200);
+    }
+
+    public function deleteReport($id)
+    {
+        $this->classSessionReport->deleteReport($id);
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Báo cáo đã được xóa thành công',
+        ], 200);
+    }
+
+    public function detailClassSession(Request $request)
+    {
+        $params = $request->all();
+        $infoClassRequestbyId = $this->classSessionRequestService->find($params['session-request-id']);
+        $params['class_session_request_id'] = $params['session-request-id'] ?? null;
+        $params['student_id'] = auth()->user()->student?->id;
+        $params['class_session_registration_id'] = $infoClassRequestbyId->class_session_registration_id ?? null;
+        $getCSRSemesterInfo = $this->classSessionRegistrationService->getCSRSemesterInfo();
+        $getStudyClassByIds = $this->studyClassService->find($params['study-class-id']);
+        $students = $this->studentService->getStudentsByClassId($params);
+        $getTotalStudentsByClass = $this->studentService->getTotalStudentsByClass($params);
+        $getAttendanceStatusSummary = $this->studentService->getAttendanceStatusSummary($params);
+        $getAttendanceStudent = $this->attendanceService->getAttendanceStudent($params);
+        $data = [
+            'getCSRSemesterInfo' => $getCSRSemesterInfo,
+            'getStudyClassByIds' => $getStudyClassByIds,
+            'students' => $students,
+            'getTotalStudentsByClass' => $getTotalStudentsByClass,
+            'getAttendanceStatusSummary' => $getAttendanceStatusSummary,
+            'getAttendanceStudent' => $getAttendanceStudent,
+        ];
+        $data['getClassSessionRequest'] = null;
+        if ($params['session-request-id']) {
+            $getClassSessionRequest = $this->classSessionRequestService->find($params['session-request-id']);
+            $rooms = $this->roomService->get();
+
+            $data['getClassSessionRequest'] = $getClassSessionRequest;
+            $data['rooms'] = $rooms;
+        }
+
+        return view('student.classSession.detail', compact('data'));
+    }
+
+    public function confirmAttendance(Request $request)
+    {
+        $params = $request->all();
+        $params['student_id'] = auth()->user()->student?->id;
+        $params['reason'] = null;
+        $attendance = $this->attendanceService->confirmAttendance($params);
+        if (!$attendance) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Xác nhận tham gia thất bại',
+            ], 400);
+        }
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Xác nhận tham gia thành công',
+        ], 200);
+    }
+
+    public function updateAbsence(Request $request)
+    {
+        $params = $request->all();
+        $params['student_id'] = auth()->user()->student?->id;
+        $attendance = $this->attendanceService->updateAbsence($params);
+        if (!$attendance) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Cập nhật lý do vắng mặt thất bại',
+            ], 400);
+        }
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Gửi lý do vắng mặt thành công',
+        ], 200);
+    }
+
+    public function indexClass(Request $request)
+    {
+        $params = $request->all();
+        $params['class_id'] = auth()->user()->student?->studyClass?->id ?? null;
+        $studyClassName = auth()->user()->student?->studyClass?->name ?? null;
+        $students = $this->studentService->getListStudentByClassId($params)->toArray();
+        $data = [
+            'students' => $students,
+            'studyClassName' => $studyClassName,
+        ];
+
+        return view('student.class.index', compact('data'));
+    }
+
+    public function indexConductScore(Request $request)
+    {
+        $params = $request->all();
+        $params['student_id'] = auth()->user()->student?->id ?? null;
+        $currentConductEvaluationPeriod = $this->conductEvaluationPeriodService->currentConductEvaluationPeriod();
+        $params['semester_id'] = $params['semester_id'] ?? null;
+        $conductEvaluationPeriodId = $this->conductEvaluationPeriodService->conductEvaluationPeriodBySemesterId($params['semester_id']);
+        $params['conduct_evaluation_period_id'] = $conductEvaluationPeriodId->id ?? $currentConductEvaluationPeriod->id ?? null;
+        $params['role'] = 0;
+        $semesters = $this->semesterService->getFourSemester()->limit(4)->get()->toArray();
+        $findConductEvaluationPeriodBySemesterId = $this->conductEvaluationPhaseService->findConductEvaluationPeriodBySemesterId($params);
+//        $detailConductScores = $this->detailConductScoreService->get($params)->toArray();
+        $checkConductEvaluationPeriod = $this->conductEvaluationPhaseService->checkConductEvaluationPeriod();
+        $getConductCriteriaData = $this->detailConductScoreService->getConductCriteriaData($params);
+        $conductCriterias = $this->conductCriteriaService->get()->toArray();
+        $calculateTotalScore = $this->detailConductScoreService->calculateTotalScore($getConductCriteriaData);
+
+        $data = [
+            'semesters' => $semesters,
+            'getConductCriteriaData' => $getConductCriteriaData->toArray(),
+            'findConductEvaluationPeriodBySemesterId' => $findConductEvaluationPeriodBySemesterId,
+            'calculateTotalScore' => $calculateTotalScore,
+            'conductCriterias' => $conductCriterias,
+            'checkConductEvaluationPeriod' => $checkConductEvaluationPeriod,
+        ];
+
+        return view('student.conductScore.index', compact('data'));
+    }
+
+    public function SaveConductScore(Request $request)
+    {
+        try {
+            $params = $request->all();
+            $studentId = auth()->user()->student?->id ?? null;
+            $semesterId = $params['semester_id'] ?? null;
+            $totalScore = $params['total_score'] ?? null;
+            $classification = $params['classification'] ?? null;
+            $conductEvaluationPeriodId = $this->conductEvaluationPeriodService->conductEvaluationPeriodBySemesterId($semesterId);
+
+            $details = isset($params['details']) ? json_decode($params['details'], true) : null;
+
+            if (!$studentId || !$semesterId || !$details || !is_array($details)) {
+                return response()->json(['message' => 'Dữ liệu không hợp lệ'], 400);
+            }
+
+            DB::beginTransaction();
+
+            $conductEvaluationPeriod = \App\Models\ConductEvaluationPhase::where('role', 0)
+                ->where('conduct_evaluation_period_id', $conductEvaluationPeriodId->id)
+                ->where('open_date', '<=', now())
+                ->where('end_date', '>=', now())
+                ->first();
+
+            if (!$conductEvaluationPeriod) {
+                return response()->json(['message' => 'Không tìm thấy đợt đánh giá phù hợp cho học kỳ này hoặc thời gian đánh giá đã đóng'], 400);
+            }
+
+            $studentConductScore = \App\Models\StudentConductScore::updateOrCreate(
+                [
+                    'conduct_evaluation_period_id' => $conductEvaluationPeriod->conduct_evaluation_period_id,
+                    'student_id' => $studentId,
+                ],
+                [
+                    'total_score' => $totalScore,
+                    'classification' => $classification,
+                    'status' => 0, // SV chấm
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ]
+            );
+
+            $existingDetails = \App\Models\DetailConductScore::where('student_conduct_score_id', $studentConductScore->id)
+                ->pluck('conduct_criteria_id')
+                ->toArray();
+
+            foreach ($details as $detail) {
+                if (!isset($detail['conduct_criteria_id'], $detail['self_score'])) {
+                    DB::rollBack();
+                    return response()->json(['message' => 'Dữ liệu tiêu chí không hợp lệ'], 400);
+                }
+
+                $evidenceKey = "evidence.{$detail['conduct_criteria_id']}";
+                $path = null;
+
+                if (isset($detail['evidence_removed']) && $detail['evidence_removed']) {
+                    $existingRecord = \App\Models\DetailConductScore::where([
+                        'student_conduct_score_id' => $studentConductScore->id,
+                        'conduct_criteria_id' => $detail['conduct_criteria_id'],
+                    ])->first();
+
+                    if ($existingRecord && $existingRecord->path) {
+                        Storage::disk('public')->delete($existingRecord->path);
+                    }
+                } elseif ($request->hasFile($evidenceKey)) {
+                    // Delete old file if it exists
+                    $existingRecord = \App\Models\DetailConductScore::where([
+                        'student_conduct_score_id' => $studentConductScore->id,
+                        'conduct_criteria_id' => $detail['conduct_criteria_id'],
+                    ])->first();
+
+                    if ($existingRecord && $existingRecord->path) {
+                        Storage::disk('public')->delete($existingRecord->path);
+                    }
+
+                    $file = $request->file($evidenceKey);
+                    $fileName = 'evidence_' . time() . '_' . $detail['conduct_criteria_id'] . '_' . $studentId . '.' . $file->getClientOriginalExtension();
+                    $path = $file->storeAs('evidences', $fileName, 'public');
+                } else {
+                    $existingRecord = \App\Models\DetailConductScore::where([
+                        'student_conduct_score_id' => $studentConductScore->id,
+                        'conduct_criteria_id' => $detail['conduct_criteria_id'],
+                    ])->first();
+                    $path = $existingRecord->path ?? null;
+                }
+
+                $data = [
+                    'self_score' => $detail['self_score'],
+                    'note' => $detail['note'] ?? null,
+                    'class_score' => null,
+                    'final_score' => null,
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ];
+
+                if ($path !== null || (isset($detail['evidence_removed']) && $detail['evidence_removed'])) {
+                    $data['path'] = $path;
+                }
+
+                \App\Models\DetailConductScore::updateOrCreate(
+                    [
+                        'student_conduct_score_id' => $studentConductScore->id,
+                        'conduct_criteria_id' => $detail['conduct_criteria_id'],
+                    ],
+                    $data
+                );
+
+                $index = array_search($detail['conduct_criteria_id'], $existingDetails);
+                if ($index !== false) {
+                    unset($existingDetails[$index]);
+                }
+            }
+
+            if (!empty($existingDetails)) {
+                \App\Models\DetailConductScore::where('student_conduct_score_id', $studentConductScore->id)
+                    ->whereIn('conduct_criteria_id', $existingDetails)
+                    ->get()
+                    ->each(function ($record) {
+                        if ($record->path) {
+                            Storage::disk('public')->delete($record->path);
+                        }
+                        $record->delete();
+                    });
+            }
+
+            DB::commit();
+
+            return response()->json(['message' => 'Lưu điểm rèn luyện thành công']);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json(['message' => 'Lỗi khi lưu dữ liệu: ' . $e->getMessage()], 500);
+        }
+    }
+
+}

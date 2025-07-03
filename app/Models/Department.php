@@ -1,0 +1,25 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
+
+class Department extends Model
+{
+    use SoftDeletes;
+    protected $fillable = [
+        'name',
+    ];
+
+    public function faculties()
+    {
+        return $this->hasMany(Faculty::class);
+    }
+
+    public function facultyOffices()
+    {
+        return $this->hasOne(FacultyOffice::class);
+    }
+
+}
