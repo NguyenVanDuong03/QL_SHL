@@ -1,86 +1,135 @@
-Laravel Project Setup Guide
-This guide provides instructions to set up and run the Laravel project.
-Prerequisites
+# 🚀 Laravel Project Setup Guide
 
-PHP >= 8.1
-Composer (latest version)
-Node.js >= 16.x
-NPM or Yarn
-MySQL/MariaDB or another supported database
-Git
+![PHP Version](https://img.shields.io/badge/PHP-%3E%3D%208.1-blue)
+![Node.js Version](https://img.shields.io/badge/Node.js-%3E%3D%2016.x-green)
+![License](https://img.shields.io/badge/license-MIT-yellow.svg)
+![Laravel](https://img.shields.io/badge/Laravel-Framework-red)
 
-Installation Steps
+> 🎯 **This guide provides instructions to set up and run the Laravel project easily and efficiently.**
 
+---
 
-Install PHP DependenciesInstall the required PHP packages using Composer:  
+## 📦 Prerequisites
+
+Make sure your system has the following installed:
+
+- ✅ PHP >= **8.1**
+- ✅ **Composer** (latest version)
+- ✅ **Node.js** >= 16.x
+- ✅ **NPM** or **Yarn**
+- ✅ **MySQL/MariaDB** or another supported database
+- ✅ **Git**
+
+---
+
+## 🔧 Installation Steps
+
+### 1️⃣ Install PHP Dependencies
+
+```bash
 composer install
+```
 
+### 2️⃣ Install JavaScript Dependencies
 
-Install JavaScript DependenciesInstall the required Node.js packages:  
+```bash
 npm install
+# or
+yarn install
+```
 
+### 3️⃣ Set Up Environment File
 
-Set Up Environment FileCopy the example environment file and configure it:  
+```bash
 cp .env.example .env
+```
 
-Update the .env file with your database credentials and other settings:  
+🛠️ Update `.env` file:
+
+```env
 DB_CONNECTION=mysql
 DB_HOST=127.0.0.1
 DB_PORT=3306
 DB_DATABASE=your_database
 DB_USERNAME=your_username
 DB_PASSWORD=your_password
+```
 
+### 4️⃣ Generate Application Key
 
-Generate Application KeyGenerate a unique application key:  
+```bash
 php artisan key:generate
+```
 
+### 5️⃣ Run Database Migrations
 
-Run Database MigrationsSet up the database schema:  
+```bash
 php artisan migrate
+```
 
+### 6️⃣ Seed the Database (Optional)
 
-Seed the Database (Optional)If the project includes seeders, populate the database:  
+```bash
 php artisan db:seed
+```
 
+### 7️⃣ Build Front-End Assets
 
-Build Front-End AssetsCompile the front-end assets:  
+Development:
+
+```bash
 npm run dev
+```
 
-For production, use:  
+Production:
+
+```bash
 npm run build
+```
 
+### 8️⃣ Clear Cache (Optional)
 
-Clear Cache (Optional)Clear any cached files:  
+```bash
 php artisan cache:clear
 php artisan config:clear
 php artisan route:clear
 php artisan view:clear
+```
 
+### 9️⃣ Start the Development Server
 
-Start the Development ServerRun the Laravel development server:  
+```bash
 php artisan serve
+```
 
-Access the application at http://localhost:8000.
+📍 Access your app at: [http://localhost:8000](http://localhost:8000)
 
+---
 
-Additional Notes
+## 📝 Additional Notes
 
-Ensure your database server is running before migrations.
-For production, configure a web server (e.g., Nginx or Apache) and set up proper permissions.
-If you encounter errors, check the logs in storage/logs/laravel.log.
+- ⚠️ Ensure your **database server is running** before running migrations.
+- 🌐 For **production**, configure a web server like **Nginx** or **Apache**, and set correct file **permissions**.
+- 🐛 If you encounter errors, check logs in:
 
-Troubleshooting
+```bash
+storage/logs/laravel.log
+```
 
-Composer issues: Run composer update or ensure PHP version compatibility.
-NPM issues: Clear the cache with npm cache clean --force and retry npm install.
-Database connection errors: Verify .env database credentials.
+---
 
+## ❗ Troubleshooting
 
-h1 { color: #2c3e50; font-size: 2.5em; }
-h2 { color: #3498db; font-size: 1.8em; border-bottom: 2px solid #3498db; padding-bottom: 5px; }
-h3 { color: #e74c3c; font-size: 1.4em; }
-p, li { color: #34495e; font-size: 1.1em; line-height: 1.6; }
-code { background-color: #ecf0f1; padding: 2px 5px; border-radius: 3px; }
-pre code { background-color: #2c3e50; color: #ecf0f1; padding: 10px; border-radius: 5px; display: block; }
-strong { color: #e74c3c; }
+| Issue                    | Solution                                                                 |
+|-------------------------|--------------------------------------------------------------------------|
+| ⚙️ Composer issues       | Run `composer update` or verify your PHP version compatibility.           |
+| 📦 NPM issues            | Run `npm cache clean --force` then retry `npm install`.                  |
+| 🛢️ Database connection   | Double-check `.env` database settings (`DB_HOST`, `DB_PORT`, etc).        |
+
+---
+
+## 📬 Contact
+
+Send your question about email: 19.nguyenvanduong@gmail.com - Duong Nguyen
+
+> Happy Coding ❤️
