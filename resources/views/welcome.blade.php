@@ -239,7 +239,6 @@
                                                 <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i>Nhận báo cáo tình hình sinh hoạt lớp từ cán bộ lớp</li>
                                                 <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i>Quản lý danh sách sinh viên bị cảnh báo học vụ vào hệ thống</li>
                                                 <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i>Quản lý tài khoản GVCN và tài khoản sinh viên</li>
-                                                <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i>Quản lý phòng học</li>
                                             </ul>
                                         </div>
                                     </div>
