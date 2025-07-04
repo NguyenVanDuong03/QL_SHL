@@ -47,7 +47,7 @@
                         <tbody>
                             @if (empty($rooms['data']))
                                 <tr>
-                                    <td colspan="4" class="text-center">Không có dữ liệu</td>
+                                    <td colspan="5" class="text-center">Không có dữ liệu</td>
                                 </tr>
                             @else
                                 @foreach ($rooms['data'] ?? [] as $room)
