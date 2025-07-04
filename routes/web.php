@@ -1,7 +1,6 @@
 <?php
 
 use \App\Helpers\Constant;
-use App\Http\Controllers\ClassStaffController;
 use App\Http\Controllers\LecturerController;
 use App\Http\Controllers\FacultyOfficeController;
 use App\Http\Controllers\StudentAffairsDepartmentController;
