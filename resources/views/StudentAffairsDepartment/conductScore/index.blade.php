@@ -90,25 +90,24 @@
     <div class="container-fluid mt-4">
         <!-- Header Section -->
         <div class="row mb-4">
-            <div class="col-12">
-                <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
-                    <h4 class="mb-0">Danh sách đợt chấm điểm rèn luyện</h4>
-                    <div class="d-flex gap-2 align-items-center">
-                        <form method="GET" action="{{ route('student-affairs-department.conduct-score.index') }}"
-                              class="search-container">
-                            <div class="input-group">
-                                <input type="text" class="form-control" name="search" value="{{ request('search') }}" placeholder="Tìm kiếm..."
-                                       id="searchInput" style="width: 250px;">
-                                <button class="btn btn-outline-secondary btn-search-semester" type="submit">
-                                    <i class="fas fa-search"></i>
-                                </button>
-                            </div>
-                        </form>
-                        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createModal">
-                            <i class="fas fa-plus me-2"></i>Tạo mới
+            <div class="col-6 col-md-12">
+                <h4 class="mb-0">Danh sách đợt chấm điểm rèn luyện</h4>
+            </div>
+            <div class="d-flex align-items-center gap-2 col-6 my-0 my-md-2 col-md-12 justify-content-end">
+                <form method="GET" action="{{ route('student-affairs-department.conduct-score.index') }}"
+                      class="search-container">
+                    <div class="input-group">
+                        <input type="text" class="form-control" name="search" value="{{ request('search') }}"
+                               placeholder="Tìm kiếm..."
+                               id="searchInput" style="width: 250px;">
+                        <button class="btn btn-outline-secondary btn-search-semester" type="submit">
+                            <i class="fas fa-search"></i>
                         </button>
                     </div>
-                </div>
+                </form>
+                <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createModal">
+                    <i class="fas fa-plus me-2"></i>Tạo mới
+                </button>
             </div>
         </div>
 
@@ -163,8 +162,9 @@
                                                 >
                                                     <i class="fas fa-eye"></i>
                                                 </button>
-                                                <a href="{{ route('student-affairs-department.conduct-score.infoConductScore', ['conduct_evaluation_period_id' => $item['id']]) }}" class="btn btn-info btn-sm" title="Chi tiết">
-                                                        <i class="fas fa-info-circle"></i>
+                                                <a href="{{ route('student-affairs-department.conduct-score.infoConductScore', ['conduct_evaluation_period_id' => $item['id']]) }}"
+                                                   class="btn btn-info btn-sm" title="Chi tiết">
+                                                    <i class="fas fa-info-circle"></i>
                                                 </a>
                                                 <button class="btn btn-warning btn-sm"
                                                         title="Chỉnh sửa"
