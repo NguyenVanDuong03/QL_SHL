@@ -24,3 +24,7 @@ yarn-error.log
 vendor/barryvdh/laravel-debugbar
 config/debugbar.php
 storage/debugbar/
+storage/framework/cache/data
+storage/framework/sessions
+storage/framework/views
+storage/logs
