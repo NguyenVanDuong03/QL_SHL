@@ -21,3 +21,6 @@ yarn-error.log
 /.nova
 /.vscode
 /.zed
+vendor/barryvdh/laravel-debugbar
+config/debugbar.php
+storage/debugbar/
