@@ -206,7 +206,7 @@
                                             data-bs-toggle="modal">
                                         <i class="fas fa-users me-2"></i>Danh sách lớp
                                     </button>
-                                    @if($data['getClassSessionRequest']->status == 1)
+                                    @if($data['getClassSessionRequest']->status == 1 && $data['getClassSessionRequest']->proposed_at > now())
                                         <button type="button"
                                                 class="btn btn-success btn-confirm-attendance"
                                                 data-bs-toggle="modal"
