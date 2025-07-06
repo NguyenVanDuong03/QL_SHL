@@ -13,10 +13,8 @@ class studentAffairsDepartment extends Component
     /**
      * Create a new component instance.
      */
-    public $countClassSession = 0;
     public function __construct()
     {
-        $this->countClassSession = ClassSessionRequest::where('status', Constant::CLASS_SESSION_STATUS['ACTIVE'])->count();
     }
 
     /**
@@ -24,8 +22,6 @@ class studentAffairsDepartment extends Component
      */
     public function render(): View|Closure|string
     {
-        return view('components.navbar.student-affairs-department', [
-            'countClassSession' => $this->countClassSession,
-        ]);
+        return view('components.navbar.student-affairs-department');
     }
 }

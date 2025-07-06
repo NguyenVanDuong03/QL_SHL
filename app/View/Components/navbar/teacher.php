@@ -13,10 +13,8 @@ class teacher extends Component
     /**
      * Create a new component instance.
      */
-    public $countClassSession = 0;
     public function __construct()
     {
-        $this->countClassSession = ClassSessionRequest::where('status', Constant::CLASS_SESSION_STATUS['REJECTED'])->count();
     }
 
     /**
@@ -24,8 +22,6 @@ class teacher extends Component
      */
     public function render(): View|Closure|string
     {
-        return view('components.navbar.teacher', [
-            'countClassSession' => $this->countClassSession,
-        ]);
+        return view('components.navbar.teacher');
     }
 }
