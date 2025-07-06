@@ -93,7 +93,7 @@ class StudentAffairsDepartmentController extends Controller
         ];
         if ($checkClassSessionRegistration) {
             $data['classSessionRegistration'] = $this->classSessionRegistrationService->getCSRSemesterInfo();
-            $data['ListCSRs'] = $this->classSessionRegistrationService->getListCSR()->toArray();
+            $data['ListCSRs'] = $this->classSessionRegistrationService->getListCSR($params)->paginate(Constant::DEFAULT_LIMIT_12)->toArray();
             $data['rooms'] = $rooms;
         }
 

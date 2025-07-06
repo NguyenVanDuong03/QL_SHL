@@ -40,11 +40,12 @@ class ClassSessionRegistrationRepository extends BaseRepository
         ->first();
     }
 
-    public function getListCSR()
+    public function getListCSR($params)
     {
+        $search = $params['search'] ?? '';
         $latestRegistration = $this->getModel()->newQuery()->orderByDesc('id')->first();
 
-        return $this->getModel()
+        $query = $this->getModel()
             ->newQuery()
             ->join('class_session_requests', 'class_session_requests.class_session_registration_id', '=', 'class_session_registrations.id')
             ->join('study_classes', 'class_session_requests.study_class_id', '=', 'study_classes.id')
@@ -96,8 +97,13 @@ class ClassSessionRegistrationRepository extends BaseRepository
                 'rooms.name as room_name',
                 'rooms.description as room_description',
                 DB::raw('COUNT(students.id) as total_students')
-            ])
-            ->paginate(Constant::DEFAULT_LIMIT_12);
+            ]);
+
+        if (!empty($search)) {
+            $query->where('study_classes.name', 'LIKE', '%' . $search . '%');
+        }
+
+        return $query;
     }
 
 }

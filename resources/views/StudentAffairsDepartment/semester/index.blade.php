@@ -124,7 +124,7 @@
                                 <input type="text" class="form-control" id="createStartDate1" name="start_date"
                                        placeholder="Chọn thời gian bắt đầu" onfocus="(this.type='datetime-local')"
                                        onblur="if(!this.value)this.type='text'" required value=""
-                                       min="{{ now()->addMinutes(30)->format('Y-m-d\TH:i') }}">
+                                       >
                                 <div id="start_date1" class="text-danger text-danger-error"></div>
                                 @error('start_date')
                                 <div class="text-danger text-danger-error">{{ $message }}</div>
@@ -135,7 +135,7 @@
                                 <input type="text" class="form-control" id="createEndDate1" name="end_date"
                                        placeholder="Chọn thời gian kết thúc" onfocus="(this.type='datetime-local')"
                                        onblur="if(!this.value)this.type='text'" required value=""
-                                       min="{{ now()->addMinutes(30)->format('Y-m-d\TH:i') }}">
+                                       >
                                 <div id="end_date1" class="text-danger text-danger-error"></div>
                                 @error('end_date')
                                 <div class="text-danger text-danger-error">{{ $message }}</div>
@@ -187,7 +187,7 @@
                                 <input type="text" class="form-control" id="editStartDate2" name="start_date"
                                        placeholder="Chọn thời gian bắt đầu" onfocus="(this.type='datetime-local')"
                                        onblur="if(!this.value)this.type='text'" required
-                                       min="{{ now()->addMinutes(30)->format('Y-m-d\TH:i') }}">
+                                       >
                                 <div id="start_date2" class="text-danger text-danger-error"></div>
                                 @error('start_date')
                                 <div class="text-danger text-danger-error">{{ $message }}</div>
@@ -198,7 +198,7 @@
                                 <input type="text" class="form-control" id="editEndDate2" name="end_date"
                                        placeholder="Chọn thời gian bắt đầu" onfocus="(this.type='datetime-local')"
                                        onblur="if(!this.value)this.type='text'" required
-                                       min="{{ now()->addMinutes(30)->format('Y-m-d\TH:i') }}">
+                                       >
                                 <div id="end_date2" class="text-danger text-danger-error"></div>
                                 @error('end_date')
                                 <div class="text-danger text-danger-error">{{ $message }}</div>
