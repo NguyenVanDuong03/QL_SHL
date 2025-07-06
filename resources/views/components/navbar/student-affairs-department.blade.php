@@ -23,9 +23,12 @@
                                       ? 'active' : '' }}" href="{{ route('student-affairs-department.class-session.index') }}">
                     <i class="fas fa-bell"></i>
                     Sinh hoạt lớp
-{{--                    @if($countClassSession > 0)--}}
-{{--                        <span class="badge bg-danger ms-1">{{ $countClassSession }}</span>--}}
-{{--                    @endif--}}
+                    @php
+                        use App\Models\ClassSessionRequest;
+                        use App\Helpers\Constant;
+                        $countClassSession = ClassSessionRequest::where('status', Constant::CLASS_SESSION_STATUS['ACTIVE'])->count();
+                    @endphp
+                    <span class="badge bg-danger ms-2">{{ $countClassSession == 0 ? '' : $countClassSession }}</span>
                 </a>
             </li>
             <li class="nav-item">
