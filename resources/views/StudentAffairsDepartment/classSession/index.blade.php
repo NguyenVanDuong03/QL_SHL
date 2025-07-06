@@ -53,12 +53,12 @@
                     </div>
                     <h4 class="fw-bold d-none d-md-block">Sinh hoạt lớp cố định</h4>
                     <div class="d-flex flex-column justify-content-end">
-                        <div class="input-group mb-3">
-                            <input type="text" class="form-control" placeholder="Tìm kiếm lớp học"
+                        <form class="input-group mb-3">
+                            <input type="text" class="form-control" placeholder="Tìm kiếm lớp học" name="search" value="{{ request('search') }}"
                                    aria-label="Recipient's username" aria-describedby="basic-addon2">
-                            <button class="input-group-text" id="basic-addon2"><i
+                            <button type="submit" class="input-group-text" id="basic-addon2"><i
                                     class="fas fa-magnifying-glass"></i></button>
-                        </div>
+                        </form>
 
                         <a class="btn btn-secondary btn-sm btn-create-class-session" href="{{ route('student-affairs-department.class-session.listReports') }}">
                             Báo cáo

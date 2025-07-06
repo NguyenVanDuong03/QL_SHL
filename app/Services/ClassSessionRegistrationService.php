@@ -71,9 +71,9 @@ class ClassSessionRegistrationService extends BaseService
 
     }
 
-    public function getListCSR()
+    public function getListCSR($params)
     {
-        return $this->getRepository()->getListCSR();
+        return $this->getRepository()->getListCSR($params);
     }
 
 //    public function getListFlexibleClass()
