@@ -271,7 +271,7 @@
                                     <input type="datetime-local" class="form-control phase-datetime"
                                            id="create_student_start" name="phases[0][open_date]"
                                            data-role="0" data-type="start"
-                                           min="{{ now()->addMinutes(30)->format('Y-m-d\TH:i') }}" required>
+                                           min="{{ now()->subMinutes(30)->format('Y-m-d\TH:i') }}" required>
                                     <div class="error-message" id="create_student_start_error"></div>
                                 </div>
                                 <div class="col-md-6">
@@ -281,7 +281,7 @@
                                     <input type="datetime-local" class="form-control phase-datetime"
                                            id="create_student_end" name="phases[0][end_date]"
                                            data-role="0" data-type="end"
-                                           min="{{ now()->addMinutes(30)->format('Y-m-d\TH:i') }}" required>
+                                           min="{{ now()->subMinutes(30)->format('Y-m-d\TH:i') }}" required>
                                     <div class="error-message" id="create_student_end_error"></div>
                                 </div>
                             </div>
@@ -302,7 +302,7 @@
                                     <input type="datetime-local" class="form-control phase-datetime"
                                            id="create_teacher_start" name="phases[1][open_date]"
                                            data-role="1" data-type="start"
-                                           min="{{ now()->addMinutes(30)->format('Y-m-d\TH:i') }}" required>
+                                           min="{{ now()->subMinutes(30)->format('Y-m-d\TH:i') }}" required>
                                     <div class="error-message" id="create_teacher_start_error"></div>
                                 </div>
                                 <div class="col-md-6">
@@ -312,7 +312,7 @@
                                     <input type="datetime-local" class="form-control phase-datetime"
                                            id="create_teacher_end" name="phases[1][end_date]"
                                            data-role="1" data-type="end"
-                                           min="{{ now()->addMinutes(30)->format('Y-m-d\TH:i') }}" required>
+                                           min="{{ now()->subMinutes(30)->format('Y-m-d\TH:i') }}" required>
                                     <div class="error-message" id="create_teacher_end_error"></div>
                                 </div>
                             </div>
@@ -333,7 +333,7 @@
                                     <input type="datetime-local" class="form-control phase-datetime"
                                            id="create_office_start" name="phases[2][open_date]"
                                            data-role="2" data-type="start"
-                                           min="{{ now()->addMinutes(30)->format('Y-m-d\TH:i') }}" required>
+                                           min="{{ now()->subMinutes(30)->format('Y-m-d\TH:i') }}" required>
                                     <div class="error-message" id="create_office_start_error"></div>
                                 </div>
                                 <div class="col-md-6">
@@ -343,7 +343,7 @@
                                     <input type="datetime-local" class="form-control phase-datetime"
                                            id="create_office_end" name="phases[2][end_date]"
                                            data-role="2" data-type="end"
-                                           min="{{ now()->addMinutes(30)->format('Y-m-d\TH:i') }}" required>
+                                           min="{{ now()->subMinutes(30)->format('Y-m-d\TH:i') }}" required>
                                     <div class="error-message" id="create_office_end_error"></div>
                                 </div>
                             </div>
