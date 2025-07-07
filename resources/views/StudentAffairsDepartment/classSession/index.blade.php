@@ -54,13 +54,15 @@
                     <h4 class="fw-bold d-none d-md-block">Sinh hoạt lớp cố định</h4>
                     <div class="d-flex flex-column justify-content-end">
                         <form class="input-group mb-3">
-                            <input type="text" class="form-control" placeholder="Tìm kiếm lớp học" name="search" value="{{ request('search') }}"
+                            <input type="text" class="form-control" placeholder="Tìm kiếm lớp học" name="search"
+                                   value="{{ request('search') }}"
                                    aria-label="Recipient's username" aria-describedby="basic-addon2">
                             <button type="submit" class="input-group-text" id="basic-addon2"><i
                                     class="fas fa-magnifying-glass"></i></button>
                         </form>
 
-                        <a class="btn btn-secondary btn-sm btn-create-class-session" href="{{ route('student-affairs-department.class-session.listReports') }}">
+                        <a class="btn btn-secondary btn-sm btn-create-class-session"
+                           href="{{ route('student-affairs-department.class-session.listReports') }}">
                             Báo cáo
                         </a>
                     </div>
@@ -131,7 +133,7 @@
                                                             data-note="{{ $class['note'] }}"
                                                             data-room-name="{{ $class['room_name'] ?? '' }}"
                                                             data-room-id="{{ $class['room_id'] ?? '' }}"
-                                                            data-total-students = "{{ $class['total_students'] }}"
+                                                            data-total-students="{{ $class['total_students'] }}"
                                                             data-status="{{ $class['status'] }}"
                                                     >
                                                         <i class="fas fa-file-signature"></i>
@@ -194,7 +196,8 @@
                                 data-bs-target="#confirmCreateModal" data-id="#">
                             Tạo lịch đăng ký sinh hoạt lớp
                         </button>
-                        <a class="btn btn-secondary btn-create-class-session" href="{{ route('student-affairs-department.class-session.listReports') }}">
+                        <a class="btn btn-secondary btn-create-class-session"
+                           href="{{ route('student-affairs-department.class-session.listReports') }}">
                             Báo cáo
                         </a>
                     </div>
@@ -245,7 +248,7 @@
                                     <input type="text" class="form-control" id="open_date" name="open_date"
                                            placeholder="Chọn thời gian bắt đầu" onfocus="(this.type='datetime-local')"
                                            onblur="if(!this.value)this.type='text'" required
-                                           min="{{ now()->addMinutes(30)->format('Y-m-d\TH:i') }}">
+                                           min="{{ now()->subMinutes(30)->format('Y-m-d\TH:i') }}">
                                     <div id="open_date_error" class="text-danger text-danger-error"></div>
                                     @error('open_date')
                                     <div class="text-danger text-danger-error">{{ $message }}</div>
@@ -257,7 +260,7 @@
                                     <input type="text" class="form-control" id="end_date" name="end_date"
                                            placeholder="Chọn thời gian kết thúc" onfocus="(this.type='datetime-local')"
                                            onblur="if(!this.value)this.type='text'" required
-                                           min="{{ now()->addMinutes(30)->format('Y-m-d\TH:i') }}">
+                                           min="{{ now()->subMinutes(30)->format('Y-m-d\TH:i') }}">
                                     <div id="end_date_error" class="text-danger text-danger-error"></div>
                                     @error('end_date')
                                     <div class="text-danger text-danger-error">{{ $message }}</div>
@@ -318,7 +321,7 @@
                                        onfocus="(this.type='datetime-local')"
                                        onblur="if(!this.value)this.type='text'" required
                                        value="{{ $data['classSessionRegistration']->open_date }}"
-                                       min="{{ now()->addMinutes(30)->format('Y-m-d\TH:i') }}">
+                                       min="{{ now()->subMinutes(30)->format('Y-m-d\TH:i') }}">
                                 <div id="open_date_error_edit" class="text-danger text-danger-error"></div>
                                 @error('open_date')
                                 <div class="text-danger text-danger-error">{{ $message }}</div>
@@ -332,7 +335,7 @@
                                        onfocus="(this.type='datetime-local')"
                                        onblur="if(!this.value)this.type='text'" required
                                        value="{{ $data['classSessionRegistration']->end_date }}"
-                                       min="{{ now()->addMinutes(30)->format('Y-m-d\TH:i') }}">
+                                       min="{{ now()->subMinutes(30)->format('Y-m-d\TH:i') }}">
                                 <div id="end_date_error_edit" class="text-danger text-danger-error"></div>
                                 @error('end_date')
                                 <div class="text-danger text-danger-error">{{ $message }}</div>
@@ -391,18 +394,20 @@
 
                             <h6>Ghi chú: <span class="class_session_note"></span></h6>
 
-                            <h6 class="class_session_room d-none">Phòng: <span class="class_session_room_name"></span></h6>
-                            <h6 class="class_session_room d-none">Mô tả: <span class="class_session_room_description"></span></h6>
+                            <h6 class="class_session_room d-none">Phòng: <span class="class_session_room_name"></span>
+                            </h6>
+                            <h6 class="class_session_room d-none">Mô tả: <span
+                                    class="class_session_room_description"></span></h6>
                             <div class="form-group session-offline d-none mb-3">
                                 <label for="room" class="form-label room">Chọn phòng họp:</label>
                                 <select class="form-select" id="room" name="room_id">
-{{--                                    @if(isset($data['rooms']) && $data['rooms']->isNotEmpty())--}}
-{{--                                        @foreach($data['rooms'] as $room)--}}
-{{--                                            <option value="{{ $room->id }}">{{ $room->name }}</option>--}}
-{{--                                        @endforeach--}}
-{{--                                    @else--}}
-{{--                                        <option value="" disabled selected>Không có phòng khả dụng</option>--}}
-{{--                                    @endif--}}
+                                    {{--                                    @if(isset($data['rooms']) && $data['rooms']->isNotEmpty())--}}
+                                    {{--                                        @foreach($data['rooms'] as $room)--}}
+                                    {{--                                            <option value="{{ $room->id }}">{{ $room->name }}</option>--}}
+                                    {{--                                        @endforeach--}}
+                                    {{--                                    @else--}}
+                                    {{--                                        <option value="" disabled selected>Không có phòng khả dụng</option>--}}
+                                    {{--                                    @endif--}}
                                 </select>
                             </div>
 
