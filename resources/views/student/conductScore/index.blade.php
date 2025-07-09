@@ -558,7 +558,6 @@
                 let total = 0;
                 let lastFourTotal = 0;
                 const rows = $('.criteria-row');
-                const lastFourRows = rows.slice(-4); // Get last 4 rows
 
                 // Calculate total and last four criteria total
                 rows.each(function (index) {
@@ -645,6 +644,12 @@
             $('.image-input').on('change', function () {
                 const file = this.files[0];
                 const criteriaId = $(this).closest('.criteria-row').data('criteria');
+                const maxSize = 2 * 1024 * 1024;
+
+                if (file.size > maxSize) {
+                    toastr.error('File ảnh quá lớn! Vui lòng chọn file nhỏ hơn 2MB.');
+                    return;
+                }
 
                 if (!criteriaData[criteriaId]) {
                     criteriaData[criteriaId] = {image: null, note: '', score: 0};
@@ -654,7 +659,7 @@
                     const reader = new FileReader();
                     reader.onload = function (e) {
                         criteriaData[criteriaId].image = {
-                            file: file, // Store the File object for FormData
+                            file: file,
                             name: file.name,
                             size: file.size,
                             type: file.type,
