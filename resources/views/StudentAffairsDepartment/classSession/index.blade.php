@@ -158,7 +158,6 @@
                                                         data-room-description="{{ $class['room_description'] ?? '' }}"
                                                         data-room-id="{{ $class['room_id'] ?? '' }}"
                                                         data-status="{{ $class['status'] }}"
-                                                        data-detail="true"
                                                     >
                                                         <i class="fas fa-info-circle"></i>
                                                     </button>
@@ -469,6 +468,8 @@
     <script>
         $(document).ready(function () {
             let isRejectMode = false;
+            let currentStatus = null;
+            let isDetail = false;
 
             // Reset form when modal is closed
             $('.auto-reset-modal').on('hidden.bs.modal', function () {
@@ -558,19 +559,24 @@
                 if (isRejectMode) {
                     $('.input-rejection').removeClass('d-none');
                     $('#room').prop('disabled', true);
-                    $('.btn-confirm-form').removeClass('d-none');
                     $(this).css({
                         'background-color': '#dc3545',
                         'color': '#fff'
                     });
+                    if (currentStatus === 1 || currentStatus === 2) {
+                        $('.btn-confirm-form').removeClass('d-none');
+                    }
                 } else {
                     $('.input-rejection').addClass('d-none');
                     $('#room').prop('disabled', false);
-                    $('.btn-confirm-form').addClass('d-none');
                     $(this).css({
                         'background-color': '',
                         'color': ''
                     });
+
+                    if (currentStatus === 1 || currentStatus === 2 && isDetail === true) {
+                        $('.btn-confirm-form').addClass('d-none');
+                    }
                 }
             });
 
@@ -590,9 +596,12 @@
                 const roomId = $(this).data('room-id');
                 const totalStudents = $(this).data('total-students');
                 const status = $(this).data('status');
+                currentStatus = status;
+                isDetail = false;
 
                 if (status === 1) {
                     $('.btn-confirm-form').addClass('d-none');
+                    $('#room').prop('disabled', true);
                 } else {
                     $('.btn-confirm-form').removeClass('d-none');
                 }
@@ -671,9 +680,10 @@
                 const roomId = $(this).data('room-id');
                 const roomDescription = $(this).data('room-description') || '---';
                 const status = $(this).data('status');
-                const isDetail = $(this).data('detail');
+                currentStatus = status;
+                isDetail = true;
 
-                if (status === 1 && isDetail) {
+                if (status === 1 && isDetail || status === 2 && isDetail) {
                     $('.btn-confirm-form').addClass('d-none');
                 }
 
