@@ -246,9 +246,6 @@
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-success">
-                            <i class="fas fa-file-excel me-2"></i>Xuất Excel
-                        </button>
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
                             <i class="fas fa-times me-2"></i>Đóng
                         </button>
