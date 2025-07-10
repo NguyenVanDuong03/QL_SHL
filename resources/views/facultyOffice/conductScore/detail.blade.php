@@ -635,8 +635,6 @@
                         scoreInput.val(criteriaData[criteriaId].final_score || 0);
                         row.find('.note-input').text(criteriaData[criteriaId].note || '');
                         updateImagePreview(criteriaId);
-                    } else {
-                        console.log(`Criteria ${criteriaId}: Row not found`);
                     }
                 });
                 calculateTotal();

@@ -373,17 +373,8 @@
                 submitBtn.find('span').text('Đang gửi...');
                 submitBtn.find('i').removeClass('fa-paper-plane').addClass('fa-spinner fa-spin');
 
-                // for (let pair of formData.entries()) {
-                //     console.log(pair[0] + ': ' + pair[1]);
-                // }
-                // const url = isEditMode ? `/student/class-session/report/${reportId}` : '/student/class-session/report';
                 const url = '/student/class-session/report';
-                // const method = isEditMode ? 'PUT' : 'POST';
                 const method = 'POST';
-
-                // if (method === 'PUT') {
-                //     formData.append('_method', 'PUT');
-                // }
 
                 $.ajax({
                     url: url,

@@ -420,7 +420,6 @@
                 $('.student-email').text(student.email ?? "---");
                 $('.student-birth').text(student.birth ?? "---");
                 $('.student-gender').text(student.gender ?? "---");
-                console.log(student.gender);
                 $('.student-phone').text(student.phone ?? "---");
                 $('.student-cohort').text(student.cohort ?? "---");
                 $('.student-class').text(student.class ?? "---");
