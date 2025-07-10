@@ -165,7 +165,7 @@
                                         </div>
                                     </div>
                                     <p class="card-text text-muted">
-                                        Thêm, sửa, xóa tài khoản GVCN và sinh viên, phân quyền người dùng.
+                                        Quản lý tài khoản GVCN và sinh viên, phân quyền người dùng.
                                     </p>
                                 </div>
                             </div>
@@ -182,7 +182,7 @@
                                         </div>
                                     </div>
                                     <p class="card-text text-muted">
-                                        Thêm, sửa, xóa danh sách sinh viên bị cảnh báo học vụ vào hệ thống.
+                                        Quản lý danh sách sinh viên bị cảnh báo học vụ vào hệ thống.
                                     </p>
                                 </div>
                             </div>
