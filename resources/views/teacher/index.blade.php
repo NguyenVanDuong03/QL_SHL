@@ -403,8 +403,6 @@
             // Initialize all charts
             initializeActivityChart();
             initializeTrainingChart();
-            initializeAttendanceChart();
-            initializePerformanceChart();
 
             // Add hover effects to stat cards
             $('.stat-card').hover(
@@ -479,7 +477,7 @@
             const ctx = document.getElementById('trainingChart').getContext('2d');
             const rawData = @json($data['getAverageConductScores'] ?? []);
             const labels = rawData.map(item => {
-                const semester = item.semester_name === 'Học kỳ 1' ? 'HK1' : 'HK2';
+                const semester = item.semester_name === 'Học kỳ 1' ? 'HK1' : (item.semester_name === 'Học kỳ 2' ? 'HK2' : (item.semester_name === 'Học kỳ hè' ? 'HKH' : 'HKP'));
                 return `${semester} ${item.school_year}`;
             });
             const scores = rawData.map(item => parseFloat(item.average_conduct_score) || 0);
