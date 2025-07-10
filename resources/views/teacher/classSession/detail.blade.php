@@ -580,17 +580,5 @@
             const checkedCount = $('.attendance-checkbox:checked').length;
             $('#selectedCount, #selectedCountMobile, #attendedStudents').text(checkedCount);
         }
-
-        function saveAttendance() {
-            const attendanceData = $('.attendance-checkbox:checked').map(function () {
-                return $(this).val();
-            }).get();
-
-            if (confirm(`Lưu điểm danh cho ${attendanceData.length} sinh viên?`)) {
-                console.log('Attendance data:', attendanceData);
-                alert('Đã lưu điểm danh thành công!');
-                bootstrap.Modal.getInstance($('#attendanceModal')[0]).hide();
-            }
-        }
     </script>
 @endpush

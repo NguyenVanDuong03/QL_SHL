@@ -140,10 +140,6 @@
             let studentCode = email.split('@')[0];
             $('#student_code').val(studentCode);
 
-            $('#date_of_birth').on('change', function() {
-                console.log('Date selected:', $(this).val());
-            });
-
             if ($('#updateStudentModal').length) {
                 $('#updateStudentModal').show().addClass('show').attr('aria-hidden', 'false');
                 $('<div class="modal-backdrop fade show"></div>').appendTo('body');

@@ -765,8 +765,6 @@
                 const session_request_id = $('.session_request_id').val();
                 const study_class_id = $('.study_class_id').val();
 
-                console.log('Attendance Data:', attendanceData); // Debug
-
                 $.ajax({
                     url: `{{ route('teacher.attendance.updateAttendance') }}`,
                     method: 'PATCH',
