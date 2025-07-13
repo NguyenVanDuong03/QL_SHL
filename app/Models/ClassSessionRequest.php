@@ -23,6 +23,7 @@ class ClassSessionRequest extends Model
         'meeting_url',
         'title',
         'content',
+        'note',
         'status',
         'rejection_reason'
     ];

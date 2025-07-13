@@ -37,7 +37,7 @@ class Student extends Model
         return $this->hasMany(AcademicWarning::class);
     }
 
-    public function ClassSessionReports()
+    public function classSessionReports()
     {
         return $this->hasMany(ClassSessionReport::class, 'reporter_id');
     }
