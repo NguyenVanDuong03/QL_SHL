@@ -51,7 +51,8 @@
                     </form>
 
                     <div class="">
-                        <a href="{{ route('teacher.class-session.flexibleCreateRequest') }}" class="btn btn-success btn-sm ms-3 w-100">
+                        <a href="{{ route('teacher.class-session.flexibleCreateRequest') }}"
+                           class="btn btn-success btn-sm ms-3 w-100">
                             Tạo lịch
                         </a>
                     </div>
@@ -70,7 +71,7 @@
                                 <th scope="col" class="px-4 py-1 d-none d-md-table-cell">Khoa</th>
                                 <th scope="col" class="px-4 py-1 d-none d-md-table-cell">Hình thức</th>
                                 <th scope="col" class="px-4 py-1">Trạng thái</th>
-                                <th scope="col" class="px-4 py-1 text-center">Thao tác</th>
+                                <th scope="col" class="px-4 py-1">Thao tác</th>
                             </tr>
                             </thead>
                             <tbody>
@@ -87,7 +88,8 @@
                                             {{ $class['study_class']['major']['faculty']['department']['name'] }}
                                         </td>
                                         <td class="px-4 py-1 d-none d-md-table-cell">
-                                            <span class="badge {{ $class['position'] == '0' ? 'bg-success' : ($class['position'] == '1' ? 'bg-primary' : 'bg-warning') }}">{{ $class['position'] == '0' ? 'Trực tiếp tại trường' : ($class['position'] == '1' ? 'Trực tuyến' : 'Dã ngoại') }}</span>
+                                            <span
+                                                class="badge {{ $class['position'] == '0' ? 'bg-success' : ($class['position'] == '1' ? 'bg-primary' : 'bg-warning') }}">{{ $class['position'] == '0' ? 'Trực tiếp tại trường' : ($class['position'] == '1' ? 'Trực tuyến' : 'Dã ngoại') }}</span>
                                         </td>
                                         <td class="px-4 py-1">
                                             @if ($class['status'] == '2')
@@ -98,29 +100,30 @@
                                                 <span class="badge bg-success">Đăng ký thành công</span>
                                             @endif
                                         </td>
-                                        <td class="px-4 py-1 text-center btn-group gap-2">
-                                            <a class="btn btn-primary btn-sm"
-                                               title="{Chỉnh sửa"
-                                               href="{{ route('teacher.class-session.flexibleCreate', ['study-class-id' => $class['id'], 'session-request-id' => $class['id'] ?? null]) }}">
-                                                <i class="fas fa-file-signature"></i>
-                                            </a>
-                                            <a href="{{ route('teacher.class-session.flexibleDetail', ['study-class-id' => $class['study_class_id'], 'session-request-id' => $class['id'] ?? null]) }}"
-                                               class="btn btn-secondary btn-sm"
-                                               title="Chi tiết">
-                                                <i class="fas fa-info-circle"></i>
-                                            </a>
-                                            <button
-                                                class="btn btn-danger btn-sm btn-delete-class-session"
-                                                title="Hủy đăng ký"
-                                                data-id="{{ $class['id'] }}"
-                                                data-room-id="{{ $class['room']['id'] ?? '' }}"
-                                                data-current-page="{{ $data['getStudyClassByIds']['current_page'] }}"
-                                                data-bs-toggle="modal"
-                                                data-bs-target="#confirmDeleteModal"
-                                            >
-                                                <i class="fas fa-trash-alt"></i>
-                                            </button>
-
+                                        <td class="">
+                                            <div class="btn-group gap-2">
+                                                <a class="btn btn-primary btn-sm {{ $class['status'] == '1' ? 'disabled' : '' }}"
+                                                   title="Chỉnh sửa"
+                                                   href="{{ route('teacher.class-session.flexibleCreate', ['study-class-id' => $class['id'], 'session-request-id' => $class['id'] ?? null]) }}">
+                                                    <i class="fas fa-file-signature"></i>
+                                                </a>
+                                                <a href="{{ route('teacher.class-session.flexibleDetail', ['study-class-id' => $class['study_class_id'], 'session-request-id' => $class['id'] ?? null]) }}"
+                                                   class="btn btn-secondary btn-sm"
+                                                   title="Chi tiết">
+                                                    <i class="fas fa-info-circle"></i>
+                                                </a>
+                                                <button
+                                                    class="btn btn-danger btn-sm btn-delete-class-session"
+                                                    title="Hủy đăng ký"
+                                                    data-id="{{ $class['id'] }}"
+                                                    data-room-id="{{ $class['room']['id'] ?? '' }}"
+                                                    data-current-page="{{ $data['getStudyClassByIds']['current_page'] }}"
+                                                    data-bs-toggle="modal"
+                                                    data-bs-target="#confirmDeleteModal"
+                                                >
+                                                    <i class="fas fa-trash-alt"></i>
+                                                </button>
+                                            </div>
                                         </td>
                                     </tr>
                                 @endforeach

@@ -38,6 +38,11 @@ class SemesterService extends BaseService
         ];
     }
 
+    public function getSemesterNullClassSessionRegistration()
+    {
+        return $this->getRepository()->getSemesterNullClassSessionRegistration();
+    }
+
     public function getFourSemester()
     {
         return $this->getRepository()->getFourSemester();

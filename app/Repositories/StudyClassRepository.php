@@ -48,32 +48,35 @@ class StudyClassRepository extends BaseRepository
                 'classSessionRequests' => function ($q) use ($semesterId) {
                     $q->where('type', Constant::CLASS_SESSION_TYPE['FIXED'])
                         ->whereHas('classSessionRegistration', function ($qr) use ($semesterId) {
-                            $qr->where('semester_id', $semesterId);
-                        });
+                            $qr->where('semester_id', $semesterId)
+                                ->whereNull('deleted_at');
+                        })
+                        ->whereNull('deleted_at');
                 }
             ])
             ->where('lecturer_id', $lecturerId)
+            ->whereNull('deleted_at')
             ->withCount([
                 'classSessionRequests as status_order' => function ($q) use ($semesterId) {
                     $q->select(DB::raw('
-                CASE
-                    WHEN status = 0 THEN 1
-                    WHEN status = 2 THEN 2
-                    WHEN status = 1 THEN 3
-                    ELSE 4
-                END
-            '))
+                    CASE
+                        WHEN status = 0 THEN 1
+                        WHEN status = 2 THEN 2
+                        WHEN status = 1 THEN 3
+                        ELSE 4
+                    END
+                '))
+                        ->where('type', Constant::CLASS_SESSION_TYPE['FIXED'])
                         ->whereHas('classSessionRegistration', function ($qr) use ($semesterId) {
-                            $qr->where('semester_id', $semesterId);
-                        });
+                            $qr->where('semester_id', $semesterId)
+                                ->whereNull('deleted_at');
+                        })
+                        ->whereNull('deleted_at')
+                        ->orderByDesc('created_at')
+                        ->take(1);
                 }
             ])
-            ->orderByRaw('
-        CASE
-            WHEN status_order IS NULL THEN 0
-            ELSE status_order
-        END ASC
-    ');
+            ->orderByRaw('COALESCE(status_order, 0) ASC');
 
         if (!empty($params['search'])) {
             $search = $params['search'];

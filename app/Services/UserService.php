@@ -79,7 +79,7 @@ class UserService extends BaseService
 
     public function createTeacherUser($params)
     {
-        if ($this->isValidEmailByRole($params['email'], Constant::ROLE_LIST['TEACHER'])) {
+        if (!$this->isValidEmailByRole($params['email'], Constant::ROLE_LIST['TEACHER'])) {
             return false;
         }
 
