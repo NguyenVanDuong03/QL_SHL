@@ -84,7 +84,7 @@ class StudentAffairsDepartmentController extends Controller
     {
         $params = $request->all();
         $params['isEmptyRoom'] = true;
-        $semesters = $this->semesterService->getFourSemester()->limit(4)->get();
+        $semesters = $this->semesterService->getSemesterNullClassSessionRegistration();
         $checkClassSessionRegistration = $this->classSessionRegistrationService->checkClassSessionRegistrationPlus5days();
         $rooms = $this->roomService->get($params);
         $data = [

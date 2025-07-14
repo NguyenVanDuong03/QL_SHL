@@ -20,6 +20,11 @@ class Semester extends Model
         return $this->hasMany(AcademicWarning::class);
     }
 
+    public function classSessionRegistrations()
+    {
+        return $this->hasMany(ClassSessionRegistration::class);
+    }
+
     public function conductEvaluationPeriods()
     {
         return $this->hasMany(ConductEvaluationPeriod::class);

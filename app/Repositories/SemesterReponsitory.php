@@ -25,6 +25,16 @@ class SemesterReponsitory extends BaseRepository
             ->orderByDesc('id');
     }
 
+    public function getSemesterNullClassSessionRegistration()
+    {
+        return $this->getModel()
+            ->newQuery()
+            ->whereDoesntHave('classSessionRegistrations')
+            ->whereIn('name', [Constant::SEMESTER_TYPE['SEMESTER_1'], Constant::SEMESTER_TYPE['SEMESTER_2']])
+            ->orderByDesc('id')
+            ->get();
+    }
+
     public function statisticalSemester($lecturerId)
     {
         return $this->getModel()
