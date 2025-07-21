@@ -431,16 +431,16 @@
                                         </td>
                                     </tr>
                                 @endif
-                                @if (isset($sectionHeaders[$index2]) && $currentSection !== $index2)
-                                    @php
-                                        $currentSection = $index2;
-                                    @endphp
-                                    <tr>
-                                        <td colspan="6" class="bg-secondary text-white">
-                                            <strong>{{ $sectionHeaders[$index2] }}</strong>
-                                        </td>
-                                    </tr>
-                                @endif
+{{--                                @if (isset($sectionHeaders[$index2]) && $currentSection !== $index2)--}}
+{{--                                    @php--}}
+{{--                                        $currentSection = $index2;--}}
+{{--                                    @endphp--}}
+{{--                                    <tr>--}}
+{{--                                        <td colspan="6" class="bg-secondary text-white">--}}
+{{--                                            <strong>{{ $sectionHeaders[$index2] }}</strong>--}}
+{{--                                        </td>--}}
+{{--                                    </tr>--}}
+{{--                                @endif--}}
                                 <tr class="criteria-row" data-criteria="{{ $criteria['id'] }}">
                                     <td>{{ $loop->iteration }}</td>
                                     <td>{{ $criteria['content'] }} {!! isset($subSectionHeaders[$index2]) ? '<p class="m-0 p-0"><small class="text-danger fs-7">' . $subSectionHeaders[$index2] . '</small></p>' : '' !!}</td>
@@ -455,7 +455,7 @@
                                                value="{{ $criteria['class_score'] ?? 0 }}"
                                                data-max="{{ $criteria['max_score'] }}"
                                             {{ $data['checkConductEvaluationPeriodBySemesterId'] ? '' : 'disabled' }}
-                                            {{ $index == 4 || $index == 3 ? 'disabled' : '' }}
+                                            {{ $index2 == 4 || $index2 == 3 ? 'disabled' : '' }}
                                         >
                                     </td>
                                     <td>
