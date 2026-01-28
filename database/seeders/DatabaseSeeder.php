@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Helpers\Constant;
 use App\Models\User;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
@@ -19,7 +20,7 @@ class DatabaseSeeder extends Seeder
             'name' => 'Phòng Chính trị và Công tác sinh viên',
             'email' => 'ctsv@e.tlu.edu.vn',
             'password' => bcrypt('12345678'),
-            'role' => '1',
+            'role' => Constant::ROLE_LIST['STUDENT_AFFAIRS_DEPARTMENT'],
         ]);
     }
 }
